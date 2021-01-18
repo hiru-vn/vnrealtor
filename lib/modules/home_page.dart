@@ -1,0 +1,56 @@
+import 'package:vnrealtor/share/import.dart';
+
+import 'bottom_navigator.dart';
+
+class HomePage extends StatefulWidget {
+  static Future navigate() {
+    return navigatorKey.currentState.pushReplacement(pageBuilder(HomePage()));
+  }
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  int _selectedIndex = 0;
+  List<Widget> _pages = <Widget>[];
+
+  @override
+  void initState() {
+    _pages.addAll([
+      Container(),
+      Container(),
+      Container(),
+      Container(),
+    ]);
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        final bool flag = await showConfirmDialog(context, 'Close the app?',
+            confirmTap: () {}, navigatorKey: navigatorKey);
+        return flag;
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _pages,
+        ),
+        bottomNavigationBar: BottomNavigator(
+          selectedIndex: _selectedIndex,
+          listIcons: [MdiIcons.viewDashboard, MdiIcons.message, MdiIcons.bell, Icons.settings],
+          onSelect: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+        ),
+      ),
+    );
+  }
+}

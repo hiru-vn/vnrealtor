@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "259055496489",
+    "project_id": "vnrealtor-52b40",
+    "storage_bucket": "vnrealtor-52b40.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259055496489:android:77d221a474b1fccdecdb38",
+        "android_client_info": {
+          "package_name": "rexbix.app.vnrealtor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259055496489-bp6t2sl3dik1mntjmdjlgcdetvspt6hc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rexbix.app.vnrealtor",
+            "certificate_hash": "4cd17c36f6303b4a935dfa725b609806ca7422ab"
+          }
+        },
+        {
+          "client_id": "259055496489-qc7leopq838len75t6hmudgq41khuqnk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlfwTbMaibFui5RlXhRMpxB-WNNrOv2iw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259055496489-qc7leopq838len75t6hmudgq41khuqnk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
