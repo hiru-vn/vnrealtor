@@ -3,7 +3,7 @@ import './color.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final darkTheme = ThemeData(
-  primaryColor: HexColor('#48da9c'),
+  primaryColor: HexColor('#52de73'),
   accentColor: HexColor('#f1f8fe'),
   bottomAppBarColor: HexColor('#0E2036'),
   scaffoldBackgroundColor: HexColor('#333333'),

@@ -3,7 +3,7 @@ import './color.dart';
 import './font.dart';
 
 final lightTheme = ThemeData(
-  primaryColor: HexColor('#48da9c'),
+  primaryColor: HexColor('#52de73'),
   accentColor: HexColor('#f1f8fe'),
   bottomAppBarColor: HexColor('#0E2036'),
   scaffoldBackgroundColor: HexColor('#ffffff'),

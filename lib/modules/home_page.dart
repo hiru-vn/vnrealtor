@@ -1,3 +1,6 @@
+import 'package:vnrealtor/modules/notification/notification_page.dart';
+import 'package:vnrealtor/modules/post/post_page.dart';
+import 'package:vnrealtor/modules/setting/setting_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 import 'bottom_navigator.dart';
@@ -19,10 +22,10 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     _pages.addAll([
+      PostPage(),
       Container(),
-      Container(),
-      Container(),
-      Container(),
+      NotificationPage(),
+      SettingPage(),
     ]);
 
     super.initState();
@@ -43,7 +46,12 @@ class _HomePageState extends State<HomePage>
         ),
         bottomNavigationBar: BottomNavigator(
           selectedIndex: _selectedIndex,
-          listIcons: [MdiIcons.viewDashboard, MdiIcons.message, MdiIcons.bell, Icons.settings],
+          listIcons: [
+            MdiIcons.bulletinBoard,
+            MdiIcons.messageText,
+            MdiIcons.bellRing,
+            Icons.settings
+          ],
           onSelect: (index) {
             setState(() {
               _selectedIndex = index;
