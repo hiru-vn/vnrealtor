@@ -1,9 +1,25 @@
 import 'package:vnrealtor/share/import.dart';
 import 'package:readmore/readmore.dart';
+import 'package:popup_menu/popup_menu.dart';
 
-class PostWidget extends StatelessWidget {
+class PostWidget extends StatefulWidget {
+  @override
+  _PostWidgetState createState() => _PostWidgetState();
+}
+
+class _PostWidgetState extends State<PostWidget> {
+  final GlobalKey<State<StatefulWidget>> moreBtnKey =
+      GlobalKey<State<StatefulWidget>>();
+
+  @override
+  void initState() {
+    initMenu();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    PopupMenu.context = context;
     return Padding(
       padding: const EdgeInsets.only(top: 15),
       child: Container(
@@ -45,8 +61,11 @@ class PostWidget extends StatelessWidget {
                   Spacer(),
                   Center(
                     child: IconButton(
+                      key: moreBtnKey,
                       icon: Icon(Icons.more_vert),
-                      onPressed: () {},
+                      onPressed: () {
+                        menu.show(widgetKey: moreBtnKey);
+                      },
                     ),
                   )
                 ],
@@ -189,4 +208,30 @@ class PostWidget extends StatelessWidget {
       ),
     );
   }
+
+  initMenu() {
+    menu = PopupMenu(
+        items: [
+          MenuItem(
+              title: 'Contact',
+              image: Icon(
+                Icons.post_add,
+                color: Colors.white,
+              )),
+          MenuItem(
+              title: 'Report',
+              image: Icon(
+                Icons.report,
+                color: Colors.white,
+              )),
+        ],
+        onClickMenu: (val) {
+          if (val.menuTitle == 'Voice call') {}
+          if (val.menuTitle == 'Video call') {}
+        },
+        stateChanged: (val) {},
+        onDismiss: () {});
+  }
+
+  PopupMenu menu;
 }
