@@ -1,3 +1,4 @@
+import 'package:vnrealtor/share/function/share_to.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:readmore/readmore.dart';
 import 'package:popup_menu/popup_menu.dart';
@@ -192,9 +193,12 @@ class _PostWidgetState extends State<PostWidget> {
                         SizedBox(
                           width: 5,
                         ),
-                        Text(
-                          'Share',
-                          style: TextStyle(color: Colors.black54),
+                        GestureDetector(
+                          onTap: () => shareTo(context),
+                          child: Text(
+                            'Share',
+                            style: TextStyle(color: Colors.black54),
+                          ),
                         ),
                       ]),
                 )
