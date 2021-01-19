@@ -1,5 +1,7 @@
 import 'package:vnrealtor/share/import.dart';
 
+import 'post_widget.dart';
+
 class PostPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -22,8 +24,8 @@ class PostPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(13),
                 color: ptPrimaryColor(context),
                 child: Container(
-                  height: 48,
-                  width: 48,
+                  height: 52,
+                  width: 52,
                   child: Center(
                     child: Icon(Icons.add, color: Colors.white),
                   ),
@@ -32,10 +34,19 @@ class PostPage extends StatelessWidget {
               SizedBox(
                 width: 16,
               ),
-              Text('Đăng bài viết', style: ptBigBody(),)
+              Text(
+                'Đăng bài viết',
+                style: ptBigBody(),
+              ),
             ],
           ),
-        )
+        ),
+        PostWidget(),
+        PostWidget(),
+        PostWidget(),
+        SizedBox(
+          height: 10,
+        ),
       ])),
     );
   }

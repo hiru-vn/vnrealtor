@@ -200,6 +200,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_spinkit:
+    dependency: "direct dev"
+    description:
+      name: flutter_spinkit
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.2+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -315,6 +322,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.2"
+  photo_view:
+    dependency: "direct dev"
+    description:
+      name: photo_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.10.3"
   platform:
     dependency: transitive
     description:
@@ -343,6 +357,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
+  readmore:
+    dependency: "direct dev"
+    description:
+      name: readmore
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   sentry:
     dependency: "direct dev"
     description:
