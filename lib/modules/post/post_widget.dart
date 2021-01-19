@@ -3,6 +3,8 @@ import 'package:vnrealtor/share/import.dart';
 import 'package:readmore/readmore.dart';
 import 'package:popup_menu/popup_menu.dart';
 
+import 'comment_page.dart';
+
 class PostWidget extends StatefulWidget {
   @override
   _PostWidgetState createState() => _PostWidgetState();
@@ -135,9 +137,14 @@ class _PostWidgetState extends State<PostWidget> {
                     style: ptSmall(),
                   ),
                   Spacer(),
-                  Text(
-                    '1 comments',
-                    style: ptSmall(),
+                  GestureDetector(
+                    onTap: () {
+                      showComment();
+                    },
+                    child: Text(
+                      '1 comments',
+                      style: ptSmall(),
+                    ),
                   ),
                 ],
               ),
@@ -175,9 +182,14 @@ class _PostWidgetState extends State<PostWidget> {
                         SizedBox(
                           width: 5,
                         ),
-                        Text(
-                          'Comment',
-                          style: TextStyle(color: Colors.black54),
+                        GestureDetector(
+                          onTap: () {
+                            showComment();
+                          },
+                          child: Text(
+                            'Comment',
+                            style: TextStyle(color: Colors.black54),
+                          ),
                         ),
                       ]),
                 ),
@@ -211,6 +223,39 @@ class _PostWidgetState extends State<PostWidget> {
         ),
       ),
     );
+  }
+
+  showComment() {
+    showModalBottomSheet(
+        useRootNavigator: true,
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (context) {
+          return SizedBox(
+              height: deviceHeight(context) - kToolbarHeight - 15,
+              child: Column(
+                children: [
+                  Container(
+                    height: 10,
+                    width: deviceWidth(context),
+                    color: Colors.white,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 4,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(2),
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(child: CommentPage()),
+                ],
+              ));
+        });
   }
 
   initMenu() {
