@@ -6,6 +6,8 @@ class ExpandBtn extends StatelessWidget {
   final Color color;
   final Color textColor;
   final double height;
+  final int elevation;
+  final double borderRadius;
 
   const ExpandBtn(
       {Key key,
@@ -13,6 +15,8 @@ class ExpandBtn extends StatelessWidget {
       @required this.onPress,
       this.color,
       this.textColor,
+      this.borderRadius,
+      this.elevation,
       this.height})
       : super(key: key);
   @override
@@ -21,9 +25,9 @@ class ExpandBtn extends StatelessWidget {
       width: double.infinity,
       height: height ?? 55,
       child: RaisedButton(
-        elevation: 5,
+        elevation: elevation.toDouble() ?? 5,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(borderRadius??15),
         ),
         color: color ?? ptPrimaryColor(context),
         onPressed: onPress,
