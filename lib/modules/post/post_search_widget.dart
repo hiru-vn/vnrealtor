@@ -1,3 +1,4 @@
+import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/function/share_to.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:readmore/readmore.dart';
@@ -32,10 +33,14 @@ class _PostSearchWidgetState extends State<PostSearchWidget> {
               padding: EdgeInsets.all(15),
               child: Row(
                 children: [
-                  CircleAvatar(
+                  GestureDetector(
+                  onTap: () {
+                    ProfilePage.navigate();
+                  },
+                  child:CircleAvatar(
                     radius: 25,
                     backgroundImage: AssetImage('assets/image/avatar.jpg'),
-                  ),
+                  ),),
                   SizedBox(width: 10),
                   Column(
                     mainAxisSize: MainAxisSize.min,

@@ -1,3 +1,4 @@
+import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class CommentPage extends StatefulWidget {
@@ -82,9 +83,14 @@ class _CommentPageState extends State<CommentPage>
                   border: Border.all(width: 1, color: Colors.black45),
                   shape: BoxShape.circle,
                 ),
-                child: CircleAvatar(
-                  radius: 18,
-                  backgroundImage: AssetImage(list[index]['avatar']),
+                child: GestureDetector(
+                  onTap: () {
+                    ProfilePage.navigate();
+                  },
+                  child: CircleAvatar(
+                    radius: 18,
+                    backgroundImage: AssetImage(list[index]['avatar']),
+                  ),
                 ),
               ),
               title: Padding(

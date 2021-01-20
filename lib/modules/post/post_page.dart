@@ -1,6 +1,6 @@
 import 'package:flutter/rendering.dart';
 import 'package:vnrealtor/modules/post/create_post_page.dart';
-import 'package:vnrealtor/modules/post/seach_post_page.dart';
+import 'package:vnrealtor/modules/post/search_post_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 import 'post_widget.dart';

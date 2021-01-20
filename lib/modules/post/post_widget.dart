@@ -1,3 +1,4 @@
+import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/function/share_to.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:readmore/readmore.dart';
@@ -35,9 +36,14 @@ class _PostWidgetState extends State<PostWidget> {
               padding: EdgeInsets.all(15),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundImage: AssetImage('assets/image/avatar.jpg'),
+                  GestureDetector(
+                    onTap: () {
+                      ProfilePage.navigate();
+                    },
+                    child: CircleAvatar(
+                      radius: 25,
+                      backgroundImage: AssetImage('assets/image/avatar.jpg'),
+                    ),
                   ),
                   SizedBox(width: 10),
                   Column(
@@ -62,9 +68,9 @@ class _PostWidgetState extends State<PostWidget> {
                       ),
                       SizedBox(height: 3),
                       Text(
-                            '02/11/2021',
-                            style: ptSmall().copyWith(color: Colors.black54),
-                          ),
+                        '02/11/2021',
+                        style: ptSmall().copyWith(color: Colors.black54),
+                      ),
                     ],
                   ),
                   Spacer(),
