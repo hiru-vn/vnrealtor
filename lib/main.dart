@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry/sentry.dart';
-import 'package:vnrealtor/modules/authentication/introduce.dart';
 import 'package:vnrealtor/modules/authentication/splash.dart';
-import 'package:vnrealtor/modules/home_page.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/themes/lightTheme.dart';
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
@@ -64,7 +62,7 @@ class MyApp extends StatelessWidget {
                 ],
                 theme: ThemeProvider.of(context),
                 navigatorKey: navigatorKey,
-                home: HomePage(),
+                home: SplashPage(),
               );
             }),
           ),
