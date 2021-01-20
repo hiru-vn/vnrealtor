@@ -44,13 +44,14 @@ class _PostWidgetState extends State<PostWidget> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Nguyễn Hùng',
-                        style: ptTitle(),
-                      ),
                       SizedBox(height: 3),
                       Row(
                         children: [
+                          Text(
+                            'Nguyễn Hùng',
+                            style: ptTitle(),
+                          ),
+                          SizedBox(width: 8),
                           Text(
                             '3',
                             style: ptTitle().copyWith(color: Colors.yellow),
@@ -59,6 +60,11 @@ class _PostWidgetState extends State<PostWidget> {
                           Image.asset('assets/image/coin.png'),
                         ],
                       ),
+                      SizedBox(height: 3),
+                      Text(
+                            '02/11/2021',
+                            style: ptSmall().copyWith(color: Colors.black54),
+                          ),
                     ],
                   ),
                   Spacer(),

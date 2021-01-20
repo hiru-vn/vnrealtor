@@ -159,16 +159,3 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 }
-
-class PostPageAppBarInvisible extends StatelessWidget
-    implements PreferredSizeWidget {
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
-  PostPageAppBarInvisible();
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      color: Colors.transparent,
-    );
-  }
-}

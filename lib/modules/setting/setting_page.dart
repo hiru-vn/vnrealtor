@@ -1,4 +1,4 @@
-import 'package:open_appstore/open_appstore.dart';
+import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class SettingPage extends StatefulWidget {
@@ -119,7 +119,7 @@ class _SettingPageState extends State<SettingPage> {
                         SizedBox(height: 3),
                         GestureDetector(
                           onTap: () {
-                            // OwnerSettingPage.navigate();
+                            ProfilePage.navigate();
                           },
                           child: Text(
                             'Thông tin người dùng',

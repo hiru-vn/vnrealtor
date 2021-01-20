@@ -15,7 +15,7 @@ final darkTheme = ThemeData(
     color: HexColor('#444444'),
   ),
   buttonTheme: ButtonThemeData(
-    buttonColor: HexColor('#2D9B7A'),
+    buttonColor: HexColor('#52de73'),
     textTheme: ButtonTextTheme.primary,
   ),
   iconTheme: IconThemeData(size: 21, color: HexColor('#444444')),

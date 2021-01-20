@@ -22,7 +22,7 @@ final lightTheme = ThemeData(
     onSurface: Colors.black87,
   ),
   buttonTheme: ButtonThemeData(
-    buttonColor: HexColor('#2D9B7A'),
+    buttonColor: HexColor('#52de73'),
     textTheme: ButtonTextTheme.primary,
   ),
   primaryColorLight: Colors.white,

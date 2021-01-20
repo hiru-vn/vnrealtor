@@ -14,7 +14,7 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
   bool _folded = true;
   FocusNode _focusNode = FocusNode();
   double _width = 180;
-  double _height = 44;
+  double _height = 48;
 
   @override
   void initState() {

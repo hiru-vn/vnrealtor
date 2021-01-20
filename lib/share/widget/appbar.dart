@@ -38,9 +38,46 @@ class AppBar1 extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
+class AppBar2 extends StatelessWidget implements PreferredSizeWidget {
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  final String title;
+  final List<Widget> actions;
+
+  AppBar2(this.title, {this.actions});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      child: Padding(
+          padding:
+              const EdgeInsets.only(left: 10, top: 12, bottom: 10, right: 10),
+          child: Row(
+            children: [
+              SizedBox(width: 40, child: BackButton(color: Colors.white)),
+              Expanded(
+                child: Center(
+                  child: Text(
+                    title,
+                    style: ptBigTitle().copyWith(color: Colors.white),
+                  ),
+                ),
+              ),
+              if (actions != null) ...actions else SizedBox(width: 40)
+            ],
+          )),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [HexColor('#55e678'), HexColor('#3ad6db')],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+    );
+  }
+}
+
 innerAppBar(BuildContext context, String title,
-        {List<Widget> actions,
-        final Color bgColor}) =>
+        {List<Widget> actions, final Color bgColor}) =>
     AppBar(
       elevation: 0,
       backgroundColor: bgColor ?? ptPrimaryColor(context),
