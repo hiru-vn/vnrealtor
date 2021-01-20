@@ -1,4 +1,5 @@
 import 'package:vnrealtor/modules/post/post_widget.dart';
+import 'package:vnrealtor/modules/profile/update_profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -13,12 +14,18 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar2(
         'Thông tin cá nhân',
         actions: [
-          SizedBox(
+          GestureDetector(
+            onTap: () {
+              UpdateProfilePage.navigate();
+            },
+            child: SizedBox(
               width: 40,
               child: Icon(
                 Icons.settings,
                 color: Colors.white,
-              ))
+              ),
+            ),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -56,7 +63,8 @@ class ProfileCard extends StatelessWidget {
           elevation: 3,
           child: Container(
             width: deviceWidth(context),
-            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 14).copyWith(right: 20),
+            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 14)
+                .copyWith(right: 20),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -68,7 +76,7 @@ class ProfileCard extends StatelessWidget {
                         backgroundImage: AssetImage('assets/image/avatar.jpeg'),
                       ),
                       SizedBox(
-                        width: 14,
+                        width: 1,
                       ),
                       Expanded(
                         child: Column(

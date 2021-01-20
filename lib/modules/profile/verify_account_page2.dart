@@ -1,5 +1,4 @@
 import 'package:vnrealtor/share/import.dart';
-import 'package:dotted_border/dotted_border.dart';
 
 class VertifyAccountPage2 extends StatefulWidget {
   static Future navigate() {
