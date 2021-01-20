@@ -1,4 +1,5 @@
 import 'package:vnrealtor/share/import.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppBar1 extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
@@ -36,3 +37,32 @@ class AppBar1 extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 }
+
+innerAppBar(BuildContext context, String title,
+        {List<Widget> actions,
+        final Color bgColor}) =>
+    AppBar(
+      elevation: 0,
+      backgroundColor: bgColor ?? ptPrimaryColor(context),
+      title: Text(
+        title,
+        style: GoogleFonts.nunito(
+            color: Colors.white, fontWeight: FontWeight.w400),
+      ),
+      leading: GestureDetector(
+        onTap: () {
+          navigatorKey.currentState.maybePop();
+        },
+        child: SizedBox(
+          width: 40,
+          height: 40,
+          child: Center(
+              child: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          )),
+        ),
+      ),
+      centerTitle: true,
+      actions: actions,
+    );

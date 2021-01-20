@@ -1,4 +1,5 @@
 import 'package:flutter/rendering.dart';
+import 'package:vnrealtor/modules/post/create_post_page.dart';
 import 'package:vnrealtor/modules/post/seach_post_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
@@ -62,15 +63,20 @@ class _PostPageState extends State<PostPage> {
               color: Colors.white,
               child: Row(
                 children: [
-                  Material(
-                    elevation: 5,
-                    borderRadius: BorderRadius.circular(13),
-                    color: ptPrimaryColor(context),
-                    child: Container(
-                      height: 52,
-                      width: 52,
-                      child: Center(
-                        child: Icon(Icons.add, color: Colors.white),
+                  GestureDetector(
+                    onTap: () {
+                      CreatePostPage.navigate();
+                    },
+                    child: Material(
+                      elevation: 5,
+                      borderRadius: BorderRadius.circular(13),
+                      color: ptPrimaryColor(context),
+                      child: Container(
+                        height: 52,
+                        width: 52,
+                        child: Center(
+                          child: Icon(Icons.add, color: Colors.white),
+                        ),
                       ),
                     ),
                   ),

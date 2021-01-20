@@ -8,6 +8,8 @@ import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:vnrealtor/utils/app_internalization.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'modules/home_page.dart';
+
 final _sentry = SentryClient(
     dsn:
         "https://ab7fbe46a1634b98b918535d535962ea@o396604.ingest.sentry.io/5596357");
@@ -62,7 +64,7 @@ class MyApp extends StatelessWidget {
                 ],
                 theme: ThemeProvider.of(context),
                 navigatorKey: navigatorKey,
-                home: SplashPage(),
+                home: HomePage(),
               );
             }),
           ),

@@ -1,3 +1,5 @@
+import 'package:vnrealtor/modules/post/post_search_widget.dart';
+import 'package:vnrealtor/modules/post/search_people_widget.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class SearchPostPage extends StatefulWidget {
@@ -15,7 +17,7 @@ class _SearchPostPageState extends State<SearchPostPage>
 
   @override
   void initState() {
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
 
@@ -52,7 +54,21 @@ class _SearchPostPageState extends State<SearchPostPage>
           ]),
         ),
         actions: [
-          IconButton(icon: Icon(Icons.filter_list), onPressed: () {}),
+          IconButton(
+              icon: Icon(Icons.filter_list),
+              onPressed: () {
+                if (_tabController.index == 1 || _tabController.index == 3)
+                  return;
+                pickList(context,
+                    title: 'Sắp xếp kết quả theo',
+                    onPicked: (value) {},
+                    options: [
+                      'Mới nhất xếp trước',
+                      'Cũ nhất xếp trước',
+                      'Địa điểm gần tôi nhất'
+                    ],
+                    closeText: 'Xong');
+              }),
         ],
         bottom: TabBar(
             indicatorSize: TabBarIndicatorSize.tab,
@@ -71,11 +87,38 @@ class _SearchPostPageState extends State<SearchPostPage>
             tabs: [
               Tab(text: 'Bài viết'),
               Tab(text: 'Người dùng'),
-              Tab(text: 'Ảnh/video'),
+              //Tab(text: 'Ảnh/video'),
               Tab(text: 'Bản đồ'),
             ]),
       ),
       backgroundColor: ptBackgroundColor(context),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          ListView(
+            children: [
+              PostSearchWidget(),
+              PostSearchWidget(),
+            ],
+          ),
+          ListView(
+            padding: EdgeInsets.only(top: 5),
+            children: [
+              SearchPeopleWidget(),
+              SearchPeopleWidget(),
+              SearchPeopleWidget(),
+              SearchPeopleWidget(),
+            ],
+          ),
+          //Container(),
+          Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/image/map.jpg'),
+                    fit: BoxFit.cover)),
+          ),
+        ],
+      ),
     );
   }
 }
