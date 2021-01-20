@@ -14,7 +14,7 @@ export 'package:vnrealtor/share/widget/expand_btn.dart';
 export 'package:vnrealtor/share/function/dialog.dart';
 export 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 export 'package:vnrealtor/share/widget/image_view.dart';
-export 'package:vnrealtor/share/widget/pick_list.dart';
+export 'package:vnrealtor/share/function/pick_list.dart';
 export 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 export 'package:vnrealtor/share/function/image_picker.dart';
 export 'package:vnrealtor/share/widget/list_img_picker.dart';

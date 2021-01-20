@@ -15,6 +15,12 @@ final lightTheme = ThemeData(
   primaryIconTheme: IconThemeData(
     color: HexColor('#444444'),
   ),
+  colorScheme: ColorScheme.light(
+    primary:  HexColor('#52de73'),
+    onPrimary: Colors.white,
+    surface: Colors.pink,
+    onSurface: Colors.black87,
+  ),
   buttonTheme: ButtonThemeData(
     buttonColor: HexColor('#2D9B7A'),
     textTheme: ButtonTextTheme.primary,

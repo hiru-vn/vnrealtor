@@ -89,7 +89,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       height: 3.0,
                     ),
                     ExpandRectangleButton(
-                      text: 'Post',
+                      text: 'Đăng bài',
                       onTap: () {
                         navigatorKey.currentState.maybePop();
                       },
@@ -142,16 +142,23 @@ class _CreatePostPageState extends State<CreatePostPage> {
           height: 3,
         ),
         CustomListTile(
-          leading: Icon(
-            Icons.date_range,
-            color: Colors.black54,
-          ),
-          title: Text(
-            'Ngày hết hạn',
-            style: ptTitle(),
-          ),
-          trailing: Text('2/4/2020')
-        ),
+            onTap: () {
+              showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime.now(),
+                lastDate: DateTime.now(),
+              );
+            },
+            leading: Icon(
+              Icons.date_range,
+              color: Colors.black54,
+            ),
+            title: Text(
+              'Ngày hết hạn',
+              style: ptTitle(),
+            ),
+            trailing: Text('2/4/2020')),
         Divider(
           height: 3,
         ),
@@ -165,6 +172,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
             style: ptTitle(),
           ),
           trailing: Text('Tất cả mọi người'),
+          onTap: () {
+            pickList(context,
+                title: 'Chia sẻ với',
+                onPicked: (value) {},
+                options: [
+                  'Tất cả mọi người',
+                  'Chỉ bạn bè mới nhìn thấy',
+                ],
+                closeText: 'Xong');
+          },
         ),
       ],
     );
