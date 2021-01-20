@@ -16,7 +16,7 @@ final lightTheme = ThemeData(
     color: HexColor('#444444'),
   ),
   colorScheme: ColorScheme.light(
-    primary:  HexColor('#52de73'),
+    primary: HexColor('#52de73'),
     onPrimary: Colors.white,
     surface: Colors.pink,
     onSurface: Colors.black87,

@@ -85,10 +85,10 @@ class _SearchPostPageState extends State<SearchPostPage>
                 color: Colors.black87,
                 fontWeight: FontWeight.w600),
             tabs: [
-              Tab(text: 'Bài viết'),
-              Tab(text: 'Người dùng'),
+              SizedBox(height: 36 , child: Tab(text: 'Bài viết')),
+              SizedBox(height: 36 ,child: Tab(text: 'Người dùng')),
               //Tab(text: 'Ảnh/video'),
-              Tab(text: 'Bản đồ'),
+              SizedBox(height: 36 ,child: Tab(text: 'Bản đồ')),
             ]),
       ),
       backgroundColor: ptBackgroundColor(context),
