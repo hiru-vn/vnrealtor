@@ -1,4 +1,5 @@
 import 'package:vnrealtor/modules/profile/profile_page.dart';
+import 'package:vnrealtor/modules/profile/verify_account.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class SettingPage extends StatefulWidget {
@@ -135,7 +136,7 @@ class _SettingPageState extends State<SettingPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    // PickPet.navigate();
+                    VertifyAccount.navigate();
                   },
                   child: Card(
                     color: ptDarkColor(context),
@@ -154,7 +155,7 @@ class _SettingPageState extends State<SettingPage> {
                                   padding: const EdgeInsets.all(10)
                                       .copyWith(bottom: 5),
                                   child: Text(
-                                    'Xác thực tài khoản người bán',
+                                    'Xác thực nhà môi giới',
                                     maxLines: null,
                                     style: ptBody().copyWith(
                                       color: Colors.white,
@@ -166,7 +167,7 @@ class _SettingPageState extends State<SettingPage> {
                                   padding:
                                       const EdgeInsets.all(10).copyWith(top: 0),
                                   child: Text(
-                                    'Để đăng bài, bạn sẽ cần cung cấp thêm 1 số thông tin.',
+                                    'Để đăng bài bds, bạn sẽ cần cung cấp thêm 1 số thông tin.',
                                     maxLines: 2,
                                     style: ptTiny().copyWith(
                                       color: Colors.white,

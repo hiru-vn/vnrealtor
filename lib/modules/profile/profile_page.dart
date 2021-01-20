@@ -26,7 +26,10 @@ class ProfilePage extends StatelessWidget {
           ProfileCard(),
           Padding(
             padding: const EdgeInsets.all(15).copyWith(bottom: 0),
-            child: Text('Bài viết', style: ptBigTitle(),),
+            child: Text(
+              'Bài viết',
+              style: ptBigTitle(),
+            ),
           ),
           ListView(
             shrinkWrap: true,
@@ -49,12 +52,11 @@ class ProfileCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Material(
-        
           borderRadius: BorderRadius.circular(5),
           elevation: 3,
           child: Container(
             width: deviceWidth(context),
-            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 14),
+            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 14).copyWith(right: 20),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -66,36 +68,39 @@ class ProfileCard extends StatelessWidget {
                         backgroundImage: AssetImage('assets/image/avatar.jpeg'),
                       ),
                       SizedBox(
-                        width: 15,
+                        width: 14,
                       ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 6),
-                          Text(
-                            'Nguyễn Hùng',
-                            style: ptBigTitle().copyWith(color: Colors.black87),
-                          ),
-                          SizedBox(height: 3),
-                          Row(
-                            children: [
-                              Text(
-                                'Điểm uy tín: 13',
-                                style: ptBody().copyWith(color: Colors.black54),
-                              ),
-                              SizedBox(width: 2),
-                              Image.asset('assets/image/coin.png'),
-                            ],
-                          ),
-                          SizedBox(height: 3),
-                          Text(
-                            'Nhà môi giới',
-                            style: ptSmall().copyWith(color: Colors.blue),
-                          ),
-                        ],
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 6),
+                            Text(
+                              'Nguyễn Hùng',
+                              style:
+                                  ptBigTitle().copyWith(color: Colors.black87),
+                            ),
+                            SizedBox(height: 3),
+                            Row(
+                              children: [
+                                Text(
+                                  'Điểm uy tín: 13',
+                                  style:
+                                      ptBody().copyWith(color: Colors.black54),
+                                ),
+                                SizedBox(width: 2),
+                                Image.asset('assets/image/coin.png'),
+                              ],
+                            ),
+                            SizedBox(height: 3),
+                            Text(
+                              'Nhà môi giới',
+                              style: ptSmall().copyWith(color: Colors.blue),
+                            ),
+                          ],
+                        ),
                       ),
-                      Spacer(),
                       Center(
                         child: RaisedButton(
                           padding: EdgeInsets.all(0),

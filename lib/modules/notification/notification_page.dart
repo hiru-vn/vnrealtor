@@ -48,13 +48,13 @@ class _NotificationPageState extends State<NotificationPage>
                       height: 40,
                       width: deviceWidth(context) / 2 - 50,
                       child: Tab(
-                        text: 'Tất cả',
+                        text: 'Thông báo mới',
                       ),
                     ),
                     SizedBox(
                       height: 40,
                       width: deviceWidth(context) / 2 - 50,
-                      child: Tab(text: 'Chưa đọc'),
+                      child: Tab(text: 'Lời mời kết bạn'),
                     ),
                   ]),
             ),

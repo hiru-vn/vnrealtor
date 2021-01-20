@@ -28,27 +28,30 @@ class RoundedBtn extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         border: hasBorder
-            ? Border.all(color: Colors.white, width: 1.5)
+            ? Border.all(color: ptPrimaryColor(context), width: 2)
             : null,
       ),
       child: Material(
-        elevation: 4,
-        color: color ?? Colors.white24,
+        color: color ?? ptSecondaryColor(context),
         borderRadius: BorderRadius.circular(30),
         child: InkWell(
-          splashColor:  Colors.transparent,
-          highlightColor: Colors.white38,
+          splashColor: ptPrimaryColor(context),
           borderRadius: BorderRadius.circular(30),
           onTap: onPressed,
           child: Container(
             padding: padding ?? EdgeInsets.zero,
             child: Center(
-              child: Text(
-                text,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  text,
+                  style: TextStyle(
+                      color: color != ptPrimaryColor(context)
+                          ? ptPrimaryColor(context)
+                          : Colors.white,
+                      fontSize: 17.5,
+                      fontWeight: FontWeight.w600),
+                ),
               ),
             ),
           ),
