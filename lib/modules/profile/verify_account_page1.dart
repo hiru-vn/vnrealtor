@@ -1,16 +1,17 @@
+import 'package:vnrealtor/modules/profile/verify_account_page2.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:dotted_border/dotted_border.dart';
 
-class VertifyAccount extends StatefulWidget {
+class VertifyAccountPage1 extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(VertifyAccount()));
+    return navigatorKey.currentState.push(pageBuilder(VertifyAccountPage1()));
   }
 
   @override
-  _VertifyAccountState createState() => _VertifyAccountState();
+  _VertifyAccountPage1State createState() => _VertifyAccountPage1State();
 }
 
-class _VertifyAccountState extends State<VertifyAccount> {
+class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +59,9 @@ class _VertifyAccountState extends State<VertifyAccount> {
                   RoundedBtn(
                     height: 45,
                     text: 'Tiếp theo',
-                    onPressed: () {},
+                    onPressed: () {
+                      VertifyAccountPage2.navigate();
+                    },
                     width: 150,
                     color: ptPrimaryColor(context),
                     padding: EdgeInsets.symmetric(

@@ -1,5 +1,5 @@
 import 'package:vnrealtor/modules/profile/profile_page.dart';
-import 'package:vnrealtor/modules/profile/verify_account.dart';
+import 'package:vnrealtor/modules/profile/verify_account_page1.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class SettingPage extends StatefulWidget {
@@ -136,7 +136,7 @@ class _SettingPageState extends State<SettingPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    VertifyAccount.navigate();
+                    VertifyAccountPage1.navigate();
                   },
                   child: Card(
                     color: ptDarkColor(context),

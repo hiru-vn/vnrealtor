@@ -30,7 +30,7 @@ class _NotificationPageState extends State<NotificationPage>
             Align(
               alignment: Alignment.center,
               child: TabBar(
-                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicatorSize: TabBarIndicatorSize.label,
                   indicatorWeight: 3,
                   indicatorColor: ptPrimaryColor(context),
                   indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -38,23 +38,23 @@ class _NotificationPageState extends State<NotificationPage>
                   isScrollable: true,
                   labelColor: Colors.black87,
                   unselectedLabelStyle:
-                      TextStyle(fontSize: 15, color: Colors.black54),
+                      TextStyle(fontSize: 14, color: Colors.black54),
                   labelStyle: TextStyle(
-                      fontSize: 15,
+                      fontSize: 14,
                       color: Colors.black87,
                       fontWeight: FontWeight.bold),
                   tabs: [
                     SizedBox(
                       height: 40,
-                      width: deviceWidth(context) / 2 - 50,
+                      width: deviceWidth(context) / 2 - 45,
                       child: Tab(
-                        text: 'Thông báo mới',
+                        text: 'Thông báo mới (3)',
                       ),
                     ),
                     SizedBox(
                       height: 40,
-                      width: deviceWidth(context) / 2 - 50,
-                      child: Tab(text: 'Lời mời kết bạn'),
+                      width: deviceWidth(context) / 2 - 45,
+                      child: Tab(text: 'Lời mời kết bạn (2)'),
                     ),
                   ]),
             ),
@@ -65,7 +65,7 @@ class _NotificationPageState extends State<NotificationPage>
                 backgroundImage: AssetImage('assets/image/avatar.jpg'),
               ),
               title: Text(
-                'Cuti pit đã gửi lời mời kết bạn',
+                'Cuti pit đã chia sẻ bài viết của bạn',
                 style: ptBody(),
               ),
               subtitle: Text(
