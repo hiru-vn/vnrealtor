@@ -15,21 +15,21 @@ class _SettingPageState extends State<SettingPage> {
         "name": "Bài đăng của tôi",
         "img": "assets/image/post.png",
         "action": () {
-          showAlertDialog(context, 'Đăng cập nhật', navigatorKey: navigatorKey);
+          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
         }
       },
       {
         "name": "Điểm uy tín: 23",
         "img": "assets/image/star_point.png",
         "action": () {
-          showAlertDialog(context, 'Đăng cập nhật', navigatorKey: navigatorKey);
+          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
         }
       },
       {
         "name": "Chia sẻ ứng dụng",
         "img": "assets/image/share_app.jpg",
         "action": () {
-          showAlertDialog(context, 'Đăng cập nhật', navigatorKey: navigatorKey);
+          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
         }
       },
       {
@@ -47,28 +47,28 @@ class _SettingPageState extends State<SettingPage> {
         "name": "Điều khoản & chính sách",
         "img": "assets/image/policy.png",
         "action": () {
-          showAlertDialog(context, 'Đăng cập nhật', navigatorKey: navigatorKey);
+          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
         }
       },
       {
         "name": "Về chúng tôi",
         "img": "assets/image/logo.png",
         "action": () {
-          showAlertDialog(context, 'Đăng cập nhật', navigatorKey: navigatorKey);
+          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
         }
       },
       {
         "name": "Phản hồi & Hỗ trợ",
         "img": "assets/image/feedback.png",
         "action": () {
-          showAlertDialog(context, 'Đăng cập nhật', navigatorKey: navigatorKey);
+          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
         }
       },
       {
         "name": "Chế độ tối",
         "img": "assets/image/night_mode.png",
         "action": () {
-          showAlertDialog(context, 'Đăng cập nhật', navigatorKey: navigatorKey);
+          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
         }
       },
       // {

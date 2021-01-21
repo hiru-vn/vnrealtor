@@ -76,7 +76,7 @@ class ProfileCard extends StatelessWidget {
                         backgroundImage: AssetImage('assets/image/avatar.jpeg'),
                       ),
                       SizedBox(
-                        width: 1,
+                        width: 14,
                       ),
                       Expanded(
                         child: Column(

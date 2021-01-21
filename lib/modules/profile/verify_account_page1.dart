@@ -104,6 +104,13 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25)
                   .copyWith(right: 10),
               child: TextField(
+                onTap: () {
+                  showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now());
+                },
                 readOnly: true,
                 decoration: InputDecoration(
                     border: InputBorder.none,
