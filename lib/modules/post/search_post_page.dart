@@ -1,3 +1,4 @@
+import 'package:vnrealtor/modules/post/post_map.dart';
 import 'package:vnrealtor/modules/post/post_search_widget.dart';
 import 'package:vnrealtor/modules/post/search_people_widget.dart';
 import 'package:vnrealtor/share/import.dart';
@@ -85,14 +86,15 @@ class _SearchPostPageState extends State<SearchPostPage>
                 color: Colors.black87,
                 fontWeight: FontWeight.w600),
             tabs: [
-              SizedBox(height: 36 , child: Tab(text: 'Bài viết')),
-              SizedBox(height: 36 ,child: Tab(text: 'Người dùng')),
+              SizedBox(height: 36, child: Tab(text: 'Bài viết')),
+              SizedBox(height: 36, child: Tab(text: 'Người dùng')),
               //Tab(text: 'Ảnh/video'),
-              SizedBox(height: 36 ,child: Tab(text: 'Bản đồ')),
+              SizedBox(height: 36, child: Tab(text: 'Bản đồ')),
             ]),
       ),
       backgroundColor: ptBackgroundColor(context),
       body: TabBarView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _tabController,
         children: [
           ListView(
@@ -110,13 +112,7 @@ class _SearchPostPageState extends State<SearchPostPage>
               SearchPeopleWidget(),
             ],
           ),
-          //Container(),
-          Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/image/map.jpg'),
-                    fit: BoxFit.cover)),
-          ),
+          PostMap(),
         ],
       ),
     );

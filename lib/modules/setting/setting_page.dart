@@ -1,6 +1,7 @@
 import 'package:vnrealtor/modules/post/post_history_page.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/modules/profile/verify_account_page1.dart';
+import 'package:vnrealtor/modules/setting/point_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class SettingPage extends StatefulWidget {
@@ -23,7 +24,7 @@ class _SettingPageState extends State<SettingPage> {
         "name": "Điểm uy tín: 23",
         "img": "assets/image/star_point.png",
         "action": () {
-          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
+          PointPage.navigate();
         }
       },
       {

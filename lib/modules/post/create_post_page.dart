@@ -142,23 +142,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
           height: 3,
         ),
         CustomListTile(
-            onTap: () {
-              showDatePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime.now(),
-                lastDate: DateTime.now(),
-              );
-            },
-            leading: Icon(
-              Icons.date_range,
-              color: Colors.black54,
-            ),
-            title: Text(
-              'Ngày hết hạn',
-              style: ptTitle(),
-            ),
-            trailing: Text('2/4/2020')),
+          onTap: () {
+            showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime.now(),
+              lastDate: DateTime.now(),
+            );
+          },
+          leading: Icon(
+            Icons.date_range,
+            color: Colors.black54,
+          ),
+          title: Text(
+            'Ngày hết hạn',
+            style: ptTitle(),
+          ),
+          trailing: Text('2/4/2020'),
+        ),
         Divider(
           height: 3,
         ),
