@@ -1,7 +1,9 @@
 import 'package:vnrealtor/modules/post/post_history_page.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/modules/profile/verify_account_page1.dart';
+import 'package:vnrealtor/modules/setting/about_page.dart';
 import 'package:vnrealtor/modules/setting/point_page.dart';
+import 'package:vnrealtor/modules/setting/policy_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class SettingPage extends StatefulWidget {
@@ -49,14 +51,14 @@ class _SettingPageState extends State<SettingPage> {
         "name": "Điều khoản & chính sách",
         "img": "assets/image/policy.png",
         "action": () {
-          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
+          PolicyPage.navigate();
         }
       },
       {
         "name": "Về chúng tôi",
         "img": "assets/image/logo.png",
         "action": () {
-          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
+          AboutPage.navigate();
         }
       },
       {

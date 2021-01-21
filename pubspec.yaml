@@ -50,6 +50,7 @@ dev_dependencies:
   image_picker: 0.6.2
   dotted_border: ^1.0.7
   flutter_launcher_icons: ^0.8.1
+  webview_flutter: ^1.0.7
 
   # firebase
   firebase_auth: ^0.20.0+1

@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
                 ],
                 theme: ThemeProvider.of(context),
                 navigatorKey: navigatorKey,
-                home: HomePage(),
+                home: SplashPage(),
               );
             }),
           ),

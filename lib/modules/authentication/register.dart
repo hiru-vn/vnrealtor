@@ -47,7 +47,7 @@ class RegisterPage extends StatelessWidget {
                       text: ' Điều kiện và điều khoản ',
                       style: TextStyle(color: Colors.red),
                     ),
-                    TextSpan(text: ' của VNRealtor'),
+                    TextSpan(text: 'của VNRealtor'),
                   ],
                 ),
               ),
