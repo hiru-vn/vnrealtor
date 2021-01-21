@@ -96,7 +96,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
       );
 
   _buildDatePickField(String hint, String value) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.symmetric(horizontal: 10),
         child: Material(
             elevation: 4,
             borderRadius: BorderRadius.circular(10),
@@ -106,10 +106,11 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               child: TextField(
                 onTap: () {
                   showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime.now());
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now(),
+                  );
                 },
                 readOnly: true,
                 decoration: InputDecoration(

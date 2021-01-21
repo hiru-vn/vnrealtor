@@ -1,22 +1,21 @@
-import 'package:vnrealtor/modules/profile/change_password_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
-class UpdateProfilePage extends StatefulWidget {
+class UpdatePasswordPage extends StatefulWidget {
   static Future navigate() {
     return navigatorKey.currentState.push(
-      pageBuilder(UpdateProfilePage()),
+      pageBuilder(UpdatePasswordPage()),
     );
   }
 
   @override
-  _UpdateProfilePageState createState() => _UpdateProfilePageState();
+  _UpdatePasswordPageState createState() => _UpdatePasswordPageState();
 }
 
-class _UpdateProfilePageState extends State<UpdateProfilePage> {
+class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar2('Cập nhật thông tin'),
+      appBar: AppBar2('Đổi mật khẩu'),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -32,18 +31,16 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               child: Column(
                 children: [
-                  _buildFormField(context, 'Tên người dùng'),
+                  _buildFormField(context, 'Mật khẩu hiện tại'),
                   SizedBox(height: 15),
-                  _buildFormField(context, 'Email'),
+                  _buildFormField(context, 'Mật khẩu mới'),
                   SizedBox(height: 15),
-                  _buildFormField(context, 'Số điện thoại'),
+                  _buildFormField(context, 'Nhập lại mật khẩu mới'),
                   SpacingBox(h: 3),
                   Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        RoundedBtn(
+                      padding: const EdgeInsets.all(15),
+                      child: Center(
+                        child: RoundedBtn(
                           height: 45,
                           text: 'Cập nhật',
                           onPressed: () async {
@@ -57,22 +54,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                             vertical: 8,
                           ),
                         ),
-                        RoundedBtn(
-                          height: 45,
-                          text: 'Đổi mật khẩu',
-                          onPressed: () async {
-                            UpdatePasswordPage.navigate();
-                          },
-                          width: 150,
-                          color: Colors.blue[300],
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 8,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                      )),
                   SizedBox(height: 10),
                 ],
               ),
