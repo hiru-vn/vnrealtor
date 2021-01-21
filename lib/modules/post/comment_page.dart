@@ -123,17 +123,26 @@ class _CommentPageState extends State<CommentPage>
                         list[index]['date'],
                         style: ptTiny(),
                       ),
+                      SizedBox(
+                        width: 50,
+                        child: Center(
+                          child: Text(
+                            'Trả lời',
+                            style: ptSmall(),
+                          ),
+                        ),
+                      ),
                       Spacer(),
                       GestureDetector(
                         child: Row(children: [
                           Icon(
-                            MdiIcons.heart,
-                            size: 18,
+                            MdiIcons.thumbUp,
+                            size: 17,
                             color: list[index]['isLike']
-                                ? Colors.red
+                                ? ptPrimaryColor(context)
                                 : Colors.grey[200],
                           ),
-                          SizedBox(width: 2),
+                          SizedBox(width: 4),
                           Text(
                             list[index]['likeCount'].toString(),
                             style: ptTiny(),
@@ -166,7 +175,7 @@ class _CommentPageState extends State<CommentPage>
                     suffixIcon: Icon(Icons.send),
                     contentPadding: EdgeInsets.all(10),
                     isDense: true,
-                    hintText: 'Write a comment.',
+                    hintText: 'Viết bình luận.',
                     border: OutlineInputBorder(
                       borderSide: const BorderSide(
                         color: Colors.black38,

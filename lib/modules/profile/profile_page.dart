@@ -1,10 +1,25 @@
 import 'package:vnrealtor/modules/post/post_widget.dart';
+import 'package:vnrealtor/modules/post/search_people_widget.dart';
 import 'package:vnrealtor/modules/profile/update_profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   static Future navigate() {
     return navigatorKey.currentState.push(pageBuilder(ProfilePage()));
+  }
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage>
+    with SingleTickerProviderStateMixin {
+  TabController _pageController;
+
+  @override
+  void initState() {
+    _pageController = TabController(length: 2, vsync: this);
+    super.initState();
   }
 
   @override
@@ -28,26 +43,66 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          ProfileCard(),
-          Padding(
-            padding: const EdgeInsets.all(15).copyWith(bottom: 0),
-            child: Text(
-              'Bài viết',
-              style: ptBigTitle(),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, value) {
+          return [
+            SliverToBoxAdapter(
+              child: ProfileCard(),
             ),
-          ),
-          ListView(
-            shrinkWrap: true,
+            SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      _pageController.animateTo(0);
+                      setState(() {});
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(15).copyWith(bottom: 0),
+                      child: Text(
+                        'Bài viết',
+                        style: ptBigTitle().copyWith(
+                            color: _pageController.index == 0
+                                ? Colors.black
+                                : Colors.black38),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      _pageController.animateTo(1);
+                      setState(() {});
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(15).copyWith(bottom: 0),
+                      child: Text(
+                        'Bạn bè',
+                        style: ptBigTitle().copyWith(
+                            color: _pageController.index == 1
+                                ? Colors.black
+                                : Colors.black38),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ];
+        },
+        body: Container(
+          child: TabBarView(
+            controller: _pageController,
             physics: NeverScrollableScrollPhysics(),
             children: [
-              PostWidget(),
-              PostWidget(),
-              PostWidget(),
+              ListView(
+                children: [PostWidget(), PostWidget(), PostWidget()],
+              ),
+              ListView(
+                children: [PeopleWidget(), PeopleWidget(), PeopleWidget()],
+              ),
             ],
-          )
-        ]),
+          ),
+        ),
       ),
     );
   }

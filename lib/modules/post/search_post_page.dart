@@ -106,10 +106,10 @@ class _SearchPostPageState extends State<SearchPostPage>
           ListView(
             padding: EdgeInsets.only(top: 5),
             children: [
-              SearchPeopleWidget(),
-              SearchPeopleWidget(),
-              SearchPeopleWidget(),
-              SearchPeopleWidget(),
+              PeopleWidget(),
+              PeopleWidget(),
+              PeopleWidget(),
+              PeopleWidget(),
             ],
           ),
           PostMap(),

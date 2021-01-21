@@ -1,7 +1,7 @@
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
-class SearchPeopleWidget extends StatelessWidget {
+class PeopleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(

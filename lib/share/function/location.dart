@@ -1,4 +1,5 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:vnrealtor/utils/spref.dart';
 
 /// Determine the current position of the device.
 ///
@@ -28,5 +29,8 @@ Future<Position> getDevicePosition() async {
     }
   }
 
-  return await Geolocator.getCurrentPosition();
+  final pos = await Geolocator.getCurrentPosition();
+  SPref.instance.setDouble('lat', pos.latitude);
+  SPref.instance.setDouble('long', pos.longitude);
+  return pos;
 }

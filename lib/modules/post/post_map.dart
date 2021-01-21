@@ -10,31 +10,47 @@ class PostMap extends StatefulWidget {
 
 class PostMapState extends State<PostMap> {
   Completer<GoogleMapController> _controller = Completer();
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+  CameraPosition _initPos = CameraPosition(
+    target: LatLng(16.04, 108.19),
+    zoom: 5,
   );
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  @override
+  void initState() {
+    super.initState();
+    _getInitPosPrefs();
+    getDevicePosition().then((value) async {
+      CameraPosition _curPos = CameraPosition(
+          bearing: 0,
+          target: LatLng(value.latitude, value.longitude),
+          tilt: 0,
+          zoom: 15);
+      final GoogleMapController controller = await _controller.future;
+      controller.animateCamera(CameraUpdate.newCameraPosition(_curPos));
+    });
+  }
+
+  _getInitPosPrefs() async {
+    final double lat = await SPref.instance.get('lat') as double;
+    final double long = await SPref.instance.get('long') as double;
+    if (lat != null && long != null) {
+      CameraPosition _lastSavedPos = CameraPosition(
+          bearing: 0, target: LatLng(lat, long), tilt: 0, zoom: 15);
+      final GoogleMapController controller = await _controller.future;
+      controller.moveCamera(
+        CameraUpdate.newCameraPosition(_lastSavedPos),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GoogleMap(
         mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
+        initialCameraPosition: _initPos,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
       );
-  }
-
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
   }
 }

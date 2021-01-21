@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vnrealtor/modules/post/pick_coordinates.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class CreatePostPage extends StatefulWidget {
@@ -120,7 +121,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
           highlightColor: ptAccentColor(context),
           splashColor: ptPrimaryColor(context),
           onTap: () {
-            // PickMyPetListpage.navigate();
+            PickCoordinates.navigate();
           },
           child: CustomListTile(
             leading: Icon(

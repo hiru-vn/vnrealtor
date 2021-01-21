@@ -50,7 +50,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                             await navigatorKey.currentState.maybePop();
                             await navigatorKey.currentState.maybePop();
                           },
-                          width: 150,
+                          width: 140,
                           color: ptPrimaryColor(context),
                           padding: EdgeInsets.symmetric(
                             horizontal: 15,
@@ -63,7 +63,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                           onPressed: () async {
                             UpdatePasswordPage.navigate();
                           },
-                          width: 150,
+                          width: 140,
                           color: Colors.blue[300],
                           padding: EdgeInsets.symmetric(
                             horizontal: 15,
