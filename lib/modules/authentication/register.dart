@@ -23,11 +23,13 @@ class RegisterPage extends StatelessWidget {
                   child: Image.asset('assets/image/logo_full.png'))),
           SpacingBox(h: 3),
           _buildFormField(context, 'Tên người dùng'),
-          SpacingBox(h: 2.5),
+          SpacingBox(h: 2),
+          _buildFormField(context, 'Email'),
+          SpacingBox(h: 2),
           _buildFormField(context, 'Số điện thoại'),
-          SpacingBox(h: 2.5),
+          SpacingBox(h: 2),
           _buildFormField(context, 'Mật khẩu'),
-          SpacingBox(h: 2.5),
+          SpacingBox(h: 2),
           _buildFormField(context, 'Nhập lại mật khẩu'),
           SpacingBox(h: 4),
           Padding(
@@ -75,15 +77,16 @@ class RegisterPage extends StatelessWidget {
   _buildFormField(BuildContext context, String text) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3),
-                color: ptBackgroundColor(context)),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 25),
-              child: TextField(
-                decoration:
-                    InputDecoration(border: InputBorder.none, hintText: text),
-              ),
-            )),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3),
+              color: ptBackgroundColor(context)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 25),
+            child: TextField(
+              decoration:
+                  InputDecoration(border: InputBorder.none, hintText: text),
+            ),
+          ),
+        ),
       );
 }

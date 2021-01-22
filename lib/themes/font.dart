@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 TextStyle ptHeadLine() => TextStyle(
-    fontSize: 34,
+    fontSize: 39,
     fontWeight: FontWeight.w600,
     color: Colors.black87,
     letterSpacing: 1.5);
