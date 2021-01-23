@@ -12,6 +12,36 @@ enum AuthStatus {
   otpSent,
   authSucces,
   authFail,
+  requestOtp,
+  successOtp,
+}
+
+class AuthResponse {
+  AuthStatus status;
+  bool isSuccess;
+  String errMessage;
+
+  AuthResponse({this.errMessage, this.isSuccess = false, this.status});
+
+  factory AuthResponse.success() {
+    return AuthResponse(isSuccess: true, status: AuthStatus.authSucces);
+  }
+  factory AuthResponse.fail(String err) {
+    return AuthResponse(
+        errMessage: err, isSuccess: false, status: AuthStatus.authFail);
+  }
+  factory AuthResponse.otpSent() {
+    return AuthResponse(isSuccess: true, status: AuthStatus.otpSent);
+  }
+  factory AuthResponse.unAuthed() {
+    return AuthResponse(isSuccess: false, status: AuthStatus.unAuthed);
+  }
+  factory AuthResponse.requestOtp() {
+    return AuthResponse(isSuccess: true, status: AuthStatus.requestOtp);
+  }
+  factory AuthResponse.successOtp() {
+    return AuthResponse(isSuccess: true, status: AuthStatus.successOtp);
+  }
 }
 
 class AuthBloc extends ChangeNotifier {
@@ -29,10 +59,10 @@ class AuthBloc extends ChangeNotifier {
   Sink<bool> get countdownStartSink => _countdownStart$.sink;
   bool get countdownStartValue => _countdownStart$.value;
 
-  final _authStatus$ = BehaviorSubject<AuthStatus>();
-  Stream<AuthStatus> get authStatusStream => _authStatus$.stream;
-  Sink<AuthStatus> get authStatusSink => _authStatus$.sink;
-  AuthStatus get authStatusValue => _authStatus$.value;
+  final _authStatus$ = BehaviorSubject<AuthResponse>();
+  Stream<AuthResponse> get authStatusStream => _authStatus$.stream;
+  Sink<AuthResponse> get authStatusSink => _authStatus$.sink;
+  AuthResponse get authStatusValue => _authStatus$.value;
 
   String smsVerifyCode;
 
@@ -85,6 +115,7 @@ class AuthBloc extends ChangeNotifier {
     try {
       final String phoneNumber = (phone.startsWith('+') ? "+" : "+84") +
           phone.toString().substring(1, 10);
+      authStatusSink.add(AuthResponse.requestOtp());
       _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         timeout: const Duration(seconds: 60),
@@ -92,27 +123,26 @@ class AuthBloc extends ChangeNotifier {
           final res = await registerWithPhoneAuth(
               authCredential, name, email, password, phone);
           if (res.isSuccess) {
-            authStatusSink.add(AuthStatus.authSucces);
+            authStatusSink.add(AuthResponse.success());
           } else {
-            authStatusSink.add(AuthStatus.authFail);
+            authStatusSink.add(AuthResponse.fail(res.errMessage));
           }
         },
         verificationFailed: (e) {
-          authStatusSink.add(AuthStatus.authFail);
-          showToastNoContext(Formart.formatErrFirebaseLoginToString(e.code));
+          authStatusSink.add(AuthResponse.fail(
+              Formart.formatErrFirebaseLoginToString(e.code)));
         },
         codeSent: (verificationId, [code]) {
           countdownStartSink.add(true);
-          authStatusSink.add(AuthStatus.otpSent);
+          authStatusSink.add(AuthResponse.otpSent());
           smsVerifyCode = verificationId;
-          // showToastNoContext('Mã OTP đã được gửi đi, vui lòng kiểm tra tin nhắn');
         },
         codeAutoRetrievalTimeout: (verificationId) {
           smsVerifyCode = verificationId;
         },
       );
     } catch (e) {
-      authStatusSink.add(AuthStatus.authFail);
+      authStatusSink.add(AuthResponse.fail(e.message?.toString()));
     }
   }
 
@@ -121,15 +151,16 @@ class AuthBloc extends ChangeNotifier {
     try {
       authCredential = PhoneAuthProvider.credential(
           verificationId: smsVerifyCode, smsCode: otp);
+      authStatusSink.add(AuthResponse.successOtp());
       final res = await registerWithPhoneAuth(
           authCredential, name, email, password, phone);
       if (res.isSuccess) {
-        authStatusSink.add(AuthStatus.authSucces);
+        authStatusSink.add(AuthResponse.success());
       } else {
-        showToastNoContext('Người dùng không tồn tại.');
+        authStatusSink.add(AuthResponse.fail(res.errMessage));
       }
     } catch (e) {
-      showToastNoContext('Có mỗi xảy ra, vui lòng kiểm tra kết nối mạng.');
+      authStatusSink.add(AuthResponse.fail(e.message?.toString()));
     }
   }
 

@@ -77,7 +77,7 @@ class Formart {
       case "ERROR_WRONG_PASSWORD":
         message = "Sai mật khẩu, vui lòng nhập lại";
         break;
-      case "ERROR_TOO_MANY_REQUESTS":
+      case "too-many-requests":
         message = "Quá giới hạn số lần đăng nhập, xin hãy thử lại sau vài phút";
         break;
       default:

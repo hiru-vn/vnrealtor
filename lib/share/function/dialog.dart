@@ -1,5 +1,3 @@
-
-
 import 'package:vnrealtor/share/import.dart';
 
 enum DialogAction {
@@ -92,8 +90,7 @@ Future<bool> showAlertDialog(BuildContext context, String errorMessage,
           actions: <Widget>[
             if (showClose)
               FlatButton(
-                  child: Text('Close',
-                      style: TextStyle(color: primaryColor)),
+                  child: Text('Close', style: TextStyle(color: primaryColor)),
                   onPressed: () => navigatorKey.currentState.pop()),
             FlatButton(
                 child: Text(confirmLabel != null ? confirmLabel : 'Ok',
@@ -199,4 +196,32 @@ showUndoneFeature(BuildContext context, List<String> features) {
   showAlertDialog(context,
       'Tính năng:\n${features.map<String>((e) => " - " + e.toString() + "\n").toList().join()} chưa được phát triển',
       navigatorKey: navigatorKey);
+}
+
+showSimpleLoadingDialog(BuildContext context) {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return Center(
+          child: Material(
+            child: Container(
+              width: deviceWidth(context) / 1.4,
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  kLoadingSpinner,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    'Vui lòng chờ giây lát',
+                    style: ptBigBody(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      });
 }

@@ -14,11 +14,12 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  TextEditingController _nameC = TextEditingController();
-  TextEditingController _emailC = TextEditingController();
-  TextEditingController _phoneC = TextEditingController();
-  TextEditingController _passC = TextEditingController();
-  TextEditingController _repassC = TextEditingController();
+  TextEditingController _nameC = TextEditingController(text: 'huy nguyen');
+  TextEditingController _emailC = TextEditingController(text: 'huy@gmail.com');
+  TextEditingController _phoneC = TextEditingController(text: '0987654321');
+  TextEditingController _passC = TextEditingController(text: '123123');
+  TextEditingController _repassC = TextEditingController(text: '123123');
+  TextEditingController _otpC = TextEditingController(text: '123123');
   AuthBloc _authBloc;
   StreamSubscription listener;
 
@@ -26,18 +27,22 @@ class _RegisterPageState extends State<RegisterPage> {
   void didChangeDependencies() {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
-      listener = _authBloc.authStatusStream.listen((event) {
-        if (event == AuthStatus.authFail) {
-          showToast('Đăng kí thất bại, vui lòng thử lại', context);
+      listener = _authBloc.authStatusStream.listen((event) async {
+        if (event.status == AuthStatus.authFail) {
+          showToast(event.errMessage, context);
         }
-        if (event == AuthStatus.authSucces) {
-          showToast('Đăng kí thất bại, vui lòng thử lại', context);
-        }
-        if (event == AuthStatus.otpSent) {
-          showToast('Mã otp đã được gửi', context);
-        }
-        if (event == AuthStatus.authSucces) {
+        if (event.status == AuthStatus.authSucces) {
           HomePage.navigate();
+        }
+        if (event.status == AuthStatus.otpSent) {
+          await navigatorKey.currentState.maybePop();
+          showDialog(
+              useRootNavigator: true,
+              context: context,
+              builder: (context) => _buildOtpDialog());
+        }
+        if (event.status == AuthStatus.requestOtp) {
+          showSimpleLoadingDialog(context);
         }
       });
     }
@@ -47,11 +52,17 @@ class _RegisterPageState extends State<RegisterPage> {
   dispose() {
     super.dispose();
     listener.cancel();
+    _authBloc.authStatusSink.add(AuthResponse.unAuthed());
   }
 
   _submit() {
     _authBloc.requestOtp(_nameC.text, _emailC.text, _passC.text, _phoneC.text);
     // HomePage.navigate();
+  }
+
+  _codeSubmit() {
+    _authBloc.submitOtp(
+        _nameC.text, _emailC.text, _passC.text, _phoneC.text, _otpC.text);
   }
 
   @override
@@ -116,6 +127,71 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ]),
+      ),
+    );
+  }
+
+  _buildOtpDialog() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.only(bottom: Responsive.heightMultiplier * 10),
+        child: Material(
+          child: Container(
+            width: deviceWidth(context) / 1.4,
+            padding: EdgeInsets.only(top: 20, bottom: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    'Nhập OTP chúng tôi gửi qua tin nhắn cho bạn',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SpacingBox(h: 2),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3),
+                        color: ptBackgroundColor(context)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: TextField(
+                        maxLength: 6,
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        onChanged: (str) {
+                          if (str.length == 6) {
+                            _codeSubmit();
+                          }
+                        },
+                        style: ptBigTitle().copyWith(letterSpacing: 10),
+                        controller: _otpC,
+                        decoration: InputDecoration(
+                            counterText: "",
+                            border: InputBorder.none,
+                            hintText: ''),
+                      ),
+                    ),
+                  ),
+                ),
+                StreamBuilder(
+                    stream: _authBloc.authStatusStream,
+                    builder: (context, snap) {
+                      if (snap.hasData &&
+                          (snap.data as AuthResponse).status ==
+                              AuthStatus.successOtp) return Padding(
+                                padding: const EdgeInsets.only(top: 15),
+                                child: kLoadingSpinner,
+                              );
+                      return SizedBox.shrink();
+                    })
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
