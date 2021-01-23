@@ -2,9 +2,11 @@ import 'package:vnrealtor/modules/authentication/register.dart';
 import 'package:vnrealtor/modules/home_page.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/share/widget/appbar.dart';
+import 'package:vnrealtor/utils/device_info.dart';
 
 class LoginPage extends StatelessWidget {
   static Future navigate() {
+    DeviceInfo.instance.getDeviceId().then((value) => print('dvid: ' + value));
     return navigatorKey.currentState.pushReplacement(pageBuilder(LoginPage()));
   }
 
@@ -60,8 +62,7 @@ class LoginPage extends StatelessWidget {
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
                   child: TextField(
                     decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Tên đăng nhập hoặc SĐT'),
+                        border: InputBorder.none, hintText: 'Email hoặc SĐT'),
                   ),
                 )),
           ),

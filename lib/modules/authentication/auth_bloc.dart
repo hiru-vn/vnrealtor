@@ -4,6 +4,7 @@ import 'package:vnrealtor/modules/repo/user_repo.dart';
 import 'package:vnrealtor/modules/services/base_response.dart';
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
+import 'package:vnrealtor/modules/services/firebase_service.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/utils/formart.dart';
 
@@ -154,6 +155,7 @@ class AuthBloc extends ChangeNotifier {
       authStatusSink.add(AuthResponse.successOtp());
       final res = await registerWithPhoneAuth(
           authCredential, name, email, password, phone);
+      print(await FirebaseService.instance.getDeviceToken());
       if (res.isSuccess) {
         authStatusSink.add(AuthResponse.success());
       } else {
