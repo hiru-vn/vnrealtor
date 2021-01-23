@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry/sentry.dart';
+import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/authentication/splash.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/themes/lightTheme.dart';
@@ -50,21 +51,28 @@ class MyApp extends StatelessWidget {
           child: ThemeProvider(
             initTheme: lightTheme,
             child: Builder(builder: (context) {
-              return MaterialApp(
-                debugShowCheckedModeBanner: false,
-                localizationsDelegates: [
-                  const AppInternalizationlegate(),
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
+              return MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(
+                    create: (context) => AuthBloc.instance,
+                  ),
                 ],
-                supportedLocales: [
-                  Locale('en', 'US'),
-                  Locale('vi', 'VN'),
-                ],
-                theme: ThemeProvider.of(context),
-                navigatorKey: navigatorKey,
-                home: SplashPage(),
+                child: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  localizationsDelegates: [
+                    const AppInternalizationlegate(),
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: [
+                    Locale('en', 'US'),
+                    Locale('vi', 'VN'),
+                  ],
+                  theme: ThemeProvider.of(context),
+                  navigatorKey: navigatorKey,
+                  home: SplashPage(),
+                ),
               );
             }),
           ),

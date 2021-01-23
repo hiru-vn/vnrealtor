@@ -51,6 +51,11 @@ dev_dependencies:
   dotted_border: ^1.0.7
   flutter_launcher_icons: ^0.8.1
   webview_flutter: ^1.0.7
+  provider: ^4.3.2+3
+  graphql: ^3.0.2
+  toast: ^0.1.5
+  fluttertoast: ^7.1.5
+  rxdart: ^0.24.1
 
   # firebase
   firebase_auth: ^0.20.0+1
