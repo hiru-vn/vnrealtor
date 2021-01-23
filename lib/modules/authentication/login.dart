@@ -1,13 +1,42 @@
+import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/authentication/register.dart';
 import 'package:vnrealtor/modules/home_page.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/share/widget/appbar.dart';
-import 'package:vnrealtor/utils/device_info.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   static Future navigate() {
-    DeviceInfo.instance.getDeviceId().then((value) => print('dvid: ' + value));
     return navigatorKey.currentState.pushReplacement(pageBuilder(LoginPage()));
+  }
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  AuthBloc _authBloc;
+  TextEditingController _nameC = TextEditingController(text: '0123123123');
+  TextEditingController _passC = TextEditingController(text: '123123');
+
+  @override
+  void didChangeDependencies() {
+    if (_authBloc == null) {
+      _authBloc = Provider.of<AuthBloc>(context);
+    }
+    super.didChangeDependencies();
+  }
+
+  _submit() async {
+    showSimpleLoadingDialog(context);
+    try {
+      final res = await _authBloc.signIn(_nameC.text, _passC.text);
+      if (res.isSuccess)
+        HomePage.navigate();
+      else
+        showToast(res.errMessage, context);
+    } catch (e) {} finally {
+      navigatorKey.currentState.maybePop();
+    }
   }
 
   @override
@@ -61,6 +90,7 @@ class LoginPage extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
                   child: TextField(
+                    controller: _nameC,
                     decoration: InputDecoration(
                         border: InputBorder.none, hintText: 'Email hoặc SĐT'),
                   ),
@@ -76,13 +106,14 @@ class LoginPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25)
                     .copyWith(right: 10),
                 child: TextField(
+                    controller: _passC,
                     decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Mật khẩu',
-                  suffixIcon: Icon(
-                    Icons.remove_red_eye_outlined,
-                  ),
-                )),
+                      border: InputBorder.none,
+                      hintText: 'Mật khẩu',
+                      suffixIcon: Icon(
+                        Icons.remove_red_eye_outlined,
+                      ),
+                    )),
               ),
             ),
           ),
@@ -104,9 +135,7 @@ class LoginPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ExpandBtn(
                   text: 'Đăng nhập',
-                  onPress: () {
-                    HomePage.navigate();
-                  },
+                  onPress: _submit,
                 ),
               ),
             ),

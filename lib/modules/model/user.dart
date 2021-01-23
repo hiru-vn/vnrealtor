@@ -4,11 +4,9 @@ class UserModel {
   String name;
   String email;
   String phone;
-  String avatar;
-  String description;
-  String nickName;
-  String backgroundimage;
-  List<String> follows;
+  String role;
+  int reputationScore;
+  List<String> friendShipId;
   String createdAt;
   String updatedAt;
 
@@ -18,11 +16,9 @@ class UserModel {
       this.name,
       this.email,
       this.phone,
-      this.avatar,
-      this.description,
-      this.nickName,
-      this.backgroundimage,
-      this.follows,
+      this.role,
+      this.reputationScore,
+      this.friendShipId,
       this.createdAt,
       this.updatedAt});
 
@@ -32,11 +28,9 @@ class UserModel {
     name = json['name'];
     email = json['email'];
     phone = json['phone'];
-    avatar = json['avatar'];
-    description = json['description'];
-    nickName = json['nickName'];
-    backgroundimage = json['backgroundimage'];
-    follows = json['follows'].cast<String>();
+    role = json['role'];
+    reputationScore = json['reputationScore'];
+    friendShipId = json['friendShipId'].cast<String>();
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
   }
@@ -48,11 +42,9 @@ class UserModel {
     data['name'] = this.name;
     data['email'] = this.email;
     data['phone'] = this.phone;
-    data['avatar'] = this.avatar;
-    data['description'] = this.description;
-    data['nickName'] = this.nickName;
-    data['backgroundimage'] = this.backgroundimage;
-    data['follows'] = this.follows;
+    data['role'] = this.role;
+    data['reputationScore'] = this.reputationScore;
+    data['friendShipId'] = this.friendShipId;
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
     return data;

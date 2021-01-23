@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:vnrealtor/modules/services/firebase_service.dart';
 import 'package:vnrealtor/share/import.dart';
+import 'package:vnrealtor/utils/device_info.dart';
 import 'package:vnrealtor/utils/formart.dart';
 
 enum AuthStatus {
@@ -75,14 +76,19 @@ class AuthBloc extends ChangeNotifier {
   }
 
   //Sign in with email & password
-  Future<BaseResponse> signInWithEmailAndPassword(
-      String email, String password) async {
+  Future<BaseResponse> signIn(String name, String password) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      User user = result.user;
-      String fbToken = await user.getIdToken();
-      final res = await _userRepo.login(idToken: fbToken);
+      if (Validator.isPhone(name)) {
+        name = (name.startsWith('+') ? "+" : "+84") +
+            name.toString().substring(1, 10);
+      }
+      final deviceId = await DeviceInfo.instance.getDeviceId();
+      final deviceToken = await FirebaseService.instance.getDeviceToken();
+      final res = await _userRepo.login(
+          userName: name,
+          password: password,
+          deviceId: deviceId,
+          deviceToken: deviceToken);
       await SPref.instance.set('token', res['token']);
       await SPref.instance.set('id', res['user']["id"]);
       userModel = UserModel.fromJson(res['user']);

@@ -21,14 +21,17 @@ idToken: "$idToken"
     return res['registerWithPhone'];
   }
 
-  Future login({String idToken}) async {
+  Future login({String userName, String password, String deviceId, String deviceToken}) async {
     final res = await UserSrv().mutate(
-        'loginEmail',
+        'loginUser',
         '''
-idToken: "$idToken"
+    username: "$userName"
+    password: "$password"
+  	deviceId: "$deviceToken"
+    deviceToken: "$deviceToken"
     ''',
-        fragment: 'token user { id uid name email phone avatar}');
-    return res['loginEmail'];
+        fragment: 'token user { id uid name email phone role reputationScore friendShipId createdAt updatedAt}');
+    return res['loginUser'];
   }
 
   Future getOneUser({String id}) async {
