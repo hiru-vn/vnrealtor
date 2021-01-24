@@ -28,8 +28,8 @@ class Formart {
         time.year == now.year) {
       DateFormat format = DateFormat("hh:mm a");
       return format.format(time);
-    }
-    else return timeAgo(time);
+    } else
+      return timeAgo(time);
   }
 
   static double toFixedDouble(double value, int digit) {
@@ -59,6 +59,9 @@ class Formart {
   static String formatErrFirebaseLoginToString(String err) {
     String message = "";
     switch (err) {
+      case "missing-client-identifier":
+        message = "Thiếu mã SHA-1 trên thiết bị";
+        break;
       case "ERROR_ARGUMENT_ERROR":
         message = "Vui lòng nhập đầy đủ dữ liệu";
         break;

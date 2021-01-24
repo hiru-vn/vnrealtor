@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:vnrealtor/modules/authentication/login.dart';
+import 'package:vnrealtor/modules/home_page.dart';
 import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/repo/user_repo.dart';
 import 'package:vnrealtor/modules/services/base_response.dart';
@@ -94,7 +96,7 @@ class AuthBloc extends ChangeNotifier {
       userModel = UserModel.fromJson(res['user']);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e?.toString());
     }
   }
 
@@ -111,9 +113,12 @@ class AuthBloc extends ChangeNotifier {
           password: password,
           phone: phone,
           idToken: fbToken);
-      return BaseResponse.success(loginRes.data);
+      await SPref.instance.set('token', loginRes['token']);
+      await SPref.instance.set('id', loginRes['user']["id"]);
+      userModel = UserModel.fromJson(loginRes['user']);
+      return BaseResponse.success(loginRes);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e?.toString());
     }
   }
 
@@ -161,14 +166,13 @@ class AuthBloc extends ChangeNotifier {
       authStatusSink.add(AuthResponse.successOtp());
       final res = await registerWithPhoneAuth(
           authCredential, name, email, password, phone);
-      print(await FirebaseService.instance.getDeviceToken());
       if (res.isSuccess) {
         authStatusSink.add(AuthResponse.success());
       } else {
         authStatusSink.add(AuthResponse.fail(res.errMessage));
       }
     } catch (e) {
-      authStatusSink.add(AuthResponse.fail(e.message?.toString()));
+      authStatusSink.add(AuthResponse.fail(e?.toString()));
     }
   }
 
@@ -179,7 +183,7 @@ class AuthBloc extends ChangeNotifier {
       userModel = UserModel.fromJson(res);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e?.toString());
     }
   }
 
@@ -193,5 +197,7 @@ class AuthBloc extends ChangeNotifier {
     await SPref.instance.remove('token');
     await SPref.instance.remove('id');
     print('User Sign Out');
+    navigatorKey.currentState
+        .pushAndRemoveUntil(pageBuilder(LoginPage()), (route) => false);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/post/post_history_page.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/modules/profile/verify_account_page1.dart';
@@ -250,7 +251,7 @@ class _SettingPageState extends State<SettingPage> {
                   text: 'Logout',
                   borderRadius: 5,
                   onPress: () {
-                    // WelcomePage.navigate();
+                    AuthBloc.instance.logout();
                   },
                   color: ptGreyColor(context).withOpacity(0.6),
                   height: 45,

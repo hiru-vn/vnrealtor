@@ -62,3 +62,26 @@ class Validator {
     return regexPin.hasMatch(pin);
   }
 }
+
+
+class TextFieldValidator {
+  static String notEmptyValidator(String string) {
+    if (string.trim().isEmpty) return 'Please fill in';
+    return null;
+  }
+
+  static String emailValidator(String string) {
+    if (!Validator.isEmail(string)) return 'Email not valid';
+    return null;
+  }
+
+  static String phoneValidator(String string) {
+    if (!Validator.isPhone(string)) return 'Phone not valid';
+    return null;
+  }
+
+  static String passValidator(String string) {
+    if (string.length < 6) return 'Need more than 6 character';
+    return null;
+  }
+}

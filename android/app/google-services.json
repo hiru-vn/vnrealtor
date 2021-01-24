@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "259055496489-1lhigk4nlo5ujupe7grq88up3itunm7j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rexbix.app.vnrealtor",
+            "certificate_hash": "29c5572815790610174102fa577c525343d98c0a"
+          }
+        },
+        {
           "client_id": "259055496489-bp6t2sl3dik1mntjmdjlgcdetvspt6hc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

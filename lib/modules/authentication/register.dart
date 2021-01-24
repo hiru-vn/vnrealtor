@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/home_page.dart';
+import 'package:vnrealtor/modules/setting/policy_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -19,9 +20,10 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _phoneC = TextEditingController(text: '0987654321');
   TextEditingController _passC = TextEditingController(text: '123123');
   TextEditingController _repassC = TextEditingController(text: '123123');
-  TextEditingController _otpC = TextEditingController(text: '123123');
+  TextEditingController _otpC = TextEditingController(text: '');
   AuthBloc _authBloc;
   StreamSubscription listener;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
@@ -30,6 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
       listener = _authBloc.authStatusStream.listen((event) async {
         if (event.status == AuthStatus.authFail) {
           showToast(event.errMessage, context);
+          navigatorKey.currentState.maybePop();
         }
         if (event.status == AuthStatus.authSucces) {
           HomePage.navigate();
@@ -56,6 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   _submit() {
+    if (!_formKey.currentState.validate()) return;
     _authBloc.requestOtp(_nameC.text, _emailC.text, _passC.text, _phoneC.text);
     // HomePage.navigate();
   }
@@ -63,6 +67,7 @@ class _RegisterPageState extends State<RegisterPage> {
   _codeSubmit() {
     _authBloc.submitOtp(
         _nameC.text, _emailC.text, _passC.text, _phoneC.text, _otpC.text);
+    _otpC.clear();
   }
 
   @override
@@ -74,59 +79,85 @@ class _RegisterPageState extends State<RegisterPage> {
         automaticallyImplyLeading: true,
       ),
       body: SingleChildScrollView(
-        child: Column(children: [
-          SpacingBox(h: 1.5),
-          Center(
-              child: SizedBox(
-                  width: deviceWidth(context) / 2,
-                  child: Image.asset('assets/image/logo_full.png'))),
-          SpacingBox(h: 3),
-          _buildFormField(context, 'Tên người dùng', _nameC),
-          SpacingBox(h: 2),
-          _buildFormField(context, 'Email', _emailC),
-          SpacingBox(h: 2),
-          _buildFormField(context, 'Số điện thoại', _phoneC),
-          SpacingBox(h: 2),
-          _buildFormField(context, 'Mật khẩu', _passC),
-          SpacingBox(h: 2),
-          _buildFormField(context, 'Nhập lại mật khẩu', _repassC),
-          SpacingBox(h: 4),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30),
-            child: GestureDetector(
-              onTap: () {},
-              child: RichText(
-                maxLines: null,
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: ptTitle(),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'Bằng việc đăng kí tài khoản, bạn đồng ý với',
-                    ),
-                    TextSpan(
-                      text: ' Điều kiện và điều khoản ',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    TextSpan(text: 'của VNRealtor'),
-                  ],
+        child: Form(
+          key: _formKey,
+          child: Column(children: [
+            SpacingBox(h: 1.5),
+            Center(
+                child: SizedBox(
+                    width: deviceWidth(context) / 2,
+                    child: Image.asset('assets/image/logo_full.png'))),
+            SpacingBox(h: 3),
+            _buildFormField(context, 'Tên người dùng', _nameC,
+                validator: TextFieldValidator.notEmptyValidator),
+            SpacingBox(h: 2),
+            _buildFormField(
+              context,
+              'Email',
+              _emailC,
+              validator: TextFieldValidator.emailValidator,
+            ),
+            SpacingBox(h: 2),
+            _buildFormField(context, 'Số điện thoại', _phoneC,
+                validator: TextFieldValidator.phoneValidator),
+            SpacingBox(h: 2),
+            _buildFormField(
+              context,
+              'Mật khẩu',
+              _passC,
+              validator: TextFieldValidator.passValidator,
+              obscureText: true,
+            ),
+            SpacingBox(h: 2),
+            _buildFormField(
+              context,
+              'Nhập lại mật khẩu',
+              _repassC,
+              validator: (str) {
+                if (str != _passC.text) return 'Mật khẩu không trùng khớp';
+              },
+              obscureText: true,
+            ),
+            SpacingBox(h: 4),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              child: GestureDetector(
+                onTap: () {
+                  PolicyPage.navigate();
+                },
+                child: RichText(
+                  maxLines: null,
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: ptTitle(),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Bằng việc đăng kí tài khoản, bạn đồng ý với',
+                      ),
+                      TextSpan(
+                        text: ' Điều kiện và điều khoản ',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      TextSpan(text: 'của VNRealtor'),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          SizedBox(
-            height: Responsive.heightMultiplier * 15,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ExpandBtn(
-                  text: 'Đăng kí',
-                  onPress: _submit,
+            SizedBox(
+              height: Responsive.heightMultiplier * 15,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: ExpandBtn(
+                    text: 'Đăng kí',
+                    onPress: _submit,
+                  ),
                 ),
               ),
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
     );
   }
@@ -182,10 +213,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     builder: (context, snap) {
                       if (snap.hasData &&
                           (snap.data as AuthResponse).status ==
-                              AuthStatus.successOtp) return Padding(
-                                padding: const EdgeInsets.only(top: 15),
-                                child: kLoadingSpinner,
-                              );
+                              AuthStatus.successOtp)
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 15),
+                          child: kLoadingSpinner,
+                        );
                       return SizedBox.shrink();
                     })
               ],
@@ -196,8 +228,13 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  _buildFormField(BuildContext context, String text,
-          TextEditingController controller) =>
+  _buildFormField(
+    BuildContext context,
+    String text,
+    TextEditingController controller, {
+    Function(String) validator,
+    bool obscureText = false,
+  }) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Container(
@@ -206,8 +243,13 @@ class _RegisterPageState extends State<RegisterPage> {
               color: ptBackgroundColor(context)),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 25),
-            child: TextField(
+            child: TextFormField(
+              obscureText: obscureText,
               controller: controller,
+              validator: validator ??
+                  (str) {
+                    return null;
+                  },
               decoration:
                   InputDecoration(border: InputBorder.none, hintText: text),
             ),
