@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry/sentry.dart';
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/authentication/splash.dart';
+import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/themes/lightTheme.dart';
@@ -61,6 +62,9 @@ class MyApp extends StatelessWidget {
                   ),
                   ChangeNotifierProvider(
                     create: (context) => UserBloc.instance,
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => PostBloc.instance,
                   ),
                 ],
                 child: MaterialApp(

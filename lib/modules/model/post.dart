@@ -57,7 +57,7 @@ class PostModel {
     expirationDate = json['expirationDate'];
     point = json['point'] ?? 0;
     publicity = json['publicity'];
-    user = json['user'];
+    user = UserModel.fromJson(json['user']);
     if (json['mediaPosts'] != null) {
       mediaPosts = new List<MediaPost>();
       json['mediaPosts'].forEach((v) {

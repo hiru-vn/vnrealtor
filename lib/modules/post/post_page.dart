@@ -1,4 +1,5 @@
 import 'package:flutter/rendering.dart';
+import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/post/create_post_page.dart';
 import 'package:vnrealtor/modules/post/search_post_page.dart';
 import 'package:vnrealtor/share/import.dart';
@@ -12,12 +13,21 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   bool showAppBar = true;
+  PostBloc _postBloc;
   ScrollController _controller = ScrollController();
 
   @override
   void initState() {
     _controller.addListener(appBarControll);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_postBloc == null) {
+      _postBloc = Provider.of(context);
+    }
+    super.didChangeDependencies();
   }
 
   @override
