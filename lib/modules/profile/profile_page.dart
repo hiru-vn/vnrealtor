@@ -1,4 +1,6 @@
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
+import 'package:vnrealtor/modules/bloc/user_bloc.dart';
+import 'package:vnrealtor/modules/model/friendship.dart';
 import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/post/post_widget.dart';
 import 'package:vnrealtor/modules/post/people_widget.dart';
@@ -27,6 +29,7 @@ class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   TabController _pageController;
   AuthBloc _authBloc;
+  UserBloc _userBloc;
   bool isOtherUserProfile;
 
   @override
@@ -39,6 +42,7 @@ class _ProfilePageState extends State<ProfilePage>
   void didChangeDependencies() {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
+      _userBloc = Provider.of<UserBloc>(context);
     }
     if (widget.user == null || widget.user.id == _authBloc.userModel.id) {
       isOtherUserProfile = false;
@@ -49,30 +53,28 @@ class _ProfilePageState extends State<ProfilePage>
     super.didChangeDependencies();
   }
 
-  // Future _getRelationShip() async {
-  //   if ()
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
       appBar: AppBar2(
         isOtherUserProfile ? 'Thông tin người dùng' : 'Thông tin cá nhân',
-        actions: [
-          GestureDetector(
-            onTap: () {
-              UpdateProfilePage.navigate();
-            },
-            child: SizedBox(
-              width: 40,
-              child: Icon(
-                Icons.settings,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
+        // actions: (!isOtherUserProfile)
+        //     ? [
+        //         GestureDetector(
+        //           onTap: () {
+        //             // UpdateProfilePage.navigate();
+        //           },
+        //           child: SizedBox(
+        //             width: 40,
+        //             child: Icon(
+        //               Icons.settings,
+        //               color: Colors.white,
+        //             ),
+        //           ),
+        //         ),
+        //       ]
+        //     : null,
       ),
       body: NestedScrollView(
         headerSliverBuilder: (context, value) {
@@ -140,10 +142,130 @@ class _ProfilePageState extends State<ProfilePage>
   }
 }
 
-class ProfileCard extends StatelessWidget {
+class ProfileCard extends StatefulWidget {
   final UserModel user;
 
   const ProfileCard({Key key, this.user}) : super(key: key);
+
+  @override
+  _ProfileCardState createState() => _ProfileCardState();
+}
+
+class _ProfileCardState extends State<ProfileCard> {
+  UserBloc _userBloc;
+  FriendshipModel friendshipModel;
+
+  @override
+  void didChangeDependencies() {
+    if (_userBloc == null) {
+      _userBloc = Provider.of<UserBloc>(context);
+      _getFriendShip();
+    }
+    super.didChangeDependencies();
+  }
+
+  _addFriend() async {
+    if (friendshipModel == null)
+      friendshipModel = FriendshipModel(
+          user1Id: AuthBloc.instance.userModel.id,
+          user2Id: widget.user.id,
+          status: FriendShipStatus.PENDING);
+    setState(() {
+      friendshipModel.status = FriendShipStatus.PENDING;
+    });
+    final res = await _userBloc.sendFriendInvite(widget.user.id);
+    if (res.isSuccess)
+      showToast('Đã gửi lời mời kết bạn', context, isSuccess: true);
+    else
+      showToast(res.errMessage, context);
+  }
+
+  Future _getFriendShip() async {
+    if (widget.user.id == AuthBloc.instance.userModel.id) return;
+    final res = await _userBloc.getMyFriendShipWith(widget.user.id);
+    if (res.isSuccess) {
+      setState(() {
+        friendshipModel = res.data;
+      });
+    } else {
+      // no friendship
+    }
+  }
+
+  Widget _getBtnWidget() {
+    if (widget.user.id == AuthBloc.instance.userModel.id)
+      return Center(
+        child: RaisedButton(
+          color: Colors.blueAccent,
+          padding: EdgeInsets.all(0),
+          child: Text(
+            'Cập nhật',
+            style: ptBody().copyWith(color: Colors.white),
+          ),
+          onPressed: () {
+            UpdateProfilePage.navigate();
+          },
+        ),
+      );
+    if (friendshipModel == null)
+      return Center(
+        child: RaisedButton(
+          padding: EdgeInsets.all(0),
+          child: Text(
+            'Kết bạn',
+            style: ptBody().copyWith(color: Colors.white),
+          ),
+          onPressed: _addFriend,
+        ),
+      );
+    if (friendshipModel.status == FriendShipStatus.ACCEPTED) {
+      return Center(
+        child: Text(
+          'Bạn bè',
+          style: ptBody().copyWith(color: Colors.black),
+        ),
+      );
+    }
+    if (friendshipModel.status == FriendShipStatus.DECLINE) {
+      return Center(
+        child: RaisedButton(
+          padding: EdgeInsets.all(0),
+          child: Text(
+            'Kết bạn',
+            style: ptBody().copyWith(color: Colors.white),
+          ),
+          onPressed: _addFriend,
+        ),
+      );
+    }
+    if (friendshipModel.status == FriendShipStatus.PENDING) {
+      if (friendshipModel.user1Id == AuthBloc.instance.userModel.id)
+        return Center(
+          child: RaisedButton(
+            color: Colors.red[200],
+            padding: EdgeInsets.all(0),
+            child: Text(
+              'Hủy lời mời',
+              style: ptBody().copyWith(color: Colors.white),
+            ),
+            onPressed: () {},
+          ),
+        );
+      else
+        return Center(
+          child: RaisedButton(
+            padding: EdgeInsets.all(0),
+            child: Text(
+              'Đồng ý',
+              style: ptBody().copyWith(color: Colors.white),
+            ),
+            onPressed: () {},
+          ),
+        );
+    }
+    return SizedBox.shrink();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -163,8 +285,8 @@ class ProfileCard extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 35,
-                        backgroundImage: user.avatar != null
-                            ? NetworkImage(user.avatar)
+                        backgroundImage: widget.user.avatar != null
+                            ? NetworkImage(widget.user.avatar)
                             : AssetImage('assets/image/avatar.jpeg'),
                       ),
                       SizedBox(
@@ -177,7 +299,7 @@ class ProfileCard extends StatelessWidget {
                           children: [
                             SizedBox(height: 6),
                             Text(
-                              user.name ?? '',
+                              widget.user.name ?? '',
                               style:
                                   ptBigTitle().copyWith(color: Colors.black87),
                             ),
@@ -185,7 +307,7 @@ class ProfileCard extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  'Điểm uy tín: ${user.reputationScore.toString()}',
+                                  'Điểm uy tín: ${widget.user.reputationScore.toString()}',
                                   style:
                                       ptBody().copyWith(color: Colors.black54),
                                 ),
@@ -195,7 +317,7 @@ class ProfileCard extends StatelessWidget {
                             ),
                             SizedBox(height: 3),
                             Text(
-                              user.role.toLowerCase() == 'agency'
+                              widget.user.role.toLowerCase() == 'agency'
                                   ? 'Nhà môi giới'
                                   : 'Người dùng cơ bản',
                               style: ptSmall().copyWith(color: Colors.blue),
@@ -203,17 +325,7 @@ class ProfileCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      if (user.id != AuthBloc.instance.userModel.id)
-                        Center(
-                          child: RaisedButton(
-                            padding: EdgeInsets.all(0),
-                            child: Text(
-                              'Kết bạn',
-                              style: ptBody().copyWith(color: Colors.white),
-                            ),
-                            onPressed: () {},
-                          ),
-                        )
+                      _getBtnWidget()
                     ],
                   ),
                   SizedBox(
@@ -254,7 +366,7 @@ class ProfileCard extends StatelessWidget {
                             style: ptBody().copyWith(color: Colors.black54),
                           ),
                           Text(
-                            user.phone,
+                            widget.user.phone,
                             style: ptBody().copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black87),
@@ -294,7 +406,7 @@ class ProfileCard extends StatelessWidget {
                             style: ptBody().copyWith(color: Colors.black54),
                           ),
                           Text(
-                            user.email,
+                            widget.user.email,
                             style: ptBody().copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black87),

@@ -55,4 +55,26 @@ idToken: "$idToken"
         order: filter.order);
     return res;
   }
+
+  Future getMyFriendShipWith(String userId) async {
+    final res = await UserSrv()
+        .query('getMyFriendShipWith', 'userId: "$userId"', fragment: '''
+id
+user1Id
+user2Id
+status
+        ''');
+    return res;
+  }
+
+  Future sendFriendInvite(String userId) async {
+    final res = await UserSrv()
+        .mutate('sendFriendInvite', 'user2Id: "$userId"', fragment: '''
+id
+user1Id
+user2Id
+status
+        ''');
+    return res;
+  }
 }

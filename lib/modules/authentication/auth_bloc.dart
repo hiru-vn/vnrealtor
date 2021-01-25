@@ -190,6 +190,7 @@ class AuthBloc extends ChangeNotifier {
   Future<bool> checkToken() async {
     final String token = await SPref.instance.get('token');
     final String id = await SPref.instance.get('id');
+    print(id);
     print(token);
     return token != null && id != null;
   }
