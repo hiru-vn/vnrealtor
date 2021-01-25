@@ -64,7 +64,7 @@ user1Id
 user2Id
 status
         ''');
-    return res;
+    return res['getMyFriendShipWith'];
   }
 
   Future sendFriendInvite(String userId) async {
@@ -75,6 +75,6 @@ user1Id
 user2Id
 status
         ''');
-    return res;
+    return res['sendFriendInvite'];
   }
 }

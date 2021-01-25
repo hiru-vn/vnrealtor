@@ -174,9 +174,12 @@ class _ProfileCardState extends State<ProfileCard> {
       friendshipModel.status = FriendShipStatus.PENDING;
     });
     final res = await _userBloc.sendFriendInvite(widget.user.id);
-    if (res.isSuccess)
+    if (res.isSuccess) {
+      setState(() {
+        friendshipModel = res.data;
+      });
       showToast('Đã gửi lời mời kết bạn', context, isSuccess: true);
-    else
+    } else
       showToast(res.errMessage, context);
   }
 

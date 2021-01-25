@@ -26,7 +26,7 @@ class UserBloc extends ChangeNotifier {
   Future<BaseResponse> getMyFriendShipWith(String userId) async {
     try {
       final res = await UserRepo().getMyFriendShipWith(userId);
-      return BaseResponse.success(res);
+      return BaseResponse.success(FriendshipModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e.message?.toString());
     } finally {
@@ -34,11 +34,11 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
-   Future<BaseResponse> sendFriendInvite(String userId) async {
+  Future<BaseResponse> sendFriendInvite(String userId) async {
     try {
       final res = await UserRepo().sendFriendInvite(userId);
       final val = FriendshipModel.fromJson(res);
-      return BaseResponse.success(res);
+      return BaseResponse.success(val);
     } catch (e) {
       return BaseResponse.fail(e.message?.toString());
     } finally {
