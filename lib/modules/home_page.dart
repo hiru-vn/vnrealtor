@@ -1,6 +1,7 @@
 import 'package:vnrealtor/modules/notification/notification_page.dart';
 import 'package:vnrealtor/modules/post/post_page.dart';
 import 'package:vnrealtor/modules/setting/setting_page.dart';
+import 'package:vnrealtor/modules/inbox/inbox_list.dart';
 import 'package:vnrealtor/share/import.dart';
 
 import 'bottom_navigator.dart';
@@ -23,7 +24,7 @@ class _HomePageState extends State<HomePage>
   void initState() {
     _pages.addAll([
       PostPage(),
-      Container(),
+      InboxList(),
       NotificationPage(),
       SettingPage(),
     ]);

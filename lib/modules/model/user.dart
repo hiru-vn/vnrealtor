@@ -9,6 +9,7 @@ class UserModel {
   List<String> friendShipId;
   String createdAt;
   String updatedAt;
+  String avatar;
 
   UserModel(
       {this.id,
@@ -20,7 +21,8 @@ class UserModel {
       this.reputationScore,
       this.friendShipId,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.avatar});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -33,6 +35,7 @@ class UserModel {
     friendShipId = json['friendShipId'].cast<String>();
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    avatar = json['avatar'];
   }
 
   Map<String, dynamic> toJson() {

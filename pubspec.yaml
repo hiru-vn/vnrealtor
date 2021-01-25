@@ -57,6 +57,10 @@ dev_dependencies:
   fluttertoast: ^7.1.5
   rxdart: ^0.24.1
   device_info: ^1.0.0
+  video_player: ^1.0.1
+  dash_chat: ^1.1.15
+  agora_rtc_engine: ^3.2.1
+  file_utils: ^0.1.4
 
   # firebase
   firebase_auth: ^0.20.0+1

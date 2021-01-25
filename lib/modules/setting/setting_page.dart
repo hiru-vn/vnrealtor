@@ -89,6 +89,7 @@ class _SettingPageState extends State<SettingPage> {
       appBar: AppBar(
         backgroundColor: ptPrimaryColorLight(context),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         elevation: 1,
         title: SizedBox(
             height: 30, child: Image.asset('assets/image/logo_full.png')),

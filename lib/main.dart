@@ -8,8 +8,7 @@ import 'package:vnrealtor/themes/lightTheme.dart';
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:vnrealtor/utils/app_internalization.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
-import 'modules/home_page.dart';
+import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
 
 final _sentry = SentryClient(
     dsn:
@@ -55,6 +54,9 @@ class MyApp extends StatelessWidget {
                 providers: [
                   ChangeNotifierProvider(
                     create: (context) => AuthBloc.instance,
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => InboxBloc.instance,
                   ),
                 ],
                 child: MaterialApp(
