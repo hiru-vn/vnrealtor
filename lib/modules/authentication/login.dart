@@ -24,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   void didChangeDependencies() {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
+      
     }
     super.didChangeDependencies();
   }
