@@ -1,11 +1,16 @@
+import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
+import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/post/post_widget.dart';
-import 'package:vnrealtor/modules/post/search_people_widget.dart';
+import 'package:vnrealtor/modules/post/people_widget.dart';
 import 'package:vnrealtor/modules/profile/update_profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class ProfilePage extends StatefulWidget {
-  static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(ProfilePage()));
+  final UserModel user;
+
+  const ProfilePage({Key key, this.user}) : super(key: key);
+  static Future navigate({UserModel user}) {
+    return navigatorKey.currentState.push(pageBuilder(ProfilePage(user: user)));
   }
 
   @override
@@ -15,6 +20,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   TabController _pageController;
+  AuthBloc _authBloc;
+  bool isOtherUserProfile;
 
   @override
   void initState() {
@@ -23,11 +30,25 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   @override
+  void didChangeDependencies() {
+    if (_authBloc == null) {
+      _authBloc = Provider.of<AuthBloc>(context);
+    }
+    if (widget.user == null || widget.user.id == _authBloc.userModel.id) {
+      isOtherUserProfile = false;
+    } else {
+      isOtherUserProfile = true;
+    }
+
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
       appBar: AppBar2(
-        'Thông tin cá nhân',
+        isOtherUserProfile ? 'Thông tin người dùng' : 'Thông tin cá nhân',
         actions: [
           GestureDetector(
             onTap: () {
@@ -47,7 +68,8 @@ class _ProfilePageState extends State<ProfilePage>
         headerSliverBuilder: (context, value) {
           return [
             SliverToBoxAdapter(
-              child: ProfileCard(),
+              child: ProfileCard(
+                  user: isOtherUserProfile ? widget.user : _authBloc.userModel),
             ),
             SliverToBoxAdapter(
               child: Row(
@@ -98,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage>
                 children: [PostWidget(), PostWidget(), PostWidget()],
               ),
               ListView(
-                children: [PeopleWidget(), PeopleWidget(), PeopleWidget()],
+                children: [PeopleWidget(AuthBloc.instance.userModel)],
               ),
             ],
           ),
@@ -109,6 +131,9 @@ class _ProfilePageState extends State<ProfilePage>
 }
 
 class ProfileCard extends StatelessWidget {
+  final UserModel user;
+
+  const ProfileCard({Key key, this.user}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -128,7 +153,9 @@ class ProfileCard extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 35,
-                        backgroundImage: AssetImage('assets/image/avatar.jpeg'),
+                        backgroundImage: user.avatar != null
+                            ? NetworkImage(user.avatar)
+                            : AssetImage('assets/image/avatar.jpeg'),
                       ),
                       SizedBox(
                         width: 14,
@@ -140,7 +167,7 @@ class ProfileCard extends StatelessWidget {
                           children: [
                             SizedBox(height: 6),
                             Text(
-                              'Nguyễn Hùng',
+                              user.name ?? '',
                               style:
                                   ptBigTitle().copyWith(color: Colors.black87),
                             ),
@@ -148,7 +175,7 @@ class ProfileCard extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  'Điểm uy tín: 13',
+                                  'Điểm uy tín: ${user.reputationScore.toString()}',
                                   style:
                                       ptBody().copyWith(color: Colors.black54),
                                 ),
@@ -158,22 +185,25 @@ class ProfileCard extends StatelessWidget {
                             ),
                             SizedBox(height: 3),
                             Text(
-                              'Nhà môi giới',
+                              user.role.toLowerCase() == 'agency'
+                                  ? 'Nhà môi giới'
+                                  : 'Người dùng cơ bản',
                               style: ptSmall().copyWith(color: Colors.blue),
                             ),
                           ],
                         ),
                       ),
-                      Center(
-                        child: RaisedButton(
-                          padding: EdgeInsets.all(0),
-                          child: Text(
-                            'Kết bạn',
-                            style: ptBody().copyWith(color: Colors.white),
+                      if (user.id != AuthBloc.instance.userModel.id)
+                        Center(
+                          child: RaisedButton(
+                            padding: EdgeInsets.all(0),
+                            child: Text(
+                              'Kết bạn',
+                              style: ptBody().copyWith(color: Colors.white),
+                            ),
+                            onPressed: () {},
                           ),
-                          onPressed: () {},
-                        ),
-                      )
+                        )
                     ],
                   ),
                   SizedBox(
@@ -214,7 +244,7 @@ class ProfileCard extends StatelessWidget {
                             style: ptBody().copyWith(color: Colors.black54),
                           ),
                           Text(
-                            '+84 971 904 687',
+                            user.phone,
                             style: ptBody().copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black87),
@@ -254,7 +284,7 @@ class ProfileCard extends StatelessWidget {
                             style: ptBody().copyWith(color: Colors.black54),
                           ),
                           Text(
-                            'adminemail@gmail.com',
+                            user.email,
                             style: ptBody().copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black87),

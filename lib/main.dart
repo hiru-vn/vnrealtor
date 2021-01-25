@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry/sentry.dart';
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/authentication/splash.dart';
+import 'package:vnrealtor/modules/bloc/user_bloc.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/themes/lightTheme.dart';
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
@@ -57,6 +58,9 @@ class MyApp extends StatelessWidget {
                   ),
                   ChangeNotifierProvider(
                     create: (context) => InboxBloc.instance,
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => UserBloc.instance,
                   ),
                 ],
                 child: MaterialApp(

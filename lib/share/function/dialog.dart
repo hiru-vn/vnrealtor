@@ -19,10 +19,10 @@ void showWaitingDialog(BuildContext context, {String message}) {
             backgroundColor: Colors.white,
             content: Container(
               width: double.infinity,
-              height: Responsive.heightMultiplier * 100.0,
               alignment: Alignment.center,
               child: Center(
                   child: Column(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   CircularProgressIndicator(

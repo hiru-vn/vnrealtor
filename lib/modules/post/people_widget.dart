@@ -1,7 +1,11 @@
+import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class PeopleWidget extends StatelessWidget {
+  final UserModel user;
+
+  const PeopleWidget(this.user);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -12,13 +16,15 @@ class PeopleWidget extends StatelessWidget {
         },
         child: Card(
           child: Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(12),
             child: Row(children: [
               CircleAvatar(
                 radius: 25,
-                backgroundImage: AssetImage('assets/image/avatar.jpg'),
+                backgroundImage: user.avatar != null
+                    ? NetworkImage(user.avatar)
+                    : AssetImage('assets/image/default_avatar.png'),
               ),
-              SizedBox(width: 10),
+              SizedBox(width: 13),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +32,7 @@ class PeopleWidget extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'Nguyễn Hùng',
+                        user.name ?? '',
                         style: ptTitle(),
                       ),
                       SizedBox(
@@ -44,17 +50,21 @@ class PeopleWidget extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'Nhà môi giới',
+                        user.role?.toLowerCase() == 'agency'
+                            ? 'Nhà môi giới'
+                            : 'Người dùng',
                         style: ptSmall().copyWith(color: Colors.grey),
                       ),
-                      Text(
-                        '  •  ',
-                        style: ptSmall().copyWith(color: Colors.grey),
-                      ),
-                      Text(
-                        '3 bài viết',
-                        style: ptSmall().copyWith(color: Colors.grey),
-                      ),
+                      if (user.role?.toLowerCase() == 'agency')...[
+                        Text(
+                          '  •  ',
+                          style: ptSmall().copyWith(color: Colors.grey),
+                        ),
+                        Text(
+                          '3 bài viết',
+                          style: ptSmall().copyWith(color: Colors.grey),
+                        ),
+                      ]
                     ],
                   ),
                 ],

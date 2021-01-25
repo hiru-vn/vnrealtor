@@ -13,6 +13,16 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  AuthBloc _authBloc;
+
+  @override
+  void didChangeDependencies() {
+    if (_authBloc == null) {
+      _authBloc = Provider.of<AuthBloc>(context);
+    }
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     final list = [
@@ -125,7 +135,7 @@ class _SettingPageState extends State<SettingPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Nguyen Hung',
+                          _authBloc.userModel?.name??'',
                           style:
                               ptTitle().copyWith(fontWeight: FontWeight.w900),
                         ),
