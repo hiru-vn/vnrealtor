@@ -5,12 +5,18 @@ import 'package:vnrealtor/modules/post/people_widget.dart';
 import 'package:vnrealtor/modules/profile/update_profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
+enum RelationShip {
+  PENDING,
+  DECLINE,
+  ACCEPTED,
+}
+
 class ProfilePage extends StatefulWidget {
   final UserModel user;
 
-  const ProfilePage({Key key, this.user}) : super(key: key);
-  static Future navigate({UserModel user}) {
-    return navigatorKey.currentState.push(pageBuilder(ProfilePage(user: user)));
+  const ProfilePage(this.user);
+  static Future navigate(UserModel user) {
+    return navigatorKey.currentState.push(pageBuilder(ProfilePage(user)));
   }
 
   @override
@@ -42,6 +48,10 @@ class _ProfilePageState extends State<ProfilePage>
 
     super.didChangeDependencies();
   }
+
+  // Future _getRelationShip() async {
+  //   if ()
+  // }
 
   @override
   Widget build(BuildContext context) {

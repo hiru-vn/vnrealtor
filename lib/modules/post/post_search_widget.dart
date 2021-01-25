@@ -35,7 +35,6 @@ class _PostSearchWidgetState extends State<PostSearchWidget> {
                 children: [
                   GestureDetector(
                   onTap: () {
-                    ProfilePage.navigate();
                   },
                   child:CircleAvatar(
                     radius: 25,

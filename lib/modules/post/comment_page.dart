@@ -85,7 +85,6 @@ class _CommentPageState extends State<CommentPage>
                 ),
                 child: GestureDetector(
                   onTap: () {
-                    ProfilePage.navigate();
                   },
                   child: CircleAvatar(
                     radius: 18,

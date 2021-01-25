@@ -10,7 +10,7 @@ uid: String
 email: String
 role: String
 reputationScore: Int
-friendShipId: [ID]
+friendIds: [ID]
 createdAt: DateTime
 updatedAt: DateTime
   ''');

@@ -12,7 +12,7 @@ class PeopleWidget extends StatelessWidget {
       padding: const EdgeInsets.all(5).copyWith(bottom: 0),
       child: GestureDetector(
         onTap: () {
-          ProfilePage.navigate();
+          ProfilePage.navigate(user);
         },
         child: Card(
           child: Padding(
@@ -55,7 +55,7 @@ class PeopleWidget extends StatelessWidget {
                             : 'Người dùng',
                         style: ptSmall().copyWith(color: Colors.grey),
                       ),
-                      if (user.role?.toLowerCase() == 'agency')...[
+                      if (user.role?.toLowerCase() == 'agency') ...[
                         Text(
                           '  •  ',
                           style: ptSmall().copyWith(color: Colors.grey),

@@ -19,7 +19,7 @@ phone: "$phone"
 idToken: "$idToken"
     ''',
         fragment:
-            'token user { id uid name email phone role reputationScore friendShipId createdAt updatedAt}');
+            'token user { id uid name email phone role reputationScore friendIds createdAt updatedAt}');
     return res['registerWithPhone'];
   }
 
@@ -37,7 +37,7 @@ idToken: "$idToken"
     deviceToken: "$deviceToken"
     ''',
         fragment:
-            'token user { id uid name email phone role reputationScore friendShipId createdAt updatedAt}');
+            'token user { id uid name email phone role reputationScore friendIds createdAt updatedAt}');
     return res['loginUser'];
   }
 

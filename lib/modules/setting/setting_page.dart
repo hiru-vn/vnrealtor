@@ -135,14 +135,14 @@ class _SettingPageState extends State<SettingPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          _authBloc.userModel?.name??'',
+                          _authBloc.userModel?.name ?? '',
                           style:
                               ptTitle().copyWith(fontWeight: FontWeight.w900),
                         ),
                         SizedBox(height: 3),
                         GestureDetector(
                           onTap: () {
-                            ProfilePage.navigate();
+                            ProfilePage.navigate(_authBloc.userModel);
                           },
                           child: Text(
                             'Thông tin người dùng',
