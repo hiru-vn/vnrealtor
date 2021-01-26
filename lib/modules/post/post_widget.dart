@@ -1,3 +1,4 @@
+import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/model/post.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/function/share_to.dart';
@@ -17,11 +18,21 @@ class PostWidget extends StatefulWidget {
 class _PostWidgetState extends State<PostWidget> {
   final GlobalKey<State<StatefulWidget>> moreBtnKey =
       GlobalKey<State<StatefulWidget>>();
+  bool _isLike = false;
+  PostBloc _postBloc;
 
   @override
   void initState() {
     initMenu();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_postBloc == null) {
+      _postBloc = Provider.of<PostBloc>(context);
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -166,25 +177,45 @@ class _PostWidgetState extends State<PostWidget> {
             Row(
               children: [
                 Expanded(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          MdiIcons.thumbUpOutline,
-                          size: 19,
-                          color: Colors.black54,
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          'Like',
-                          style: TextStyle(color: Colors.black54),
-                        ),
-                      ]),
+                  child: GestureDetector(
+                    onTap: () {
+                      _isLike = !_isLike;
+                      if (_isLike) {
+                        widget.post.like++;
+                        _postBloc.likePost(widget.post.id);
+                      } else {
+                        widget.post.like--;
+                        _postBloc.unlikePost(widget.post.id);
+                      }
+                      setState(() {});
+                    },
+                    child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            MdiIcons.thumbUpOutline,
+                            size: 19,
+                            color: _isLike
+                                ? ptPrimaryColor(context)
+                                : Colors.black54,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Like',
+                            style: TextStyle(
+                                color: _isLike
+                                    ? ptPrimaryColor(context)
+                                    : Colors.black54),
+                          ),
+                        ]),
+                  ),
                 ),
                 Expanded(
                   child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
@@ -208,6 +239,7 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
                 Expanded(
                   child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(

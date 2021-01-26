@@ -52,6 +52,9 @@ class _CommentPageState extends State<CommentPage> {
     final res = await _postBloc.createComment(text, postId: widget.post.id);
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
+    } else {
+      if (isPost) widget.post.commentIds.add((res.data as CommentModel).id);
+      if (isMediaPost) widget.mediaPost.commentIds.add((res.data as CommentModel).id);
     }
   }
 

@@ -16,12 +16,15 @@ class PostRepo {
 
   Future createComment(
       {String postId, String mediaPostId, String content}) async {
-    final res = await CommentSrv().add('''
+    String data = '''
 content: "$content"
-mediaPostId: "$mediaPostId"
 postId: "$postId"
 like: 0
-    ''', fragment: '''
+    ''';
+    if (mediaPostId != null) {
+      data += '\nmediaPostId: "$mediaPostId"';
+    }
+    final res = await CommentSrv().add(data, fragment: '''
     id
     userId
     postId
@@ -34,4 +37,17 @@ like: 0
     final res = await CommentSrv().getList(limit: 20);
     return res;
   }
+
+  Future increaseLikePost({String postId}) async {
+    final res = await PostSrv()
+        .mutate('increaseLikePost', 'postId: "$postId"', fragment: 'id');
+    return res;
+  }
+
+  Future decreaseLikePost({String postId}) async {
+    final res = await PostSrv()
+        .mutate('decreaseLikePost', 'postId: "$postId"', fragment: 'id');
+    return res;
+  }
+  
 }
