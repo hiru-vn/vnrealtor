@@ -1,8 +1,7 @@
-
 import 'base_graphql.dart';
 
 class PostSrv extends BaseService {
-  PostSrv()  : super(module: 'Post', fragment: ''' 
+  PostSrv() : super(module: 'Post', fragment: ''' 
 id
 content
 mediaPostIds
@@ -41,7 +40,7 @@ updatedAt
 }
 
 class MediaPostSrv extends BaseService {
-  MediaPostSrv()  : super(module: 'MediaPost', fragment: ''' 
+  MediaPostSrv() : super(module: 'MediaPost', fragment: ''' 
 id
 userId
 type

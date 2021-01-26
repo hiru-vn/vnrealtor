@@ -1,3 +1,5 @@
+import 'package:vnrealtor/modules/bloc/user_bloc.dart';
+import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -8,11 +10,21 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
+  UserBloc _userBloc;
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_userBloc == null) {
+      _userBloc = Provider.of<UserBloc>(context);
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -53,7 +65,9 @@ class _NotificationPageState extends State<NotificationPage>
                   SizedBox(
                     height: 40,
                     width: deviceWidth(context) / 2 - 45,
-                    child: Tab(text: 'Lời mời kết bạn (2)'),
+                    child: Tab(
+                        text:
+                            'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
                   ),
                 ]),
           ),
@@ -139,16 +153,38 @@ class NotificationTab extends StatelessWidget {
   }
 }
 
-class FriendRequestTab extends StatelessWidget {
+class FriendRequestTab extends StatefulWidget {
+  @override
+  _FriendRequestTabState createState() => _FriendRequestTabState();
+}
+
+class _FriendRequestTabState extends State<FriendRequestTab> {
+  UserBloc _userBloc;
+
+  @override
+  void didChangeDependencies() {
+    if (_userBloc == null) {
+      _userBloc = Provider.of<UserBloc>(context);
+    }
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
+    return ListView.builder(
+      itemCount: _userBloc.friendRequestFromOtherUsers.length,
+      itemBuilder: (context, index) {
+        final item = _userBloc.friendRequestFromOtherUsers[index];
+        return ListTile(
+          onTap: () {
+            ProfilePage.navigate(item.user1);
+          },
           tileColor: ptBackgroundColor(context),
           leading: CircleAvatar(
             radius: 22,
-            backgroundImage: AssetImage('assets/image/avatar.jpeg'),
+            backgroundImage: item.user1.avatar != null
+                ? NetworkImage(item.user1.avatar)
+                : AssetImage('assets/image/avatar.jpeg'),
           ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,11 +192,11 @@ class FriendRequestTab extends StatelessWidget {
             children: [
               SizedBox(height: 10),
               Text(
-                'Hung Nguyen đã gửi lời mời kết bạn',
+                '${item.user1.name} đã gửi lời mời kết bạn',
                 style: ptBody(),
               ),
               Text(
-                '1 tháng trước',
+                Formart.timeAgo(DateTime.tryParse(item.createdAt ?? '')) ?? '',
                 style: ptTiny().copyWith(color: Colors.black54),
               ),
             ],
@@ -175,7 +211,22 @@ class FriendRequestTab extends StatelessWidget {
                   'Đồng ý',
                   style: ptSmall().copyWith(color: Colors.white),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  setState(() {
+                    _userBloc.friendRequestFromOtherUsers.remove(item);
+                  });
+                  final res = await _userBloc.acceptFriendInvite(item.id);
+                  if (res.isSuccess) {
+                    setState(() {
+                      _userBloc.friendRequestFromOtherUsers.remove(item);
+                    });
+                  } else {
+                    showToast(res.errMessage, context);
+                    setState(() {
+                      _userBloc.friendRequestFromOtherUsers.add(item);
+                    });
+                  }
+                },
               ),
               SizedBox(
                 width: 10,
@@ -188,65 +239,24 @@ class FriendRequestTab extends StatelessWidget {
                   'Từ chối',
                   style: ptSmall().copyWith(color: Colors.white),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  setState(() {
+                    _userBloc.friendRequestFromOtherUsers.remove(item);
+                  });
+                  final res = await _userBloc.declineFriendInvite(item.id);
+                  if (res.isSuccess) {
+                  } else {
+                    showToast(res.errMessage, context);
+                    setState(() {
+                      _userBloc.friendRequestFromOtherUsers.add(item);
+                    });
+                  }
+                },
               ),
             ],
           ),
-        ),
-        Divider(
-          height: 1,
-        ),
-        ListTile(
-          tileColor: ptBackgroundColor(context),
-          leading: CircleAvatar(
-            radius: 22,
-            backgroundImage: AssetImage('assets/image/avatar.jpeg'),
-          ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 10),
-              Text(
-                'Hung Nguyen đã gửi lời mời kết bạn',
-                style: ptBody(),
-              ),
-              Text(
-                '1 tháng trước',
-                style: ptTiny().copyWith(color: Colors.black54),
-              ),
-            ],
-          ),
-          subtitle: Row(
-            children: [
-              
-              FlatButton(
-                height: 32,
-                padding: EdgeInsets.all(0),
-                color: ptPrimaryColor(context),
-                child: Text(
-                  'Đồng ý',
-                  style: ptSmall().copyWith(color: Colors.white),
-                ),
-                onPressed: () {},
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              FlatButton(
-                height: 32,
-                padding: EdgeInsets.all(0),
-                color: Colors.grey[400],
-                child: Text(
-                  'Từ chối',
-                  style: ptSmall().copyWith(color: Colors.white),
-                ),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 }

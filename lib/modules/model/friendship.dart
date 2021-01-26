@@ -1,3 +1,5 @@
+import 'package:vnrealtor/modules/model/user.dart';
+
 enum FriendShipStatus { PENDING, DECLINE, ACCEPTED }
 
 class FriendshipModel {
@@ -5,6 +7,10 @@ class FriendshipModel {
   String user1Id;
   String user2Id;
   FriendShipStatus status;
+  UserModel user1;
+  UserModel user2;
+  String createdAt;
+  String updatedAt;
 
   FriendshipModel({this.id, this.user1Id, this.user2Id, this.status});
 
@@ -13,6 +19,10 @@ class FriendshipModel {
     user1Id = json['user1Id'];
     user2Id = json['user2Id'];
     status = fromStatus(json['status']);
+    user1 = json['user1'] !=null? UserModel.fromJson(json['user1']) : null;
+    user2 = json['user2'] !=null? UserModel.fromJson(json['user2']) : null;
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
   }
 
   Map<String, dynamic> toJson() {

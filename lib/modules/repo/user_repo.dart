@@ -1,4 +1,6 @@
+import 'package:vnrealtor/modules/services/friendship_srv.dart';
 import 'package:vnrealtor/modules/services/user_srv.dart';
+import 'package:vnrealtor/utils/spref.dart';
 
 import 'filter.dart';
 
@@ -65,6 +67,12 @@ user2Id
 status
         ''');
     return res['getMyFriendShipWith'];
+  }
+
+  Future friendRequestFromOtherUsers() async {
+    final uid = await SPref.instance.get('id');
+    final res = await FriendshipSrv().getList(filter: '{user2Id: "$uid"}');
+    return res['data'];
   }
 
   Future sendFriendInvite(String userId) async {

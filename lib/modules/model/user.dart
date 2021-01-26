@@ -32,7 +32,7 @@ class UserModel {
     phone = json['phone'];
     role = json['role'];
     reputationScore = json['reputationScore'];
-    friendIds = json['friendIds'].cast<String>();
+    friendIds = json['friendIds']!=null? json['friendIds'].cast<String>(): [];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     avatar = json['avatar'];

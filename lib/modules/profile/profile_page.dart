@@ -427,83 +427,108 @@ class _ProfileCardState extends State<ProfileCard> {
                       ),
                     ),
                   ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 60,
-                      ),
-                      SizedBox(
-                          width: 70,
-                          child: Center(
-                            child: Icon(
-                              Icons.phone,
-                              color: ptPrimaryColor(context),
-                              size: 28,
+                  Row(children: [
+                    SizedBox(
+                      width: 70,
+                      child: friendshipModel?.status == FriendShipStatus.ACCEPTED
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    MdiIcons.chatOutline,
+                                    color: ptPrimaryColor(context),
+                                  ),
+                                  Text(
+                                    'Nhắn tin',
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : SizedBox.shrink(),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                                width: 70,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.phone,
+                                    color: ptPrimaryColor(context),
+                                    size: 28,
+                                  ),
+                                )),
+                            Container(
+                              width: 2,
+                              height: 35,
+                              color: ptLineColor(context),
                             ),
-                          )),
-                      Container(
-                        width: 2,
-                        height: 35,
-                        color: ptLineColor(context),
-                      ),
-                      SizedBox(width: 25),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Số điện thoại',
-                            style: ptBody().copyWith(color: Colors.black54),
-                          ),
-                          Text(
-                            widget.user.phone,
-                            style: ptBody().copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 60,
-                      ),
-                      SizedBox(
-                          width: 70,
-                          child: Center(
-                            child: Icon(
-                              Icons.email,
-                              color: ptPrimaryColor(context),
-                              size: 28,
+                            SizedBox(width: 25),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Số điện thoại',
+                                  style:
+                                      ptBody().copyWith(color: Colors.black54),
+                                ),
+                                Text(
+                                  widget.user.phone,
+                                  style: ptBody().copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87),
+                                ),
+                              ],
                             ),
-                          )),
-                      Container(
-                        width: 2,
-                        height: 35,
-                        color: ptLineColor(context),
-                      ),
-                      SizedBox(width: 25),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Email',
-                            style: ptBody().copyWith(color: Colors.black54),
-                          ),
-                          Text(
-                            widget.user.email,
-                            style: ptBody().copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                                width: 70,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.email,
+                                    color: ptPrimaryColor(context),
+                                    size: 28,
+                                  ),
+                                )),
+                            Container(
+                              width: 2,
+                              height: 35,
+                              color: ptLineColor(context),
+                            ),
+                            SizedBox(width: 25),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Email',
+                                  style:
+                                      ptBody().copyWith(color: Colors.black54),
+                                ),
+                                Text(
+                                  widget.user.email,
+                                  style: ptBody().copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    )
+                  ])
                 ]),
           )),
     );

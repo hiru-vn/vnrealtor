@@ -5,8 +5,28 @@ import 'package:vnrealtor/modules/repo/user_repo.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class UserBloc extends ChangeNotifier {
-  UserBloc._privateConstructor();
+  UserBloc._privateConstructor() {
+    init();
+  }
   static final UserBloc instance = UserBloc._privateConstructor();
+
+  List<FriendshipModel> friendRequestFromOtherUsers = [];
+
+  void init() async {
+    final token = await SPref.instance.get('token');
+    final id = await SPref.instance.get('id');
+    if (token != null && id != null) {
+      try {
+        final res = await UserRepo().friendRequestFromOtherUsers();
+        final List listRaw = res;
+        final list = listRaw.map((e) => FriendshipModel.fromJson(e)).toList();
+        list.removeWhere((element) => element.status != FriendShipStatus.PENDING);
+        friendRequestFromOtherUsers = list;
+      } catch (e) {} finally {
+        notifyListeners();
+      }
+    }
+  }
 
   Future<BaseResponse> getListUser({GraphqlFilter filter}) async {
     try {
