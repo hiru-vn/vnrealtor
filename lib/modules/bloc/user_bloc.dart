@@ -45,4 +45,28 @@ class UserBloc extends ChangeNotifier {
       // notifyListeners();
     }
   }
+
+  Future<BaseResponse> acceptFriendInvite(String friendShipId) async {
+    try {
+      final res = await UserRepo().acceptFriend(friendShipId);
+      final val = FriendshipModel.fromJson(res);
+      return BaseResponse.success(val);
+    } catch (e) {
+      return BaseResponse.fail(e.message?.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> declineFriendInvite(String friendShipId) async {
+    try {
+      final res = await UserRepo().declineFriend(friendShipId);
+      final val = FriendshipModel.fromJson(res);
+      return BaseResponse.success(val);
+    } catch (e) {
+      return BaseResponse.fail(e.message?.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
 }

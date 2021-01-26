@@ -154,6 +154,7 @@ class ProfileCard extends StatefulWidget {
 class _ProfileCardState extends State<ProfileCard> {
   UserBloc _userBloc;
   FriendshipModel friendshipModel;
+  bool initFetchStatus = false;
 
   @override
   void didChangeDependencies() {
@@ -189,13 +190,25 @@ class _ProfileCardState extends State<ProfileCard> {
     if (res.isSuccess) {
       setState(() {
         friendshipModel = res.data;
+        initFetchStatus = true;
       });
     } else {
       // no friendship
+      setState(() {
+        initFetchStatus = true;
+      });
     }
   }
 
   Widget _getBtnWidget() {
+    if (!initFetchStatus)
+      return SizedBox(
+        height: 25,
+        width: 25,
+        child: CircularProgressIndicator(
+          backgroundColor: ptPrimaryColor(context),
+        ),
+      );
     if (widget.user.id == AuthBloc.instance.userModel.id)
       return Center(
         child: RaisedButton(
@@ -223,9 +236,49 @@ class _ProfileCardState extends State<ProfileCard> {
       );
     if (friendshipModel.status == FriendShipStatus.ACCEPTED) {
       return Center(
-        child: Text(
-          'Bạn bè',
-          style: ptBody().copyWith(color: Colors.black),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Bạn bè',
+                  style: ptBody().copyWith(color: Colors.black),
+                ),
+                SizedBox(
+                  width: 3,
+                ),
+                Icon(
+                  Icons.check,
+                  color: ptPrimaryColor(context),
+                  size: 17,
+                ),
+              ],
+            ),
+            SizedBox(height: 5),
+            GestureDetector(
+              onTap: () async {
+                setState(() {
+                  friendshipModel.status = FriendShipStatus.DECLINE;
+                });
+                final res =
+                    await _userBloc.declineFriendInvite(friendshipModel.id);
+                if (res.isSuccess) {
+                  setState(() {
+                    friendshipModel = res.data;
+                  });
+                } else {
+                  showToast(res.errMessage, context);
+                  setState(() {
+                    friendshipModel.status = FriendShipStatus.ACCEPTED;
+                  });
+                }
+              },
+              child: Text(
+                'Hủy kết bạn',
+                style: ptBody().copyWith(color: Colors.blue),
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -251,18 +304,51 @@ class _ProfileCardState extends State<ProfileCard> {
               'Hủy lời mời',
               style: ptBody().copyWith(color: Colors.white),
             ),
-            onPressed: () {},
+            onPressed: () async {
+              setState(() {
+                friendshipModel.status = FriendShipStatus.DECLINE;
+              });
+              final res =
+                  await _userBloc.declineFriendInvite(friendshipModel.id);
+              if (res.isSuccess) {
+                setState(() {
+                  friendshipModel = res.data;
+                });
+              } else {
+                showToast(res.errMessage, context);
+                setState(() {
+                  friendshipModel.status = FriendShipStatus.PENDING;
+                });
+              }
+            },
           ),
         );
-      else
+      else if (initFetchStatus)
         return Center(
           child: RaisedButton(
-            padding: EdgeInsets.all(0),
+            padding: EdgeInsets.symmetric(vertical: 5),
             child: Text(
-              'Đồng ý',
+              'Xác nhận\nkết bạn',
               style: ptBody().copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
             ),
-            onPressed: () {},
+            onPressed: () async {
+              setState(() {
+                friendshipModel.status = FriendShipStatus.ACCEPTED;
+              });
+              final res =
+                  await _userBloc.acceptFriendInvite(friendshipModel.id);
+              if (res.isSuccess) {
+                setState(() {
+                  friendshipModel = res.data;
+                });
+              } else {
+                showToast(res.errMessage, context);
+                setState(() {
+                  friendshipModel.status = FriendShipStatus.PENDING;
+                });
+              }
+            },
           ),
         );
     }

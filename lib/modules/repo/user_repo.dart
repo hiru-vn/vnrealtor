@@ -77,4 +77,26 @@ status
         ''');
     return res['sendFriendInvite'];
   }
+
+  Future acceptFriend(String friendShipId) async {
+    final res = await UserSrv()
+        .mutate('acceptFriend', 'friendShipId: "$friendShipId"', fragment: '''
+id
+user1Id
+user2Id
+status
+        ''');
+    return res['acceptFriend'];
+  }
+
+  Future declineFriend(String friendShipId) async {
+    final res = await UserSrv()
+        .mutate('declineFriend', 'friendShipId: "$friendShipId"', fragment: '''
+id
+user1Id
+user2Id
+status
+        ''');
+    return res['friendShipId'];
+  }
 }
