@@ -24,7 +24,6 @@ class _LoginPageState extends State<LoginPage> {
   void didChangeDependencies() {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
-      
     }
     super.didChangeDependencies();
   }
@@ -34,13 +33,14 @@ class _LoginPageState extends State<LoginPage> {
     showSimpleLoadingDialog(context);
     try {
       final res = await _authBloc.signIn(_nameC.text, _passC.text);
-      if (res.isSuccess)
+      if (res.isSuccess) {
+        await navigatorKey.currentState.maybePop();
         HomePage.navigate();
-      else
+      } else {
         showToast(res.errMessage, context);
-    } catch (e) {} finally {
-      navigatorKey.currentState.maybePop();
-    }
+        navigatorKey.currentState.maybePop();
+      }
+    } catch (e) {} finally {}
   }
 
   @override
@@ -140,8 +140,9 @@ class _LoginPageState extends State<LoginPage> {
               child: Padding(
                 padding: EdgeInsets.only(right: 30),
                 child: GestureDetector(
-                  onTap: () => showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey),
-                                  child: Text(
+                  onTap: () => showAlertDialog(context, 'Đang cập nhật',
+                      navigatorKey: navigatorKey),
+                  child: Text(
                     'Quên mật khẩu?',
                     style: ptTitle().copyWith(color: Colors.black54),
                   ),

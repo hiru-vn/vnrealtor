@@ -1,5 +1,6 @@
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
+import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
 import 'package:vnrealtor/modules/model/friendship.dart';
 import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/post/post_widget.dart';
@@ -131,7 +132,7 @@ class _ProfilePageState extends State<ProfilePage>
               ListView(
                 children: [
                   //PostWidget(), PostWidget(), PostWidget()
-                  ],
+                ],
               ),
               ListView(
                 children: [PeopleWidget(AuthBloc.instance.userModel)],
@@ -203,7 +204,7 @@ class _ProfileCardState extends State<ProfileCard> {
   }
 
   Widget _getBtnWidget() {
-    if (!initFetchStatus)
+    if (!initFetchStatus && widget.user.id != AuthBloc.instance.userModel.id)
       return SizedBox(
         height: 25,
         width: 25,
@@ -432,22 +433,39 @@ class _ProfileCardState extends State<ProfileCard> {
                   Row(children: [
                     SizedBox(
                       width: 70,
-                      child: friendshipModel?.status == FriendShipStatus.ACCEPTED
+                      child: friendshipModel?.status ==
+                              FriendShipStatus.ACCEPTED
                           ? Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    MdiIcons.chatOutline,
-                                    color: ptPrimaryColor(context),
-                                  ),
-                                  Text(
-                                    'Nhắn tin',
-                                    style: TextStyle(
-                                      color: Colors.black87,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  showSimpleLoadingDialog(context);
+                                  await InboxBloc.instance.navigateToChatWith(
+                                      widget.user.name,
+                                      widget.user.avatar,
+                                      DateTime.now(),
+                                      'Bạn và ${widget.user.name} đã trở thành bạn bè',
+                                      widget.user.avatar, [
+                                    AuthBloc.instance.userModel.id,
+                                    widget.user.id
+                                  ]);
+                                  navigatorKey.currentState.maybePop();
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      MdiIcons.chatOutline,
+                                      color: ptPrimaryColor(context),
                                     ),
-                                  ),
-                                ],
+                                    Text(
+                                      'Nhắn tin',
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             )
                           : SizedBox.shrink(),

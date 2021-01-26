@@ -175,7 +175,7 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
             width: MediaQuery.of(context).size.width / 6,
             height:MediaQuery.of(context).size.width / 6,
             child: Image.asset(
-              'assets/image/avatar.png',
+              'assets/image/default_avatar.png',
               fit: BoxFit.cover,
             )),
       ),
@@ -186,7 +186,7 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
                 width: MediaQuery.of(context).size.width / 6,
                 height: MediaQuery.of(context).size.width / 6,
                 child: Image.asset(
-                  'assets/image/avatar.png',
+                  'assets/image/default_avatar.png',
                   fit: BoxFit.cover,
                 )),
           ))
