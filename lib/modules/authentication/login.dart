@@ -34,8 +34,9 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final res = await _authBloc.signIn(_nameC.text, _passC.text);
       if (res.isSuccess) {
-        await navigatorKey.currentState.maybePop();
-        HomePage.navigate();
+        navigatorKey.currentState
+            .maybePop()
+            .then((value) => HomePage.navigate());
       } else {
         showToast(res.errMessage, context);
         navigatorKey.currentState.maybePop();

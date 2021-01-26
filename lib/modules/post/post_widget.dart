@@ -265,7 +265,10 @@ class _PostWidgetState extends State<PostWidget> {
                       ),
                     ),
                   ),
-                  Expanded(child: CommentPage()),
+                  Expanded(
+                      child: CommentPage(
+                    post: widget.post,
+                  )),
                 ],
               ));
         });
