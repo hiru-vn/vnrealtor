@@ -16,7 +16,16 @@ locationLong
 expirationDate
 publicity
 user {
-  id uid name email phone role reputationScore createdAt updatedAt friendIds
+  id 
+  uid 
+  name 
+  email 
+  phone 
+  role 
+  reputationScore 
+  createdAt 
+  updatedAt 
+  friendIds
 }
 mediaPosts {
 id

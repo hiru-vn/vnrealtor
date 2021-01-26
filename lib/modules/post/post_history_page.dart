@@ -26,9 +26,9 @@ class PostHistoryPage extends StatelessWidget {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             children: [
-              PostWidget(),
-              PostWidget(),
-              PostWidget(),
+              // PostWidget(),
+              // PostWidget(),
+              // PostWidget(),
             ],
           )
         ]),

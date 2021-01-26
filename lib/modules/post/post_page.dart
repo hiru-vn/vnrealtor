@@ -26,6 +26,7 @@ class _PostPageState extends State<PostPage> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of(context);
+      _postBloc.getListPost(filter: GraphqlFilter(limit: 20, order: "{createAt: -1}"));
     }
     super.didChangeDependencies();
   }
@@ -100,9 +101,16 @@ class _PostPageState extends State<PostPage> {
                 ],
               ),
             ),
-            PostWidget(),
-            PostWidget(),
-            PostWidget(),
+            ListView.builder(
+              padding: EdgeInsets.all(0),
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: _postBloc.post.length,
+              itemBuilder: (context, index) {
+                final item = _postBloc.post[index];
+                return PostWidget(item);
+              },
+            ),
             SizedBox(
               height: 10,
             ),

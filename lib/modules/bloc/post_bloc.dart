@@ -6,16 +6,19 @@ class PostBloc extends ChangeNotifier {
   PostBloc._privateConstructor();
   static final PostBloc instance = PostBloc._privateConstructor();
 
+  List<PostModel> post = [];
+
   Future<BaseResponse> getListPost({GraphqlFilter filter}) async {
     try {
       final res = await PostRepo().getListPost(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      post = list;
       return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e.message?.toString());
     } finally {
-      // notifyListeners();
+      notifyListeners();
     }
   }
 }

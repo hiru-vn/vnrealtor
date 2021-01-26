@@ -129,7 +129,9 @@ class _ProfilePageState extends State<ProfilePage>
             physics: NeverScrollableScrollPhysics(),
             children: [
               ListView(
-                children: [PostWidget(), PostWidget(), PostWidget()],
+                children: [
+                  //PostWidget(), PostWidget(), PostWidget()
+                  ],
               ),
               ListView(
                 children: [PeopleWidget(AuthBloc.instance.userModel)],

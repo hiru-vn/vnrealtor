@@ -8,9 +8,9 @@ class PostModel {
   List<String> mediaPostIds;
   List<String> commentIds;
   String userId;
-  String like;
+  int like;
   List<String> userLikeIds;
-  String share;
+  int share;
   List<String> userShareIds;
   double locationLat;
   double locationLong;

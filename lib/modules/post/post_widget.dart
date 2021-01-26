@@ -1,3 +1,4 @@
+import 'package:vnrealtor/modules/model/post.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/function/share_to.dart';
 import 'package:vnrealtor/share/import.dart';
@@ -7,6 +8,8 @@ import 'package:popup_menu/popup_menu.dart';
 import 'comment_page.dart';
 
 class PostWidget extends StatefulWidget {
+  final PostModel post;
+  PostWidget(this.post);
   @override
   _PostWidgetState createState() => _PostWidgetState();
 }
@@ -30,6 +33,7 @@ class _PostWidgetState extends State<PostWidget> {
         width: deviceWidth(context),
         color: Colors.white,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
@@ -38,10 +42,13 @@ class _PostWidgetState extends State<PostWidget> {
                 children: [
                   GestureDetector(
                     onTap: () {
+                      ProfilePage.navigate(widget.post?.user);
                     },
                     child: CircleAvatar(
                       radius: 25,
-                      backgroundImage: AssetImage('assets/image/avatar.jpg'),
+                      backgroundImage: widget.post?.user?.avatar != null
+                          ? NetworkImage(widget.post?.user?.avatar)
+                          : AssetImage('assets/image/default_avatar.png'),
                     ),
                   ),
                   SizedBox(width: 10),
@@ -53,12 +60,12 @@ class _PostWidgetState extends State<PostWidget> {
                       Row(
                         children: [
                           Text(
-                            'Nguyễn Hùng',
+                            widget.post?.user?.name ?? '',
                             style: ptTitle(),
                           ),
                           SizedBox(width: 8),
                           Text(
-                            '3',
+                            widget.post?.user?.reputationScore.toString(),
                             style: ptTitle().copyWith(color: Colors.yellow),
                           ),
                           SizedBox(width: 2),
@@ -67,7 +74,9 @@ class _PostWidgetState extends State<PostWidget> {
                       ),
                       SizedBox(height: 3),
                       Text(
-                        '02/11/2021',
+                        Formart.formatToDate(
+                                DateTime.tryParse(widget.post?.createdAt)) ??
+                            '',
                         style: ptSmall().copyWith(color: Colors.black54),
                       ),
                     ],
@@ -88,8 +97,9 @@ class _PostWidgetState extends State<PostWidget> {
             Padding(
               padding: const EdgeInsets.all(15).copyWith(top: 0),
               child: ReadMoreText(
-                'Flutter is Google’s mobile UI open source framework to build high-quality native (super fast) interfaces for iOS and Android apps with the unified codebase.',
+                widget.post?.content ?? '',
                 trimLines: 2,
+                textAlign: TextAlign.start,
                 colorClickableText: Colors.pink,
                 trimMode: TrimMode.Line,
                 trimCollapsedText: 'Show more',
@@ -97,32 +107,24 @@ class _PostWidgetState extends State<PostWidget> {
                 moreStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),
-            Container(
-              height: deviceWidth(context) / 2 - 5,
-              width: deviceWidth(context),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  Container(
-                    width: deviceWidth(context) / 2 - 5,
-                    height: deviceWidth(context) / 2 - 5,
-                    child: ImageViewNetwork(
-                      url:
-                          'https://i.pinimg.com/originals/38/d7/5b/38d75b985d9d08ce0959201f8198f405.jpg',
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  Container(
-                    width: deviceWidth(context) / 2 - 5,
-                    height: deviceWidth(context) / 2 - 5,
-                    child: ImageViewNetwork(
-                      url:
-                          'https://i.pinimg.com/originals/38/d7/5b/38d75b985d9d08ce0959201f8198f405.jpg',
-                    ),
-                  ),
-                ],
+            if ((widget.post?.mediaPosts?.length ?? 0) > 0)
+              Container(
+                height: deviceWidth(context) / 2 - 5,
+                width: deviceWidth(context),
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: widget.post?.mediaPosts?.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      width: deviceWidth(context) /
+                          (widget.post?.mediaPosts?.length == 1 ? 1 : 2),
+                      child: ImageViewNetwork(
+                        url: widget.post?.mediaPosts[index].url,
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
             SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -144,7 +146,7 @@ class _PostWidgetState extends State<PostWidget> {
                     width: 5,
                   ),
                   Text(
-                    '12',
+                    widget.post?.like?.toString() ?? '0',
                     style: ptSmall(),
                   ),
                   Spacer(),
@@ -153,7 +155,7 @@ class _PostWidgetState extends State<PostWidget> {
                       showComment();
                     },
                     child: Text(
-                      '1 comments',
+                      '${widget.post?.commentIds?.length.toString() ?? '0'} comments',
                       style: ptSmall(),
                     ),
                   ),
