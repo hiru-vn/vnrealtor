@@ -49,12 +49,14 @@ class _CommentPageState extends State<CommentPage> {
             user: AuthBloc.instance.userModel,
             updatedAt: DateTime.now().toIso8601String()));
     FocusScope.of(context).unfocus();
-    final res = await _postBloc.createComment(text, postId: widget.post.id);
+    BaseResponse res = await _postBloc.createComment(text,
+        postId: widget.post?.id, mediaPostId: widget.mediaPost?.id);
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
       if (isPost) widget.post.commentIds.add((res.data as CommentModel).id);
-      if (isMediaPost) widget.mediaPost.commentIds.add((res.data as CommentModel).id);
+      if (isMediaPost)
+        widget.mediaPost.commentIds.add((res.data as CommentModel).id);
     }
   }
 
@@ -62,18 +64,25 @@ class _CommentPageState extends State<CommentPage> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
-      _postBloc.getListPostComment(widget.post.id).then((res) => {
-            if (res.isSuccess)
-              {
-                setState(() {
-                  comments = res.data;
-                })
-              }
-            else
-              {showToast('Có lỗi khi lấy dữ liệu', context)}
-          });
+      _getComments();
     }
     super.didChangeDependencies();
+  }
+
+  Future _getComments() async {
+    BaseResponse res;
+    if (isPost) res = await _postBloc.getListPostComment(widget.post.id);
+    if (isMediaPost)
+      res = await _postBloc.getListMediaPostComment(widget.mediaPost.id);
+    if (res == null) return;
+    if (res.isSuccess) {
+      if (mounted)
+        setState(() {
+          comments = res.data;
+        });
+    } else {
+      showToast('Có lỗi khi lấy dữ liệu', context);
+    }
   }
 
   @override

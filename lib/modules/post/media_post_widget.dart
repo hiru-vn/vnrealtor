@@ -29,12 +29,12 @@ class MediaPostWidget extends StatelessWidget {
             );
           }));
         //if (type == FileType.video)
-          // Navigator.push(context, MaterialPageRoute(builder: (_) {
-          //   return DetailVideoPost(
-          //     post,
-          //     tag: genTag,
-          //   );
-          // }));
+        // Navigator.push(context, MaterialPageRoute(builder: (_) {
+        //   return DetailVideoPost(
+        //     post,
+        //     tag: genTag,
+        //   );
+        // }));
       },
       child: ClipRRect(
           borderRadius: BorderRadius.circular(borderRadius),
@@ -139,10 +139,10 @@ class _DetailImagePostState extends State<DetailImagePost> {
                         _isLike = !_isLike;
                         if (_isLike) {
                           widget.post.like++;
-                          _postBloc.likePost(widget.post.id);
+                          _postBloc.likeMediaPost(widget.post.id);
                         } else {
                           widget.post.like--;
-                          _postBloc.unlikePost(widget.post.id);
+                          _postBloc.unlikeMediaPost(widget.post.id);
                         }
                         setState(() {});
                       },
@@ -220,6 +220,46 @@ class _DetailImagePostState extends State<DetailImagePost> {
               ),
             ),
           ),
+          Positioned(
+            bottom: 60,
+            width: deviceWidth(context),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: ptPrimaryColor(context),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: Icon(
+                      MdiIcons.thumbUp,
+                      size: 11,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    widget.post?.like?.toString() ?? '0',
+                    style: ptSmall().copyWith(color: Colors.white),
+                  ),
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      showComment(widget.post, context);
+                    },
+                    child: Text(
+                      '${widget.post?.commentIds?.length.toString() ?? '0'} comments',
+                      style: ptSmall().copyWith(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
         ]),
       ),
     );

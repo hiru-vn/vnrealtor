@@ -18,28 +18,33 @@ class PostRepo {
       {String postId, String mediaPostId, String content}) async {
     String data = '''
 content: "$content"
-postId: "$postId"
 like: 0
     ''';
     if (mediaPostId != null) {
       data += '\nmediaPostId: "$mediaPostId"';
+    } else {
+      data += '\npostId: "$postId"';
     }
     final res = await CommentSrv().add(data, fragment: '''
     id
     userId
     postId
+    mediaPostId
     like
+    content
     ''');
     return res;
   }
 
   Future getAllCommentByPostId({String postId}) async {
-    final res = await CommentSrv().getList(limit: 20, filter: "{postId: \"$postId\"}");
+    final res =
+        await CommentSrv().getList(limit: 20, filter: "{postId: \"$postId\"}");
     return res;
   }
 
-   Future getAllCommentByMediaPostId({String postMediaId}) async {
-    final res = await CommentSrv().getList(limit: 20, filter: "{postId: \"$postMediaId\"}");
+  Future getAllCommentByMediaPostId({String postMediaId}) async {
+    final res = await CommentSrv()
+        .getList(limit: 20, filter: "{postId: \"$postMediaId\"}");
     return res;
   }
 
@@ -54,5 +59,18 @@ like: 0
         .mutate('decreaseLikePost', 'postId: "$postId"', fragment: 'id');
     return res;
   }
-  
+
+  Future increaseLikeMediaPost({String postMediaId}) async {
+    final res = await PostSrv().mutate(
+        'increaseMediaLikePost', 'mediaPostId: "$postMediaId"',
+        fragment: 'id');
+    return res;
+  }
+
+  Future decreaseLikeMediaPost({String postMediaId}) async {
+    final res = await PostSrv().mutate(
+        'decreaseMediLikePost', 'mediaPostId: "$postMediaId"',
+        fragment: 'id');
+    return res;
+  }
 }

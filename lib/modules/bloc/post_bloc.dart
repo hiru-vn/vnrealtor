@@ -73,9 +73,31 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> likeMediaPost(String postMediaId) async {
+    try {
+      final res = await PostRepo().increaseLikeMediaPost(postMediaId: postMediaId);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message?.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> unlikePost(String postId) async {
     try {
       final res = await PostRepo().decreaseLikePost(postId: postId);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message?.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> unlikeMediaPost(String postMediaId) async {
+    try {
+      final res = await PostRepo().decreaseLikeMediaPost(postMediaId: postMediaId);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.message?.toString());

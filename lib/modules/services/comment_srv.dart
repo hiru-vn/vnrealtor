@@ -5,6 +5,7 @@ class CommentSrv extends BaseService {
 id: String
 userId: ID
 postId: ID
+mediaPostId: ID
 like: Int
 userLikeIds: [ID]
 content: String

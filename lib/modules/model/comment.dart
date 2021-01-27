@@ -4,6 +4,7 @@ class CommentModel {
   String id;
   String content;
   String userId;
+  String mediaPostId;
   String postId;
   int like;
   UserModel user;
@@ -15,6 +16,7 @@ class CommentModel {
       {this.id,
       this.content,
       this.userId,
+      this.mediaPostId,
       this.postId,
       this.like,
       this.user,
@@ -26,6 +28,7 @@ class CommentModel {
     content = json['content'];
     userId = json['userId'];
     postId = json['postId'];
+    mediaPostId = json['mediaPostId'];
     like = json['like'];
     user = json['user'] != null ? UserModel.fromJson(json['user']) : null;
     createdAt = json['createdAt'];
@@ -38,6 +41,7 @@ class CommentModel {
     data['content'] = this.content;
     data['userId'] = this.userId;
     data['postId'] = this.postId;
+    data['mediaPostId'] = this.mediaPostId;
     data['like'] = this.like;
     if (this.user != null) {
       data['user'] = this.user.toJson();
