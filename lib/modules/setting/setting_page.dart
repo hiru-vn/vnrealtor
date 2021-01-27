@@ -54,7 +54,10 @@ class _SettingPageState extends State<SettingPage> {
           pickList(context,
               title: 'Chọn ngôn ngữ',
               onPicked: (value) {},
-              options: ['Tiếng Việt', 'English'],
+              options: [
+                PickListItem('vi', 'Tiếng Việt'),
+                PickListItem('en', 'English')
+              ],
               closeText: 'Xong');
         }
       },

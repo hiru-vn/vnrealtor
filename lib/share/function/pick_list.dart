@@ -4,10 +4,17 @@
 
 import 'package:vnrealtor/share/import.dart';
 
+class PickListItem {
+  dynamic value;
+  String display;
+
+  PickListItem(this.value, this.display);
+}
+
 void pickList(BuildContext context,
     {String closeText,
     String title,
-    @required List<String> options,
+    @required List<PickListItem> options,
     @required Function(String) onPicked}) {
   if (options == null) return;
   showModalBottomSheet(
@@ -41,9 +48,9 @@ void pickList(BuildContext context,
                           ),
                           ...options?.map(
                             (e) => InkWell(
-                              onTap: () => navigatorKey.currentState.maybePop(),
+                              onTap: () => navigatorKey.currentState.maybePop(e.value),
                               child: OptionItem(
-                                text: e,
+                                text: e.display,
                                 color: ptPrimaryColorLight(context),
                               ),
                             ),

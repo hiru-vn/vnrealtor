@@ -36,6 +36,28 @@ like: 0
     return res;
   }
 
+  Future createPost(
+      {String postId, String mediaPostId, String content}) async {
+    String data = '''
+content: "$content"
+like: 0
+    ''';
+    if (mediaPostId != null) {
+      data += '\nmediaPostId: "$mediaPostId"';
+    } else {
+      data += '\npostId: "$postId"';
+    }
+    final res = await CommentSrv().add(data, fragment: '''
+    id
+    userId
+    postId
+    mediaPostId
+    like
+    content
+    ''');
+    return res;
+  }
+
   Future getAllCommentByPostId({String postId}) async {
     final res =
         await CommentSrv().getList(limit: 20, filter: "{postId: \"$postId\"}");

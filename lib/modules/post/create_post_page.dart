@@ -1,6 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
+import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/post/pick_coordinates.dart';
 import 'package:vnrealtor/share/import.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:vnrealtor/utils/file_util.dart';
 
 class CreatePostPage extends StatefulWidget {
   static navigate() {
@@ -12,12 +18,61 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
-  bool _makePublic = true;
   FocusNode _activityNode = FocusNode();
+  LatLng _pos;
+  DateTime _date;
+  String shareWith = 'public';
+  TextEditingController _contentC = TextEditingController();
+  List<String> _videos = [];
+  List<String> _images = [];
+  List<String> _allVideoAndImage = [];
+  PostBloc _postBloc;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_postBloc == null) {
+      _postBloc = Provider.of<PostBloc>(context);
+    }
+    super.didChangeDependencies();
+  }
+
+  Future _createPost() async {
+    if (_contentC.text.trim() == '') {
+      showToast('Nội dung không được để trống', context);
+    }
+    if (_allVideoAndImage.length == 0) {
+      showToast('Phải có ít nhất một hình ảnh hoặc video', context);
+    }
+
+    //final res =await _postBloc.createPost();
+  }
+
+  Future _upload(String filePath) async {
+    try {
+      _allVideoAndImage.add(loadingGif);
+      setState(() {});
+      final res = await FileUtil.uploadFireStorage(File(filePath),
+          path:
+              'posts/user_${AuthBloc.instance.userModel.id}/${Formart.formatToDate(DateTime.now(), seperateChar: '-')}');
+      if (FileUtil.getFbUrlFileType(res) == FileType.image ||
+          FileUtil.getFbUrlFileType(res) == FileType.gif) {
+        _images.add(res);
+        _allVideoAndImage.add(res);
+      }
+      if (FileUtil.getFbUrlFileType(res) == FileType.video) {
+        _videos.add(res);
+        _allVideoAndImage.add(res);
+      }
+      _allVideoAndImage.remove(loadingGif);
+      setState(() {});
+    } catch (e) {
+      showToast(e.toString(), context);
+    }
   }
 
   @override
@@ -51,11 +106,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       child: SizedBox(
                         height: 110,
                         child: ImageRowPicker(
-                          [
-                            'https://i.pinimg.com/originals/38/d7/5b/38d75b985d9d08ce0959201f8198f405.jpg',
-                            'https://i.pinimg.com/originals/c9/aa/f8/c9aaf8853557c381c80ee827db0dad64.jpg'
-                          ],
+                          _allVideoAndImage,
                           onUpdateListImg: (listImg) {},
+                          onAddImg: _upload,
                         ),
                       ),
                     ),
@@ -65,6 +118,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         child: TextField(
                           maxLength: 400,
                           maxLines: null,
+                          controller: _contentC,
                           style: ptBigBody().copyWith(color: Colors.black54),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -121,7 +175,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
           highlightColor: ptAccentColor(context),
           splashColor: ptPrimaryColor(context),
           onTap: () {
-            PickCoordinates.navigate();
+            PickCoordinates.navigate().then((value) => setState(() {
+                  _pos = value;
+                }));
           },
           child: CustomListTile(
             leading: Icon(
@@ -132,10 +188,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
               'Gắn vị trí',
               style: ptTitle(),
             ),
-            trailing: Icon(
-              MdiIcons.arrowRightCircle,
-              size: 20,
-              color: Colors.black54,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_pos != null) Text('Đã chọn'),
+                SizedBox(width: 10),
+                Icon(
+                  MdiIcons.arrowRightCircle,
+                  size: 20,
+                  color: Colors.black54,
+                ),
+              ],
             ),
           ),
         ),
@@ -149,7 +212,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
               initialDate: DateTime.now(),
               firstDate: DateTime.now(),
               lastDate: DateTime.now(),
-            );
+            ).then((value) => setState(() {
+                  _date = value;
+                }));
           },
           leading: Icon(
             Icons.date_range,
@@ -159,7 +224,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
             'Ngày hết hạn',
             style: ptTitle(),
           ),
-          trailing: Text('2/4/2020'),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(Formart.formatToDate(_date) ?? 'Không hết hạn'),
+              // SizedBox(width: 10),
+              //   Icon(
+              //     MdiIcons.calendar,
+              //     size: 20,
+              //     color: Colors.black54,
+              //   ),
+            ],
+          ),
         ),
         Divider(
           height: 3,
@@ -173,14 +249,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
             'Chia sẻ với',
             style: ptTitle(),
           ),
-          trailing: Text('Tất cả mọi người'),
+          trailing: shareWith != null
+              ? Text(shareWith == 'public'
+                  ? 'Tất cả mọi người'
+                  : 'Chỉ bạn bè mới nhìn thấy')
+              : Text('Chọn'),
           onTap: () {
             pickList(context,
                 title: 'Chia sẻ với',
                 onPicked: (value) {},
                 options: [
-                  'Tất cả mọi người',
-                  'Chỉ bạn bè mới nhìn thấy',
+                  PickListItem('public', 'Tất cả mọi người'),
+                  PickListItem('friend', 'Chỉ bạn bè mới nhìn thấy'),
                 ],
                 closeText: 'Xong');
           },

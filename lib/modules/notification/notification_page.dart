@@ -1,6 +1,7 @@
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
+import 'package:vnrealtor/share/widget/empty_widget.dart';
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -171,92 +172,101 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _userBloc.friendRequestFromOtherUsers.length,
-      itemBuilder: (context, index) {
-        final item = _userBloc.friendRequestFromOtherUsers[index];
-        return ListTile(
-          onTap: () {
-            ProfilePage.navigate(item.user1);
-          },
-          tileColor: ptBackgroundColor(context),
-          leading: CircleAvatar(
-            radius: 22,
-            backgroundImage: item.user1.avatar != null
-                ? NetworkImage(item.user1.avatar)
-                : AssetImage('assets/image/avatar.jpeg'),
-          ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 10),
-              Text(
-                '${item.user1.name} đã gửi lời mời kết bạn',
-                style: ptBody(),
-              ),
-              Text(
-                Formart.timeAgo(DateTime.tryParse(item.createdAt ?? '')) ?? '',
-                style: ptTiny().copyWith(color: Colors.black54),
-              ),
-            ],
-          ),
-          subtitle: Row(
-            children: [
-              FlatButton(
-                height: 32,
-                padding: EdgeInsets.all(0),
-                color: ptPrimaryColor(context),
-                child: Text(
-                  'Đồng ý',
-                  style: ptSmall().copyWith(color: Colors.white),
-                ),
-                onPressed: () async {
-                  setState(() {
-                    _userBloc.friendRequestFromOtherUsers.remove(item);
-                  });
-                  final res = await _userBloc.acceptFriendInvite(item.id);
-                  if (res.isSuccess) {
-                    setState(() {
-                      _userBloc.friendRequestFromOtherUsers.remove(item);
-                    });
-                  } else {
-                    showToast(res.errMessage, context);
-                    setState(() {
-                      _userBloc.friendRequestFromOtherUsers.add(item);
-                    });
-                  }
+    return _userBloc.friendRequestFromOtherUsers.length != 0
+        ? ListView.builder(
+            itemCount: _userBloc.friendRequestFromOtherUsers.length,
+            itemBuilder: (context, index) {
+              final item = _userBloc.friendRequestFromOtherUsers[index];
+              return ListTile(
+                onTap: () {
+                  ProfilePage.navigate(item.user1);
                 },
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              FlatButton(
-                height: 32,
-                padding: EdgeInsets.all(0),
-                color: Colors.grey[400],
-                child: Text(
-                  'Từ chối',
-                  style: ptSmall().copyWith(color: Colors.white),
+                tileColor: ptBackgroundColor(context),
+                leading: CircleAvatar(
+                  radius: 22,
+                  backgroundImage: item.user1.avatar != null
+                      ? NetworkImage(item.user1.avatar)
+                      : AssetImage('assets/image/avatar.jpeg'),
                 ),
-                onPressed: () async {
-                  setState(() {
-                    _userBloc.friendRequestFromOtherUsers.remove(item);
-                  });
-                  final res = await _userBloc.declineFriendInvite(item.id);
-                  if (res.isSuccess) {
-                  } else {
-                    showToast(res.errMessage, context);
-                    setState(() {
-                      _userBloc.friendRequestFromOtherUsers.add(item);
-                    });
-                  }
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 10),
+                    Text(
+                      '${item.user1.name} đã gửi lời mời kết bạn',
+                      style: ptBody(),
+                    ),
+                    Text(
+                      Formart.timeAgo(
+                              DateTime.tryParse(item.createdAt ?? '')) ??
+                          '',
+                      style: ptTiny().copyWith(color: Colors.black54),
+                    ),
+                  ],
+                ),
+                subtitle: Row(
+                  children: [
+                    FlatButton(
+                      height: 32,
+                      padding: EdgeInsets.all(0),
+                      color: ptPrimaryColor(context),
+                      child: Text(
+                        'Đồng ý',
+                        style: ptSmall().copyWith(color: Colors.white),
+                      ),
+                      onPressed: () async {
+                        setState(() {
+                          _userBloc.friendRequestFromOtherUsers.remove(item);
+                        });
+                        final res = await _userBloc.acceptFriendInvite(item.id);
+                        if (res.isSuccess) {
+                          setState(() {
+                            _userBloc.friendRequestFromOtherUsers.remove(item);
+                          });
+                        } else {
+                          showToast(res.errMessage, context);
+                          setState(() {
+                            _userBloc.friendRequestFromOtherUsers.add(item);
+                          });
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    FlatButton(
+                      height: 32,
+                      padding: EdgeInsets.all(0),
+                      color: Colors.grey[400],
+                      child: Text(
+                        'Từ chối',
+                        style: ptSmall().copyWith(color: Colors.white),
+                      ),
+                      onPressed: () async {
+                        setState(() {
+                          _userBloc.friendRequestFromOtherUsers.remove(item);
+                        });
+                        final res =
+                            await _userBloc.declineFriendInvite(item.id);
+                        if (res.isSuccess) {
+                        } else {
+                          showToast(res.errMessage, context);
+                          setState(() {
+                            _userBloc.friendRequestFromOtherUsers.add(item);
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          )
+        : EmptyWidget(
+            assetImg: 'assets/image/no_user.png',
+            title: 'Không có lời mời kết bạn',
+            content: 'Tìm kiếm và kết bạn để có thêm nhiều bạn bè hơn',
+          );
   }
 }

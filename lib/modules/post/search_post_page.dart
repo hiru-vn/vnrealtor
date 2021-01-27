@@ -106,9 +106,9 @@ class _SearchPostPageState extends State<SearchPostPage>
                         title: 'Sắp xếp kết quả theo',
                         onPicked: (value) {},
                         options: [
-                          'Mới nhất xếp trước',
-                          'Cũ nhất xếp trước',
-                          'Địa điểm gần tôi nhất'
+                          PickListItem(0,'Mới nhất xếp trước'),
+                          PickListItem(1,'Cũ nhất xếp trước'),
+                          PickListItem(2,'Địa điểm gần tôi nhất')
                         ],
                         closeText: 'Xong');
                   }),

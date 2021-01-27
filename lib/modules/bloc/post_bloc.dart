@@ -49,6 +49,19 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> createPost(String content,
+      {String postId, String mediaPostId}) async {
+    try {
+      final res = await PostRepo().createPost(
+          postId: postId, mediaPostId: mediaPostId, content: content);
+      return BaseResponse.success(CommentModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> createComment(String content,
       {String postId, String mediaPostId}) async {
     try {

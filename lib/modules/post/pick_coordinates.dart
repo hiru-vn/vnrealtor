@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vnrealtor/share/import.dart';
@@ -18,6 +19,20 @@ class PickCoordinatesState extends State<PickCoordinates> {
     target: LatLng(16.04, 108.19),
     zoom: 5,
   );
+  Marker selectedMarker;
+
+  void _selectMarker(LatLng point) {
+    setState(() {
+      selectedMarker = Marker(
+        markerId: MarkerId(point.toString()),
+        position: point,
+        infoWindow: InfoWindow(
+          title: 'Ví trí đang chọn',
+        ),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      );
+    });
+  }
 
   @override
   void initState() {
@@ -50,7 +65,25 @@ class PickCoordinatesState extends State<PickCoordinates> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar2('Nhấn để chọn điểm',),
+      appBar: AppBar2(
+        'Nhấn để chọn điểm',
+        actions: [
+          GestureDetector(
+            onTap: () {
+              navigatorKey.currentState.maybePop(selectedMarker.position);
+            },
+            child: SizedBox(
+                width: 40,
+                height: 40,
+                child: Center(
+                  child: Text(
+                    'OK',
+                    style: ptTitle().copyWith(color: Colors.white),
+                  ),
+                )),
+          )
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
@@ -60,6 +93,8 @@ class PickCoordinatesState extends State<PickCoordinates> {
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
               },
+              onTap: _selectMarker,
+              markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
             ),
           ),
         ],

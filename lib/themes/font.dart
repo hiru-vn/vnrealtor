@@ -14,7 +14,7 @@ TextStyle ptHeadLineSmall() => TextStyle(
     letterSpacing: 1.3);
 
 TextStyle ptBigTitle() =>
-    TextStyle(fontWeight: FontWeight.w600, fontSize: 17, letterSpacing: 0.5);
+    TextStyle(fontWeight: FontWeight.w600, fontSize: 17.5, letterSpacing: 0.5);
 
 TextStyle ptTitle() => TextStyle(
     fontSize: 15,
