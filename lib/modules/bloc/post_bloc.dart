@@ -25,7 +25,20 @@ class PostBloc extends ChangeNotifier {
 
   Future<BaseResponse> getListPostComment(String postId) async {
     try {
-      final res = await PostRepo().getAllComment(postId: postId);
+      final res = await PostRepo().getAllCommentByPostId(postId: postId);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message?.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getListMediaPostComment(String postMediaId) async {
+    try {
+      final res = await PostRepo().getAllCommentByMediaPostId(postMediaId: postMediaId);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);

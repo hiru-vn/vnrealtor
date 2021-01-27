@@ -1,5 +1,6 @@
 import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/model/post.dart';
+import 'package:vnrealtor/modules/post/media_post_widget.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/function/share_to.dart';
 import 'package:vnrealtor/share/import.dart';
@@ -129,8 +130,8 @@ class _PostWidgetState extends State<PostWidget> {
                     return Container(
                       width: deviceWidth(context) /
                           (widget.post?.mediaPosts?.length == 1 ? 1 : 2),
-                      child: ImageViewNetwork(
-                        url: widget.post?.mediaPosts[index].url,
+                      child: MediaPostWidget(
+                        post: widget.post?.mediaPosts[index],
                       ),
                     );
                   },
@@ -163,7 +164,7 @@ class _PostWidgetState extends State<PostWidget> {
                   Spacer(),
                   GestureDetector(
                     onTap: () {
-                      showComment();
+                      showComment(widget.post);
                     },
                     child: Text(
                       '${widget.post?.commentIds?.length.toString() ?? '0'} comments',
@@ -228,7 +229,7 @@ class _PostWidgetState extends State<PostWidget> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            showComment();
+                            showComment(widget.post);
                           },
                           child: Text(
                             'Comment',
@@ -270,7 +271,7 @@ class _PostWidgetState extends State<PostWidget> {
     );
   }
 
-  showComment() {
+  showComment(PostModel postModel) {
     showModalBottomSheet(
         useRootNavigator: true,
         context: context,
@@ -298,8 +299,8 @@ class _PostWidgetState extends State<PostWidget> {
                     ),
                   ),
                   Expanded(
-                      child: CommentPage(
-                    post: widget.post,
+                      child: new CommentPage(
+                    post: postModel,
                   )),
                 ],
               ));

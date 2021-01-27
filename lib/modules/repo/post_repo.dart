@@ -33,8 +33,13 @@ like: 0
     return res;
   }
 
-  Future getAllComment({String postId}) async {
-    final res = await CommentSrv().getList(limit: 20);
+  Future getAllCommentByPostId({String postId}) async {
+    final res = await CommentSrv().getList(limit: 20, filter: "{postId: \"$postId\"}");
+    return res;
+  }
+
+   Future getAllCommentByMediaPostId({String postMediaId}) async {
+    final res = await CommentSrv().getList(limit: 20, filter: "{postId: \"$postMediaId\"}");
     return res;
   }
 
