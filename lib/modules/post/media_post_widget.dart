@@ -54,7 +54,7 @@ class MediaPostWidget extends StatelessWidget {
       );
     else if (type == FileType.video)
       return Image.asset(
-       'assets/image/video_holder.png',
+        'assets/image/video_holder.png',
         fit: BoxFit.cover,
         errorBuilder: imageNetworkErrorBuilder,
       );

@@ -123,18 +123,22 @@ class _PostWidgetState extends State<PostWidget> {
               Container(
                 height: deviceWidth(context) / 2 - 5,
                 width: deviceWidth(context),
-                child: ListView.builder(
+                child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: widget.post?.mediaPosts?.length,
                   itemBuilder: (context, index) {
                     return Container(
                       width: deviceWidth(context) /
-                          (widget.post?.mediaPosts?.length == 1 ? 1 : 2),
+                              (widget.post?.mediaPosts?.length == 1 ? 1 : 2) -
+                          ((widget.post?.mediaPosts?.length == 1) ? 5 : 0),
                       child: MediaPostWidget(
                         post: widget.post?.mediaPosts[index],
                       ),
                     );
                   },
+                  separatorBuilder: (context, index) => SizedBox(
+                    width: 0.8,
+                  ),
                 ),
               ),
             SizedBox(height: 10),
