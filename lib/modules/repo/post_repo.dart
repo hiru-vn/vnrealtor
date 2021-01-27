@@ -44,7 +44,7 @@ like: 0
 
   Future getAllCommentByMediaPostId({String postMediaId}) async {
     final res = await CommentSrv()
-        .getList(limit: 20, filter: "{postId: \"$postMediaId\"}");
+        .getList(limit: 20, filter: "{mediaPostId: \"$postMediaId\"}");
     return res;
   }
 
