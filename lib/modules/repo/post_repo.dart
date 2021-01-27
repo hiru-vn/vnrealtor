@@ -1,4 +1,5 @@
 import 'package:vnrealtor/modules/services/comment_srv.dart';
+import 'package:vnrealtor/modules/services/graphql_helper.dart';
 import 'package:vnrealtor/modules/services/post_srv.dart';
 
 import 'filter.dart';
@@ -10,7 +11,7 @@ class PostRepo {
         offset: filter.offset,
         search: filter.search,
         page: filter.page,
-        order: filter.order);
+        order: '{createdAt: -1}');
     return res;
   }
 
@@ -36,26 +37,68 @@ like: 0
     return res;
   }
 
-  Future createPost(
-      {String postId, String mediaPostId, String content}) async {
+  Future createPost(String content, String expirationDate, bool publicity,
+      double lat, double long, List<String> images, List<String> videos) async {
     String data = '''
 content: "$content"
-like: 0
+locationLat: $lat
+locationLong: $long
+publicity: $publicity
+videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
+images: ${GraphqlHelper.listStringToGraphqlString(images)}
+
     ''';
-    if (mediaPostId != null) {
-      data += '\nmediaPostId: "$mediaPostId"';
-    } else {
-      data += '\npostId: "$postId"';
+
+    if (expirationDate != null) {
+      data += '\nexpirationDate: "$expirationDate"';
     }
-    final res = await CommentSrv().add(data, fragment: '''
-    id
-    userId
-    postId
-    mediaPostId
-    like
-    content
+    final res =
+        await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''
+id
+content
+mediaPostIds
+commentIds
+userId
+like
+userLikeIds
+share
+userShareIds
+locationLat
+locationLong
+expirationDate
+publicity
+user {
+  id 
+  uid 
+  name 
+  email 
+  phone 
+  role 
+  reputationScore 
+  createdAt 
+  updatedAt 
+  friendIds
+}
+mediaPosts {
+id
+userId
+type
+like
+userLikeIds
+commentIds
+description
+url
+locationLat
+locationLong
+expirationDate
+publicity
+createdAt
+updatedAt
+}
+createdAt
+updatedAt
     ''');
-    return res;
+    return res["createPost"];
   }
 
   Future getAllCommentByPostId({String postId}) async {

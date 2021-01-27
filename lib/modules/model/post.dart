@@ -45,13 +45,13 @@ class PostModel {
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     content = json['content'];
-    mediaPostIds = json['mediaPostIds'].cast<String>();
-    commentIds = json['commentIds'].cast<String>();
+    mediaPostIds = json['mediaPostIds']!=null? json['mediaPostIds'].cast<String>(): [];
+    commentIds = json['commentIds']!=null? json['commentIds'].cast<String>(): [];
     userId = json['userId'];
     like = json['like'];
-    userLikeIds = json['userLikeIds'].cast<String>();
+    userLikeIds = json['userLikeIds']!=null? json['userLikeIds'].cast<String>() : [];
     share = json['share'];
-    userShareIds = json['userShareIds'].cast<String>();
+    userShareIds = json['userShareIds']!=null? json['userShareIds'].cast<String>() : [];
     locationLat = json['locationLat'];
     locationLong = json['locationLong'];
     expirationDate = json['expirationDate'];

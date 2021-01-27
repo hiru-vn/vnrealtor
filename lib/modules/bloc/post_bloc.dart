@@ -38,7 +38,8 @@ class PostBloc extends ChangeNotifier {
 
   Future<BaseResponse> getListMediaPostComment(String postMediaId) async {
     try {
-      final res = await PostRepo().getAllCommentByMediaPostId(postMediaId: postMediaId);
+      final res =
+          await PostRepo().getAllCommentByMediaPostId(postMediaId: postMediaId);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
@@ -49,16 +50,23 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> createPost(String content,
-      {String postId, String mediaPostId}) async {
+  Future<BaseResponse> createPost(
+      String content,
+      String expirationDate,
+      bool publicity,
+      double lat,
+      double long,
+      List<String> images,
+      List<String> videos) async {
     try {
       final res = await PostRepo().createPost(
-          postId: postId, mediaPostId: mediaPostId, content: content);
-      return BaseResponse.success(CommentModel.fromJson(res));
+          content, expirationDate, publicity, lat, long, images, videos);
+      return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());
     } finally {
-      notifyListeners();
+      // wait to reload post
+      Future.delayed(Duration(seconds: 1), () => notifyListeners());
     }
   }
 
@@ -88,7 +96,8 @@ class PostBloc extends ChangeNotifier {
 
   Future<BaseResponse> likeMediaPost(String postMediaId) async {
     try {
-      final res = await PostRepo().increaseLikeMediaPost(postMediaId: postMediaId);
+      final res =
+          await PostRepo().increaseLikeMediaPost(postMediaId: postMediaId);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.message?.toString());
@@ -110,7 +119,8 @@ class PostBloc extends ChangeNotifier {
 
   Future<BaseResponse> unlikeMediaPost(String postMediaId) async {
     try {
-      final res = await PostRepo().decreaseLikeMediaPost(postMediaId: postMediaId);
+      final res =
+          await PostRepo().decreaseLikeMediaPost(postMediaId: postMediaId);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.message?.toString());

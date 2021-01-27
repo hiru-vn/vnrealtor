@@ -20,8 +20,8 @@ class CreatePostPage extends StatefulWidget {
 class _CreatePostPageState extends State<CreatePostPage> {
   FocusNode _activityNode = FocusNode();
   LatLng _pos;
-  DateTime _date;
-  String shareWith = 'public';
+  DateTime _expirationDate;
+  String _shareWith = 'public';
   TextEditingController _contentC = TextEditingController();
   List<String> _videos = [];
   List<String> _images = [];
@@ -44,12 +44,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Future _createPost() async {
     if (_contentC.text.trim() == '') {
       showToast('Nội dung không được để trống', context);
+      return;
     }
     if (_allVideoAndImage.length == 0) {
       showToast('Phải có ít nhất một hình ảnh hoặc video', context);
+      return;
     }
-
-    //final res =await _postBloc.createPost();
+    showSimpleLoadingDialog(context);
+    final res = await _postBloc.createPost(
+        _contentC.text,
+        _expirationDate.toIso8601String(),
+        _shareWith == 'public',
+        _pos.latitude,
+        _pos.longitude,
+        _images,
+        _videos);
+    await navigatorKey.currentState.maybePop();
+    if (res.isSuccess) {
+      _postBloc.post.insert(0, res.data);
+      await navigatorKey.currentState.maybePop();
+    } else {
+      showToast(res.errMessage, context);
+    }
   }
 
   Future _upload(String filePath) async {
@@ -145,9 +161,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ),
                     ExpandRectangleButton(
                       text: 'Đăng bài',
-                      onTap: () {
-                        navigatorKey.currentState.maybePop();
-                      },
+                      onTap: _createPost,
                     ),
                     SizedBox(
                       height: _activityNode.hasFocus
@@ -165,107 +179,113 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   _buildForm() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Divider(
-          height: 3,
-        ),
-        InkWell(
-          highlightColor: ptAccentColor(context),
-          splashColor: ptPrimaryColor(context),
-          onTap: () {
-            PickCoordinates.navigate().then((value) => setState(() {
-                  _pos = value;
-                }));
-          },
-          child: CustomListTile(
+    return GestureDetector(
+      onTap: () {},
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Divider(
+            height: 3,
+          ),
+          InkWell(
+            highlightColor: ptAccentColor(context),
+            splashColor: ptPrimaryColor(context),
+            onTap: () {
+              PickCoordinates.navigate().then((value) => setState(() {
+                    _pos = value;
+                    FocusScope.of(context).unfocus();
+                  }));
+            },
+            child: CustomListTile(
+              leading: Icon(
+                Icons.map,
+                color: Colors.black54,
+              ),
+              title: Text(
+                'Gắn vị trí',
+                style: ptTitle(),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_pos != null) Text('Đã chọn'),
+                  SizedBox(width: 10),
+                  Icon(
+                    MdiIcons.arrowRightCircle,
+                    size: 20,
+                    color: Colors.black54,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Divider(
+            height: 3,
+          ),
+          CustomListTile(
+            onTap: () {
+              showDatePicker(
+                context: context,
+                initialDate: DateTime.now().add(Duration(days: 30)),
+                firstDate: DateTime.now(),
+                lastDate: DateTime.now().add(Duration(days: 500)),
+              ).then((value) => setState(() {
+                    _expirationDate = value;
+                    FocusScope.of(context).unfocus();
+                  }));
+            },
             leading: Icon(
-              Icons.map,
+              Icons.date_range,
               color: Colors.black54,
             ),
             title: Text(
-              'Gắn vị trí',
+              'Ngày hết hạn',
               style: ptTitle(),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (_pos != null) Text('Đã chọn'),
-                SizedBox(width: 10),
-                Icon(
-                  MdiIcons.arrowRightCircle,
-                  size: 20,
-                  color: Colors.black54,
-                ),
+                Text(Formart.formatToDate(_expirationDate) ?? 'Không hết hạn'),
+                // SizedBox(width: 10),
+                //   Icon(
+                //     MdiIcons.calendar,
+                //     size: 20,
+                //     color: Colors.black54,
+                //   ),
               ],
             ),
           ),
-        ),
-        Divider(
-          height: 3,
-        ),
-        CustomListTile(
-          onTap: () {
-            showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now(),
-            ).then((value) => setState(() {
-                  _date = value;
-                }));
-          },
-          leading: Icon(
-            Icons.date_range,
-            color: Colors.black54,
+          Divider(
+            height: 3,
           ),
-          title: Text(
-            'Ngày hết hạn',
-            style: ptTitle(),
+          CustomListTile(
+            leading: Icon(
+              Icons.language,
+              color: Colors.black54,
+            ),
+            title: Text(
+              'Chia sẻ với',
+              style: ptTitle(),
+            ),
+            trailing: _shareWith != null
+                ? Text(_shareWith == 'public'
+                    ? 'Tất cả mọi người'
+                    : 'Chỉ bạn bè mới nhìn thấy')
+                : Text('Chọn'),
+            onTap: () {
+              pickList(context, title: 'Chia sẻ với', onPicked: (value) {
+                setState(() {
+                  _shareWith = value;
+                  FocusScope.of(context).unfocus();
+                });
+              }, options: [
+                PickListItem('public', 'Tất cả mọi người'),
+                PickListItem('friend', 'Chỉ bạn bè mới nhìn thấy'),
+              ], closeText: 'Xong');
+            },
           ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(Formart.formatToDate(_date) ?? 'Không hết hạn'),
-              // SizedBox(width: 10),
-              //   Icon(
-              //     MdiIcons.calendar,
-              //     size: 20,
-              //     color: Colors.black54,
-              //   ),
-            ],
-          ),
-        ),
-        Divider(
-          height: 3,
-        ),
-        CustomListTile(
-          leading: Icon(
-            Icons.language,
-            color: Colors.black54,
-          ),
-          title: Text(
-            'Chia sẻ với',
-            style: ptTitle(),
-          ),
-          trailing: shareWith != null
-              ? Text(shareWith == 'public'
-                  ? 'Tất cả mọi người'
-                  : 'Chỉ bạn bè mới nhìn thấy')
-              : Text('Chọn'),
-          onTap: () {
-            pickList(context,
-                title: 'Chia sẻ với',
-                onPicked: (value) {},
-                options: [
-                  PickListItem('public', 'Tất cả mọi người'),
-                  PickListItem('friend', 'Chỉ bạn bè mới nhìn thấy'),
-                ],
-                closeText: 'Xong');
-          },
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

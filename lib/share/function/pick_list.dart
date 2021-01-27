@@ -1,4 +1,3 @@
-
 // show a list of string options
 // when user tap on one, excute a callback function with string value as param
 
@@ -15,7 +14,7 @@ void pickList(BuildContext context,
     {String closeText,
     String title,
     @required List<PickListItem> options,
-    @required Function(String) onPicked}) {
+    @required Function(dynamic) onPicked}) {
   if (options == null) return;
   showModalBottomSheet(
       useRootNavigator: true,
@@ -48,7 +47,10 @@ void pickList(BuildContext context,
                           ),
                           ...options?.map(
                             (e) => InkWell(
-                              onTap: () => navigatorKey.currentState.maybePop(e.value),
+                              onTap: () {
+                                navigatorKey.currentState.maybePop(e.value);
+                                onPicked(e.value);
+                              },
                               child: OptionItem(
                                 text: e.display,
                                 color: ptPrimaryColorLight(context),
