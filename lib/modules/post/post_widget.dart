@@ -129,8 +129,7 @@ class _PostWidgetState extends State<PostWidget> {
                   itemBuilder: (context, index) {
                     return Container(
                       width: deviceWidth(context) /
-                              (widget.post?.mediaPosts?.length == 1 ? 1 : 2) -
-                          ((widget.post?.mediaPosts?.length == 1) ? 5 : 0),
+                              (widget.post?.mediaPosts?.length == 1 ? 1 : 2),
                       child: MediaPostWidget(
                         post: widget.post?.mediaPosts[index],
                       ),
@@ -189,7 +188,7 @@ class _PostWidgetState extends State<PostWidget> {
                         widget.post.like++;
                         _postBloc.likePost(widget.post.id);
                       } else {
-                        widget.post.like--;
+                        if (widget.post.like > 0) widget.post.like--;
                         _postBloc.unlikePost(widget.post.id);
                       }
                       setState(() {});

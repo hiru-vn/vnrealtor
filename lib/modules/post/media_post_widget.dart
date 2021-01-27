@@ -142,7 +142,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                           widget.post.like++;
                           _postBloc.likeMediaPost(widget.post.id);
                         } else {
-                          widget.post.like--;
+                          if (widget.post.like > 0) widget.post.like--;
                           _postBloc.unlikeMediaPost(widget.post.id);
                         }
                         setState(() {});
@@ -373,7 +373,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                           widget.post.like++;
                           _postBloc.likeMediaPost(widget.post.id);
                         } else {
-                          widget.post.like--;
+                          if (widget.post.like > 0) widget.post.like--;
                           _postBloc.unlikeMediaPost(widget.post.id);
                         }
                         setState(() {});
