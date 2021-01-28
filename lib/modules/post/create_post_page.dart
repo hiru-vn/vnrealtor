@@ -155,6 +155,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    SizedBox(height: 10),
                     _buildForm(),
                     SizedBox(
                       height: 3.0,
@@ -180,7 +181,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   _buildForm() {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -193,7 +196,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
             onTap: () {
               PickCoordinates.navigate().then((value) => setState(() {
                     _pos = value;
-                    FocusScope.of(context).unfocus();
+                    FocusScope.of(context).requestFocus(FocusNode());
                   }));
             },
             child: CustomListTile(
@@ -231,7 +234,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 lastDate: DateTime.now().add(Duration(days: 500)),
               ).then((value) => setState(() {
                     _expirationDate = value;
-                    FocusScope.of(context).unfocus();
+                    FocusScope.of(context).requestFocus(FocusNode());
                   }));
             },
             leading: Icon(
@@ -276,7 +279,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               pickList(context, title: 'Chia sẻ với', onPicked: (value) {
                 setState(() {
                   _shareWith = value;
-                  FocusScope.of(context).unfocus();
+                  FocusScope.of(context).requestFocus(FocusNode());
                 });
               }, options: [
                 PickListItem('public', 'Tất cả mọi người'),

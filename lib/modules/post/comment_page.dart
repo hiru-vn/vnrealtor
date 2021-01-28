@@ -48,7 +48,7 @@ class _CommentPageState extends State<CommentPage> {
             like: 0,
             user: AuthBloc.instance.userModel,
             updatedAt: DateTime.now().toIso8601String()));
-    FocusScope.of(context).unfocus();
+   FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text,
         postId: widget.post?.id, mediaPostId: widget.mediaPost?.id);
     if (!res.isSuccess) {
