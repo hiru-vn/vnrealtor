@@ -67,7 +67,7 @@ class _SearchPostPageState extends State<SearchPostPage>
   }
 
   Future _searchPost(String text) async {
-    final res = await _postBloc.getNewFeed(filter: GraphqlFilter(search: text));
+    final res = await _postBloc.getNewFeed(filter: GraphqlFilter(search: text, order: '{createdAt: -1}'));
     if (res.isSuccess) {
       setState(() {
         posts = res.data;

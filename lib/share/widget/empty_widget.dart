@@ -15,7 +15,7 @@ class EmptyWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-              width: deviceWidth(context) / 1.6, child: Image.asset(assetImg)),
+              width: deviceWidth(context) / 1.7, child: Image.asset(assetImg)),
           if (title != null) ...[
             SizedBox(
               height: 20,

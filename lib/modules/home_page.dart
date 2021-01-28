@@ -1,3 +1,5 @@
+import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
+import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
 import 'package:vnrealtor/modules/notification/notification_page.dart';
 import 'package:vnrealtor/modules/post/post_page.dart';
 import 'package:vnrealtor/modules/setting/setting_page.dart';
@@ -57,6 +59,8 @@ class _HomePageState extends State<HomePage>
             setState(() {
               _selectedIndex = index;
             });
+            if (index == 1) //message
+            InboxBloc.instance.getList20InboxGroup(AuthBloc.instance.userModel.id);
           },
         ),
       ),

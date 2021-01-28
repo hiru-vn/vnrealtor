@@ -12,6 +12,8 @@ class InboxBloc extends ChangeNotifier {
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  List groupInboxList = [];
+
   DocumentReference getGroup(String id) {
     return firestore.collection('group').doc(id);
   }
@@ -39,8 +41,8 @@ class InboxBloc extends ChangeNotifier {
         'users': users,
       });
       users.forEach((uid) {
-        firestore.collection(userCollection).doc(uid).set({
-          'groups': [users.join("-")]
+        firestore.collection(userCollection).doc(uid).update({
+          'groups': FieldValue.arrayUnion([users.join("-")])
         });
       });
     }
@@ -48,7 +50,7 @@ class InboxBloc extends ChangeNotifier {
         FbInboxGroupModel(users.join("-"), lastAvatar, lastMessage, lastUser,
             time.toIso8601String(), [], users),
         lastUser);
-    getList20Inbox(AuthBloc.instance.userModel.id);
+    getList20InboxGroup(AuthBloc.instance.userModel.id);
     return;
   }
 
@@ -72,7 +74,7 @@ class InboxBloc extends ChangeNotifier {
         await firestore.collection(groupCollection).doc(groupid).get();
     if (snapShot.exists) {
       await getGroup(groupid).update({
-        'lastUser': lastUser,
+        //'lastUser': lastUser,
         'time': time.toIso8601String(),
         'lastMessage': lastMessage,
         'image': image,
@@ -184,12 +186,15 @@ class InboxBloc extends ChangeNotifier {
     }
     list.sort((a, b) =>
         DateTime.tryParse(b.time).compareTo(DateTime.tryParse(a.time)));
+    groupInboxList = list;
+    
     return list;
   }
 
-  Future<List<FbInboxGroupModel>> getList20Inbox(String idUser) async {
+  Future<List<FbInboxGroupModel>> getList20InboxGroup(String idUser) async {
     final groups = await get20UserGroupInboxList(idUser);
     final inboxes = await getGroupInboxList(groups);
+    notifyListeners();
     return inboxes;
   }
 

@@ -1,6 +1,7 @@
 import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/model/post.dart';
 import 'package:vnrealtor/modules/post/media_post_widget.dart';
+import 'package:vnrealtor/modules/post/post_google_map.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/function/share_to.dart';
 import 'package:vnrealtor/share/import.dart';
@@ -112,7 +113,7 @@ class _PostWidgetState extends State<PostWidget> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(15).copyWith(top: 0),
+              padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 0),
               child: ReadMoreText(
                 widget.post?.content ?? '',
                 trimLines: 2,
@@ -124,6 +125,26 @@ class _PostWidgetState extends State<PostWidget> {
                 moreStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),
+            if (widget.post.locationLat != null &&
+                widget.post.locationLong != null)
+              Container(
+                width: deviceWidth(context),
+                child: Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: () => showGoogleMapPoint(context,
+                          widget.post.locationLat, widget.post.locationLong),
+                      child: SizedBox(
+                        height: 30,
+                        child: Padding(
+                            padding: const EdgeInsets.only(right: 15),
+                            child: Text(
+                              'Xem vị trí',
+                              style: TextStyle(color: Colors.blue),
+                            )),
+                      ),
+                    )),
+              ),
             if ((widget.post?.mediaPosts?.length ?? 0) > 0)
               Container(
                 height: deviceWidth(context) / 2 - 5,
@@ -134,7 +155,7 @@ class _PostWidgetState extends State<PostWidget> {
                   itemBuilder: (context, index) {
                     return Container(
                       width: deviceWidth(context) /
-                              (widget.post?.mediaPosts?.length == 1 ? 1 : 2),
+                          (widget.post?.mediaPosts?.length == 1 ? 1 : 2),
                       child: MediaPostWidget(
                         post: widget.post?.mediaPosts[index],
                       ),

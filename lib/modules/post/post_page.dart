@@ -26,7 +26,8 @@ class _PostPageState extends State<PostPage> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of(context);
-      _postBloc.getNewFeed(filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
+      _postBloc.getNewFeed(
+          filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
     }
     super.didChangeDependencies();
   }
@@ -68,39 +69,7 @@ class _PostPageState extends State<PostPage> {
             SizedBox(
               height: 10,
             ),
-            Container(
-              width: deviceWidth(context),
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              color: Colors.white,
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      CreatePostPage.navigate();
-                    },
-                    child: Material(
-                      elevation: 5,
-                      borderRadius: BorderRadius.circular(13),
-                      color: ptPrimaryColor(context),
-                      child: Container(
-                        height: 52,
-                        width: 52,
-                        child: Center(
-                          child: Icon(Icons.add, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  Text(
-                    'Đăng bài viết',
-                    style: ptBigBody(),
-                  ),
-                ],
-              ),
-            ),
+            CreatePostCard(),
             ListView.builder(
               padding: EdgeInsets.all(0),
               shrinkWrap: true,
@@ -116,6 +85,45 @@ class _PostPageState extends State<PostPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CreatePostCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: deviceWidth(context),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      color: Colors.white,
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              CreatePostPage.navigate();
+            },
+            child: Material(
+              elevation: 5,
+              borderRadius: BorderRadius.circular(13),
+              color: ptPrimaryColor(context),
+              child: Container(
+                height: 52,
+                width: 52,
+                child: Center(
+                  child: Icon(Icons.add, color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 16,
+          ),
+          Text(
+            'Đăng bài viết',
+            style: ptBigBody(),
+          ),
+        ],
       ),
     );
   }

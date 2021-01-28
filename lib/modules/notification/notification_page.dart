@@ -1,4 +1,6 @@
+import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
+import 'package:vnrealtor/modules/model/notification.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/share/widget/empty_widget.dart';
@@ -12,6 +14,7 @@ class _NotificationPageState extends State<NotificationPage>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
   UserBloc _userBloc;
+  NotificationBloc _notificationBloc;
 
   @override
   void initState() {
@@ -24,6 +27,9 @@ class _NotificationPageState extends State<NotificationPage>
   void didChangeDependencies() {
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
+      _notificationBloc = Provider.of<NotificationBloc>(context);
+      _notificationBloc.getListNotification(
+          filter: GraphqlFilter(filter: 'createdAt: -1'));
     }
     super.didChangeDependencies();
   }
@@ -60,7 +66,7 @@ class _NotificationPageState extends State<NotificationPage>
                     height: 40,
                     width: deviceWidth(context) / 2 - 45,
                     child: Tab(
-                      text: 'Thông báo mới (3)',
+                      text: 'Thông báo mới',
                     ),
                   ),
                   SizedBox(
@@ -73,9 +79,12 @@ class _NotificationPageState extends State<NotificationPage>
                 ]),
           ),
           Expanded(
-            child: TabBarView(
-                controller: _tabController,
-                children: [NotificationTab(), FriendRequestTab()]),
+            child: TabBarView(controller: _tabController, children: [
+              NotificationTab(
+                list: _notificationBloc.notifications,
+              ),
+              FriendRequestTab()
+            ]),
           )
         ],
       ),
@@ -84,73 +93,37 @@ class _NotificationPageState extends State<NotificationPage>
 }
 
 class NotificationTab extends StatelessWidget {
+  final List<NotificationModel> list;
+
+  const NotificationTab({Key key, this.list}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
-          tileColor: ptBackgroundColor(context),
-          leading: CircleAvatar(
-            radius: 22,
-            backgroundImage: AssetImage('assets/image/avatar.jpg'),
-          ),
-          title: Text(
-            'Cuti pit đã chia sẻ bài viết của bạn',
-            style: ptBody(),
-          ),
-          subtitle: Text(
-            '1 tháng trước',
-            style: ptTiny(),
-          ),
-        ),
-        Divider(
-          height: 1,
-        ),
-        ListTile(
-          tileColor: ptBackgroundColor(context),
-          leading: CircleAvatar(
-            radius: 22,
-            backgroundImage: AssetImage('assets/image/avatar.jpeg'),
-          ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Hung Nguyen đã comment:',
+    return list.length > 0
+        ? ListView.separated(
+            separatorBuilder: (context, index) => Divider(
+              height: 1,
+            ),
+            itemCount: list.length,
+            itemBuilder: (context, index) => ListTile(
+              tileColor: ptBackgroundColor(context),
+              leading: CircleAvatar(
+                radius: 22,
+                backgroundImage: AssetImage('assets/image/avatar.jpg'),
+              ),
+              title: Text(
+                'Cuti pit đã chia sẻ bài viết của bạn',
                 style: ptBody(),
               ),
-              Text(
-                '"Dự án này còn hoạt động không bạn?. Mình..."',
-                style: ptSmall(),
-              )
-            ],
-          ),
-          subtitle: Text(
-            '1 tháng trước',
-            style: ptTiny(),
-          ),
-        ),
-        Divider(
-          height: 1,
-        ),
-        ListTile(
-          tileColor: ptBackgroundColor(context),
-          leading: CircleAvatar(
-            radius: 22,
-            backgroundImage: AssetImage('assets/image/avatar.jpeg'),
-          ),
-          title: Text(
-            'Hung Nguyen đã thích bài viết của bạn',
-            style: ptBody(),
-          ),
-          subtitle: Text(
-            '1 tháng trước',
-            style: ptTiny(),
-          ),
-        ),
-      ],
-    );
+              subtitle: Text(
+                '1 tháng trước',
+                style: ptTiny(),
+              ),
+            ),
+          )
+        : EmptyWidget(
+            assetImg: 'assets/image/no_notification.png',
+            title: 'Bạn chưa có thông báo mới',
+          );
   }
 }
 
