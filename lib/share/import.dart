@@ -29,3 +29,4 @@ export 'package:vnrealtor/utils/formart.dart';
 export 'package:vnrealtor/utils/validator.dart';
 export 'package:vnrealtor/modules/repo/filter.dart';
 export 'package:vnrealtor/modules/services/base_response.dart';
+export 'package:vnrealtor/share/widget/loading_widget.dart';

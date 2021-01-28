@@ -101,7 +101,10 @@ class _DetailVideoScreenState extends State<DetailVideoScreen> {
             top: kToolbarHeight,
             right: 10,
             child: InkWell(
-              onTap: () => Navigator.of(context).maybePop(),
+              onTap: () { 
+                Navigator.of(context).maybePop();
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
               child: Container(
                 decoration: BoxDecoration(
                     color: Colors.black45,

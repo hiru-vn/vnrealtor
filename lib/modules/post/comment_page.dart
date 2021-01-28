@@ -71,7 +71,7 @@ class _CommentPageState extends State<CommentPage> {
 
   Future _getComments() async {
     BaseResponse res;
-    if (isPost) res = await _postBloc.getListPostComment(widget.post.id);
+    if (isPost) res = await _postBloc.getNewFeedComment(widget.post.id);
     if (isMediaPost)
       res = await _postBloc.getListMediaPostComment(widget.mediaPost.id);
     if (res == null) return;

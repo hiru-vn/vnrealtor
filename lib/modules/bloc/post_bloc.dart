@@ -9,9 +9,9 @@ class PostBloc extends ChangeNotifier {
 
   List<PostModel> post = [];
 
-  Future<BaseResponse> getListPost({GraphqlFilter filter}) async {
+  Future<BaseResponse> getNewFeed({GraphqlFilter filter}) async {
     try {
-      final res = await PostRepo().getListPost(filter: filter);
+      final res = await PostRepo().getNewFeed(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       post = list;
@@ -23,7 +23,21 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getListPostComment(String postId) async {
+  Future<BaseResponse> getMyPost({GraphqlFilter filter}) async {
+    try {
+      final res = await PostRepo().getMyPost(filter: filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      post = list;
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message?.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getNewFeedComment(String postId) async {
     try {
       final res = await PostRepo().getAllCommentByPostId(postId: postId);
       final List listRaw = res['data'];

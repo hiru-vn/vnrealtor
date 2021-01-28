@@ -1,11 +1,15 @@
-import 'package:vnrealtor/modules/post/post_widget.dart';
 import 'package:vnrealtor/share/import.dart';
 
-class PostHistoryPage extends StatelessWidget {
+class PostHistoryPage extends StatefulWidget {
   static Future navigate() {
     return navigatorKey.currentState.push(pageBuilder(PostHistoryPage()));
   }
 
+  @override
+  _PostHistoryPageState createState() => _PostHistoryPageState();
+}
+
+class _PostHistoryPageState extends State<PostHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

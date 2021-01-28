@@ -1,8 +1,10 @@
+import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
+import 'package:vnrealtor/modules/model/post.dart';
 import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/post/post_map.dart';
-import 'package:vnrealtor/modules/post/post_search_widget.dart';
 import 'package:vnrealtor/modules/post/people_widget.dart';
+import 'package:vnrealtor/modules/post/post_widget.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class SearchPostPage extends StatefulWidget {
@@ -17,8 +19,10 @@ class SearchPostPage extends StatefulWidget {
 class _SearchPostPageState extends State<SearchPostPage>
     with SingleTickerProviderStateMixin {
   UserBloc _userBloc;
+  PostBloc _postBloc;
   TabController _tabController;
   List<UserModel> users = [];
+  List<PostModel> posts = [];
   bool isLoading = false;
 
   @override
@@ -32,6 +36,7 @@ class _SearchPostPageState extends State<SearchPostPage>
     super.didChangeDependencies();
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
+      _postBloc = Provider.of<PostBloc>(context);
     }
   }
 
@@ -40,7 +45,7 @@ class _SearchPostPageState extends State<SearchPostPage>
     setState(() {
       isLoading = true;
     });
-    await Future.wait([_searchUser(text)]);
+    await Future.wait([_searchUser(text), _searchPost(text)]);
     setState(() {
       isLoading = false;
     });
@@ -57,6 +62,20 @@ class _SearchPostPageState extends State<SearchPostPage>
       showToast('Có lỗi xảy ra trong quá trình tìm kiếm', context);
       setState(() {
         users = [];
+      });
+    }
+  }
+
+  Future _searchPost(String text) async {
+    final res = await _postBloc.getNewFeed(filter: GraphqlFilter(search: text));
+    if (res.isSuccess) {
+      setState(() {
+        posts = res.data;
+      });
+    } else {
+      showToast('Có lỗi xảy ra trong quá trình tìm kiếm', context);
+      setState(() {
+        posts = [];
       });
     }
   }
@@ -106,9 +125,9 @@ class _SearchPostPageState extends State<SearchPostPage>
                         title: 'Sắp xếp kết quả theo',
                         onPicked: (value) {},
                         options: [
-                          PickListItem(0,'Mới nhất xếp trước'),
-                          PickListItem(1,'Cũ nhất xếp trước'),
-                          PickListItem(2,'Địa điểm gần tôi nhất')
+                          PickListItem(0, 'Mới nhất xếp trước'),
+                          PickListItem(1, 'Cũ nhất xếp trước'),
+                          PickListItem(2, 'Địa điểm gần tôi nhất')
                         ],
                         closeText: 'Xong');
                   }),
@@ -139,23 +158,22 @@ class _SearchPostPageState extends State<SearchPostPage>
             physics: NeverScrollableScrollPhysics(),
             controller: _tabController,
             children: [
-              ListView(
-                children: [
-                  PostSearchWidget(),
-                  PostSearchWidget(),
-                ],
-              ),
+              ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    return PostWidget(posts[index]);
+                  }),
               ListView.builder(
                 padding: EdgeInsets.only(top: 5),
                 itemCount: users.length,
-                itemBuilder: (context, index) =>
-                    PeopleWidget(users[index]),
+                itemBuilder: (context, index) => PeopleWidget(users[index]),
               ),
               PostMap(),
             ],
           ),
         ),
-        if (isLoading) kLoadingSpinner,
+        if (isLoading) SearchingWidget(),
       ],
     );
   }

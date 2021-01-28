@@ -69,7 +69,10 @@ class DetailImageScreen extends StatelessWidget {
             top: 50,
             right: 10,
             child: InkWell(
-              onTap: () => Navigator.of(context).maybePop(),
+              onTap: ()  {
+                Navigator.of(context).maybePop();
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
               child: Container(
                 decoration: BoxDecoration(
                     color: Colors.white24,

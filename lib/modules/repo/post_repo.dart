@@ -1,17 +1,75 @@
 import 'package:vnrealtor/modules/services/comment_srv.dart';
 import 'package:vnrealtor/modules/services/graphql_helper.dart';
 import 'package:vnrealtor/modules/services/post_srv.dart';
+import 'package:vnrealtor/utils/spref.dart';
 
 import 'filter.dart';
 
 class PostRepo {
-  Future getListPost({GraphqlFilter filter}) async {
+  Future getNewFeed({GraphqlFilter filter}) async {
+    if (filter.filter == null) filter.filter = "{}";
+    if (filter.search == null) filter.search = "";
+    final data =
+        'q:{limit: ${filter.limit}, page: ${filter.page ?? 1}, offset: ${filter.offset}, filter: ${filter.filter}, search: "${filter.search}" , order: ${filter.order} }';
+    final res = await PostSrv().query('getNewsFeed', data, fragment: '''
+    data {
+id
+content
+mediaPostIds
+commentIds
+userId
+like
+userLikeIds
+share
+userShareIds
+locationLat
+locationLong
+expirationDate
+publicity
+user {
+  id 
+  uid 
+  name 
+  email 
+  phone 
+  role 
+  reputationScore 
+  createdAt 
+  updatedAt 
+  friendIds
+}
+mediaPosts {
+id
+userId
+type
+like
+userLikeIds
+commentIds
+description
+url
+locationLat
+locationLong
+expirationDate
+publicity
+createdAt
+updatedAt
+}
+createdAt
+updatedAt
+}
+    ''');
+    return res['getNewsFeed'];
+  }
+
+  Future getMyPost({GraphqlFilter filter}) async {
+    final id = await SPref.instance.get('id');
     final res = await PostSrv().getList(
         limit: filter.limit,
         offset: filter.offset,
         search: filter.search,
         page: filter.page,
-        order: '{createdAt: -1}');
+        order: '{createdAt: -1}',
+        filter: 'userId: "$id"');
     return res;
   }
 

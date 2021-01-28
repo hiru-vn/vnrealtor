@@ -26,7 +26,7 @@ class _PostPageState extends State<PostPage> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of(context);
-      _postBloc.getListPost(filter: GraphqlFilter(limit: 20, order: "{createAt: -1}"));
+      _postBloc.getNewFeed(filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
     }
     super.didChangeDependencies();
   }

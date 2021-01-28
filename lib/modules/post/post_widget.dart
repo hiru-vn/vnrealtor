@@ -37,6 +37,11 @@ class _PostWidgetState extends State<PostWidget> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     PopupMenu.context = context;
     return Padding(
