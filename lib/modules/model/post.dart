@@ -52,8 +52,8 @@ class PostModel {
     userLikeIds = json['userLikeIds']!=null? json['userLikeIds'].cast<String>() : [];
     share = json['share'];
     userShareIds = json['userShareIds']!=null? json['userShareIds'].cast<String>() : [];
-    locationLat = json['locationLat'];
-    locationLong = json['locationLong'];
+    locationLat = (json['locationLat'] as num).toDouble();
+    locationLong = (json['locationLong'] as num).toDouble();
     expirationDate = json['expirationDate'];
     point = json['point'] ?? 0;
     publicity = json['publicity'];

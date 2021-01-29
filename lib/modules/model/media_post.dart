@@ -39,8 +39,8 @@ class MediaPost {
     commentIds = json['commentIds'].cast<String>();
     description = json['description'];
     url = json['url'];
-    locationLat = json['locationLat'];
-    locationLong = json['locationLong'];
+    locationLat = (json['locationLat'] as num).toDouble();
+    locationLong = (json['locationLong'] as num).toDouble();
     expirationDate = json['expirationDate'];
     publicity = json['publicity'];
     createdAt = json['createdAt'];

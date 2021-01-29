@@ -53,10 +53,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
     showSimpleLoadingDialog(context);
     final res = await _postBloc.createPost(
         _contentC.text,
-        _expirationDate.toIso8601String(),
+        _expirationDate?.toIso8601String(),
         _shareWith == 'public',
-        _pos.latitude,
-        _pos.longitude,
+        _pos?.latitude,
+        _pos?.longitude,
         _images,
         _videos);
     await navigatorKey.currentState.maybePop();
