@@ -17,7 +17,7 @@ class Formart {
 
   static String timeAgo(DateTime time) {
     if (time == null) return null;
-    return timeago.format(time, locale: 'en_short');
+    return timeago.format(time, locale: 'vi');
   }
 
   static String timeByDay(DateTime time) {

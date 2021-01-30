@@ -8,13 +8,16 @@ class ImageViewNetwork extends StatelessWidget {
   final String tag;
   final int w, h;
   final double borderRadius;
-  ImageViewNetwork({@required this.url, this.tag, this.w, this.h, this.borderRadius = 0});
+  ImageViewNetwork(
+      {@required this.url, this.tag, this.w, this.h, this.borderRadius = 0});
   @override
   Widget build(BuildContext context) {
     String genTag = tag ?? url + Random().nextInt(10000000).toString();
     return GestureDetector(
       onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
         Navigator.push(context, MaterialPageRoute(builder: (_) {
+
           return DetailImageScreen(
             url,
             tag: genTag,
@@ -69,7 +72,7 @@ class DetailImageScreen extends StatelessWidget {
             top: 50,
             right: 10,
             child: InkWell(
-              onTap: ()  {
+              onTap: () {
                 Navigator.of(context).maybePop();
                 FocusScope.of(context).requestFocus(FocusNode());
               },

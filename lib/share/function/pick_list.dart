@@ -81,7 +81,7 @@ void pickList(BuildContext context,
             SpacingBox(h: 4),
           ],
         );
-      });
+      }).then((value) => FocusScope.of(context).requestFocus(FocusNode()));
 }
 
 class OptionItem extends StatelessWidget {

@@ -57,33 +57,41 @@ class _PostPageState extends State<PostPage> {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
       appBar: showAppBar ? PostPageAppBar() : null,
-      body: SingleChildScrollView(
-        controller: _controller,
-        child: Column(
-          children: [
-            SizedBox(
-              height: (!showAppBar)
-                  ? MediaQuery.of(context).padding.top + kToolbarHeight + 10
-                  : 0,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            CreatePostCard(),
-            ListView.builder(
-              padding: EdgeInsets.all(0),
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: _postBloc.post.length,
-              itemBuilder: (context, index) {
-                final item = _postBloc.post[index];
-                return PostWidget(item);
-              },
-            ),
-            SizedBox(
-              height: 10,
-            ),
-          ],
+      body: RefreshIndicator(
+        color: ptPrimaryColor(context),
+        onRefresh: () async {
+          await _postBloc.getNewFeed(
+              filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
+          return;
+        },
+        child: SingleChildScrollView(
+          controller: _controller,
+          child: Column(
+            children: [
+              SizedBox(
+                height: (!showAppBar)
+                    ? MediaQuery.of(context).padding.top + kToolbarHeight + 10
+                    : 0,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              CreatePostCard(),
+              ListView.builder(
+                padding: EdgeInsets.all(0),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: _postBloc.post.length,
+                itemBuilder: (context, index) {
+                  final item = _postBloc.post[index];
+                  return PostWidget(item);
+                },
+              ),
+              SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -167,7 +175,8 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
             IconButton(
                 icon: Icon(Icons.filter_list),
                 onPressed: () {
-                  SearchPostPage.navigate();
+                  SearchPostPage.navigate().then((value) =>
+                      FocusScope.of(context).requestFocus(FocusNode()));
                 }),
             SizedBox(
               width: 5,

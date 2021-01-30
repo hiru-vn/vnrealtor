@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/inbox/inbox_chat.dart';
-
-import 'inbox_list.dart';
 import 'inbox_model.dart';
 
 class InboxBloc extends ChangeNotifier {
@@ -187,7 +185,7 @@ class InboxBloc extends ChangeNotifier {
     list.sort((a, b) =>
         DateTime.tryParse(b.time).compareTo(DateTime.tryParse(a.time)));
     groupInboxList = list;
-    
+
     return list;
   }
 

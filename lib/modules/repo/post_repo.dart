@@ -99,16 +99,16 @@ like: 0
       double lat, double long, List<String> images, List<String> videos) async {
     String data = '''
 content: "$content"
-locationLat: $lat
-locationLong: $long
 publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}
-
     ''';
 
     if (expirationDate != null) {
       data += '\nexpirationDate: "$expirationDate"';
+    }
+    if (lat!=null && long!=null) {
+      data += '\nlocationLat: $lat\nlocationLong: $long';
     }
     final res =
         await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''

@@ -132,8 +132,11 @@ class _PostWidgetState extends State<PostWidget> {
                 child: Align(
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
-                      onTap: () => showGoogleMapPoint(context,
-                          widget.post.locationLat, widget.post.locationLong),
+                      onTap: () async{
+                        await showGoogleMapPoint(context, widget.post.locationLat,
+                            widget.post.locationLong);
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      },
                       child: SizedBox(
                         height: 30,
                         child: Padding(

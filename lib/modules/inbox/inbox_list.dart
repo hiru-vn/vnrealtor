@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/navigator.dart';
+import 'package:vnrealtor/share/widget/empty_widget.dart';
 
 import 'import/animated_search_bar.dart';
 import 'import/app_bar.dart';
@@ -74,80 +75,97 @@ class _InboxListState extends State<InboxList>
         ],
       ),
       body: _inboxBloc.groupInboxList != null
-          ? ListView.separated(
-              shrinkWrap: true,
-              itemCount: _inboxBloc.groupInboxList.length,
-              itemBuilder: (context, index) => ListTile(
-                onTap: () {
-                  InboxChat.navigate(_inboxBloc.groupInboxList[index], _inboxBloc.groupInboxList[index].lastUser)
-                      .then((value) => reload());
-                },
-                tileColor: _inboxBloc.groupInboxList[index].reader.contains(_authBloc.userModel.id)
-                    ? Colors.white
-                    : ptBackgroundColor(context),
-                leading: CircleAvatar(
-                  radius: 22,
-                  backgroundImage: AssetImage(
-                      _inboxBloc.groupInboxList[index].image ?? 'assets/image/default_avatar.png'),
-                ),
-                title: Text(
-                  _inboxBloc.groupInboxList[index].lastUser,
-                  style: ptTitle().copyWith(
-                      color:
-                          _inboxBloc.groupInboxList[index].reader.contains(_authBloc.userModel.id)
-                              ? Colors.black54
-                              : Colors.black87,
-                      fontSize:
-                          _inboxBloc.groupInboxList[index].reader.contains(_authBloc.userModel.id)
-                              ? 15
-                              : 16),
-                ),
-                subtitle: Text(
-                  _inboxBloc.groupInboxList[index].lastMessage,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: ptTiny().copyWith(
-                      fontWeight:
-                          _inboxBloc.groupInboxList[index].reader.contains(_authBloc.userModel.id)
-                              ? FontWeight.w400
-                              : FontWeight.w500,
-                      color:
-                          _inboxBloc.groupInboxList[index].reader.contains(_authBloc.userModel.id)
-                              ? Colors.black54
-                              : Colors.black87,
-                      fontSize:
-                          _inboxBloc.groupInboxList[index].reader.contains(_authBloc.userModel.id)
-                              ? 12
-                              : 13.5),
-                ),
-                trailing: Column(
-                  children: [
-                    SizedBox(height: 12),
-                    Text(
-                      Formart.timeByDay(DateTime.tryParse(_inboxBloc.groupInboxList[index].time)),
-                      style: ptSmall().copyWith(
-                          fontWeight: _inboxBloc.groupInboxList[index]
-                                  .reader
-                                  .contains(_authBloc.userModel.id)
-                              ? FontWeight.w500
-                              : FontWeight.w600,
-                          color: _inboxBloc.groupInboxList[index]
-                                  .reader
-                                  .contains(_authBloc.userModel.id)
-                              ? Colors.black54
-                              : Colors.black87,
-                          fontSize: _inboxBloc.groupInboxList[index]
-                                  .reader
-                                  .contains(_authBloc.userModel.id)
-                              ? 12
-                              : 13),
+          ? RefreshIndicator(
+              onRefresh: () async {
+                await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
+                return;
+              },
+              child: _inboxBloc.groupInboxList.length != 0
+                  ? ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: _inboxBloc.groupInboxList.length,
+                      itemBuilder: (context, index) => ListTile(
+                        onTap: () {
+                          InboxChat.navigate(_inboxBloc.groupInboxList[index],
+                                  _inboxBloc.groupInboxList[index].lastUser)
+                              .then((value) => reload());
+                        },
+                        tileColor: _inboxBloc.groupInboxList[index].reader
+                                .contains(_authBloc.userModel.id)
+                            ? Colors.white
+                            : ptBackgroundColor(context),
+                        leading: CircleAvatar(
+                          radius: 22,
+                          backgroundImage: AssetImage(
+                              _inboxBloc.groupInboxList[index].image ??
+                                  'assets/image/default_avatar.png'),
+                        ),
+                        title: Text(
+                          _inboxBloc.groupInboxList[index].lastUser,
+                          style: ptTitle().copyWith(
+                              color: _inboxBloc.groupInboxList[index].reader
+                                      .contains(_authBloc.userModel.id)
+                                  ? Colors.black54
+                                  : Colors.black87,
+                              fontSize: _inboxBloc.groupInboxList[index].reader
+                                      .contains(_authBloc.userModel.id)
+                                  ? 15
+                                  : 16),
+                        ),
+                        subtitle: Text(
+                          _inboxBloc.groupInboxList[index].lastMessage,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: ptTiny().copyWith(
+                              fontWeight: _inboxBloc
+                                      .groupInboxList[index].reader
+                                      .contains(_authBloc.userModel.id)
+                                  ? FontWeight.w400
+                                  : FontWeight.w500,
+                              color: _inboxBloc.groupInboxList[index].reader
+                                      .contains(_authBloc.userModel.id)
+                                  ? Colors.black54
+                                  : Colors.black87,
+                              fontSize: _inboxBloc.groupInboxList[index].reader
+                                      .contains(_authBloc.userModel.id)
+                                  ? 12
+                                  : 13.5),
+                        ),
+                        trailing: Column(
+                          children: [
+                            SizedBox(height: 12),
+                            Text(
+                              Formart.timeByDay(DateTime.tryParse(
+                                  _inboxBloc.groupInboxList[index].time)),
+                              style: ptSmall().copyWith(
+                                  fontWeight: _inboxBloc
+                                          .groupInboxList[index].reader
+                                          .contains(_authBloc.userModel.id)
+                                      ? FontWeight.w500
+                                      : FontWeight.w600,
+                                  color: _inboxBloc.groupInboxList[index].reader
+                                          .contains(_authBloc.userModel.id)
+                                      ? Colors.black54
+                                      : Colors.black87,
+                                  fontSize: _inboxBloc
+                                          .groupInboxList[index].reader
+                                          .contains(_authBloc.userModel.id)
+                                      ? 12
+                                      : 13),
+                            ),
+                          ],
+                        ),
+                      ),
+                      separatorBuilder: (context, index) => Divider(
+                        height: 1,
+                      ),
+                    )
+                  : EmptyWidget(
+                      assetImg: 'assets/image/no_message.png',
+                      title: 'Bạn chưa có tin nhắn nào',
+                      content:
+                          'Bạn có thể nhắn tin với người khác khi cả 2 là bạn bè.',
                     ),
-                  ],
-                ),
-              ),
-              separatorBuilder: (context, index) => Divider(
-                height: 1,
-              ),
             )
           : kLoadingSpinner,
     );

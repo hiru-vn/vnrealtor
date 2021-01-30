@@ -90,7 +90,7 @@ void shareTo(BuildContext context) {
             SpacingBox(h: 2.5),
           ],
         );
-      });
+      }).then((value) => FocusScope.of(context).requestFocus(FocusNode()));
 }
 
 class ShareItem extends StatelessWidget {

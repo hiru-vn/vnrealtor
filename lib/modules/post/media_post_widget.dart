@@ -23,6 +23,7 @@ class MediaPostWidget extends StatelessWidget {
     final type = FileUtil.getFbUrlFileType(post.url);
     return GestureDetector(
       onTap: () {
+        
         if (type == FileType.image || type == FileType.gif)
           Navigator.push(context, MaterialPageRoute(builder: (_) {
             return DetailImagePost(
@@ -37,6 +38,7 @@ class MediaPostWidget extends StatelessWidget {
               tag: genTag,
             );
           }));
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: ClipRRect(
           borderRadius: BorderRadius.circular(borderRadius),

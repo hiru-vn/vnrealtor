@@ -158,7 +158,7 @@ void imagePicker(BuildContext context,
             padding: EdgeInsets.all(15),
           ),
         );
-      });
+      }).then((value) => FocusScope.of(context).requestFocus(FocusNode()));
 }
 
 onCustomPersionRequest(

@@ -4,11 +4,11 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:vnrealtor/share/import.dart';
 
-showGoogleMapPoint(BuildContext context, double lat, double long,
+Future showGoogleMapPoint(BuildContext context, double lat, double long,
     {double height}) {
   if (height == null)
     height = MediaQuery.of(context).size.height - kToolbarHeight;
-  showDialog(
+  return showDialog(
       context: context,
       useRootNavigator: true,
       builder: (context) {

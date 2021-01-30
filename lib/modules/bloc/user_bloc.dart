@@ -20,7 +20,8 @@ class UserBloc extends ChangeNotifier {
         final res = await UserRepo().friendRequestFromOtherUsers();
         final List listRaw = res;
         final list = listRaw.map((e) => FriendshipModel.fromJson(e)).toList();
-        list.removeWhere((element) => element.status != FriendShipStatus.PENDING);
+        list.removeWhere(
+            (element) => element.status != FriendShipStatus.PENDING);
         friendRequestFromOtherUsers = list;
       } catch (e) {} finally {
         notifyListeners();
@@ -40,6 +41,18 @@ class UserBloc extends ChangeNotifier {
       return BaseResponse.fail(e.message?.toString());
     } finally {
       // notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getFriendRequestFromOtherUsers() async {
+    try {
+      final res = await UserRepo().friendRequestFromOtherUsers();
+      final List listRaw = res;
+      final list = listRaw.map((e) => FriendshipModel.fromJson(e)).toList();
+      list.removeWhere((element) => element.status != FriendShipStatus.PENDING);
+      friendRequestFromOtherUsers = list;
+    } catch (e) {} finally {
+      notifyListeners();
     }
   }
 

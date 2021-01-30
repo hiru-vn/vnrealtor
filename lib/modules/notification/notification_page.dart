@@ -29,7 +29,7 @@ class _NotificationPageState extends State<NotificationPage>
       _userBloc = Provider.of<UserBloc>(context);
       _notificationBloc = Provider.of<NotificationBloc>(context);
       _notificationBloc.getListNotification(
-          filter: GraphqlFilter(filter: 'createdAt: -1'));
+          filter: GraphqlFilter(order: '{createdAt: -1}'));
     }
     super.didChangeDependencies();
   }
@@ -99,24 +99,35 @@ class NotificationTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return list.length > 0
-        ? ListView.separated(
-            separatorBuilder: (context, index) => Divider(
-              height: 1,
-            ),
-            itemCount: list.length,
-            itemBuilder: (context, index) => ListTile(
-              tileColor: ptBackgroundColor(context),
-              leading: CircleAvatar(
-                radius: 22,
-                backgroundImage: AssetImage('assets/image/avatar.jpg'),
+        ? RefreshIndicator(
+            color: ptPrimaryColor(context),
+            onRefresh: () async {
+              await NotificationBloc.instance.getListNotification(
+                  filter: GraphqlFilter(order: '{createdAt: -1}'));
+              return;
+            },
+            child: ListView.separated(
+              separatorBuilder: (context, index) => Divider(
+                height: 1,
               ),
-              title: Text(
-                'Cuti pit đã chia sẻ bài viết của bạn',
-                style: ptBody(),
-              ),
-              subtitle: Text(
-                '1 tháng trước',
-                style: ptTiny(),
+              itemCount: list.length,
+              itemBuilder: (context, index) => ListTile(
+                tileColor: ptBackgroundColor(context),
+                leading: CircleAvatar(
+                  radius: 22,
+                  backgroundImage:
+                      (list[index].image == null || list[index].image == '')
+                          ? AssetImage('assets/image/logo.png')
+                          : NetworkImage(list[index].image),
+                ),
+                title: Text(
+                  list[index].body,
+                  style: ptBody(),
+                ),
+                subtitle: Text(
+                  Formart.timeAgo(DateTime.tryParse(list[index].createdAt))??'',
+                  style: ptTiny(),
+                ),
               ),
             ),
           )
@@ -146,95 +157,103 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
   @override
   Widget build(BuildContext context) {
     return _userBloc.friendRequestFromOtherUsers.length != 0
-        ? ListView.builder(
-            itemCount: _userBloc.friendRequestFromOtherUsers.length,
-            itemBuilder: (context, index) {
-              final item = _userBloc.friendRequestFromOtherUsers[index];
-              return ListTile(
-                onTap: () {
-                  ProfilePage.navigate(item.user1);
-                },
-                tileColor: ptBackgroundColor(context),
-                leading: CircleAvatar(
-                  radius: 22,
-                  backgroundImage: item.user1.avatar != null
-                      ? NetworkImage(item.user1.avatar)
-                      : AssetImage('assets/image/avatar.jpeg'),
-                ),
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: 10),
-                    Text(
-                      '${item.user1.name} đã gửi lời mời kết bạn',
-                      style: ptBody(),
-                    ),
-                    Text(
-                      Formart.timeAgo(
-                              DateTime.tryParse(item.createdAt ?? '')) ??
-                          '',
-                      style: ptTiny().copyWith(color: Colors.black54),
-                    ),
-                  ],
-                ),
-                subtitle: Row(
-                  children: [
-                    FlatButton(
-                      height: 32,
-                      padding: EdgeInsets.all(0),
-                      color: ptPrimaryColor(context),
-                      child: Text(
-                        'Đồng ý',
-                        style: ptSmall().copyWith(color: Colors.white),
+        ? RefreshIndicator(
+            onRefresh: () async {
+              await _userBloc.getFriendRequestFromOtherUsers();
+              return;
+            },
+            child: ListView.builder(
+              itemCount: _userBloc.friendRequestFromOtherUsers.length,
+              itemBuilder: (context, index) {
+                final item = _userBloc.friendRequestFromOtherUsers[index];
+                return ListTile(
+                  onTap: () {
+                    ProfilePage.navigate(item.user1);
+                  },
+                  tileColor: ptBackgroundColor(context),
+                  leading: CircleAvatar(
+                    radius: 22,
+                    backgroundImage: item.user1.avatar != null
+                        ? NetworkImage(item.user1.avatar)
+                        : AssetImage('assets/image/avatar.jpeg'),
+                  ),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 10),
+                      Text(
+                        '${item.user1.name} đã gửi lời mời kết bạn',
+                        style: ptBody(),
                       ),
-                      onPressed: () async {
-                        setState(() {
-                          _userBloc.friendRequestFromOtherUsers.remove(item);
-                        });
-                        final res = await _userBloc.acceptFriendInvite(item.id);
-                        if (res.isSuccess) {
+                      Text(
+                        Formart.timeAgo(
+                                DateTime.tryParse(item.createdAt ?? '')) ??
+                            '',
+                        style: ptTiny().copyWith(color: Colors.black54),
+                      ),
+                    ],
+                  ),
+                  subtitle: Row(
+                    children: [
+                      FlatButton(
+                        height: 32,
+                        padding: EdgeInsets.all(0),
+                        color: ptPrimaryColor(context),
+                        child: Text(
+                          'Đồng ý',
+                          style: ptSmall().copyWith(color: Colors.white),
+                        ),
+                        onPressed: () async {
                           setState(() {
                             _userBloc.friendRequestFromOtherUsers.remove(item);
                           });
-                        } else {
-                          showToast(res.errMessage, context);
-                          setState(() {
-                            _userBloc.friendRequestFromOtherUsers.add(item);
-                          });
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    FlatButton(
-                      height: 32,
-                      padding: EdgeInsets.all(0),
-                      color: Colors.grey[400],
-                      child: Text(
-                        'Từ chối',
-                        style: ptSmall().copyWith(color: Colors.white),
+                          final res =
+                              await _userBloc.acceptFriendInvite(item.id);
+                          if (res.isSuccess) {
+                            setState(() {
+                              _userBloc.friendRequestFromOtherUsers
+                                  .remove(item);
+                            });
+                          } else {
+                            showToast(res.errMessage, context);
+                            setState(() {
+                              _userBloc.friendRequestFromOtherUsers.add(item);
+                            });
+                          }
+                        },
                       ),
-                      onPressed: () async {
-                        setState(() {
-                          _userBloc.friendRequestFromOtherUsers.remove(item);
-                        });
-                        final res =
-                            await _userBloc.declineFriendInvite(item.id);
-                        if (res.isSuccess) {
-                        } else {
-                          showToast(res.errMessage, context);
+                      SizedBox(
+                        width: 10,
+                      ),
+                      FlatButton(
+                        height: 32,
+                        padding: EdgeInsets.all(0),
+                        color: Colors.grey[400],
+                        child: Text(
+                          'Từ chối',
+                          style: ptSmall().copyWith(color: Colors.white),
+                        ),
+                        onPressed: () async {
                           setState(() {
-                            _userBloc.friendRequestFromOtherUsers.add(item);
+                            _userBloc.friendRequestFromOtherUsers.remove(item);
                           });
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
+                          final res =
+                              await _userBloc.declineFriendInvite(item.id);
+                          if (res.isSuccess) {
+                          } else {
+                            showToast(res.errMessage, context);
+                            setState(() {
+                              _userBloc.friendRequestFromOtherUsers.add(item);
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           )
         : EmptyWidget(
             assetImg: 'assets/image/no_user.png',
