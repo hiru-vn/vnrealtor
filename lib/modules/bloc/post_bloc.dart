@@ -23,6 +23,19 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> searchPostWithFilter({GraphqlFilter filter}) async {
+    try {
+      final res = await PostRepo().getNewFeed(filter: filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message?.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> getMyPost({GraphqlFilter filter}) async {
     try {
       final res = await PostRepo().getMyPost(filter: filter);

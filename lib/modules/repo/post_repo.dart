@@ -107,7 +107,7 @@ images: ${GraphqlHelper.listStringToGraphqlString(images)}
     if (expirationDate != null) {
       data += '\nexpirationDate: "$expirationDate"';
     }
-    if (lat!=null && long!=null) {
+    if (lat != null && long != null) {
       data += '\nlocationLat: $lat\nlocationLong: $long';
     }
     final res =
@@ -134,7 +134,7 @@ user {
   role 
   reputationScore 
   createdAt 
-  updatedAt 
+  updatedAt
   friendIds
 }
 mediaPosts {
