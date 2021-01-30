@@ -13,7 +13,6 @@ import 'import/page_builder.dart';
 import 'import/spin_loader.dart';
 import 'inbox_bloc.dart';
 import 'inbox_chat.dart';
-import 'inbox_model.dart';
 
 class InboxList extends StatefulWidget {
   static Future navigate() {
@@ -76,6 +75,7 @@ class _InboxListState extends State<InboxList>
       ),
       body: _inboxBloc.groupInboxList != null
           ? RefreshIndicator(
+              color: ptPrimaryColor(context),
               onRefresh: () async {
                 await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
                 return;
@@ -84,78 +84,84 @@ class _InboxListState extends State<InboxList>
                   ? ListView.separated(
                       shrinkWrap: true,
                       itemCount: _inboxBloc.groupInboxList.length,
-                      itemBuilder: (context, index) => ListTile(
-                        onTap: () {
-                          InboxChat.navigate(_inboxBloc.groupInboxList[index],
-                                  _inboxBloc.groupInboxList[index].lastUser)
-                              .then((value) => reload());
-                        },
-                        tileColor: _inboxBloc.groupInboxList[index].reader
-                                .contains(_authBloc.userModel.id)
-                            ? Colors.white
-                            : ptBackgroundColor(context),
-                        leading: CircleAvatar(
-                          radius: 22,
-                          backgroundImage: AssetImage(
-                              _inboxBloc.groupInboxList[index].image ??
-                                  'assets/image/default_avatar.png'),
-                        ),
-                        title: Text(
-                          _inboxBloc.groupInboxList[index].lastUser,
-                          style: ptTitle().copyWith(
-                              color: _inboxBloc.groupInboxList[index].reader
-                                      .contains(_authBloc.userModel.id)
-                                  ? Colors.black54
-                                  : Colors.black87,
-                              fontSize: _inboxBloc.groupInboxList[index].reader
-                                      .contains(_authBloc.userModel.id)
-                                  ? 15
-                                  : 16),
-                        ),
-                        subtitle: Text(
-                          _inboxBloc.groupInboxList[index].lastMessage,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: ptTiny().copyWith(
-                              fontWeight: _inboxBloc
-                                      .groupInboxList[index].reader
-                                      .contains(_authBloc.userModel.id)
-                                  ? FontWeight.w400
-                                  : FontWeight.w500,
-                              color: _inboxBloc.groupInboxList[index].reader
-                                      .contains(_authBloc.userModel.id)
-                                  ? Colors.black54
-                                  : Colors.black87,
-                              fontSize: _inboxBloc.groupInboxList[index].reader
-                                      .contains(_authBloc.userModel.id)
-                                  ? 12
-                                  : 13.5),
-                        ),
-                        trailing: Column(
-                          children: [
-                            SizedBox(height: 12),
-                            Text(
-                              Formart.timeByDay(DateTime.tryParse(
-                                  _inboxBloc.groupInboxList[index].time)),
-                              style: ptSmall().copyWith(
-                                  fontWeight: _inboxBloc
-                                          .groupInboxList[index].reader
-                                          .contains(_authBloc.userModel.id)
-                                      ? FontWeight.w500
-                                      : FontWeight.w600,
-                                  color: _inboxBloc.groupInboxList[index].reader
-                                          .contains(_authBloc.userModel.id)
-                                      ? Colors.black54
-                                      : Colors.black87,
-                                  fontSize: _inboxBloc
-                                          .groupInboxList[index].reader
-                                          .contains(_authBloc.userModel.id)
-                                      ? 12
-                                      : 13),
-                            ),
-                          ],
-                        ),
-                      ),
+                      itemBuilder: (context, index) {
+                        final group = _inboxBloc.groupInboxList[index];
+                        return ListTile(
+                          onTap: () {
+                            InboxChat.navigate(group, group.lastUser)
+                                .then((value) => reload());
+                          },
+                          tileColor:
+                              group.reader.contains(_authBloc.userModel.id)
+                                  ? Colors.white
+                                  : ptBackgroundColor(context),
+                          leading: CircleAvatar(
+                            radius: 22,
+                            backgroundImage: AssetImage(group.image ??
+                                'assets/image/default_avatar.png'),
+                          ),
+                          title: Text(
+                            group.users.indexWhere((element) =>
+                                        element == _authBloc.userModel.id) ==
+                                    0
+                                ? group.usersName[1]
+                                : group.usersName[0],
+                            style: ptTitle().copyWith(
+                                color: group.reader
+                                        .contains(_authBloc.userModel.id)
+                                    ? Colors.black54
+                                    : Colors.black87,
+                                fontSize: group.reader
+                                        .contains(_authBloc.userModel.id)
+                                    ? 15
+                                    : 16),
+                          ),
+                          subtitle: Text(
+                            // (group.lastUser ==  _authBloc.userModel.name? 'Bạn: ':'Tin nhắn mới: ')+
+                            group.lastMessage,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: ptTiny().copyWith(
+                                fontWeight: _inboxBloc
+                                        .groupInboxList[index].reader
+                                        .contains(_authBloc.userModel.id)
+                                    ? FontWeight.w400
+                                    : FontWeight.w500,
+                                color: group.reader
+                                        .contains(_authBloc.userModel.id)
+                                    ? Colors.black54
+                                    : Colors.black87,
+                                fontSize: group.reader
+                                        .contains(_authBloc.userModel.id)
+                                    ? 12
+                                    : 13.5),
+                          ),
+                          trailing: Column(
+                            children: [
+                              SizedBox(height: 12),
+                              Text(
+                                Formart.timeByDay(
+                                    DateTime.tryParse(group.time)),
+                                style: ptSmall().copyWith(
+                                    fontWeight: _inboxBloc
+                                            .groupInboxList[index].reader
+                                            .contains(_authBloc.userModel.id)
+                                        ? FontWeight.w500
+                                        : FontWeight.w600,
+                                    color: group.reader
+                                            .contains(_authBloc.userModel.id)
+                                        ? Colors.black54
+                                        : Colors.black87,
+                                    fontSize: _inboxBloc
+                                            .groupInboxList[index].reader
+                                            .contains(_authBloc.userModel.id)
+                                        ? 12
+                                        : 13),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                       separatorBuilder: (context, index) => Divider(
                         height: 1,
                       ),

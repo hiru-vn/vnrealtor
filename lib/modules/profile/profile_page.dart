@@ -443,10 +443,12 @@ class _ProfileCardState extends State<ProfileCard> {
                                       widget.user.name,
                                       widget.user.avatar,
                                       DateTime.now(),
-                                      'Bạn và ${widget.user.name} đã trở thành bạn bè',
                                       widget.user.avatar, [
                                     AuthBloc.instance.userModel.id,
-                                    widget.user.id
+                                    widget.user.id,
+                                  ], [
+                                    AuthBloc.instance.userModel.name,
+                                    widget.user.name
                                   ]);
                                   navigatorKey.currentState.maybePop();
                                 },

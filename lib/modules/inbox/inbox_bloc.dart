@@ -10,7 +10,7 @@ class InboxBloc extends ChangeNotifier {
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  List groupInboxList = [];
+  List<FbInboxGroupModel> groupInboxList = [];
 
   DocumentReference getGroup(String id) {
     return firestore.collection('group').doc(id);
@@ -24,9 +24,9 @@ class InboxBloc extends ChangeNotifier {
       String lastUser, // the other user
       String lastAvatar,
       DateTime time,
-      String lastMessage,
       String image,
-      List<String> users) async {
+      List<String> users,
+      List<String> usersName) async {
     final snap =
         await firestore.collection(groupCollection).doc(users.join("-")).get();
     if (!snap.exists) {
@@ -34,9 +34,10 @@ class InboxBloc extends ChangeNotifier {
         'lastUser': lastUser,
         'lastAvatar': lastAvatar,
         'time': time.toIso8601String(),
-        'lastMessage': lastMessage,
+        'lastMessage': '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện',
         'image': image,
         'users': users,
+        'usersName': usersName,
       });
       users.forEach((uid) {
         firestore.collection(userCollection).doc(uid).update({
@@ -45,8 +46,8 @@ class InboxBloc extends ChangeNotifier {
       });
     }
     await InboxChat.navigate(
-        FbInboxGroupModel(users.join("-"), lastAvatar, lastMessage, lastUser,
-            time.toIso8601String(), [], users),
+        FbInboxGroupModel(users.join("-"), lastAvatar, '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện', lastUser,
+            time.toIso8601String(), [], users, usersName),
         lastUser);
     getList20InboxGroup(AuthBloc.instance.userModel.id);
     return;
@@ -54,15 +55,22 @@ class InboxBloc extends ChangeNotifier {
 
   Future<void> userJoinGroupChat(String uid, String groupId) async {}
 
-  Future<void> createGroup(String lastUser, String lastAvatar, DateTime time,
-      String lastMessage, String image, List<String> users) async {
+  Future<void> createGroup(
+      String lastUser,
+      String lastAvatar,
+      DateTime time,
+      String lastMessage,
+      String image,
+      List<String> users,
+      List<String> usersName) async {
     await firestore.collection(groupCollection).doc(users.join("-")).set({
       'lastUser': lastUser,
       'lastAvatar': lastAvatar,
       'time': time.toIso8601String(),
-      'lastMessage': lastMessage,
+      'lastMessage': '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện',
       'image': image,
       'users': users,
+      'usersName': usersName,
     });
   }
 
@@ -72,7 +80,7 @@ class InboxBloc extends ChangeNotifier {
         await firestore.collection(groupCollection).doc(groupid).get();
     if (snapShot.exists) {
       await getGroup(groupid).update({
-        //'lastUser': lastUser,
+        'lastUser': lastUser,
         'time': time.toIso8601String(),
         'lastMessage': lastMessage,
         'image': image,
