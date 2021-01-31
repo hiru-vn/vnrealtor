@@ -4,7 +4,8 @@ import 'package:vnrealtor/share/import.dart';
 
 class NotificationBloc extends ChangeNotifier {
   NotificationBloc._privateConstructor();
-  static final NotificationBloc instance = NotificationBloc._privateConstructor();
+  static final NotificationBloc instance =
+      NotificationBloc._privateConstructor();
 
   List<NotificationModel> notifications = [];
 
@@ -16,7 +17,7 @@ class NotificationBloc extends ChangeNotifier {
       notifications = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e..toString());
     } finally {
       notifyListeners();
     }

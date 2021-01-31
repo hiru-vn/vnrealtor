@@ -23,7 +23,6 @@ class MediaPostWidget extends StatelessWidget {
     final type = FileUtil.getFbUrlFileType(post.url);
     return GestureDetector(
       onTap: () {
-        
         if (type == FileType.image || type == FileType.gif)
           Navigator.push(context, MaterialPageRoute(builder: (_) {
             return DetailImagePost(
@@ -491,29 +490,8 @@ showComment(MediaPost postModel, BuildContext context) {
       builder: (context) {
         return SizedBox(
             height: deviceHeight(context) - kToolbarHeight - 15,
-            child: Column(
-              children: [
-                Container(
-                  height: 10,
-                  width: deviceWidth(context),
-                  color: Colors.white,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: 4,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                    child: CommentPage(
-                  mediaPost: postModel,
-                )),
-              ],
+            child: CommentPage(
+              mediaPost: postModel,
             ));
       });
 }

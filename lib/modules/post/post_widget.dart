@@ -132,9 +132,9 @@ class _PostWidgetState extends State<PostWidget> {
                 child: Align(
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
-                      onTap: () async{
-                        await showGoogleMapPoint(context, widget.post.locationLat,
-                            widget.post.locationLong);
+                      onTap: () async {
+                        await showGoogleMapPoint(context,
+                            widget.post.locationLat, widget.post.locationLong);
                         FocusScope.of(context).requestFocus(FocusNode());
                       },
                       child: SizedBox(
@@ -312,29 +312,8 @@ class _PostWidgetState extends State<PostWidget> {
         builder: (context) {
           return SizedBox(
               height: deviceHeight(context) - kToolbarHeight - 15,
-              child: Column(
-                children: [
-                  Container(
-                    height: 10,
-                    width: deviceWidth(context),
-                    color: Colors.white,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        height: 4,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(2),
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                      child: new CommentPage(
-                    post: postModel,
-                  )),
-                ],
+              child: CommentPage(
+                post: postModel,
               ));
         });
   }
