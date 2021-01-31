@@ -107,5 +107,11 @@ status
         ''');
     return res['friendShipId'];
   }
-  
+
+  Future changePassword(String oldPassword, String newPassword) async {
+    final res = await UserSrv().mutate('changePassword',
+        'oldPassword: "$oldPassword"\nnewPassword: "$newPassword"',
+        fragment: 'id');
+    return res['changePassword'];
+  }
 }

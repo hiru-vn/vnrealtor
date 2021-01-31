@@ -102,4 +102,16 @@ class UserBloc extends ChangeNotifier {
       // notifyListeners();
     }
   }
+
+  Future<BaseResponse> changePassword(String oldPassword, String newPassword) async {
+    try {
+      final res = await UserRepo().changePassword(oldPassword, newPassword);
+      final val = UserModel.fromJson(res);
+      return BaseResponse.success(val);
+    } catch (e) {
+      return BaseResponse.fail(e..toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
 }
