@@ -35,7 +35,7 @@ class BottomNavigator extends StatelessWidget {
         .toList();
     return CustomBottomNavigationBar(
       elevation: 0,
-      backgroundColor: ptDarkColor(context).withOpacity(0.85),
+      backgroundColor: ptDarkColor(context).withOpacity(0.8),
       iconSize: 25,
       selectedItemColor: ptPrimaryColor(context),
       unselectedItemColor: Colors.white,

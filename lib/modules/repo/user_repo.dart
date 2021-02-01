@@ -105,7 +105,7 @@ user1Id
 user2Id
 status
         ''');
-    return res['friendShipId'];
+    return res['declineFriend'];
   }
 
   Future changePassword(String oldPassword, String newPassword) async {

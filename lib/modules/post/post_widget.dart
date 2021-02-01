@@ -25,6 +25,7 @@ class _PostWidgetState extends State<PostWidget> {
 
   @override
   void initState() {
+    _isLike = widget.post.isUserLike;
     initMenu();
     super.initState();
   }

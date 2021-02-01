@@ -21,6 +21,8 @@ class PostModel {
   List<MediaPost> mediaPosts;
   String createdAt;
   String updatedAt;
+  bool isUserLike;
+  bool isUserShare;
 
   PostModel(
       {this.id,
@@ -40,7 +42,9 @@ class PostModel {
       this.user,
       this.mediaPosts,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.isUserLike,
+      this.isUserShare});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -74,6 +78,8 @@ class PostModel {
     }
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    isUserLike = json['isUserLike'] ?? false;
+    isUserShare = json['isUserShare'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -98,6 +104,8 @@ class PostModel {
     }
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
+    data['isUserLike'] = this.isUserLike;
+    data['isUserShare'] = this.isUserShare;
     return data;
   }
 }

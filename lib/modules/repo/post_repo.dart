@@ -54,6 +54,8 @@ publicity
 createdAt
 updatedAt
 }
+isUserLike
+isUserShare
 createdAt
 updatedAt
 }
@@ -159,15 +161,26 @@ updatedAt
     return res["createPost"];
   }
 
-  Future getAllCommentByPostId({String postId}) async {
-    final res =
-        await CommentSrv().getList(limit: 20, filter: "{postId: \"$postId\"}");
+  Future getAllCommentByPostId({String postId, GraphqlFilter filter}) async {
+    final res = await CommentSrv().getList(
+        limit: filter?.limit,
+        offset: filter?.offset,
+        search: filter?.search,
+        page: filter?.page,
+        order: filter?.order,
+        filter: "{postId: \"$postId\"}");
     return res;
   }
 
-  Future getAllCommentByMediaPostId({String postMediaId}) async {
-    final res = await CommentSrv()
-        .getList(limit: 20, filter: "{mediaPostId: \"$postMediaId\"}");
+  Future getAllCommentByMediaPostId(
+      {String postMediaId, GraphqlFilter filter}) async {
+    final res = await CommentSrv().getList(
+        limit: filter?.limit,
+        offset: filter?.offset,
+        search: filter?.search,
+        page: filter?.page,
+        order: filter?.order,
+        filter: "{mediaPostId: \"$postMediaId\"}");
     return res;
   }
 

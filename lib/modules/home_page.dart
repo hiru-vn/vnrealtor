@@ -52,10 +52,10 @@ class _HomePageState extends State<HomePage>
         bottomNavigationBar: BottomNavigator(
           selectedIndex: _selectedIndex,
           listIcons: [
-            MdiIcons.home,
-            MdiIcons.messageText,
-            MdiIcons.bellRing,
-            Icons.settings
+            MdiIcons.homeOutline,
+            MdiIcons.chatOutline,
+            MdiIcons.bellOutline,
+            Icons.settings_outlined
           ],
           onSelect: (index) {
             setState(() {

@@ -50,9 +50,9 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getNewFeedComment(String postId) async {
+  Future<BaseResponse> getAllCommentByPostId(String postId, {GraphqlFilter filter}) async {
     try {
-      final res = await PostRepo().getAllCommentByPostId(postId: postId);
+      final res = await PostRepo().getAllCommentByPostId(postId: postId, filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
@@ -63,10 +63,10 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getListMediaPostComment(String postMediaId) async {
+  Future<BaseResponse> getListMediaPostComment(String postMediaId, {GraphqlFilter filter}) async {
     try {
       final res =
-          await PostRepo().getAllCommentByMediaPostId(postMediaId: postMediaId);
+          await PostRepo().getAllCommentByMediaPostId(postMediaId: postMediaId, filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);

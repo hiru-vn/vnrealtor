@@ -29,6 +29,7 @@ class _CommentPageState extends State<CommentPage> {
   List<CommentModel> comments;
   TextEditingController _commentC = TextEditingController();
   PostBloc _postBloc;
+  String sort = '{createdAt: 1}';
 
   @override
   void initState() {
@@ -65,16 +66,18 @@ class _CommentPageState extends State<CommentPage> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
-      _getComments();
+      _getComments(filter: GraphqlFilter(limit: 20));
     }
     super.didChangeDependencies();
   }
 
-  Future _getComments() async {
+  Future _getComments({GraphqlFilter filter}) async {
     BaseResponse res;
-    if (isPost) res = await _postBloc.getNewFeedComment(widget.post.id);
+    if (isPost)
+      res =
+          await _postBloc.getAllCommentByPostId(widget.post.id, filter: filter);
     if (isMediaPost)
-      res = await _postBloc.getListMediaPostComment(widget.mediaPost.id);
+      res = await _postBloc.getListMediaPostComment(widget.mediaPost.id, filter: filter);
     if (res == null) return;
     if (res.isSuccess) {
       if (mounted)
@@ -96,17 +99,29 @@ class _CommentPageState extends State<CommentPage> {
             appBar: AppBar1(
               title: 'Comments',
               actions: [
-                Center(
-                  child: Text(
-                    'Mới nhất',
-                    style: ptSmall(),
-                  ),
-                ),
-                Center(
-                  child: Icon(Icons.arrow_drop_down),
-                ),
-                SizedBox(
-                  width: 15,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton(
+                      value: sort,
+                      style: ptBody().copyWith(color: Colors.black87),
+                      items: [
+                        DropdownMenuItem(
+                          child: Text('Mới nhất'),
+                          value: '{createdAt: -1}',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Cũ nhất'),
+                          value: '{createdAt: 1}',
+                        ),
+                      ],
+                      underline: SizedBox.shrink(),
+                      onChanged: (val) {
+                        setState(() {
+                          sort = val;
+                        });
+                        _getComments(
+                            filter: GraphqlFilter(limit: 20, order: val));
+                      }),
                 )
               ],
             ),

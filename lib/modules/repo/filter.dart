@@ -6,7 +6,7 @@ class GraphqlFilter {
   String order;
   int offset;
   GraphqlFilter(
-      {this.limit,
+      {this.limit = 20,
       this.filter,
       this.search,
       this.order,
