@@ -114,7 +114,8 @@ class _InboxChatState extends State<InboxChat> {
 
     // init stream with last messageId
     _incomingMessageStream = await _inboxBloc.getStreamIncomingMessages(
-        widget.group.id, fbMessages.length>0? fbMessages[fbMessages.length - 1].id : null);
+        widget.group.id,
+        fbMessages.length > 0 ? fbMessages[fbMessages.length - 1].id : null);
     // add listener to cancel listener, or else will cause bug setState when dispose state
     _incomingMessageListener = _incomingMessageStream.listen(onIncomingMessage);
   }
@@ -313,7 +314,10 @@ class _InboxChatState extends State<InboxChat> {
           if (FileUtil.getFbUrlFileType(url) == FileType.image)
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ImageViewNetwork(url: url, borderRadius: 10,),
+              child: ImageViewNetwork(
+                url: url,
+                borderRadius: 10,
+              ),
             );
 
           return SizedBox.shrink();

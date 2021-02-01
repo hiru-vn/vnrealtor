@@ -45,15 +45,23 @@ class PostModel {
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     content = json['content'];
-    mediaPostIds = json['mediaPostIds']!=null? json['mediaPostIds'].cast<String>(): [];
-    commentIds = json['commentIds']!=null? json['commentIds'].cast<String>(): [];
+    mediaPostIds =
+        json['mediaPostIds'] != null ? json['mediaPostIds'].cast<String>() : [];
+    commentIds =
+        json['commentIds'] != null ? json['commentIds'].cast<String>() : [];
     userId = json['userId'];
     like = json['like'];
-    userLikeIds = json['userLikeIds']!=null? json['userLikeIds'].cast<String>() : [];
+    userLikeIds =
+        json['userLikeIds'] != null ? json['userLikeIds'].cast<String>() : [];
     share = json['share'];
-    userShareIds = json['userShareIds']!=null? json['userShareIds'].cast<String>() : [];
-    locationLat = (json['locationLat'] as num).toDouble();
-    locationLong = (json['locationLong'] as num).toDouble();
+    userShareIds =
+        json['userShareIds'] != null ? json['userShareIds'].cast<String>() : [];
+    locationLat = json['locationLat'] == null
+        ? null
+        : (json['locationLat'] as num).toDouble();
+    locationLong = json['locationLong'] == null
+        ? null
+        : (json['locationLong'] as num).toDouble();
     expirationDate = json['expirationDate'];
     point = json['point'] ?? 0;
     publicity = json['publicity'];

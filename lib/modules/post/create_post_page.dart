@@ -52,7 +52,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
     showSimpleLoadingDialog(context);
     final res = await _postBloc.createPost(
-        _contentC.text,
+        _contentC.text.trim(),
         _expirationDate?.toIso8601String(),
         _shareWith == 'public',
         _pos?.latitude,
