@@ -50,11 +50,11 @@ idToken: "$idToken"
 
   Future getListUser({GraphqlFilter filter}) async {
     final res = await UserSrv().getList(
-        limit: filter.limit,
-        offset: filter.offset,
-        search: filter.search,
-        page: filter.page,
-        order: filter.order);
+        limit: filter?.limit,
+        offset: filter?.offset,
+        search: filter?.search,
+        page: filter?.page,
+        order: filter?.order);
     return res;
   }
 

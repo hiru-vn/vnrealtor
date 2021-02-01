@@ -156,7 +156,7 @@ class AuthBloc extends ChangeNotifier {
         },
       );
     } catch (e) {
-      authStatusSink.add(AuthResponse.fail(e..toString()));
+      authStatusSink.add(AuthResponse.fail(e.toString()));
     }
   }
 

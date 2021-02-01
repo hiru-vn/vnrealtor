@@ -17,7 +17,7 @@ class NotificationBloc extends ChangeNotifier {
       notifications = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e..toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }

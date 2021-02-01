@@ -7,10 +7,10 @@ import 'filter.dart';
 
 class PostRepo {
   Future getNewFeed({GraphqlFilter filter}) async {
-    if (filter.filter == null) filter.filter = "{}";
-    if (filter.search == null) filter.search = "";
+    if (filter?.filter == null) filter?.filter = "{}";
+    if (filter?.search == null) filter?.search = "";
     final data =
-        'q:{limit: ${filter.limit}, page: ${filter.page ?? 1}, offset: ${filter.offset}, filter: ${filter.filter}, search: "${filter.search}" , order: ${filter.order} }';
+        'q:{limit: ${filter?.limit}, page: ${filter?.page ?? 1}, offset: ${filter?.offset}, filter: ${filter?.filter}, search: "${filter?.search}" , order: ${filter?.order} }';
     final res = await PostSrv().query('getNewsFeed', data, fragment: '''
     data {
 id
@@ -64,10 +64,10 @@ updatedAt
   Future getMyPost({GraphqlFilter filter}) async {
     final id = await SPref.instance.get('id');
     final res = await PostSrv().getList(
-        limit: filter.limit,
-        offset: filter.offset,
-        search: filter.search,
-        page: filter.page,
+        limit: filter?.limit,
+        offset: filter?.offset,
+        search: filter?.search,
+        page: filter?.page,
         order: '{createdAt: -1}',
         filter: 'userId: "$id"');
     return res;

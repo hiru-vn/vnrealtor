@@ -17,7 +17,7 @@ class PostBloc extends ChangeNotifier {
       post = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e..toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -30,7 +30,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e..toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -44,7 +44,7 @@ class PostBloc extends ChangeNotifier {
       post = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e..toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -57,7 +57,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e..toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -71,7 +71,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e..toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -115,7 +115,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().increaseLikePost(postId: postId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e..toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -127,7 +127,7 @@ class PostBloc extends ChangeNotifier {
           await PostRepo().increaseLikeMediaPost(postMediaId: postMediaId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e..toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -138,7 +138,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().decreaseLikePost(postId: postId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e..toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -150,7 +150,7 @@ class PostBloc extends ChangeNotifier {
           await PostRepo().decreaseLikeMediaPost(postMediaId: postMediaId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e..toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }

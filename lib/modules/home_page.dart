@@ -1,4 +1,5 @@
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
+import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
 import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
 import 'package:vnrealtor/modules/notification/notification_page.dart';
 import 'package:vnrealtor/modules/post/post_page.dart';
@@ -47,10 +48,11 @@ class _HomePageState extends State<HomePage>
           index: _selectedIndex,
           children: _pages,
         ),
+        extendBody: true,
         bottomNavigationBar: BottomNavigator(
           selectedIndex: _selectedIndex,
           listIcons: [
-            MdiIcons.bulletinBoard,
+            MdiIcons.home,
             MdiIcons.messageText,
             MdiIcons.bellRing,
             Icons.settings
@@ -60,7 +62,11 @@ class _HomePageState extends State<HomePage>
               _selectedIndex = index;
             });
             if (index == 1) //message
-            InboxBloc.instance.getList20InboxGroup(AuthBloc.instance.userModel.id);
+              InboxBloc.instance
+                  .getList20InboxGroup(AuthBloc.instance.userModel.id);
+            if (index == 2)
+              NotificationBloc.instance.getListNotification(
+                  filter: GraphqlFilter(order: '{createdAt: -1}'));
           },
         ),
       ),

@@ -346,7 +346,7 @@ class _InboxChatState extends State<InboxChat> {
           );
         },
         inputToolbarPadding: EdgeInsets.all(4),
-        inputDecoration: InputDecoration.collapsed(hintText: "Send message..."),
+        inputDecoration: InputDecoration.collapsed(hintText: "Send message.."),
         dateFormat: DateFormat('yyyy-MMM-dd'),
         timeFormat: DateFormat('HH:mm'),
         messages: messages,
