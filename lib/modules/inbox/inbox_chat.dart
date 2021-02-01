@@ -114,7 +114,7 @@ class _InboxChatState extends State<InboxChat> {
 
     // init stream with last messageId
     _incomingMessageStream = await _inboxBloc.getStreamIncomingMessages(
-        widget.group.id, fbMessages[fbMessages.length - 1].id);
+        widget.group.id, fbMessages.length>0? fbMessages[fbMessages.length - 1].id : null);
     // add listener to cancel listener, or else will cause bug setState when dispose state
     _incomingMessageListener = _incomingMessageStream.listen(onIncomingMessage);
   }
