@@ -22,6 +22,6 @@ Future showToastNoContext(String mes) async {
       msg: mes,
       toastLength: ft.Toast.LENGTH_SHORT,
       gravity: ft.ToastGravity.TOP,
-      backgroundColor: Colors.deepOrange.withOpacity(0.85),
-      textColor: Colors.white);
+      backgroundColor: Colors.white,
+      textColor: Colors.green);
 }

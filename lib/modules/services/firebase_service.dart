@@ -1,5 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
+import 'package:vnrealtor/share/function/show_toast.dart';
+import 'package:vnrealtor/share/import.dart';
 
 class FirebaseService {
   FirebaseService._();
@@ -9,12 +11,15 @@ class FirebaseService {
   static FirebaseService get instance => _instance;
   FirebaseMessaging fb;
 
-  void init() {
-    FirebaseMessaging.instance.requestPermission();
+  void init() async {
+    await FirebaseMessaging.instance.requestPermission();
+    await FirebaseMessaging.instance.getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      NotificationBloc.instance.getListNotification();
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
+      showToastNoContext('Bạn có thông báo mới');
+      NotificationBloc.instance
+          .getListNotification(filter: GraphqlFilter(order: 'createdAt: -1'));
 
       if (message.notification != null) {
         print('Message also contained a notification: ${message.notification}');

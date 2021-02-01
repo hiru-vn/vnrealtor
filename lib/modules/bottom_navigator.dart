@@ -1,3 +1,4 @@
+import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'dart:collection' show Queue;
 import 'dart:math' as math;
@@ -6,29 +7,88 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/rendering.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
-class BottomNavigator extends StatelessWidget {
+class BottomTabModel {
+  final bool isNoti;
+  final String title;
+  final IconData icon;
+  final IconData iconActive;
+
+  BottomTabModel(this.isNoti, this.title, this.icon, this.iconActive);
+}
+
+class BottomNavigator extends StatefulWidget {
   final int selectedIndex;
-  final List<IconData> listIcons;
+  final List<BottomTabModel> list;
   final Function(int) onSelect;
 
-  const BottomNavigator(
+  BottomNavigator(
       {Key key,
       @required this.selectedIndex,
-      @required this.listIcons,
+      @required this.list,
       @required this.onSelect})
       : super(key: key);
 
   @override
+  _BottomNavigatorState createState() => _BottomNavigatorState();
+}
+
+class _BottomNavigatorState extends State<BottomNavigator> {
+  NotificationBloc _notificationBloc;
+
+  @override
   Widget build(BuildContext context) {
-    final List<BottomNavigationBarItem> bottomNavBarItems = listIcons
+    _notificationBloc = Provider.of<NotificationBloc>(context);
+    final List<BottomNavigationBarItem> bottomNavBarItems = widget.list
         .map(
           (e) => BottomNavigationBarItem(
             label: '',
-            icon: Icon(e),
-            activeIcon: Center(
-              child: Icon(
-                e,
-              ),
+            icon: Stack(
+              children: [
+                Center(
+                  child: Icon(
+                    e.icon,
+                  ),
+                ),
+                if (_notificationBloc.notifications
+                        .any((element) => (!element.seen)) &&
+                    e.isNoti)
+                  Positioned(
+                    top: 2,
+                    left: deviceWidth(context) / 8 + 6,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            activeIcon: Stack(
+              children: [
+                Center(
+                  child: Icon(
+                    e.iconActive,
+                  ),
+                ),
+                if (_notificationBloc.notifications
+                        .any((element) => (!element.seen)) &&
+                    e.isNoti)
+                  Positioned(
+                    top: 2,
+                    left: deviceWidth(context) / 8 + 6,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         )
@@ -41,8 +101,8 @@ class BottomNavigator extends StatelessWidget {
       unselectedItemColor: Colors.white,
       type: BottomNavigationBarType.fixed,
       items: bottomNavBarItems,
-      currentIndex: selectedIndex,
-      onTap: onSelect,
+      currentIndex: widget.selectedIndex,
+      onTap: widget.onSelect,
       showUnselectedLabels: false,
       showSelectedLabels: false,
     );

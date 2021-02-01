@@ -1,5 +1,4 @@
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
 import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
 import 'package:vnrealtor/modules/notification/notification_page.dart';
 import 'package:vnrealtor/modules/post/post_page.dart';
@@ -51,11 +50,13 @@ class _HomePageState extends State<HomePage>
         extendBody: true,
         bottomNavigationBar: BottomNavigator(
           selectedIndex: _selectedIndex,
-          listIcons: [
-            MdiIcons.homeOutline,
-            MdiIcons.chatOutline,
-            MdiIcons.bellOutline,
-            Icons.settings_outlined
+          list: [
+            BottomTabModel(false, 'Home', MdiIcons.homeOutline, MdiIcons.home),
+            BottomTabModel(false, 'Chat', MdiIcons.chatOutline, MdiIcons.chat),
+            BottomTabModel(
+                true, 'Notification', MdiIcons.bellOutline, MdiIcons.bell),
+            BottomTabModel(
+                false, 'More', Icons.settings_outlined, Icons.settings)
           ],
           onSelect: (index) {
             setState(() {
@@ -64,9 +65,9 @@ class _HomePageState extends State<HomePage>
             if (index == 1) //message
               InboxBloc.instance
                   .getList20InboxGroup(AuthBloc.instance.userModel.id);
-            if (index == 2)
-              NotificationBloc.instance.getListNotification(
-                  filter: GraphqlFilter(order: '{createdAt: -1}'));
+            // if (index == 2)
+            //   NotificationBloc.instance.getListNotification(
+            //       filter: GraphqlFilter(order: '{createdAt: -1}'));
           },
         ),
       ),

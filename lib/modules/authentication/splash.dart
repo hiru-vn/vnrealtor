@@ -2,6 +2,7 @@ import 'package:vnrealtor/main.dart';
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/authentication/introduce.dart';
 import 'package:vnrealtor/modules/home_page.dart';
+import 'package:vnrealtor/modules/services/firebase_service.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class SplashPage extends StatefulWidget {
@@ -28,6 +29,7 @@ class _SplashPageState extends State<SplashPage> {
           if (!isLog)
             IntroducePage.navigate();
           else {
+            FirebaseService.instance.init();
             final res = await _authBloc.getUserInfo();
             if (res.isSuccess)
               HomePage.navigate();
