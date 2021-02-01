@@ -178,6 +178,17 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
+  bool checkOtp(String otp) {
+    try {
+      authCredential = PhoneAuthProvider.credential(
+          verificationId: smsVerifyCode, smsCode: otp);
+      if (authCredential == null) return false;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<BaseResponse> getUserInfo() async {
     try {
       final id = await SPref.instance.get('id');
