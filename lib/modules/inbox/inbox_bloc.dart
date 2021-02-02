@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
+import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
 import 'package:vnrealtor/modules/inbox/inbox_chat.dart';
 import 'inbox_model.dart';
 
@@ -27,6 +28,7 @@ class InboxBloc extends ChangeNotifier {
       String image,
       List<String> users,
       List<String> usersName) async {
+    users.sort();
     final snap =
         await firestore.collection(groupCollection).doc(users.join("-")).get();
     if (!snap.exists) {
@@ -107,9 +109,9 @@ class InboxBloc extends ChangeNotifier {
 
   Future<void> addMessage(String groupId, String text, DateTime time,
       String uid, String fullName, String avatar,
-      {String filePath}) {
+      {String filePath}) async {
     print('upload: ' + filePath.toString());
-    return getGroup(groupId).collection(messageCollection).add({
+    await getGroup(groupId).collection(messageCollection).add({
       'text': text,
       'date': time.toIso8601String(),
       'uid': uid,
@@ -118,6 +120,8 @@ class InboxBloc extends ChangeNotifier {
       'filePath':
           filePath == null ? null : (filePath.isNotEmpty ? filePath : null)
     });
+    final users = (await getGroup(groupId).get()).data()['users'] as List;
+    NotificationBloc.instance.sendNotiMessage(users.cast<String>(), text);
   }
 
   Future<Stream<QuerySnapshot>> getStreamIncomingMessages(

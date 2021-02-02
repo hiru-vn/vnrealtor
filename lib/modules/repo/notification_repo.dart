@@ -1,3 +1,4 @@
+import 'package:vnrealtor/modules/services/graphql_helper.dart';
 import 'package:vnrealtor/modules/services/notification_srv.dart';
 import 'package:vnrealtor/share/import.dart';
 
@@ -11,8 +12,16 @@ class NotificationRepo {
         offset: filter?.offset,
         search: filter?.search,
         page: filter?.page,
-        order: filter?.order, filter: '{toUserId: "$id"}');
+        order: filter?.order,
+        filter: '{toUserId: "$id"}');
     return res;
   }
 
+  Future sendNotiMessage(List<String> users, String content) async {
+    final res = await NotificationSrv().mutate('sendNotiMes', '''
+userIds: ${GraphqlHelper.listStringToGraphqlString(users)}
+content: "$content"
+    ''');
+    return res;
+  }
 }

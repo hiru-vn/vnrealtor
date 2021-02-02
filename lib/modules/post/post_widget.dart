@@ -1,3 +1,4 @@
+import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/model/post.dart';
 import 'package:vnrealtor/modules/post/media_post_widget.dart';
@@ -114,7 +115,7 @@ class _PostWidgetState extends State<PostWidget> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 0),
+              padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 5),
               child: ReadMoreText(
                 widget.post?.content ?? '',
                 trimLines: 2,
@@ -322,22 +323,31 @@ class _PostWidgetState extends State<PostWidget> {
   initMenu() {
     menu = PopupMenu(
         items: [
-          MenuItem(
-              title: 'Contact',
-              image: Icon(
-                Icons.post_add,
-                color: Colors.white,
-              )),
-          MenuItem(
-              title: 'Report',
-              image: Icon(
-                Icons.report,
-                color: Colors.white,
-              )),
+          if (widget.post.userId != AuthBloc.instance.userModel.id) ...[
+            MenuItem(
+                title: 'Contact',
+                image: Icon(
+                  Icons.post_add,
+                  color: Colors.white,
+                )),
+            MenuItem(
+                title: 'Report',
+                image: Icon(
+                  Icons.report,
+                  color: Colors.white,
+                )),
+          ] else
+            MenuItem(
+                title: 'Delete',
+                image: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                )),
         ],
         onClickMenu: (val) {
-          if (val.menuTitle == 'Voice call') {}
-          if (val.menuTitle == 'Video call') {}
+          if (val.menuTitle == 'Contact') {}
+          if (val.menuTitle == 'Report') {}
+          if (val.menuTitle == 'Delete') {}
         },
         stateChanged: (val) {},
         onDismiss: () {});

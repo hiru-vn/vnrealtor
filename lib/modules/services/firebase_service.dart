@@ -17,7 +17,7 @@ class FirebaseService {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
-      showToastNoContext('Bạn có thông báo mới');
+      showToastNoContext('${message.notification.body}');
       NotificationBloc.instance
           .getListNotification(filter: GraphqlFilter(order: 'createdAt: -1'));
 

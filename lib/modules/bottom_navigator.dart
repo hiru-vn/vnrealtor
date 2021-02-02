@@ -41,7 +41,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
     final List<BottomNavigationBarItem> bottomNavBarItems = widget.list
         .map(
           (e) => BottomNavigationBarItem(
-            label: '',
+            label: e.title,
             icon: Stack(
               children: [
                 Center(
@@ -52,18 +52,50 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                 if (_notificationBloc.notifications
                         .any((element) => (!element.seen)) &&
                     e.isNoti)
-                  Positioned(
-                    top: 2,
-                    left: deviceWidth(context) / 8 + 6,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
+                  // Positioned(
+                  //   top: 2,
+                  //   left: deviceWidth(context) / 8 + 6,
+                  //   child: Container(
+                  //     width: 8,
+                  //     height: 8,
+                  //     decoration: BoxDecoration(
+                  //       color: Colors.red,
+                  //       shape: BoxShape.circle,
+                  //     ),
+                  //   ),
+                  // ),
+                  if (_notificationBloc.notifications
+                          .any((element) => (!element.seen)) &&
+                      e.isNoti)
+                    Positioned(
+                      top: 0,
+                      left: deviceWidth(context) / 8 + 5,
+                      child: Container(
+                        padding: EdgeInsets.all(2.4),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 18,
+                          minHeight: 16,
+                        ),
+                        child: Center(
+                          child: Text(
+                            _notificationBloc.notifications
+                                .where((element) => (!element.seen))
+                                .toList()
+                                .length
+                                .toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    )
               ],
             ),
             activeIcon: Stack(

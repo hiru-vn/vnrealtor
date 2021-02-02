@@ -23,5 +23,5 @@ Future showToastNoContext(String mes) async {
       toastLength: ft.Toast.LENGTH_SHORT,
       gravity: ft.ToastGravity.TOP,
       backgroundColor: Colors.white,
-      textColor: Colors.green);
+      textColor: Colors.blue);
 }
