@@ -3,13 +3,24 @@ import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
 import 'package:vnrealtor/share/function/show_toast.dart';
 import 'package:vnrealtor/share/import.dart';
 
-class FirebaseService {
-  FirebaseService._();
+enum FcmType { message, like, comment, share, system }
 
-  static final FirebaseService _instance = FirebaseService._();
+class FcmService {
+  FcmService._();
 
-  static FirebaseService get instance => _instance;
+  static final FcmService _instance = FcmService._();
+
+  static FcmService get instance => _instance;
   FirebaseMessaging fb;
+
+  static FcmType getType(String type) {
+    if (type.toLowerCase() == 'Like'.toLowerCase()) return FcmType.like;
+    if (type.toLowerCase() == 'MESSENGER'.toLowerCase()) return FcmType.message;
+    if (type.toLowerCase() == 'Comment'.toLowerCase()) return FcmType.comment;
+    if (type.toLowerCase() == 'Share'.toLowerCase()) return FcmType.share;
+    if (type.toLowerCase() == 'System'.toLowerCase()) return FcmType.system;
+    return null;
+  }
 
   void init() async {
     await FirebaseMessaging.instance.requestPermission();
@@ -17,7 +28,28 @@ class FirebaseService {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
-      showToastNoContext('${message.notification.body}');
+      final type = getType(message.data['type']);
+
+      if (type == FcmType.message) {
+        showToastNoContext('Tin nhắn mới');
+      }
+
+      if (type == FcmType.share) {
+        showToastNoContext('Bạn có 1 lượt chia sẻ mới');
+      }
+
+      if (type == FcmType.like) {
+        showToastNoContext('${message.notification.body}');
+      }
+
+      if (type == FcmType.comment) {
+        showToastNoContext('Bạn có comment bài viết mới');
+      }
+
+      if (type == FcmType.system) {
+        showToastNoContext('${message.notification.body}');
+      }
+
       NotificationBloc.instance
           .getListNotification(filter: GraphqlFilter(order: 'createdAt: -1'));
 

@@ -5,8 +5,6 @@ class VerificationRepo {
       String name,
       String dateOfBirth,
       String idCard,
-      String dateOfIssue,
-      String placeOfIssue,
       String imageFront,
       String imageBehind,
       String currentAddress,
@@ -17,8 +15,6 @@ class VerificationRepo {
       name: "${name ?? ''}"
     	dateOfBirth: "${dateOfBirth ?? ''}"
       idCard: "${idCard ?? ''}"
-      dateOfIssue: "${dateOfIssue ?? ''}"
-      placeOfIssue: "${placeOfIssue ?? ''}"
       imageFront: "${imageFront ?? ''}"
       imageBehind: "${imageBehind ?? ''}"
       currentAddress: "${currentAddress ?? ''}"

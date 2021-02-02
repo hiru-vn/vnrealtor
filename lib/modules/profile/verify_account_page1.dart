@@ -72,22 +72,15 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                     _buildDatePickField(
                         'Ngày sinh',
                         _verificationBloc.dateOfBirth,
-                        (val) => _verificationBloc.dateOfBirth = val,
+                        (val) => setState(() {
+                              _verificationBloc.dateOfBirth = val;
+                            }),
                         validator: TextFieldValidator.notEmptyValidator),
                     SizedBox(height: 15),
-                    _buildDatePickField(
-                        'Ngày cấp',
-                        _verificationBloc.dateOfIssue,
-                        (val) => _verificationBloc.dateOfIssue = val,
-                        validator: TextFieldValidator.notEmptyValidator),
+                    _buildPictureCollect('Mặt trước minh nhân dân/ Hộ chiếu'),
                     SizedBox(height: 15),
-                    _buildTextField(
-                        'Nơi cấp (Ví dụ: Hà Nội)',
-                        _verificationBloc.placeOfIssue,
-                        (val) => _verificationBloc.placeOfIssue = val,
-                        validator: TextFieldValidator.notEmptyValidator),
-                    SizedBox(height: 15),
-                    _buildPictureCollect(),
+                    _buildPictureCollect(
+                        'Mặt sau chứng minh nhân dân/ Hộ chiếu'),
                     SizedBox(height: 25),
                     RoundedBtn(
                       height: 45,
@@ -178,7 +171,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
     );
   }
 
-  _buildPictureCollect() => Container(
+  _buildPictureCollect(String text) => Container(
         height: 180,
         width: deviceWidth(context),
         child: Stack(children: [
@@ -255,7 +248,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                 padding: EdgeInsets.all(5),
                 child: Center(
                   child: Text(
-                    'Ảnh chứng minh nhân dân/ Hộ chiếu',
+                    text,
                     style: ptTitle().copyWith(color: Colors.black54),
                   ),
                 ),

@@ -9,8 +9,6 @@ class VerificationBloc extends ChangeNotifier {
   String name;
   String dateOfBirth;
   String idCard;
-  String dateOfIssue;
-  String placeOfIssue;
   String imageFront;
   String imageBehind;
   String currentAddress;
@@ -24,8 +22,6 @@ class VerificationBloc extends ChangeNotifier {
           name,
           dateOfBirth,
           idCard,
-          dateOfIssue,
-          placeOfIssue,
           imageFront,
           imageBehind,
           currentAddress,
