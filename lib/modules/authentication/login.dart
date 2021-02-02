@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/authentication/register.dart';
+import 'package:vnrealtor/modules/authentication/reset_password_dialog.dart';
 import 'package:vnrealtor/modules/home_page.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/share/widget/appbar.dart';
@@ -17,8 +20,9 @@ class _LoginPageState extends State<LoginPage> {
   AuthBloc _authBloc;
   TextEditingController _nameC = TextEditingController(text: '0123123123');
   TextEditingController _passC = TextEditingController(text: '123123');
-  TextEditingController _otpC = TextEditingController(text: '');
+
   final _formKey = GlobalKey<FormState>();
+
   bool obscurePassword = true;
 
   @override
@@ -27,14 +31,6 @@ class _LoginPageState extends State<LoginPage> {
       _authBloc = Provider.of<AuthBloc>(context);
     }
     super.didChangeDependencies();
-  }
-
-  _otpSubmit() {
-    final res = _authBloc.checkOtp(_otpC.text);
-    if (res) {
-      navigatorKey.currentState.maybePop();
-      _otpC.clear();
-    } else {}
   }
 
   _submit() async {
@@ -154,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                     // if (TextF _nameC.text)
                     showDialog(
                         context: context,
-                        builder: (context) => _buildOtpDialog());
+                        builder: (context) => ResetPasswordDialog());
                   },
                   child: Text(
                     'Quên mật khẩu?',
@@ -195,72 +191,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ]),
           ]),
-        ),
-      ),
-    );
-  }
-
-  _buildOtpDialog() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.only(bottom: Responsive.heightMultiplier * 10),
-        child: Material(
-          child: Container(
-            width: deviceWidth(context) / 1.4,
-            padding: EdgeInsets.only(top: 20, bottom: 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    'Nhập OTP chúng tôi gửi qua tin nhắn cho bạn',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SpacingBox(h: 2),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3),
-                        color: ptBackgroundColor(context)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: TextField(
-                        maxLength: 6,
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.number,
-                        onChanged: (str) {
-                          if (str.length == 6) {
-                            _otpSubmit();
-                          }
-                        },
-                        style: ptBigTitle().copyWith(letterSpacing: 10),
-                        controller: _otpC,
-                        decoration: InputDecoration(
-                            counterText: "",
-                            border: InputBorder.none,
-                            hintText: ''),
-                      ),
-                    ),
-                  ),
-                ),
-                StreamBuilder(
-                    stream: _authBloc.authStatusStream,
-                    builder: (context, snap) {
-                      if (snap.hasData &&
-                          (snap.data as AuthResponse).status ==
-                              AuthStatus.successOtp)
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 15),
-                          child: kLoadingSpinner,
-                        );
-                      return SizedBox.shrink();
-                    })
-              ],
-            ),
-          ),
         ),
       ),
     );

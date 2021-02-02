@@ -60,12 +60,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   _submit() {
     if (!_formKey.currentState.validate()) return;
-    _authBloc.requestOtp(_nameC.text, _emailC.text, _passC.text, _phoneC.text);
+    _authBloc.requestOtpRegister(_nameC.text, _emailC.text, _passC.text, _phoneC.text);
     // HomePage.navigate();
   }
 
   _codeSubmit() {
-    _authBloc.submitOtp(
+    _authBloc.submitOtpRegister(
         _nameC.text, _emailC.text, _passC.text, _phoneC.text, _otpC.text);
     _otpC.clear();
   }

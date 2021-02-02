@@ -58,6 +58,18 @@ idToken: "$idToken"
     return res;
   }
 
+  Future resetPassWithPhone({String password, String idToken}) async {
+    final res = await UserSrv().mutate(
+        'resetPassword',
+        '''
+newPassword: "$password"
+idToken: "$idToken"
+    ''',
+        fragment:
+            'id uid name email phone role reputationScore friendIds createdAt updatedAt');
+    return res['resetPassword'];
+  }
+
   Future getMyFriendShipWith(String userId) async {
     final res = await UserSrv()
         .query('getMyFriendShipWith', 'userId: "$userId"', fragment: '''
