@@ -1,14 +1,62 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
+import 'package:vnrealtor/share/function/show_toast.dart';
+import 'package:vnrealtor/share/import.dart';
 
-class FirebaseService {
-  FirebaseService._();
+enum FcmType { message, like, comment, share, system }
 
-  static final FirebaseService _instance = FirebaseService._();
+class FcmService {
+  FcmService._();
 
-  static FirebaseService get instance => _instance;
+  static final FcmService _instance = FcmService._();
 
-  void init() {
-    FirebaseMessaging.instance.requestPermission();
+  static FcmService get instance => _instance;
+  FirebaseMessaging fb;
+
+  static FcmType getType(String type) {
+    if (type.toLowerCase() == 'Like'.toLowerCase()) return FcmType.like;
+    if (type.toLowerCase() == 'MESSENGER'.toLowerCase()) return FcmType.message;
+    if (type.toLowerCase() == 'Comment'.toLowerCase()) return FcmType.comment;
+    if (type.toLowerCase() == 'Share'.toLowerCase()) return FcmType.share;
+    if (type.toLowerCase() == 'System'.toLowerCase()) return FcmType.system;
+    return null;
+  }
+
+  void init() async {
+    await FirebaseMessaging.instance.requestPermission();
+    await FirebaseMessaging.instance.getToken();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+      final type = getType(message.data['type']);
+
+      if (type == FcmType.message) {
+        showToastNoContext('Tin nhắn mới');
+      }
+
+      if (type == FcmType.share) {
+        showToastNoContext('Bạn có 1 lượt chia sẻ mới');
+      }
+
+      if (type == FcmType.like) {
+        showToastNoContext('${message.notification.body}');
+      }
+
+      if (type == FcmType.comment) {
+        showToastNoContext('Bạn có comment bài viết mới');
+      }
+
+      if (type == FcmType.system) {
+        showToastNoContext('${message.notification.body}');
+      }
+
+      NotificationBloc.instance
+          .getListNotification(filter: GraphqlFilter(order: 'createdAt: -1'));
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
   }
 
   Future<String> getDeviceToken() {

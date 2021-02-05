@@ -1,7 +1,9 @@
 import 'package:vnrealtor/main.dart';
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/authentication/introduce.dart';
+import 'package:vnrealtor/modules/authentication/login.dart';
 import 'package:vnrealtor/modules/home_page.dart';
+import 'package:vnrealtor/modules/services/firebase_service.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class SplashPage extends StatefulWidget {
@@ -24,10 +26,17 @@ class _SplashPageState extends State<SplashPage> {
       Future.delayed(
         Duration(milliseconds: 500),
         () async {
-          final isLog = await _authBloc.checkToken();
-          if (!isLog)
+          final firstTime =
+              (await SPref.instance.getBool('first_time')) ?? false;
+          if (firstTime) {
             IntroducePage.navigate();
-          else {
+            return;
+          }
+          final isLog = await _authBloc.checkToken();
+          if (!isLog) {
+            LoginPage.navigate();
+          } else {
+            FcmService.instance.init();
             final res = await _authBloc.getUserInfo();
             if (res.isSuccess)
               HomePage.navigate();

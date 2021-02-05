@@ -47,20 +47,28 @@ class _HomePageState extends State<HomePage>
           index: _selectedIndex,
           children: _pages,
         ),
+        extendBody: true,
         bottomNavigationBar: BottomNavigator(
           selectedIndex: _selectedIndex,
-          listIcons: [
-            MdiIcons.bulletinBoard,
-            MdiIcons.messageText,
-            MdiIcons.bellRing,
-            Icons.settings
+          list: [
+            BottomTabModel(
+                false, 'Trang chủ', MdiIcons.homeOutline, MdiIcons.home),
+            BottomTabModel(
+                true, 'Thông báo', MdiIcons.bellOutline, MdiIcons.bell),
+            BottomTabModel(false, 'Hồ sơ', Icons.person_outline, Icons.person),
+            BottomTabModel(
+                false, 'Menu', Icons.settings_outlined, Icons.settings)
           ],
           onSelect: (index) {
             setState(() {
               _selectedIndex = index;
             });
             if (index == 1) //message
-            InboxBloc.instance.getList20InboxGroup(AuthBloc.instance.userModel.id);
+              InboxBloc.instance
+                  .getList20InboxGroup(AuthBloc.instance.userModel.id);
+            // if (index == 2)
+            //   NotificationBloc.instance.getListNotification(
+            //       filter: GraphqlFilter(order: '{createdAt: -1}'));
           },
         ),
       ),

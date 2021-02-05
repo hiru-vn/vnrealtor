@@ -1,6 +1,10 @@
+import 'package:vnrealtor/modules/bloc/verification_bloc.dart';
 import 'package:vnrealtor/modules/profile/verify_account_page2.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:vnrealtor/utils/file_util.dart';
 
 class VertifyAccountPage1 extends StatefulWidget {
   static Future navigate() {
@@ -12,6 +16,17 @@ class VertifyAccountPage1 extends StatefulWidget {
 }
 
 class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
+  VerificationBloc _verificationBloc;
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void didChangeDependencies() {
+    if (_verificationBloc == null) {
+      _verificationBloc = Provider.of(context);
+    }
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,33 +59,52 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               width: deviceWidth(context),
               color: Colors.white,
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              child: Column(
-                children: [
-                  _buildTextField('Nhập đầy đủ họ tên (có dấu)'),
-                  SizedBox(height: 15),
-                  _buildDatePickField('Ngày sinh', null),
-                  SizedBox(height: 15),
-                  _buildDatePickField('Ngày cấp', null),
-                  SizedBox(height: 15),
-                  _buildTextField('Nơi cấp (Ví dụ: Hà Nội)'),
-                  SizedBox(height: 15),
-                  _buildPictureCollect(),
-                  SizedBox(height: 25),
-                  RoundedBtn(
-                    height: 45,
-                    text: 'Tiếp theo',
-                    onPressed: () {
-                      VertifyAccountPage2.navigate();
-                    },
-                    width: 150,
-                    color: ptPrimaryColor(context),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 8,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    _buildTextField(
+                        'Nhập đầy đủ họ tên (có dấu)',
+                        _verificationBloc.name,
+                        (val) => _verificationBloc.name = val,
+                        validator: TextFieldValidator.notEmptyValidator),
+                    SizedBox(height: 15),
+                    _buildDatePickField(
+                        'Ngày sinh',
+                        _verificationBloc.dateOfBirth,
+                        (val) => setState(() {
+                              _verificationBloc.dateOfBirth = val;
+                            }),
+                        validator: TextFieldValidator.notEmptyValidator),
+                    SizedBox(height: 15),
+                    _buildPictureCollect('Mặt trước minh nhân dân/ Hộ chiếu'),
+                    SizedBox(height: 15),
+                    _buildPictureCollect(
+                        'Mặt sau chứng minh nhân dân/ Hộ chiếu'),
+                    SizedBox(height: 25),
+                    RoundedBtn(
+                      height: 45,
+                      text: 'Tiếp theo',
+                      onPressed: () {
+                        if (_verificationBloc.imageFront == null) {
+                          showToast('Cần thêm ảnh CMND', context);
+                        }
+                        if (!_formKey.currentState.validate()) {
+                          return;
+                        }
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        VertifyAccountPage2.navigate();
+                      },
+                      width: 150,
+                      color: ptPrimaryColor(context),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 8,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                ],
+                    SizedBox(height: 10),
+                  ],
+                ),
               ),
             )
           ],
@@ -79,14 +113,21 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
     );
   }
 
-  _buildTextField(String hint) => Padding(
+  _buildTextField(String hint, String initialValue, Function(String) onChange,
+          {TextInputType type = TextInputType.text,
+          Function(String) validator}) =>
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Material(
             elevation: 4,
             borderRadius: BorderRadius.circular(10),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
-              child: TextField(
+              child: TextFormField(
+                validator: validator,
+                keyboardType: type,
+                initialValue: initialValue,
+                onChanged: onChange,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: hint,
@@ -95,38 +136,53 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
             )),
       );
 
-  _buildDatePickField(String hint, String value) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Material(
-            elevation: 4,
-            borderRadius: BorderRadius.circular(10),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25)
-                  .copyWith(right: 10),
-              child: TextField(
-                onTap: () {
-                  showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime.now(),
-                  );
-                },
-                readOnly: true,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: hint,
-                    suffixIconConstraints: BoxConstraints(maxHeight: 30),
-                    suffixIcon: Icon(Icons.calendar_today,
-                        color: ptPrimaryColor(context))),
-              ),
-            )),
-      );
+  _buildDatePickField(String hint, String value, Function(String) onChange,
+      {Function(String) validator}) {
+    TextEditingController controller = TextEditingController(
+        text: Formart.formatToDate(DateTime.tryParse(value ?? '')));
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Material(
+          elevation: 4,
+          borderRadius: BorderRadius.circular(10),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25)
+                .copyWith(right: 10),
+            child: TextFormField(
+              controller: controller,
+              validator: validator,
+              onTap: () {
+                showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now().subtract(Duration(days: 5475)),
+                  lastDate: DateTime.now(),
+                ).then((value) => onChange(value.toIso8601String()));
+              },
+              readOnly: true,
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: hint,
+                  suffixIconConstraints: BoxConstraints(maxHeight: 30),
+                  suffixIcon: Icon(Icons.calendar_today,
+                      color: ptPrimaryColor(context))),
+            ),
+          )),
+    );
+  }
 
-  _buildPictureCollect() => Container(
+  _buildPictureCollect(String text) => Container(
         height: 180,
         width: deviceWidth(context),
         child: Stack(children: [
+          if (_verificationBloc.imageFront != null)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Image.network(_verificationBloc.imageFront),
+            ),
           Positioned(
             top: 15,
             left: 25,
@@ -136,34 +192,50 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               radius: Radius.circular(20),
               strokeWidth: 1,
               dashPattern: [8, 6],
-              child: Container(
-                height: 160,
-                child: Center(
-                    child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: ptPrimaryColor(context),
-                      ),
-                      child: Center(
-                        child: Icon(
-                          MdiIcons.camera,
-                          color: Colors.white,
-                          size: 24,
+              child: GestureDetector(
+                onTap: () => onCustomPersionRequest(
+                    permission: Permission.camera,
+                    onGranted: () {
+                      ImagePicker.pickImage(source: ImageSource.camera)
+                          .then((value) async {
+                        if (value == null) return;
+                        final url = await FileUtil.uploadFireStorage(value);
+                        _verificationBloc.imageFront = url;
+                        setState(() {});
+                      });
+                    }),
+                child: Container(
+                  height: 160,
+                  child: Center(
+                      child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: ptPrimaryColor(context),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            MdiIcons.camera,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Mở camera',
-                      style: ptBody().copyWith(color: Colors.black54),
-                    )
-                  ],
-                )),
+                      SizedBox(height: 8),
+                      Text(
+                        'Mở camera',
+                        style: ptBody().copyWith(
+                            color: (_verificationBloc.imageFront != null)
+                                ? Colors.white
+                                : Colors.black54),
+                      )
+                    ],
+                  )),
+                ),
               ),
             ),
           ),
@@ -176,7 +248,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                 padding: EdgeInsets.all(5),
                 child: Center(
                   child: Text(
-                    'Ảnh chứng minh nhân dân/ Hộ chiếu',
+                    text,
                     style: ptTitle().copyWith(color: Colors.black54),
                   ),
                 ),

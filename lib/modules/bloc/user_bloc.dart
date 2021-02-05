@@ -38,7 +38,7 @@ class UserBloc extends ChangeNotifier {
           (element) => element.id == AuthBloc.instance.userModel.id);
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       // notifyListeners();
     }
@@ -61,7 +61,7 @@ class UserBloc extends ChangeNotifier {
       final res = await UserRepo().getMyFriendShipWith(userId);
       return BaseResponse.success(FriendshipModel.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       // notifyListeners();
     }
@@ -73,7 +73,7 @@ class UserBloc extends ChangeNotifier {
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       // notifyListeners();
     }
@@ -85,7 +85,7 @@ class UserBloc extends ChangeNotifier {
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       // notifyListeners();
     }
@@ -97,7 +97,20 @@ class UserBloc extends ChangeNotifier {
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> changePassword(
+      String oldPassword, String newPassword) async {
+    try {
+      final res = await UserRepo().changePassword(oldPassword, newPassword);
+      final val = UserModel.fromJson(res);
+      return BaseResponse.success(val);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
     } finally {
       // notifyListeners();
     }

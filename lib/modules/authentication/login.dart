@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/authentication/register.dart';
+import 'package:vnrealtor/modules/authentication/reset_password_dialog.dart';
 import 'package:vnrealtor/modules/home_page.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/share/widget/appbar.dart';
@@ -17,7 +20,9 @@ class _LoginPageState extends State<LoginPage> {
   AuthBloc _authBloc;
   TextEditingController _nameC = TextEditingController(text: '0123123123');
   TextEditingController _passC = TextEditingController(text: '123123');
+
   final _formKey = GlobalKey<FormState>();
+
   bool obscurePassword = true;
 
   @override
@@ -141,8 +146,12 @@ class _LoginPageState extends State<LoginPage> {
               child: Padding(
                 padding: EdgeInsets.only(right: 30),
                 child: GestureDetector(
-                  onTap: () => showAlertDialog(context, 'Đang cập nhật',
-                      navigatorKey: navigatorKey),
+                  onTap: () {
+                    // if (TextF _nameC.text)
+                    showDialog(
+                        context: context,
+                        builder: (context) => ResetPasswordDialog());
+                  },
                   child: Text(
                     'Quên mật khẩu?',
                     style: ptTitle().copyWith(color: Colors.black54),

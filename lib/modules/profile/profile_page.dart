@@ -478,7 +478,7 @@ class _ProfileCardState extends State<ProfileCard> {
                         Row(
                           children: [
                             SizedBox(
-                                width: 70,
+                                width: 60,
                                 child: Center(
                                   child: Icon(
                                     Icons.phone,
@@ -491,7 +491,7 @@ class _ProfileCardState extends State<ProfileCard> {
                               height: 35,
                               color: ptLineColor(context),
                             ),
-                            SizedBox(width: 25),
+                            SizedBox(width: 20),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -516,7 +516,7 @@ class _ProfileCardState extends State<ProfileCard> {
                         Row(
                           children: [
                             SizedBox(
-                                width: 70,
+                                width: 60,
                                 child: Center(
                                   child: Icon(
                                     Icons.email,
@@ -529,7 +529,7 @@ class _ProfileCardState extends State<ProfileCard> {
                               height: 35,
                               color: ptLineColor(context),
                             ),
-                            SizedBox(width: 25),
+                            SizedBox(width: 20),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

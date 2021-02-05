@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/model/comment.dart';
@@ -28,6 +29,7 @@ class _CommentPageState extends State<CommentPage> {
   List<CommentModel> comments;
   TextEditingController _commentC = TextEditingController();
   PostBloc _postBloc;
+  String sort = '{createdAt: 1}';
 
   @override
   void initState() {
@@ -35,20 +37,20 @@ class _CommentPageState extends State<CommentPage> {
       isPost = false;
       isMediaPost = true;
     }
+
     super.initState();
   }
 
   _comment(String text) async {
+    text = text.trim();
     if (comments == null) await Future.delayed(Duration(seconds: 1));
     _commentC.clear();
-    comments.insert(
-        0,
-        CommentModel(
-            content: text,
-            like: 0,
-            user: AuthBloc.instance.userModel,
-            updatedAt: DateTime.now().toIso8601String()));
-   FocusScope.of(context).requestFocus(FocusNode());
+    comments.add(CommentModel(
+        content: text,
+        like: 0,
+        user: AuthBloc.instance.userModel,
+        updatedAt: DateTime.now().toIso8601String()));
+    FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text,
         postId: widget.post?.id, mediaPostId: widget.mediaPost?.id);
     if (!res.isSuccess) {
@@ -64,16 +66,18 @@ class _CommentPageState extends State<CommentPage> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
-      _getComments();
+      _getComments(filter: GraphqlFilter(limit: 20));
     }
     super.didChangeDependencies();
   }
 
-  Future _getComments() async {
+  Future _getComments({GraphqlFilter filter}) async {
     BaseResponse res;
-    if (isPost) res = await _postBloc.getNewFeedComment(widget.post.id);
+    if (isPost)
+      res =
+          await _postBloc.getAllCommentByPostId(widget.post.id, filter: filter);
     if (isMediaPost)
-      res = await _postBloc.getListMediaPostComment(widget.mediaPost.id);
+      res = await _postBloc.getListMediaPostComment(widget.mediaPost.id, filter: filter);
     if (res == null) return;
     if (res.isSuccess) {
       if (mounted)
@@ -87,125 +91,145 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar1(
-            title: 'Comments',
-            actions: [
-              Center(
-                child: Text(
-                  'Mới nhất',
-                  style: ptSmall(),
-                ),
-              ),
-              Center(
-                child: Icon(Icons.arrow_drop_down),
-              ),
-              SizedBox(
-                width: 15,
-              )
-            ],
-          ),
-          body: Stack(
-            fit: StackFit.expand,
-            children: [
-              if (comments != null)
-                ListView.separated(
-                  itemCount: comments.length,
-                  itemBuilder: (context, index) => ListTile(
-                    onTap: () {
-                      // InboxChat.navigate();
-                    },
-                    tileColor: Colors.white,
-                    leading: Container(
-                      padding: EdgeInsets.all(1),
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.black45),
-                        shape: BoxShape.circle,
-                      ),
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: CircleAvatar(
-                          radius: 18,
-                          backgroundImage: comments[index].user.avatar != null
-                              ? NetworkImage(comments[index].user.avatar)
-                              : AssetImage('assets/image/default_avatar.png'),
+    return DraggableScrollableSheet(
+      initialChildSize: 1,
+      builder: (context, controller) => Stack(
+        children: [
+          Scaffold(
+            appBar: AppBar1(
+              title: 'Comments',
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton(
+                      value: sort,
+                      style: ptBody().copyWith(color: Colors.black87),
+                      items: [
+                        DropdownMenuItem(
+                          child: Text('Mới nhất'),
+                          value: '{createdAt: -1}',
                         ),
-                      ),
-                    ),
-                    title: Padding(
-                      padding: const EdgeInsets.only(top: 13),
-                      child: Text(
-                        comments[index].user?.name ?? '',
-                        style: ptTitle()
-                            .copyWith(color: Colors.black87, fontSize: 15),
-                      ),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(
-                          comments[index].content ?? '',
-                          style: ptTiny().copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black87,
-                              fontSize: 13.5),
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              Formart.formatToDate(
-                                  DateTime.tryParse(comments[index].updatedAt)),
-                              style: ptTiny(),
-                            ),
-                            SizedBox(
-                              width: 50,
-                              child: Center(
-                                child: Text(
-                                  'Trả lời',
-                                  style: ptSmall(),
-                                ),
-                              ),
-                            ),
-                            Spacer(),
-                            GestureDetector(
-                              child: Row(children: [
-                                Icon(
-                                  MdiIcons.thumbUp,
-                                  size: 17,
-                                  color: comments[index].isLike
-                                      ? Colors.red
-                                      : Colors.grey[200],
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  comments[index].like.toString(),
-                                  style: ptTiny(),
-                                )
-                              ]),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 4,
+                        DropdownMenuItem(
+                          child: Text('Cũ nhất'),
+                          value: '{createdAt: 1}',
                         ),
                       ],
-                    ),
-                  ),
-                  separatorBuilder: (context, index) => Divider(
-                    height: 1,
-                  ),
-                ),
-              Positioned(
-                bottom: 0,
-                child: Container(
+                      underline: SizedBox.shrink(),
+                      onChanged: (val) {
+                        setState(() {
+                          sort = val;
+                        });
+                        _getComments(
+                            filter: GraphqlFilter(limit: 20, order: val));
+                      }),
+                )
+              ],
+            ),
+            body: Column(
+              children: [
+                comments != null
+                    ? Expanded(
+                        child: ListView.separated(
+                          controller: controller,
+                          padding: EdgeInsets.zero,
+                          itemCount: comments.length,
+                          itemBuilder: (context, index) {
+                            final comment = comments[index];
+                            return CustomListTile(
+                              onTap: () {
+                                // InboxChat.navigate();
+                              },
+                              tileColor: Colors.white,
+                              leading: Container(
+                                padding: EdgeInsets.all(1),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 1, color: Colors.black45),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: GestureDetector(
+                                  onTap: () {},
+                                  child: CircleAvatar(
+                                    radius: 18,
+                                    backgroundImage: comment.user.avatar != null
+                                        ? NetworkImage(comment.user.avatar)
+                                        : AssetImage(
+                                            'assets/image/default_avatar.png'),
+                                  ),
+                                ),
+                              ),
+                              title: Padding(
+                                padding: const EdgeInsets.only(top: 13),
+                                child: Text(
+                                  comment.user?.name ?? '',
+                                  style: ptTitle().copyWith(
+                                      color: Colors.black87, fontSize: 15),
+                                ),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 2,
+                                  ),
+                                  Text(
+                                    comment.content ?? '',
+                                    style: ptTiny().copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black87,
+                                        fontSize: 13.5),
+                                  ),
+                                  SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        Formart.formatToDate(DateTime.tryParse(
+                                            comment.updatedAt)),
+                                        style: ptTiny(),
+                                      ),
+                                      SizedBox(
+                                        width: 50,
+                                        child: Center(
+                                          child: Text(
+                                            'Trả lời',
+                                            style: ptSmall(),
+                                          ),
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      GestureDetector(
+                                        child: Row(children: [
+                                          Icon(
+                                            MdiIcons.thumbUp,
+                                            size: 17,
+                                            color: comment.isLike
+                                                ? Colors.red
+                                                : Colors.grey[200],
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            comment.like.toString(),
+                                            style: ptTiny(),
+                                          )
+                                        ]),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              SizedBox.shrink(),
+                        ),
+                      )
+                    : Spacer(),
+                Container(
                   width: deviceWidth(context),
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   color: ptBackgroundColor(context),
@@ -245,12 +269,12 @@ class _CommentPageState extends State<CommentPage> {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        if (comments == null) kLoadingSpinner
-      ],
+          if (comments == null) kLoadingSpinner
+        ],
+      ),
     );
   }
 }

@@ -114,7 +114,8 @@ class _InboxChatState extends State<InboxChat> {
 
     // init stream with last messageId
     _incomingMessageStream = await _inboxBloc.getStreamIncomingMessages(
-        widget.group.id, fbMessages[fbMessages.length - 1].id);
+        widget.group.id,
+        fbMessages.length > 0 ? fbMessages[fbMessages.length - 1].id : null);
     // add listener to cancel listener, or else will cause bug setState when dispose state
     _incomingMessageListener = _incomingMessageStream.listen(onIncomingMessage);
   }
@@ -313,7 +314,10 @@ class _InboxChatState extends State<InboxChat> {
           if (FileUtil.getFbUrlFileType(url) == FileType.image)
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ImageViewNetwork(url: url, borderRadius: 10,),
+              child: ImageViewNetwork(
+                url: url,
+                borderRadius: 10,
+              ),
             );
 
           return SizedBox.shrink();
@@ -342,7 +346,7 @@ class _InboxChatState extends State<InboxChat> {
           );
         },
         inputToolbarPadding: EdgeInsets.all(4),
-        inputDecoration: InputDecoration.collapsed(hintText: "Send message..."),
+        inputDecoration: InputDecoration.collapsed(hintText: "Send message.."),
         dateFormat: DateFormat('yyyy-MMM-dd'),
         timeFormat: DateFormat('HH:mm'),
         messages: messages,

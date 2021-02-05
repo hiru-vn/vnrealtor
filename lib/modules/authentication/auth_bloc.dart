@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vnrealtor/modules/authentication/login.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/home_page.dart';
 import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/repo/user_repo.dart';
 import 'package:vnrealtor/modules/services/base_response.dart';
@@ -86,7 +85,7 @@ class AuthBloc extends ChangeNotifier {
             name.toString().substring(1, 10);
       }
       final deviceId = await DeviceInfo.instance.getDeviceId();
-      final deviceToken = await FirebaseService.instance.getDeviceToken();
+      final deviceToken = await FcmService.instance.getDeviceToken();
       final res = await _userRepo.login(
           userName: name,
           password: password,
@@ -124,7 +123,23 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
-  Future requestOtp(String name, String email, String password, String phone,
+  //Register with email & password
+  Future<BaseResponse> resetPassWithPhoneAuth(
+      PhoneAuthCredential phoneAuth, String password) async {
+    try {
+      final auth = await FirebaseAuth.instance.signInWithCredential(phoneAuth);
+      if (auth == null) return BaseResponse.fail('Không tìm thấy tài khoản');
+      final fbToken = await auth.user.getIdToken();
+      final res = await _userRepo.resetPassWithPhone(
+          password: password, idToken: fbToken);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    }
+  }
+
+  Future requestOtpRegister(
+      String name, String email, String password, String phone,
       {bool isResend = false}) async {
     try {
       final String phoneNumber = (phone.startsWith('+') ? "+" : "+84") +
@@ -156,12 +171,41 @@ class AuthBloc extends ChangeNotifier {
         },
       );
     } catch (e) {
-      authStatusSink.add(AuthResponse.fail(e.message?.toString()));
+      authStatusSink.add(AuthResponse.fail(e.toString()));
     }
   }
 
-  Future submitOtp(String name, String email, String password, String phone,
-      String otp) async {
+  Future requestOtpResetPassword(String phone, {bool isResend = false}) async {
+    try {
+      final String phoneNumber = (phone.startsWith('+') ? "+" : "+84") +
+          phone.toString().substring(1, 10);
+      authStatusSink.add(AuthResponse.requestOtp());
+      _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: (authCredential) async {
+          authStatusSink.add(AuthResponse.successOtp());
+        },
+        verificationFailed: (e) {
+          authStatusSink.add(AuthResponse.fail(
+              Formart.formatErrFirebaseLoginToString(e.code)));
+        },
+        codeSent: (verificationId, [code]) {
+          countdownStartSink.add(true);
+          authStatusSink.add(AuthResponse.otpSent());
+          smsVerifyCode = verificationId;
+        },
+        codeAutoRetrievalTimeout: (verificationId) {
+          smsVerifyCode = verificationId;
+        },
+      );
+    } catch (e) {
+      authStatusSink.add(AuthResponse.fail(e.toString()));
+    }
+  }
+
+  Future submitOtpRegister(String name, String email, String password,
+      String phone, String otp) async {
     try {
       authCredential = PhoneAuthProvider.credential(
           verificationId: smsVerifyCode, smsCode: otp);
@@ -175,6 +219,42 @@ class AuthBloc extends ChangeNotifier {
       }
     } catch (e) {
       authStatusSink.add(AuthResponse.fail(e?.toString()));
+    }
+  }
+
+  AuthCredential submitOtpResetPass(String otp) {
+    try {
+      authCredential = PhoneAuthProvider.credential(
+          verificationId: smsVerifyCode, smsCode: otp);
+      authStatusSink.add(AuthResponse.successOtp());
+      return authCredential;
+    } catch (e) {
+      authStatusSink.add(AuthResponse.fail(e?.toString()));
+      return null;
+    }
+  }
+
+  Future resetPass(AuthCredential auth, String pass) async {
+    try {
+      final res = await resetPassWithPhoneAuth(authCredential, pass);
+      if (res.isSuccess) {
+        authStatusSink.add(AuthResponse.success());
+      } else {
+        authStatusSink.add(AuthResponse.fail(res.errMessage));
+      }
+    } catch (e) {
+      authStatusSink.add(AuthResponse.fail(e?.toString()));
+    }
+  }
+
+  bool checkOtp(String otp) {
+    try {
+      authCredential = PhoneAuthProvider.credential(
+          verificationId: smsVerifyCode, smsCode: otp);
+      if (authCredential == null) return false;
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 

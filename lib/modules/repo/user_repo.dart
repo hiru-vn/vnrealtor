@@ -50,12 +50,24 @@ idToken: "$idToken"
 
   Future getListUser({GraphqlFilter filter}) async {
     final res = await UserSrv().getList(
-        limit: filter.limit,
-        offset: filter.offset,
-        search: filter.search,
-        page: filter.page,
-        order: filter.order);
+        limit: filter?.limit,
+        offset: filter?.offset,
+        search: filter?.search,
+        page: filter?.page,
+        order: filter?.order);
     return res;
+  }
+
+  Future resetPassWithPhone({String password, String idToken}) async {
+    final res = await UserSrv().mutate(
+        'resetPassword',
+        '''
+newPassword: "$password"
+idToken: "$idToken"
+    ''',
+        fragment:
+            'id uid name email phone role reputationScore friendIds createdAt updatedAt');
+    return res['resetPassword'];
   }
 
   Future getMyFriendShipWith(String userId) async {
@@ -105,7 +117,13 @@ user1Id
 user2Id
 status
         ''');
-    return res['friendShipId'];
+    return res['declineFriend'];
   }
-  
+
+  Future changePassword(String oldPassword, String newPassword) async {
+    final res = await UserSrv().mutate('changePassword',
+        'oldPassword: "$oldPassword"\nnewPassword: "$newPassword"',
+        fragment: 'id');
+    return res['changePassword'];
+  }
 }

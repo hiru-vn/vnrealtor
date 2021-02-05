@@ -17,7 +17,7 @@ class PostBloc extends ChangeNotifier {
       post = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -30,7 +30,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -44,34 +44,34 @@ class PostBloc extends ChangeNotifier {
       post = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
   }
 
-  Future<BaseResponse> getNewFeedComment(String postId) async {
+  Future<BaseResponse> getAllCommentByPostId(String postId, {GraphqlFilter filter}) async {
     try {
-      final res = await PostRepo().getAllCommentByPostId(postId: postId);
+      final res = await PostRepo().getAllCommentByPostId(postId: postId, filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
   }
 
-  Future<BaseResponse> getListMediaPostComment(String postMediaId) async {
+  Future<BaseResponse> getListMediaPostComment(String postMediaId, {GraphqlFilter filter}) async {
     try {
       final res =
-          await PostRepo().getAllCommentByMediaPostId(postMediaId: postMediaId);
+          await PostRepo().getAllCommentByMediaPostId(postMediaId: postMediaId, filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -115,7 +115,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().increaseLikePost(postId: postId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -127,7 +127,7 @@ class PostBloc extends ChangeNotifier {
           await PostRepo().increaseLikeMediaPost(postMediaId: postMediaId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -138,7 +138,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().decreaseLikePost(postId: postId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -150,7 +150,7 @@ class PostBloc extends ChangeNotifier {
           await PostRepo().decreaseLikeMediaPost(postMediaId: postMediaId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }

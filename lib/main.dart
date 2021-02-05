@@ -6,6 +6,7 @@ import 'package:vnrealtor/modules/authentication/splash.dart';
 import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
 import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
+import 'package:vnrealtor/modules/bloc/verification_bloc.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/themes/lightTheme.dart';
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
@@ -69,6 +70,9 @@ class MyApp extends StatelessWidget {
                   ),
                   ChangeNotifierProvider(
                     create: (context) => NotificationBloc.instance,
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => VerificationBloc.instance,
                   ),
                 ],
                 child: MaterialApp(
