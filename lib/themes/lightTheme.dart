@@ -6,8 +6,8 @@ final lightTheme = ThemeData(
   primaryColor: HexColor('#05515e'),
   accentColor: HexColor('#e4f4f7'),
   bottomAppBarColor: HexColor('#ffffff'),
-  scaffoldBackgroundColor: HexColor('#ffffff'),
-  backgroundColor: HexColor('f2f9fc'),
+  scaffoldBackgroundColor: HexColor('#fefef4'),
+  backgroundColor: HexColor('ffffff'),
   cardTheme: CardTheme(
     color: HexColor('#FEFEFE'),
     shadowColor: HexColor('#FEFEFE'),
@@ -26,7 +26,7 @@ final lightTheme = ThemeData(
     textTheme: ButtonTextTheme.primary,
   ),
   primaryColorLight: Colors.white,
-  iconTheme: IconThemeData(size: 21, color: HexColor('#444444')),
+  iconTheme: IconThemeData(size: 21, color: HexColor('#05515e')),
   dividerColor: Colors.black.withOpacity(0.2),
   textTheme: TextTheme(
     bodyText2: ptBody(),

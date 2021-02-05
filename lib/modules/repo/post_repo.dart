@@ -78,7 +78,8 @@ updatedAt
   Future createComment(
       {String postId, String mediaPostId, String content}) async {
     String data = '''
-content: "$content"
+content: """$content
+"""
 like: 0
     ''';
     if (mediaPostId != null) {
@@ -100,7 +101,9 @@ like: 0
   Future createPost(String content, String expirationDate, bool publicity,
       double lat, double long, List<String> images, List<String> videos) async {
     String data = '''
-content: "$content"
+content: """
+${content.toString()}
+"""
 publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}

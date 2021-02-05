@@ -1,11 +1,7 @@
 import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
 import 'package:vnrealtor/share/import.dart';
-import 'dart:collection' show Queue;
-import 'dart:math' as math;
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter/rendering.dart';
-import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class BottomTabModel {
   final bool isNoti;
@@ -108,9 +104,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                   height: 35,
                   width: 35,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: ptSecondaryColor(context)
-                  ),
+                      shape: BoxShape.circle, color: ptSecondaryColor(context)),
                   child: Center(
                     child: Icon(
                       e.iconActive,
@@ -141,7 +135,6 @@ class _BottomNavigatorState extends State<BottomNavigator> {
       elevation: 0,
       backgroundColor: Colors.white,
       iconSize: 24,
-      
       selectedItemColor: ptPrimaryColor(context),
       unselectedItemColor: ptPrimaryColor(context),
       type: BottomNavigationBarType.fixed,

@@ -73,9 +73,6 @@ class _PostPageState extends State<PostPage> {
                     ? MediaQuery.of(context).padding.top + kToolbarHeight + 10
                     : 0,
               ),
-              SizedBox(
-                height: 10,
-              ),
               CreatePostCard(),
               ListView.builder(
                 padding: EdgeInsets.all(0),
@@ -88,7 +85,7 @@ class _PostPageState extends State<PostPage> {
                 },
               ),
               SizedBox(
-                height: 10,
+                height: 70,
               ),
             ],
           ),
@@ -101,37 +98,184 @@ class _PostPageState extends State<PostPage> {
 class CreatePostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: deviceWidth(context),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      color: Colors.white,
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {
-              CreatePostPage.navigate();
-            },
-            child: Material(
-              elevation: 5,
-              borderRadius: BorderRadius.circular(13),
-              color: ptPrimaryColor(context),
-              child: Container(
-                height: 52,
-                width: 52,
-                child: Center(
-                  child: Icon(Icons.add, color: Colors.white),
+    return Material(
+      elevation: 5,
+      child: Container(
+        width: deviceWidth(context),
+        padding: EdgeInsets.symmetric(vertical: 15),
+        color: Colors.white,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  CreatePostPage.navigate();
+                },
+                child: Material(
+                  borderRadius: BorderRadius.circular(12),
+                  elevation: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 17, vertical: 13),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Đăng tin của bạn',
+                          style: ptTitle(),
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            CreatePostPage.navigate();
+                          },
+                          child: SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: Icon(
+                              Icons.location_pin,
+                              size: 21,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            CreatePostPage.navigate();
+                          },
+                          child: SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: Icon(
+                              MdiIcons.image,
+                              size: 21,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-          SizedBox(
-            width: 16,
-          ),
-          Text(
-            'Đăng bài viết',
-            style: ptBigBody(),
-          ),
-        ],
+            SizedBox(
+              height: 22,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 6,
+                  ),
+                  Image.asset('assets/image/map_icon.png'),
+                  SizedBox(
+                    width: 6,
+                  ),
+                  Text(
+                    'Bài viết nổi bật',
+                    style: ptBody().copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: 170,
+              child: ListView(scrollDirection: Axis.horizontal, children: [
+                SizedBox(width: 20),
+                _buildStoryWidget(),
+                SizedBox(width: 15),
+                _buildStoryWidget(),
+                SizedBox(width: 15),
+                _buildStoryWidget(),
+                SizedBox(width: 20),
+              ]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buildStoryWidget() {
+    return Center(
+      child: Material(
+        elevation: 4,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          height: 154,
+          width: 119,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                      'https://media.ex-cdn.com/EXP/media.nhadautu.vn/files/ducson/2017/08/09/bds-nha-trang-1143.jpg'))),
+          child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Row(
+                children: [
+                  Container(
+                    width: 26,
+                    height: 26,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(width: 1.5, color: Colors.white),
+                    ),
+                    child: Center(
+                      child: CircleAvatar(
+                        radius: 13,
+                        backgroundImage: AssetImage('assets/image/avatar.jpeg'),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Expanded(
+                    child: Text(
+                      'Hoài Linh',
+                      style: ptTiny().copyWith(
+                          color: Colors.white, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 6),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white,
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.location_pin, size: 16),
+                  SizedBox(width: 1),
+                  Text(
+                    'Hồ Chí Minh',
+                    style: ptTiny(),
+                  ),
+                ],
+              ),
+            )
+          ]),
+        ),
       ),
     );
   }
@@ -146,51 +290,35 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Padding(
         padding:
-            const EdgeInsets.only(left: 30, top: 12, bottom: 10, right: 30),
-        child: Container(
-          height: double.infinity,
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(6)),
-          child: Row(children: [
-            SizedBox(
-              width: 15,
-            ),
-            Icon(Icons.search),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: TextField(
-                style: ptBigBody(),
-                decoration: InputDecoration(
-                  hintText: 'Tìm kiếm dự án, địa điểm',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(bottom: 5),
+            const EdgeInsets.only(left: 20, top: 12, bottom: 10, right: 12),
+        child: Row(
+          children: [
+            Image.asset('assets/image/logo_full.png'),
+            Spacer(),
+            GestureDetector(
+              onTap: () {
+                SearchPostPage.navigate();
+              },
+              child: SizedBox(
+                width: 42,
+                height: 42,
+                child: Icon(
+                  Icons.search,
+                  size: 26,
                 ),
               ),
             ),
             SizedBox(
-              width: 10,
-            ),
-            IconButton(
-                icon: Icon(Icons.filter_list),
-                onPressed: () {
-                  SearchPostPage.navigate().then((value) =>
-                      FocusScope.of(context).requestFocus(FocusNode()));
-                }),
-            SizedBox(
-              width: 5,
-            ),
-          ]),
+                width: 42,
+                height: 42,
+                child: Icon(
+                  MdiIcons.chatProcessing,
+                  size: 26,
+                ))
+          ],
         ),
       ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [HexColor('#55e678'), HexColor('#3ad6db')],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
+      color: ptSecondaryColor(context),
     );
   }
 }
