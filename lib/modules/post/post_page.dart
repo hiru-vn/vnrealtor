@@ -1,5 +1,6 @@
 import 'package:flutter/rendering.dart';
 import 'package:vnrealtor/modules/bloc/post_bloc.dart';
+import 'package:vnrealtor/modules/inbox/inbox_list.dart';
 import 'package:vnrealtor/modules/post/create_post_page.dart';
 import 'package:vnrealtor/modules/post/search_post_page.dart';
 import 'package:vnrealtor/share/import.dart';
@@ -308,13 +309,18 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
             ),
-            SizedBox(
-                width: 42,
-                height: 42,
-                child: Icon(
-                  MdiIcons.chatProcessing,
-                  size: 26,
-                ))
+            GestureDetector(
+              onTap: () {
+                InboxList.navigate();
+              },
+              child: SizedBox(
+                  width: 42,
+                  height: 42,
+                  child: Icon(
+                    MdiIcons.chatProcessing,
+                    size: 26,
+                  )),
+            )
           ],
         ),
       ),

@@ -78,8 +78,7 @@ updatedAt
   Future createComment(
       {String postId, String mediaPostId, String content}) async {
     String data = '''
-content: """$content
-"""
+content: """$content"""
 like: 0
     ''';
     if (mediaPostId != null) {

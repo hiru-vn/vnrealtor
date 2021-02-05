@@ -64,6 +64,7 @@ class _InboxListState extends State<InboxList>
     return Scaffold(
       appBar: MyAppBar(
         title: ' Hộp thư tin nhắn',
+        automaticallyImplyLeading: true,
         actions: [
           Center(
             child: AnimatedSearchBar(

@@ -3,7 +3,6 @@ import 'package:vnrealtor/modules/bloc/user_bloc.dart';
 import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
 import 'package:vnrealtor/modules/model/friendship.dart';
 import 'package:vnrealtor/modules/model/user.dart';
-import 'package:vnrealtor/modules/post/post_widget.dart';
 import 'package:vnrealtor/modules/post/people_widget.dart';
 import 'package:vnrealtor/modules/profile/update_profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
