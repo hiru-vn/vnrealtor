@@ -34,7 +34,8 @@ class InboxBloc extends ChangeNotifier {
         'lastUser': lastUser,
         'lastAvatar': lastAvatar,
         'time': time.toIso8601String(),
-        'lastMessage': '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện',
+        'lastMessage':
+            '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện',
         'image': image,
         'users': users,
         'usersName': usersName,
@@ -46,8 +47,15 @@ class InboxBloc extends ChangeNotifier {
       });
     }
     await InboxChat.navigate(
-        FbInboxGroupModel(users.join("-"), lastAvatar, '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện', lastUser,
-            time.toIso8601String(), [], users, usersName),
+        FbInboxGroupModel(
+            users.join("-"),
+            lastAvatar,
+            '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện',
+            lastUser,
+            time.toIso8601String(),
+            [],
+            users,
+            usersName),
         lastUser);
     getList20InboxGroup(AuthBloc.instance.userModel.id);
     return;
@@ -67,7 +75,8 @@ class InboxBloc extends ChangeNotifier {
       'lastUser': lastUser,
       'lastAvatar': lastAvatar,
       'time': time.toIso8601String(),
-      'lastMessage': '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện',
+      'lastMessage':
+          '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện',
       'image': image,
       'users': users,
       'usersName': usersName,
