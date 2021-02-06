@@ -63,15 +63,10 @@ updatedAt
     return res['getNewsFeed'];
   }
 
-  Future getMyPost({GraphqlFilter filter}) async {
+  Future getMyPost() async {
     final id = await SPref.instance.get('id');
-    final res = await PostSrv().getList(
-        limit: filter?.limit,
-        offset: filter?.offset,
-        search: filter?.search,
-        page: filter?.page,
-        order: '{createdAt: -1}',
-        filter: 'userId: "$id"');
+    final res = await PostSrv()
+        .getList(limit: 20, order: '{createdAt: -1}', filter: '{userId: "$id"}');
     return res;
   }
 

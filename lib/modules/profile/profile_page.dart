@@ -1,17 +1,11 @@
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
+import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
-import 'package:vnrealtor/modules/model/friendship.dart';
+import 'package:vnrealtor/modules/inbox/inbox_list.dart';
 import 'package:vnrealtor/modules/model/user.dart';
-import 'package:vnrealtor/modules/post/people_widget.dart';
-import 'package:vnrealtor/modules/profile/update_profile_page.dart';
+import 'package:vnrealtor/modules/post/post_widget.dart';
 import 'package:vnrealtor/share/import.dart';
-
-enum RelationShip {
-  PENDING,
-  DECLINE,
-  ACCEPTED,
-}
+import 'package:vnrealtor/share/widget/empty_widget.dart';
 
 class ProfilePage extends StatefulWidget {
   final UserModel user;
@@ -27,14 +21,14 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
-  TabController _pageController;
+  TabController _tabController;
   AuthBloc _authBloc;
   UserBloc _userBloc;
-  bool isOtherUserProfile;
+  PostBloc _postBloc;
 
   @override
   void initState() {
-    _pageController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
 
@@ -43,98 +37,54 @@ class _ProfilePageState extends State<ProfilePage>
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
       _userBloc = Provider.of<UserBloc>(context);
+      _postBloc = Provider.of<PostBloc>(context);
+      _postBloc.getMyPost();
     }
-    if (widget.user == null || widget.user.id == _authBloc.userModel.id) {
-      isOtherUserProfile = false;
-    } else {
-      isOtherUserProfile = true;
-    }
-
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
-      appBar: AppBar2(
-        isOtherUserProfile ? 'Thông tin người dùng' : 'Thông tin cá nhân',
-        // actions: (!isOtherUserProfile)
-        //     ? [
-        //         GestureDetector(
-        //           onTap: () {
-        //             // UpdateProfilePage.navigate();
-        //           },
-        //           child: SizedBox(
-        //             width: 40,
-        //             child: Icon(
-        //               Icons.settings,
-        //               color: Colors.white,
-        //             ),
-        //           ),
-        //         ),
-        //       ]
-        //     : null,
-      ),
+      appBar: ProfilePageAppBar(),
       body: NestedScrollView(
         headerSliverBuilder: (context, value) {
           return [
             SliverToBoxAdapter(
               child: ProfileCard(
-                  user: isOtherUserProfile ? widget.user : _authBloc.userModel),
-            ),
-            SliverToBoxAdapter(
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      _pageController.animateTo(0);
-                      setState(() {});
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(15).copyWith(bottom: 0),
-                      child: Text(
-                        'Bài viết',
-                        style: ptBigTitle().copyWith(
-                            color: _pageController.index == 0
-                                ? Colors.black
-                                : Colors.black38),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _pageController.animateTo(1);
-                      setState(() {});
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(15).copyWith(bottom: 0),
-                      child: Text(
-                        'Bạn bè',
-                        style: ptBigTitle().copyWith(
-                            color: _pageController.index == 1
-                                ? Colors.black
-                                : Colors.black38),
-                      ),
-                    ),
-                  ),
-                ],
+                user: widget.user,
+                tabC: _tabController,
               ),
             ),
           ];
         },
         body: Container(
           child: TabBarView(
-            controller: _pageController,
+            controller: _tabController,
             physics: NeverScrollableScrollPhysics(),
             children: [
+              _postBloc.myPosts == null
+                  ? kLoadingSpinner
+                  : (_postBloc.myPosts.length == 0
+                      ? ListView.separated(
+                          itemCount: _postBloc.myPosts.length,
+                          itemBuilder: (context, index) {
+                            final post = _postBloc.myPosts[index];
+                            return PostWidget(post);
+                          },
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: 15),
+                        )
+                      : EmptyWidget(assetImg: 'assets/image/no_post.png')),
               ListView(
-                children: [
-                  //PostWidget(), PostWidget(), PostWidget()
-                ],
-              ),
-              ListView(
-                children: [PeopleWidget(AuthBloc.instance.userModel)],
+                children: [],
               ),
             ],
           ),
@@ -144,10 +94,45 @@ class _ProfilePageState extends State<ProfilePage>
   }
 }
 
+class ProfilePageAppBar extends StatelessWidget implements PreferredSizeWidget {
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
+  ProfilePageAppBar();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      child: Padding(
+        padding:
+            const EdgeInsets.only(left: 20, top: 12, bottom: 10, right: 12),
+        child: Row(
+          children: [
+            Image.asset('assets/image/logo_full.png'),
+            Spacer(),
+            GestureDetector(
+              onTap: () {
+                InboxList.navigate();
+              },
+              child: SizedBox(
+                  width: 42,
+                  height: 42,
+                  child: Icon(
+                    MdiIcons.menu,
+                    size: 26,
+                  )),
+            )
+          ],
+        ),
+      ),
+      color: ptSecondaryColor(context),
+    );
+  }
+}
+
 class ProfileCard extends StatefulWidget {
   final UserModel user;
+  final TabController tabC;
 
-  const ProfileCard({Key key, this.user}) : super(key: key);
+  const ProfileCard({Key key, this.user, this.tabC}) : super(key: key);
 
   @override
   _ProfileCardState createState() => _ProfileCardState();
@@ -155,233 +140,53 @@ class ProfileCard extends StatefulWidget {
 
 class _ProfileCardState extends State<ProfileCard> {
   UserBloc _userBloc;
-  FriendshipModel friendshipModel;
   bool initFetchStatus = false;
 
   @override
   void didChangeDependencies() {
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
-      _getFriendShip();
     }
     super.didChangeDependencies();
-  }
-
-  _addFriend() async {
-    if (friendshipModel == null)
-      friendshipModel = FriendshipModel(
-          user1Id: AuthBloc.instance.userModel.id,
-          user2Id: widget.user.id,
-          status: FriendShipStatus.PENDING);
-    setState(() {
-      friendshipModel.status = FriendShipStatus.PENDING;
-    });
-    final res = await _userBloc.sendFriendInvite(widget.user.id);
-    if (res.isSuccess) {
-      setState(() {
-        friendshipModel = res.data;
-      });
-      showToast('Đã gửi lời mời kết bạn', context, isSuccess: true);
-    } else
-      showToast(res.errMessage, context);
-  }
-
-  Future _getFriendShip() async {
-    if (widget.user.id == AuthBloc.instance.userModel.id) return;
-    final res = await _userBloc.getMyFriendShipWith(widget.user.id);
-    if (res.isSuccess) {
-      setState(() {
-        friendshipModel = res.data;
-        initFetchStatus = true;
-      });
-    } else {
-      // no friendship
-      setState(() {
-        initFetchStatus = true;
-      });
-    }
-  }
-
-  Widget _getBtnWidget() {
-    if (!initFetchStatus && widget.user.id != AuthBloc.instance.userModel.id)
-      return SizedBox(
-        height: 25,
-        width: 25,
-        child: CircularProgressIndicator(
-          backgroundColor: ptPrimaryColor(context),
-        ),
-      );
-    if (widget.user.id == AuthBloc.instance.userModel.id)
-      return Center(
-        child: RaisedButton(
-          color: Colors.blueAccent,
-          padding: EdgeInsets.all(0),
-          child: Text(
-            'Cập nhật',
-            style: ptBody().copyWith(color: Colors.white),
-          ),
-          onPressed: () {
-            UpdateProfilePage.navigate();
-          },
-        ),
-      );
-    if (friendshipModel == null)
-      return Center(
-        child: RaisedButton(
-          padding: EdgeInsets.all(0),
-          child: Text(
-            'Kết bạn',
-            style: ptBody().copyWith(color: Colors.white),
-          ),
-          onPressed: _addFriend,
-        ),
-      );
-    if (friendshipModel.status == FriendShipStatus.ACCEPTED) {
-      return Center(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  'Bạn bè',
-                  style: ptBody().copyWith(color: Colors.black),
-                ),
-                SizedBox(
-                  width: 3,
-                ),
-                Icon(
-                  Icons.check,
-                  color: ptPrimaryColor(context),
-                  size: 17,
-                ),
-              ],
-            ),
-            SizedBox(height: 5),
-            GestureDetector(
-              onTap: () async {
-                setState(() {
-                  friendshipModel.status = FriendShipStatus.DECLINE;
-                });
-                final res =
-                    await _userBloc.declineFriendInvite(friendshipModel.id);
-                if (res.isSuccess) {
-                  setState(() {
-                    friendshipModel = res.data;
-                  });
-                } else {
-                  showToast(res.errMessage, context);
-                  setState(() {
-                    friendshipModel.status = FriendShipStatus.ACCEPTED;
-                  });
-                }
-              },
-              child: Text(
-                'Hủy kết bạn',
-                style: ptBody().copyWith(color: Colors.blue),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    if (friendshipModel.status == FriendShipStatus.DECLINE) {
-      return Center(
-        child: RaisedButton(
-          padding: EdgeInsets.all(0),
-          child: Text(
-            'Kết bạn',
-            style: ptBody().copyWith(color: Colors.white),
-          ),
-          onPressed: _addFriend,
-        ),
-      );
-    }
-    if (friendshipModel.status == FriendShipStatus.PENDING) {
-      if (friendshipModel.user1Id == AuthBloc.instance.userModel.id)
-        return Center(
-          child: RaisedButton(
-            color: Colors.red[200],
-            padding: EdgeInsets.all(0),
-            child: Text(
-              'Hủy lời mời',
-              style: ptBody().copyWith(color: Colors.white),
-            ),
-            onPressed: () async {
-              setState(() {
-                friendshipModel.status = FriendShipStatus.DECLINE;
-              });
-              final res =
-                  await _userBloc.declineFriendInvite(friendshipModel.id);
-              if (res.isSuccess) {
-                setState(() {
-                  friendshipModel = res.data;
-                });
-              } else {
-                showToast(res.errMessage, context);
-                setState(() {
-                  friendshipModel.status = FriendShipStatus.PENDING;
-                });
-              }
-            },
-          ),
-        );
-      else if (initFetchStatus)
-        return Center(
-          child: RaisedButton(
-            padding: EdgeInsets.symmetric(vertical: 5),
-            child: Text(
-              'Xác nhận\nkết bạn',
-              style: ptBody().copyWith(color: Colors.white),
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () async {
-              setState(() {
-                friendshipModel.status = FriendShipStatus.ACCEPTED;
-              });
-              final res =
-                  await _userBloc.acceptFriendInvite(friendshipModel.id);
-              if (res.isSuccess) {
-                setState(() {
-                  friendshipModel = res.data;
-                });
-              } else {
-                showToast(res.errMessage, context);
-                setState(() {
-                  friendshipModel.status = FriendShipStatus.PENDING;
-                });
-              }
-            },
-          ),
-        );
-    }
-    return SizedBox.shrink();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding:
+          const EdgeInsets.symmetric(vertical: 8).copyWith(top: 0, bottom: 0),
       child: Material(
           borderRadius: BorderRadius.circular(5),
           elevation: 3,
           child: Container(
             width: deviceWidth(context),
             padding: EdgeInsets.symmetric(horizontal: 25, vertical: 14)
-                .copyWith(right: 20),
+                .copyWith(bottom: 0, right: 20),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
                     children: [
-                      CircleAvatar(
-                        radius: 35,
-                        backgroundImage: widget.user.avatar != null
-                            ? NetworkImage(widget.user.avatar)
-                            : AssetImage('assets/image/avatar.jpeg'),
+                      Container(
+                        width: 84,
+                        height: 84,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              width: 2.5, color: ptPrimaryColor(context)),
+                        ),
+                        child: Center(
+                          child: CircleAvatar(
+                            radius: 37.5,
+                            backgroundImage: widget.user.avatar != null
+                                ? NetworkImage(widget.user.avatar)
+                                : AssetImage('assets/image/avatar.jpeg'),
+                          ),
+                        ),
                       ),
                       SizedBox(
-                        width: 14,
+                        width: 5,
                       ),
                       Expanded(
                         child: Column(
@@ -389,169 +194,737 @@ class _ProfileCardState extends State<ProfileCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 6),
-                            Text(
-                              widget.user.name ?? '',
-                              style:
-                                  ptBigTitle().copyWith(color: Colors.black87),
-                            ),
-                            SizedBox(height: 3),
                             Row(
                               children: [
-                                Text(
-                                  'Điểm uy tín: ${widget.user.reputationScore.toString()}',
-                                  style:
-                                      ptBody().copyWith(color: Colors.black54),
+                                SizedBox(width: 15),
+                                Icon(
+                                  Icons.star_outline,
+                                  color: Colors.deepOrange,
                                 ),
-                                SizedBox(width: 2),
-                                Image.asset('assets/image/coin.png'),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  widget.user.name ?? '',
+                                  style: ptBigTitle(),
+                                ),
                               ],
                             ),
-                            SizedBox(height: 3),
-                            Text(
-                              widget.user.role.toLowerCase() == 'agency'
-                                  ? 'Nhà môi giới'
-                                  : 'Người dùng cơ bản',
-                              style: ptSmall().copyWith(color: Colors.blue),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        '200',
+                                        style: ptTitle(),
+                                      ),
+                                      Text(
+                                        'bài viết',
+                                        style: ptBody(),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        '200',
+                                        style: ptTitle(),
+                                      ),
+                                      Text(
+                                        'follower',
+                                        style: ptBody(),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        '200',
+                                        style: ptTitle(),
+                                      ),
+                                      Text(
+                                        'following',
+                                        style: ptBody(),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      _getBtnWidget()
                     ],
                   ),
-                  SizedBox(
-                    height: 30,
-                    width: 70,
-                    child: Center(
-                      child: Text(
-                        '3 bài viết',
-                        style: ptSmall().copyWith(fontWeight: FontWeight.w600),
+                  SizedBox(height: 15),
+                  // Text(
+                  //   widget.user.role.toLowerCase() == 'agency'
+                  //       ? 'Nhà môi giới'
+                  //       : 'Người dùng cơ bản',
+                  //   style: ptSmall().copyWith(color: Colors.blue),
+                  // ),
+                  Text(
+                      'Chuyên cung cấp dịch vụ nhà đất, căn hộ cho thuê ở quận Tân Phú, Hồ Chí Minh'),
+                  SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Text(
+                        'Điểm uy tín: ${widget.user.reputationScore.toString()}',
+                        style: ptBody().copyWith(color: Colors.black54),
+                      ),
+                      SizedBox(width: 5),
+                      Image.asset('assets/image/coin.png'),
+                      Spacer(),
+                      SizedBox(
+                          width: 31,
+                          height: 31,
+                          child: Image.asset('assets/image/facebook_icon.png')),
+                      SizedBox(width: 15),
+                      SizedBox(
+                          width: 35,
+                          height: 35,
+                          child: Image.asset('assets/image/gmail_icon.png'))
+                    ],
+                  ),
+                  SizedBox(height: 15),
+                  Row(children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: ptPrimaryColor(context))),
+                        child: Center(
+                          child: Text(
+                            'Theo dõi',
+                            style: ptTitle(),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  Row(children: [
                     SizedBox(
-                      width: 70,
-                      child: friendshipModel?.status ==
-                              FriendShipStatus.ACCEPTED
-                          ? Center(
-                              child: GestureDetector(
-                                onTap: () async {
-                                  showSimpleLoadingDialog(context);
-                                  await InboxBloc.instance.navigateToChatWith(
-                                      widget.user.name,
-                                      widget.user.avatar,
-                                      DateTime.now(),
-                                      widget.user.avatar, [
-                                    AuthBloc.instance.userModel.id,
-                                    widget.user.id,
-                                  ], [
-                                    AuthBloc.instance.userModel.name,
-                                    widget.user.name
-                                  ]);
-                                  navigatorKey.currentState.maybePop();
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      MdiIcons.chatOutline,
-                                      color: ptPrimaryColor(context),
-                                    ),
-                                    Text(
-                                      'Nhắn tin',
-                                      style: TextStyle(
-                                        color: Colors.black87,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : SizedBox.shrink(),
+                      width: 12,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            SizedBox(
-                                width: 60,
-                                child: Center(
-                                  child: Icon(
-                                    Icons.phone,
-                                    color: ptPrimaryColor(context),
-                                    size: 28,
-                                  ),
-                                )),
-                            Container(
-                              width: 2,
-                              height: 35,
-                              color: ptLineColor(context),
-                            ),
-                            SizedBox(width: 20),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Số điện thoại',
-                                  style:
-                                      ptBody().copyWith(color: Colors.black54),
-                                ),
-                                Text(
-                                  widget.user.phone,
-                                  style: ptBody().copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black87),
-                                ),
-                              ],
-                            ),
-                          ],
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: ptPrimaryColor(context))),
+                        child: Center(
+                          child: Text(
+                            'Nhắn tin',
+                            style: ptTitle(),
+                          ),
                         ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Row(
-                          children: [
-                            SizedBox(
-                                width: 60,
-                                child: Center(
-                                  child: Icon(
-                                    Icons.email,
-                                    color: ptPrimaryColor(context),
-                                    size: 28,
-                                  ),
-                                )),
-                            Container(
-                              width: 2,
-                              height: 35,
-                              color: ptLineColor(context),
-                            ),
-                            SizedBox(width: 20),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Email',
-                                  style:
-                                      ptBody().copyWith(color: Colors.black54),
-                                ),
-                                Text(
-                                  widget.user.email,
-                                  style: ptBody().copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black87),
-                                ),
-                              ],
-                            ),
-                          ],
-                        )
-                      ],
+                      ),
                     )
-                  ])
+                  ]),
+                  SizedBox(height: 10),
+                  Center(
+                    child: TabBar(
+                        indicatorSize: TabBarIndicatorSize.label,
+                        indicatorWeight: 4,
+                        indicatorColor: ptPrimaryColor(context),
+                        controller: widget.tabC,
+                        isScrollable: true,
+                        labelColor: Colors.black87,
+                        unselectedLabelStyle: ptTitle(),
+                        labelStyle: ptTitle(),
+                        tabs: [
+                          SizedBox(
+                            height: 35,
+                            width: deviceWidth(context) / 2 - 60,
+                            child: Tab(
+                              child: Icon(
+                                MdiIcons.postOutline,
+                                color: ptPrimaryColor(context),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 35,
+                            width: deviceWidth(context) / 2 - 60,
+                            child: Tab(
+                              child: Icon(
+                                MdiIcons.bookmarkOutline,
+                                color: ptPrimaryColor(context),
+                              ),
+                            ),
+                          ),
+                        ]),
+                  ),
                 ]),
           )),
     );
   }
 }
+
+// import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
+// import 'package:vnrealtor/modules/bloc/user_bloc.dart';
+// import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
+// import 'package:vnrealtor/modules/model/friendship.dart';
+// import 'package:vnrealtor/modules/model/user.dart';
+// import 'package:vnrealtor/modules/post/people_widget.dart';
+// import 'package:vnrealtor/modules/profile/update_profile_page.dart';
+// import 'package:vnrealtor/share/import.dart';
+
+// enum RelationShip {
+//   PENDING,
+//   DECLINE,
+//   ACCEPTED,
+// }
+
+// class ProfilePage extends StatefulWidget {
+//   final UserModel user;
+
+//   const ProfilePage(this.user);
+//   static Future navigate(UserModel user) {
+//     return navigatorKey.currentState.push(pageBuilder(ProfilePage(user)));
+//   }
+
+//   @override
+//   _ProfilePageState createState() => _ProfilePageState();
+// }
+
+// class _ProfilePageState extends State<ProfilePage>
+//     with SingleTickerProviderStateMixin {
+//   TabController _pageController;
+//   AuthBloc _authBloc;
+//   UserBloc _userBloc;
+//   bool isOtherUserProfile;
+
+//   @override
+//   void initState() {
+//     _pageController = TabController(length: 2, vsync: this);
+//     super.initState();
+//   }
+
+//   @override
+//   void didChangeDependencies() {
+//     if (_authBloc == null) {
+//       _authBloc = Provider.of<AuthBloc>(context);
+//       _userBloc = Provider.of<UserBloc>(context);
+//     }
+//     if (widget.user == null || widget.user.id == _authBloc.userModel.id) {
+//       isOtherUserProfile = false;
+//     } else {
+//       isOtherUserProfile = true;
+//     }
+
+//     super.didChangeDependencies();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: ptBackgroundColor(context),
+//       appBar: AppBar2(
+//         isOtherUserProfile ? 'Thông tin người dùng' : 'Thông tin cá nhân',
+//         // actions: (!isOtherUserProfile)
+//         //     ? [
+//         //         GestureDetector(
+//         //           onTap: () {
+//         //             // UpdateProfilePage.navigate();
+//         //           },
+//         //           child: SizedBox(
+//         //             width: 40,
+//         //             child: Icon(
+//         //               Icons.settings,
+//         //               color: Colors.white,
+//         //             ),
+//         //           ),
+//         //         ),
+//         //       ]
+//         //     : null,
+//       ),
+//       body: NestedScrollView(
+//         headerSliverBuilder: (context, value) {
+//           return [
+//             SliverToBoxAdapter(
+//               child: ProfileCard(
+//                   user: isOtherUserProfile ? widget.user : _authBloc.userModel),
+//             ),
+//             SliverToBoxAdapter(
+//               child: Row(
+//                 children: [
+//                   GestureDetector(
+//                     onTap: () {
+//                       _pageController.animateTo(0);
+//                       setState(() {});
+//                     },
+//                     child: Padding(
+//                       padding: const EdgeInsets.all(15).copyWith(bottom: 0),
+//                       child: Text(
+//                         'Bài viết',
+//                         style: ptBigTitle().copyWith(
+//                             color: _pageController.index == 0
+//                                 ? Colors.black
+//                                 : Colors.black38),
+//                       ),
+//                     ),
+//                   ),
+//                   GestureDetector(
+//                     onTap: () {
+//                       _pageController.animateTo(1);
+//                       setState(() {});
+//                     },
+//                     child: Padding(
+//                       padding: const EdgeInsets.all(15).copyWith(bottom: 0),
+//                       child: Text(
+//                         'Bạn bè',
+//                         style: ptBigTitle().copyWith(
+//                             color: _pageController.index == 1
+//                                 ? Colors.black
+//                                 : Colors.black38),
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ];
+//         },
+//         body: Container(
+//           child: TabBarView(
+//             controller: _pageController,
+//             physics: NeverScrollableScrollPhysics(),
+//             children: [
+//               ListView(
+//                 children: [
+//                   //PostWidget(), PostWidget(), PostWidget()
+//                 ],
+//               ),
+//               ListView(
+//                 children: [PeopleWidget(AuthBloc.instance.userModel)],
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class ProfileCard extends StatefulWidget {
+//   final UserModel user;
+
+//   const ProfileCard({Key key, this.user}) : super(key: key);
+
+//   @override
+//   _ProfileCardState createState() => _ProfileCardState();
+// }
+
+// class _ProfileCardState extends State<ProfileCard> {
+//   UserBloc _userBloc;
+//   FriendshipModel friendshipModel;
+//   bool initFetchStatus = false;
+
+//   @override
+//   void didChangeDependencies() {
+//     if (_userBloc == null) {
+//       _userBloc = Provider.of<UserBloc>(context);
+//       _getFriendShip();
+//     }
+//     super.didChangeDependencies();
+//   }
+
+//   _addFriend() async {
+//     if (friendshipModel == null)
+//       friendshipModel = FriendshipModel(
+//           user1Id: AuthBloc.instance.userModel.id,
+//           user2Id: widget.user.id,
+//           status: FriendShipStatus.PENDING);
+//     setState(() {
+//       friendshipModel.status = FriendShipStatus.PENDING;
+//     });
+//     final res = await _userBloc.sendFriendInvite(widget.user.id);
+//     if (res.isSuccess) {
+//       setState(() {
+//         friendshipModel = res.data;
+//       });
+//       showToast('Đã gửi lời mời kết bạn', context, isSuccess: true);
+//     } else
+//       showToast(res.errMessage, context);
+//   }
+
+//   Future _getFriendShip() async {
+//     if (widget.user.id == AuthBloc.instance.userModel.id) return;
+//     final res = await _userBloc.getMyFriendShipWith(widget.user.id);
+//     if (res.isSuccess) {
+//       setState(() {
+//         friendshipModel = res.data;
+//         initFetchStatus = true;
+//       });
+//     } else {
+//       // no friendship
+//       setState(() {
+//         initFetchStatus = true;
+//       });
+//     }
+//   }
+
+//   Widget _getBtnWidget() {
+//     if (!initFetchStatus && widget.user.id != AuthBloc.instance.userModel.id)
+//       return SizedBox(
+//         height: 25,
+//         width: 25,
+//         child: CircularProgressIndicator(
+//           backgroundColor: ptPrimaryColor(context),
+//         ),
+//       );
+//     if (widget.user.id == AuthBloc.instance.userModel.id)
+//       return Center(
+//         child: RaisedButton(
+//           color: Colors.blueAccent,
+//           padding: EdgeInsets.all(0),
+//           child: Text(
+//             'Cập nhật',
+//             style: ptBody().copyWith(color: Colors.white),
+//           ),
+//           onPressed: () {
+//             UpdateProfilePage.navigate();
+//           },
+//         ),
+//       );
+//     if (friendshipModel == null)
+//       return Center(
+//         child: RaisedButton(
+//           padding: EdgeInsets.all(0),
+//           child: Text(
+//             'Kết bạn',
+//             style: ptBody().copyWith(color: Colors.white),
+//           ),
+//           onPressed: _addFriend,
+//         ),
+//       );
+//     if (friendshipModel.status == FriendShipStatus.ACCEPTED) {
+//       return Center(
+//         child: Column(
+//           children: [
+//             Row(
+//               children: [
+//                 Text(
+//                   'Bạn bè',
+//                   style: ptBody().copyWith(color: Colors.black),
+//                 ),
+//                 SizedBox(
+//                   width: 3,
+//                 ),
+//                 Icon(
+//                   Icons.check,
+//                   color: ptPrimaryColor(context),
+//                   size: 17,
+//                 ),
+//               ],
+//             ),
+//             SizedBox(height: 5),
+//             GestureDetector(
+//               onTap: () async {
+//                 setState(() {
+//                   friendshipModel.status = FriendShipStatus.DECLINE;
+//                 });
+//                 final res =
+//                     await _userBloc.declineFriendInvite(friendshipModel.id);
+//                 if (res.isSuccess) {
+//                   setState(() {
+//                     friendshipModel = res.data;
+//                   });
+//                 } else {
+//                   showToast(res.errMessage, context);
+//                   setState(() {
+//                     friendshipModel.status = FriendShipStatus.ACCEPTED;
+//                   });
+//                 }
+//               },
+//               child: Text(
+//                 'Hủy kết bạn',
+//                 style: ptBody().copyWith(color: Colors.blue),
+//               ),
+//             ),
+//           ],
+//         ),
+//       );
+//     }
+//     if (friendshipModel.status == FriendShipStatus.DECLINE) {
+//       return Center(
+//         child: RaisedButton(
+//           padding: EdgeInsets.all(0),
+//           child: Text(
+//             'Kết bạn',
+//             style: ptBody().copyWith(color: Colors.white),
+//           ),
+//           onPressed: _addFriend,
+//         ),
+//       );
+//     }
+//     if (friendshipModel.status == FriendShipStatus.PENDING) {
+//       if (friendshipModel.user1Id == AuthBloc.instance.userModel.id)
+//         return Center(
+//           child: RaisedButton(
+//             color: Colors.red[200],
+//             padding: EdgeInsets.all(0),
+//             child: Text(
+//               'Hủy lời mời',
+//               style: ptBody().copyWith(color: Colors.white),
+//             ),
+//             onPressed: () async {
+//               setState(() {
+//                 friendshipModel.status = FriendShipStatus.DECLINE;
+//               });
+//               final res =
+//                   await _userBloc.declineFriendInvite(friendshipModel.id);
+//               if (res.isSuccess) {
+//                 setState(() {
+//                   friendshipModel = res.data;
+//                 });
+//               } else {
+//                 showToast(res.errMessage, context);
+//                 setState(() {
+//                   friendshipModel.status = FriendShipStatus.PENDING;
+//                 });
+//               }
+//             },
+//           ),
+//         );
+//       else if (initFetchStatus)
+//         return Center(
+//           child: RaisedButton(
+//             padding: EdgeInsets.symmetric(vertical: 5),
+//             child: Text(
+//               'Xác nhận\nkết bạn',
+//               style: ptBody().copyWith(color: Colors.white),
+//               textAlign: TextAlign.center,
+//             ),
+//             onPressed: () async {
+//               setState(() {
+//                 friendshipModel.status = FriendShipStatus.ACCEPTED;
+//               });
+//               final res =
+//                   await _userBloc.acceptFriendInvite(friendshipModel.id);
+//               if (res.isSuccess) {
+//                 setState(() {
+//                   friendshipModel = res.data;
+//                 });
+//               } else {
+//                 showToast(res.errMessage, context);
+//                 setState(() {
+//                   friendshipModel.status = FriendShipStatus.PENDING;
+//                 });
+//               }
+//             },
+//           ),
+//         );
+//     }
+//     return SizedBox.shrink();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(vertical: 8),
+//       child: Material(
+//           borderRadius: BorderRadius.circular(5),
+//           elevation: 3,
+//           child: Container(
+//             width: deviceWidth(context),
+//             padding: EdgeInsets.symmetric(horizontal: 25, vertical: 14)
+//                 .copyWith(right: 20),
+//             child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 mainAxisSize: MainAxisSize.min,
+//                 children: [
+//                   Row(
+//                     children: [
+//                       CircleAvatar(
+//                         radius: 35,
+//                         backgroundImage: widget.user.avatar != null
+//                             ? NetworkImage(widget.user.avatar)
+//                             : AssetImage('assets/image/avatar.jpeg'),
+//                       ),
+//                       SizedBox(
+//                         width: 14,
+//                       ),
+//                       Expanded(
+//                         child: Column(
+//                           mainAxisSize: MainAxisSize.min,
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             SizedBox(height: 6),
+//                             Text(
+//                               widget.user.name ?? '',
+//                               style:
+//                                   ptBigTitle().copyWith(color: Colors.black87),
+//                             ),
+//                             SizedBox(height: 3),
+//                             Row(
+//                               children: [
+//                                 Text(
+//                                   'Điểm uy tín: ${widget.user.reputationScore.toString()}',
+//                                   style:
+//                                       ptBody().copyWith(color: Colors.black54),
+//                                 ),
+//                                 SizedBox(width: 2),
+//                                 Image.asset('assets/image/coin.png'),
+//                               ],
+//                             ),
+//                             SizedBox(height: 3),
+//                             Text(
+//                               widget.user.role.toLowerCase() == 'agency'
+//                                   ? 'Nhà môi giới'
+//                                   : 'Người dùng cơ bản',
+//                               style: ptSmall().copyWith(color: Colors.blue),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                       _getBtnWidget()
+//                     ],
+//                   ),
+//                   SizedBox(
+//                     height: 30,
+//                     width: 70,
+//                     child: Center(
+//                       child: Text(
+//                         '3 bài viết',
+//                         style: ptSmall().copyWith(fontWeight: FontWeight.w600),
+//                       ),
+//                     ),
+//                   ),
+//                   Row(children: [
+//                     SizedBox(
+//                       width: 70,
+//                       child: friendshipModel?.status ==
+//                               FriendShipStatus.ACCEPTED
+//                           ? Center(
+//                               child: GestureDetector(
+//                                 onTap: () async {
+//                                   showSimpleLoadingDialog(context);
+//                                   await InboxBloc.instance.navigateToChatWith(
+//                                       widget.user.name,
+//                                       widget.user.avatar,
+//                                       DateTime.now(),
+//                                       widget.user.avatar, [
+//                                     AuthBloc.instance.userModel.id,
+//                                     widget.user.id,
+//                                   ], [
+//                                     AuthBloc.instance.userModel.name,
+//                                     widget.user.name
+//                                   ]);
+//                                   navigatorKey.currentState.maybePop();
+//                                 },
+//                                 child: Column(
+//                                   mainAxisAlignment: MainAxisAlignment.center,
+//                                   mainAxisSize: MainAxisSize.min,
+//                                   children: [
+//                                     Icon(
+//                                       MdiIcons.chatOutline,
+//                                       color: ptPrimaryColor(context),
+//                                     ),
+//                                     Text(
+//                                       'Nhắn tin',
+//                                       style: TextStyle(
+//                                         color: Colors.black87,
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ),
+//                             )
+//                           : SizedBox.shrink(),
+//                     ),
+//                     Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Row(
+//                           children: [
+//                             SizedBox(
+//                                 width: 60,
+//                                 child: Center(
+//                                   child: Icon(
+//                                     Icons.phone,
+//                                     color: ptPrimaryColor(context),
+//                                     size: 28,
+//                                   ),
+//                                 )),
+//                             Container(
+//                               width: 2,
+//                               height: 35,
+//                               color: ptLineColor(context),
+//                             ),
+//                             SizedBox(width: 20),
+//                             Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Text(
+//                                   'Số điện thoại',
+//                                   style:
+//                                       ptBody().copyWith(color: Colors.black54),
+//                                 ),
+//                                 Text(
+//                                   widget.user.phone,
+//                                   style: ptBody().copyWith(
+//                                       fontWeight: FontWeight.w600,
+//                                       color: Colors.black87),
+//                                 ),
+//                               ],
+//                             ),
+//                           ],
+//                         ),
+//                         SizedBox(
+//                           height: 8,
+//                         ),
+//                         Row(
+//                           children: [
+//                             SizedBox(
+//                                 width: 60,
+//                                 child: Center(
+//                                   child: Icon(
+//                                     Icons.email,
+//                                     color: ptPrimaryColor(context),
+//                                     size: 28,
+//                                   ),
+//                                 )),
+//                             Container(
+//                               width: 2,
+//                               height: 35,
+//                               color: ptLineColor(context),
+//                             ),
+//                             SizedBox(width: 20),
+//                             Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Text(
+//                                   'Email',
+//                                   style:
+//                                       ptBody().copyWith(color: Colors.black54),
+//                                 ),
+//                                 Text(
+//                                   widget.user.email,
+//                                   style: ptBody().copyWith(
+//                                       fontWeight: FontWeight.w600,
+//                                       color: Colors.black87),
+//                                 ),
+//                               ],
+//                             ),
+//                           ],
+//                         )
+//                       ],
+//                     )
+//                   ])
+//                 ]),
+//           )),
+//     );
+//   }
+// }

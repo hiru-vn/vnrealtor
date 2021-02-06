@@ -8,6 +8,7 @@ class PostBloc extends ChangeNotifier {
   static final PostBloc instance = PostBloc._privateConstructor();
 
   List<PostModel> post = [];
+  List<PostModel> myPosts;
 
   Future<BaseResponse> getNewFeed({GraphqlFilter filter}) async {
     try {
@@ -36,12 +37,12 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getMyPost({GraphqlFilter filter}) async {
+  Future<BaseResponse> getMyPost() async {
     try {
-      final res = await PostRepo().getMyPost(filter: filter);
+      final res = await PostRepo().getMyPost();
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
-      post = list;
+      myPosts = list;
       return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e.toString());

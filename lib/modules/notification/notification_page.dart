@@ -73,8 +73,8 @@ class _NotificationPageState extends State<NotificationPage>
                     height: 40,
                     width: deviceWidth(context) / 2 - 45,
                     child: Tab(
-                        text:
-                            'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
+                        text: 'Người theo dõi')
+                            //'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
                   ),
                 ]),
           ),
@@ -84,6 +84,7 @@ class _NotificationPageState extends State<NotificationPage>
                 list: _notificationBloc.notifications,
               ),
               FriendRequestTab()
+              // FollowTab()
             ]),
           )
         ],
