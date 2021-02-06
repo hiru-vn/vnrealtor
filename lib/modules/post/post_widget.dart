@@ -3,6 +3,7 @@ import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/model/post.dart';
 import 'package:vnrealtor/modules/post/media_post_widget.dart';
 import 'package:vnrealtor/modules/post/post_google_map.dart';
+import 'package:vnrealtor/modules/profile/profile_other_page.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/function/share_to.dart';
 import 'package:vnrealtor/share/import.dart';
@@ -62,7 +63,7 @@ class _PostWidgetState extends State<PostWidget> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      ProfilePage.navigate(widget.post?.user);
+                      ProfileOtherPage.navigate(widget.post?.user);
                     },
                     child: CircleAvatar(
                       radius: 25,

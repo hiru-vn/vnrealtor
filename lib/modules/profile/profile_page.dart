@@ -1,7 +1,6 @@
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/inbox/inbox_list.dart';
 import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/post/post_widget.dart';
 import 'package:vnrealtor/modules/profile/update_profile_page.dart';
@@ -73,7 +72,7 @@ class _ProfilePageState extends State<ProfilePage>
             children: [
               _postBloc.myPosts == null
                   ? kLoadingSpinner
-                  : (_postBloc.myPosts.length == 0
+                  : (_postBloc.myPosts.length != 0
                       ? ListView.separated(
                           itemCount: _postBloc.myPosts.length,
                           itemBuilder: (context, index) {
@@ -83,7 +82,10 @@ class _ProfilePageState extends State<ProfilePage>
                           separatorBuilder: (context, index) =>
                               SizedBox(height: 15),
                         )
-                      : EmptyWidget(assetImg: 'assets/image/no_post.png')),
+                      : EmptyWidget(
+                      assetImg: 'assets/image/no_post.png',
+                      content: 'Bạn chưa có bài đăng nào.',
+                    )),
               ListView(
                 children: [],
               ),
@@ -111,7 +113,7 @@ class ProfilePageAppBar extends StatelessWidget implements PreferredSizeWidget {
             Spacer(),
             GestureDetector(
               onTap: () {
-                InboxList.navigate();
+                showAlertDialog(context, 'Đang phát triển', navigatorKey: navigatorKey);
               },
               child: SizedBox(
                   width: 42,

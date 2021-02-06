@@ -1,4 +1,5 @@
 import 'package:vnrealtor/modules/model/user.dart';
+import 'package:vnrealtor/modules/profile/profile_other_page.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
@@ -12,7 +13,7 @@ class PeopleWidget extends StatelessWidget {
       padding: const EdgeInsets.all(5).copyWith(bottom: 0),
       child: GestureDetector(
         onTap: () {
-          ProfilePage.navigate(user);
+          ProfileOtherPage.navigate(user);
         },
         child: Card(
           child: Padding(

@@ -1,6 +1,7 @@
 import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
 import 'package:vnrealtor/modules/model/notification.dart';
+import 'package:vnrealtor/modules/profile/profile_other_page.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/share/widget/empty_widget.dart';
@@ -169,7 +170,7 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                 final item = _userBloc.friendRequestFromOtherUsers[index];
                 return ListTile(
                   onTap: () {
-                    ProfilePage.navigate(item.user1);
+                    ProfileOtherPage.navigate(item.user1);
                   },
                   tileColor: ptBackgroundColor(context),
                   leading: CircleAvatar(
