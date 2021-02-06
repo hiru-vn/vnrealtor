@@ -4,6 +4,7 @@ import 'package:vnrealtor/modules/bloc/user_bloc.dart';
 import 'package:vnrealtor/modules/inbox/inbox_list.dart';
 import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/post/post_widget.dart';
+import 'package:vnrealtor/modules/profile/update_profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/share/widget/empty_widget.dart';
 
@@ -300,36 +301,42 @@ class _ProfileCardState extends State<ProfileCard> {
                   SizedBox(height: 15),
                   Row(children: [
                     Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: ptPrimaryColor(context))),
-                        child: Center(
-                          child: Text(
-                            'Theo dõi',
-                            style: ptTitle(),
+                      child: GestureDetector(
+                        onTap: () {
+                          UpdateProfilePage.navigate();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                              border:
+                                  Border.all(color: ptPrimaryColor(context))),
+                          child: Center(
+                            child: Text(
+                              'Sửa thông tin cá nhân',
+                              style: ptTitle(),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 12,
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: ptPrimaryColor(context))),
-                        child: Center(
-                          child: Text(
-                            'Nhắn tin',
-                            style: ptTitle(),
-                          ),
-                        ),
-                      ),
-                    )
+                    // SizedBox(
+                    //   width: 12,
+                    // ),
+                    // Expanded(
+                    //   child: Container(
+                    //     padding: EdgeInsets.all(6),
+                    //     decoration: BoxDecoration(
+                    //         borderRadius: BorderRadius.circular(6),
+                    //         border: Border.all(color: ptPrimaryColor(context))),
+                    //     child: Center(
+                    //       child: Text(
+                    //         'Nhắn tin',
+                    //         style: ptTitle(),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // )
                   ]),
                   SizedBox(height: 10),
                   Center(
