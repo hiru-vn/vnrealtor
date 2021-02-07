@@ -21,7 +21,7 @@ phone: "$phone"
 idToken: "$idToken"
     ''',
         fragment:
-            'token user { id uid name email phone role reputationScore friendIds createdAt updatedAt}');
+            'token user { id uid name email phone role reputationScore friendIds createdAt updatedAt followerIds followingIds}');
     return res['registerWithPhone'];
   }
 
@@ -39,7 +39,7 @@ idToken: "$idToken"
     deviceToken: "$deviceToken"
     ''',
         fragment:
-            'token user { id uid name email phone role reputationScore friendIds createdAt updatedAt}');
+            'token user { id uid name email phone role reputationScore friendIds createdAt updatedAt followingIds followerIds}');
     return res['loginUser'];
   }
 
@@ -66,7 +66,7 @@ newPassword: "$password"
 idToken: "$idToken"
     ''',
         fragment:
-            'id uid name email phone role reputationScore friendIds createdAt updatedAt');
+            'id uid name email phone role reputationScore friendIds createdAt updatedAt followerIds followingIds');
     return res['resetPassword'];
   }
 

@@ -259,8 +259,8 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
           )
         : EmptyWidget(
             assetImg: 'assets/image/no_user.png',
-            title: 'Không có lời mời kết bạn',
-            content: 'Tìm kiếm và kết bạn để có thêm nhiều bạn bè hơn',
+            title: 'Không có người theo dõi mới',
+            content: 'Đăng bài có nhiều tương tác để có thêm người theo dõi',
           );
   }
 }

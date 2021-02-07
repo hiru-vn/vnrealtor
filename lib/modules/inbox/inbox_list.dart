@@ -38,7 +38,7 @@ class _InboxListState extends State<InboxList>
     if (_inboxBloc == null || _authBloc == null) {
       _inboxBloc = Provider.of<InboxBloc>(context);
       _authBloc = Provider.of<AuthBloc>(context);
-      init();
+      if (mounted) init();
     }
     super.didChangeDependencies();
   }

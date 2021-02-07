@@ -295,7 +295,9 @@ class _ProfileCardState extends State<ProfileCard> {
                   Row(children: [
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          
+                        },
                         child: Container(
                           padding: EdgeInsets.all(6),
                           decoration: BoxDecoration(

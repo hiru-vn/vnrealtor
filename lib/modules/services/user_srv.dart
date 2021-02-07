@@ -13,5 +13,7 @@ reputationScore: Int
 friendIds: [ID]
 createdAt: DateTime
 updatedAt: DateTime
+followerIds: [ID]
+followingIds: [ID]
   ''');
 }
