@@ -1,8 +1,11 @@
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
+import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
+import 'package:vnrealtor/modules/model/post.dart';
 import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/post/post_widget.dart';
+import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/share/widget/empty_widget.dart';
 
@@ -11,6 +14,9 @@ class ProfileOtherPage extends StatefulWidget {
 
   const ProfileOtherPage(this.user);
   static Future navigate(UserModel user) {
+    if (user.id == AuthBloc.instance.userModel.id) {
+      return navigatorKey.currentState.push(pageBuilder(ProfilePage()));
+    }
     return navigatorKey.currentState.push(pageBuilder(ProfileOtherPage(user)));
   }
 
@@ -19,9 +25,8 @@ class ProfileOtherPage extends StatefulWidget {
 }
 
 class _ProfileOtherPageState extends State<ProfileOtherPage> {
-  AuthBloc _authBloc;
-  UserBloc _userBloc;
   PostBloc _postBloc;
+  List<PostModel> _posts;
 
   @override
   void initState() {
@@ -30,15 +35,22 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
 
   @override
   void didChangeDependencies() {
-    if (_authBloc == null) {
-      _authBloc = Provider.of<AuthBloc>(context);
-      _userBloc = Provider.of<UserBloc>(context);
+    if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
-      _postBloc.getMyPost().then((value) {
-        if (!value.isSuccess) showToast(value.errMessage, context);
-      });
+      _loadPost();
     }
     super.didChangeDependencies();
+  }
+
+  Future _loadPost() async {
+    final res = await _postBloc.getUserPost(widget.user.id);
+    if (!res.isSuccess)
+      showToast(res.errMessage, context);
+    else {
+      setState(() {
+        _posts = res.data;
+      });
+    }
   }
 
   @override
@@ -65,13 +77,13 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
           ];
         },
         body: Container(
-          child: _postBloc.myPosts == null
+          child: _posts == null
               ? kLoadingSpinner
-              : (_postBloc.myPosts.length == 0
+              : (_posts.length != 0
                   ? ListView.separated(
-                      itemCount: _postBloc.myPosts.length,
+                      itemCount: _posts.length,
                       itemBuilder: (context, index) {
-                        final post = _postBloc.myPosts[index];
+                        final post = _posts[index];
                         return PostWidget(post);
                       },
                       separatorBuilder: (context, index) =>
@@ -295,9 +307,7 @@ class _ProfileCardState extends State<ProfileCard> {
                   Row(children: [
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {
-                          
-                        },
+                        onTap: () {},
                         child: Container(
                           padding: EdgeInsets.all(6),
                           decoration: BoxDecoration(
@@ -318,7 +328,21 @@ class _ProfileCardState extends State<ProfileCard> {
                     ),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () async{
+                          showSimpleLoadingDialog(context);
+                          await InboxBloc.instance.navigateToChatWith(
+                              widget.user.name,
+                              widget.user.avatar,
+                              DateTime.now(),
+                              widget.user.avatar, [
+                            AuthBloc.instance.userModel.id,
+                            widget.user.id,
+                          ], [
+                            AuthBloc.instance.userModel.name,
+                            widget.user.name
+                          ]);
+                          navigatorKey.currentState.maybePop();
+                        },
                         child: Container(
                           padding: EdgeInsets.all(6),
                           decoration: BoxDecoration(

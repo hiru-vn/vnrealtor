@@ -8,11 +8,9 @@ import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/share/widget/empty_widget.dart';
 
 class ProfilePage extends StatefulWidget {
-  final UserModel user;
-
-  const ProfilePage(this.user);
+  const ProfilePage();
   static Future navigate(UserModel user) {
-    return navigatorKey.currentState.push(pageBuilder(ProfilePage(user)));
+    return navigatorKey.currentState.push(pageBuilder(ProfilePage()));
   }
 
   @override
@@ -59,7 +57,7 @@ class _ProfilePageState extends State<ProfilePage>
           return [
             SliverToBoxAdapter(
               child: ProfileCard(
-                user: widget.user,
+                user: _authBloc.userModel,
                 tabC: _tabController,
               ),
             ),

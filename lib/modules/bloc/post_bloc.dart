@@ -39,10 +39,24 @@ class PostBloc extends ChangeNotifier {
 
   Future<BaseResponse> getMyPost() async {
     try {
-      final res = await PostRepo().getMyPost();
+      final id = await SPref.instance.get('id');
+      final res = await PostRepo().getPostByUserId(id);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       myPosts = list;
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getUserPost(String id) async {
+    try {
+      final res = await PostRepo().getPostByUserId(id);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e.toString());

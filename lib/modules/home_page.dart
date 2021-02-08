@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage>
     _pages.addAll([
       PostPage(),
       NotificationPage(),
-      ProfilePage(AuthBloc.instance.userModel),
+      ProfilePage(),
       SettingPage(),
     ]);
 

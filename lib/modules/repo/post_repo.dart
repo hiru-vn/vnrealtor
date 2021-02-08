@@ -63,10 +63,9 @@ updatedAt
     return res['getNewsFeed'];
   }
 
-  Future getMyPost() async {
-    final id = await SPref.instance.get('id');
+  Future getPostByUserId(String userId) async {
     final res = await PostSrv()
-        .getList(limit: 20, order: '{createdAt: -1}', filter: '{userId: "$id"}');
+        .getList(limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}');
     return res;
   }
 
