@@ -1,6 +1,7 @@
 import 'package:flutter/rendering.dart';
 import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/inbox/inbox_list.dart';
+import 'package:vnrealtor/modules/model/post.dart';
 import 'package:vnrealtor/modules/post/create_post_page.dart';
 import 'package:vnrealtor/modules/post/search_post_page.dart';
 import 'package:vnrealtor/share/import.dart';
@@ -16,6 +17,7 @@ class _PostPageState extends State<PostPage> {
   bool showAppBar = true;
   PostBloc _postBloc;
   ScrollController _controller = ScrollController();
+  PageController _pageController = PageController();
 
   @override
   void initState() {
@@ -26,9 +28,7 @@ class _PostPageState extends State<PostPage> {
   @override
   void didChangeDependencies() {
     if (_postBloc == null) {
-      _postBloc = Provider.of(context);
-      _postBloc.getNewFeed(
-          filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
+      _postBloc = Provider.of<PostBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -55,48 +55,65 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ptBackgroundColor(context),
-      appBar: showAppBar ? PostPageAppBar() : null,
-      body: RefreshIndicator(
-        color: ptPrimaryColor(context),
-        onRefresh: () async {
-          await _postBloc.getNewFeed(
-              filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
-          return;
-        },
-        child: SingleChildScrollView(
-          controller: _controller,
-          child: Column(
-            children: [
-              SizedBox(
-                height: (!showAppBar)
-                    ? MediaQuery.of(context).padding.top + kToolbarHeight + 10
-                    : 0,
+    return PageView(
+      controller: _pageController,
+      children: [
+        Scaffold(
+          
+          backgroundColor: ptBackgroundColor(context),
+          appBar: showAppBar ? PostPageAppBar() : null,
+          body: RefreshIndicator(
+            color: ptPrimaryColor(context),
+            onRefresh: () async {
+              await _postBloc.getNewFeed(
+                  filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
+              return;
+            },
+            child: SingleChildScrollView(
+              controller: _controller,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: (!showAppBar)
+                        ? MediaQuery.of(context).padding.top +
+                            kToolbarHeight +
+                            10
+                        : 0,
+                  ),
+                  CreatePostCard(
+                    postBloc: _postBloc,
+                    pageController: _pageController,
+                  ),
+                  ListView.builder(
+                    padding: EdgeInsets.all(0),
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: _postBloc.post.length,
+                    itemBuilder: (context, index) {
+                      final item = _postBloc.post[index];
+                      return PostWidget(item);
+                    },
+                  ),
+                  SizedBox(
+                    height: 70,
+                  ),
+                ],
               ),
-              CreatePostCard(),
-              ListView.builder(
-                padding: EdgeInsets.all(0),
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: _postBloc.post.length,
-                itemBuilder: (context, index) {
-                  final item = _postBloc.post[index];
-                  return PostWidget(item);
-                },
-              ),
-              SizedBox(
-                height: 70,
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+        CreatePostPage(_pageController),
+      ],
     );
   }
 }
 
 class CreatePostCard extends StatelessWidget {
+  final PostBloc postBloc;
+  final PageController pageController;
+
+  const CreatePostCard({Key key, this.postBloc, this.pageController})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -114,7 +131,9 @@ class CreatePostCard extends StatelessWidget {
               ),
               child: GestureDetector(
                 onTap: () {
-                  CreatePostPage.navigate();
+                  pageController.animateToPage(1,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.decelerate);
                 },
                 child: Material(
                   borderRadius: BorderRadius.circular(12),
@@ -131,7 +150,9 @@ class CreatePostCard extends StatelessWidget {
                         Spacer(),
                         GestureDetector(
                           onTap: () {
-                            CreatePostPage.navigate();
+                            pageController.animateToPage(1,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.decelerate);
                           },
                           child: SizedBox(
                             width: 30,
@@ -147,7 +168,9 @@ class CreatePostCard extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            CreatePostPage.navigate();
+                            pageController.animateToPage(1,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.decelerate);
                           },
                           child: SizedBox(
                             width: 30,
@@ -194,15 +217,14 @@ class CreatePostCard extends StatelessWidget {
             ),
             SizedBox(
               height: 170,
-              child: ListView(scrollDirection: Axis.horizontal, children: [
-                SizedBox(width: 20),
-                _buildStoryWidget(),
-                SizedBox(width: 15),
-                _buildStoryWidget(),
-                SizedBox(width: 15),
-                _buildStoryWidget(),
-                SizedBox(width: 20),
-              ]),
+              child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: postBloc.stories.length,
+                  separatorBuilder: (context, index) => SizedBox(width: 15),
+                  itemBuilder: (context, index) {
+                    return _buildStoryWidget(postBloc.stories[index]);
+                  }),
             ),
           ],
         ),
@@ -210,7 +232,7 @@ class CreatePostCard extends StatelessWidget {
     );
   }
 
-  _buildStoryWidget() {
+  _buildStoryWidget(PostModel postModel) {
     return Center(
       child: Material(
         elevation: 4,
@@ -222,8 +244,7 @@ class CreatePostCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(
-                      'https://media.ex-cdn.com/EXP/media.nhadautu.vn/files/ducson/2017/08/09/bds-nha-trang-1143.jpg'))),
+                  image: NetworkImage(postModel.mediaPosts[0].url))),
           child: Column(children: [
             Padding(
               padding: const EdgeInsets.all(5),
@@ -239,7 +260,9 @@ class CreatePostCard extends StatelessWidget {
                     child: Center(
                       child: CircleAvatar(
                         radius: 13,
-                        backgroundImage: AssetImage('assets/image/avatar.jpeg'),
+                        backgroundImage: postModel.user.avatar != null
+                            ? NetworkImage(postModel.user.avatar)
+                            : AssetImage('assets/image/avatar.jpeg'),
                       ),
                     ),
                   ),
@@ -248,7 +271,7 @@ class CreatePostCard extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'Hoài Linh',
+                      postModel.user.name,
                       style: ptTiny().copyWith(
                           color: Colors.white, fontWeight: FontWeight.w600),
                     ),

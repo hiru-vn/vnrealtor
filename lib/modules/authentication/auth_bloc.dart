@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vnrealtor/modules/authentication/login.dart';
+import 'package:vnrealtor/modules/bloc/post_bloc.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
 import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/repo/user_repo.dart';
@@ -95,6 +96,7 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('id', res['user']["id"]);
       userModel = UserModel.fromJson(res['user']);
       UserBloc.instance.init();
+      PostBloc.instance.init();
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e?.toString());

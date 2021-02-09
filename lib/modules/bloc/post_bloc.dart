@@ -9,6 +9,12 @@ class PostBloc extends ChangeNotifier {
 
   List<PostModel> post = [];
   List<PostModel> myPosts;
+  List<PostModel> stories = [];
+
+  Future init() async {
+    getNewFeed(filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
+    getStoryFollowing();
+  }
 
   Future<BaseResponse> getNewFeed({GraphqlFilter filter}) async {
     try {
@@ -52,6 +58,20 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getStoryFollowing() async {
+    try {
+      final res = await PostRepo().getStoryFollowing();
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      stories = list;
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> getUserPost(String id) async {
     try {
       final res = await PostRepo().getPostByUserId(id);
@@ -65,9 +85,11 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getAllCommentByPostId(String postId, {GraphqlFilter filter}) async {
+  Future<BaseResponse> getAllCommentByPostId(String postId,
+      {GraphqlFilter filter}) async {
     try {
-      final res = await PostRepo().getAllCommentByPostId(postId: postId, filter: filter);
+      final res = await PostRepo()
+          .getAllCommentByPostId(postId: postId, filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
@@ -78,10 +100,11 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getListMediaPostComment(String postMediaId, {GraphqlFilter filter}) async {
+  Future<BaseResponse> getListMediaPostComment(String postMediaId,
+      {GraphqlFilter filter}) async {
     try {
-      final res =
-          await PostRepo().getAllCommentByMediaPostId(postMediaId: postMediaId, filter: filter);
+      final res = await PostRepo()
+          .getAllCommentByMediaPostId(postMediaId: postMediaId, filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);

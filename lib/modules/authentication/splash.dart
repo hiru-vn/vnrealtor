@@ -2,6 +2,8 @@ import 'package:vnrealtor/main.dart';
 import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/modules/authentication/introduce.dart';
 import 'package:vnrealtor/modules/authentication/login.dart';
+import 'package:vnrealtor/modules/bloc/post_bloc.dart';
+import 'package:vnrealtor/modules/bloc/user_bloc.dart';
 import 'package:vnrealtor/modules/home_page.dart';
 import 'package:vnrealtor/modules/services/firebase_service.dart';
 import 'package:vnrealtor/share/import.dart';
@@ -24,7 +26,7 @@ class _SplashPageState extends State<SplashPage> {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
       Future.delayed(
-        Duration(milliseconds: 500),
+        Duration(milliseconds: 50),
         () async {
           final firstTime =
               (await SPref.instance.getBool('first_time')) ?? false;
@@ -36,11 +38,15 @@ class _SplashPageState extends State<SplashPage> {
           if (!isLog) {
             LoginPage.navigate();
           } else {
-            FcmService.instance.init();
             final res = await _authBloc.getUserInfo();
-            if (res.isSuccess)
+            if (res.isSuccess) {
+              await Future.wait([
+                FcmService.instance.init(),
+                PostBloc.instance.init(),
+                UserBloc.instance.init(),
+              ]);
               HomePage.navigate();
-            else
+            } else
               IntroducePage.navigate();
           }
         },

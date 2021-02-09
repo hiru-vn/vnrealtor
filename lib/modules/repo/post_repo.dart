@@ -63,6 +63,60 @@ updatedAt
     return res['getNewsFeed'];
   }
 
+  Future getStoryFollowing({int page}) async {
+    
+    final res = await PostSrv().query('getStoryFollowing', '', fragment: '''
+    data {
+id: _id
+content
+mediaPostIds
+commentIds
+userId
+like
+userLikeIds
+share
+userShareIds
+locationLat
+locationLong
+expirationDate
+publicity
+user {
+  id 
+  uid 
+  name 
+  email 
+  phone 
+  role 
+  reputationScore 
+  createdAt 
+  updatedAt 
+  friendIds
+}
+mediaPosts {
+id
+userId
+type
+like
+userLikeIds
+commentIds
+description
+url
+locationLat
+locationLong
+expirationDate
+publicity
+createdAt
+updatedAt
+}
+isUserLike
+isUserShare
+createdAt
+updatedAt
+}
+    ''');
+    return res['getStoryFollowing'];
+  }
+
   Future getPostByUserId(String userId) async {
     final res = await PostSrv()
         .getList(limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}');

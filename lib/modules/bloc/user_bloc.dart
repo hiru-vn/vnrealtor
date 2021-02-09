@@ -12,7 +12,7 @@ class UserBloc extends ChangeNotifier {
 
   List<FriendshipModel> friendRequestFromOtherUsers = [];
 
-  void init() async {
+  Future init() async {
     final token = await SPref.instance.get('token');
     final id = await SPref.instance.get('id');
     if (token != null && id != null) {

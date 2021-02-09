@@ -22,7 +22,7 @@ class FcmService {
     return null;
   }
 
-  void init() async {
+  Future init() async {
     await FirebaseMessaging.instance.requestPermission();
     await FirebaseMessaging.instance.getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
