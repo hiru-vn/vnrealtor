@@ -1,6 +1,5 @@
 import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/profile/profile_other_page.dart';
-import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 
 class PeopleWidget extends StatelessWidget {
