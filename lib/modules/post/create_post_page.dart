@@ -62,7 +62,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
     await navigatorKey.currentState.maybePop();
     if (res.isSuccess) {
       _postBloc.post.insert(0, res.data);
-      await navigatorKey.currentState.maybePop();
+      await widget.pageController.animateToPage(0,
+          duration: Duration(milliseconds: 200), curve: Curves.decelerate);
+      FocusScope.of(context).requestFocus(FocusNode());
     } else {
       showToast(res.errMessage, context);
     }
@@ -102,43 +104,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
-              padding: const EdgeInsets.all(15).copyWith(top: 10),
-              child: Material(
-                borderRadius: BorderRadius.circular(20),
-                elevation: 4,
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(MdiIcons.camera),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        'Thêm hình ảnh/ video',
-                        style: ptTitle(),
-                      ),
-                    ],
-                  ),
-                ),
+              padding: const EdgeInsets.all(15).copyWith(bottom: 5),
+              child: ImageButtonPicker(
+                _allVideoAndImage,
+                onUpdateListImg: (listImg) {},
+                onAddImg: _upload,
               ),
             ),
-            if (_allVideoAndImage.length != 0)
-              Padding(
-                padding: const EdgeInsets.all(15).copyWith(top: 0),
-                child: SizedBox(
-                  height: 110,
-                  child: ImageRowPicker(
-                    _allVideoAndImage,
-                    onUpdateListImg: (listImg) {},
-                    onAddImg: _upload,
-                  ),
-                ),
-              ),
             Padding(
               padding: const EdgeInsets.all(8.0).copyWith(top: 8),
               child: Material(
@@ -203,6 +175,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ),
                 ],
               ),
+            ),
+            SizedBox(
+              height: 60,
             ),
           ]),
         ),
