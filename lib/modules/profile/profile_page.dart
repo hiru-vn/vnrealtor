@@ -241,7 +241,9 @@ class _ProfileCardState extends State<ProfileCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        '200',
+                                        AuthBloc.instance.userModel.followerIds
+                                            .length
+                                            .toString(),
                                         style: ptTitle(),
                                       ),
                                       Text(
@@ -256,7 +258,9 @@ class _ProfileCardState extends State<ProfileCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        '200',
+                                        AuthBloc.instance.userModel.followerIds
+                                            .length
+                                            .toString(),
                                         style: ptTitle(),
                                       ),
                                       Text(

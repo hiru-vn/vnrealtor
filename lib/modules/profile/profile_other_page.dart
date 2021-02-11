@@ -245,7 +245,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        '200',
+                                        widget.user.followerIds.length.toString(),
                                         style: ptTitle(),
                                       ),
                                       Text(
@@ -260,7 +260,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        '200',
+                                        widget.user.followingIds.length.toString(),
                                         style: ptTitle(),
                                       ),
                                       Text(
