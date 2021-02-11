@@ -8,6 +8,7 @@ import 'package:vnrealtor/modules/post/post_widget.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
 import 'package:vnrealtor/share/widget/empty_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileOtherPage extends StatefulWidget {
   final UserModel user;
@@ -26,13 +27,7 @@ class ProfileOtherPage extends StatefulWidget {
 
 class _ProfileOtherPageState extends State<ProfileOtherPage> {
   PostBloc _postBloc;
-
   List<PostModel> _posts;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -150,6 +145,16 @@ class _ProfileCardState extends State<ProfileCard> {
   UserBloc _userBloc;
   AuthBloc _authBloc;
   bool initFetchStatus = false;
+  Uri _emailLaunchUri;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: widget.user.email,
+    );
+  }
 
   @override
   void didChangeDependencies() {
@@ -236,7 +241,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                       Text(
                                         'bài viết',
                                         style: ptBody(),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -245,7 +250,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        widget.user.followerIds.length.toString(),
+                                        widget.user.followerIds.length
+                                            .toString(),
                                         style: ptTitle(),
                                       ),
                                       Text(
@@ -260,7 +266,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        widget.user.followingIds.length.toString(),
+                                        widget.user.followingIds.length
+                                            .toString(),
                                         style: ptTitle(),
                                       ),
                                       Text(
@@ -301,10 +308,17 @@ class _ProfileCardState extends State<ProfileCard> {
                           height: 31,
                           child: Image.asset('assets/image/facebook_icon.png')),
                       SizedBox(width: 15),
-                      SizedBox(
-                          width: 35,
-                          height: 35,
-                          child: Image.asset('assets/image/gmail_icon.png'))
+                      if (widget.user.email != null)
+                        GestureDetector(
+                          onTap: () {
+                            launch(_emailLaunchUri.toString());
+                          },
+                          child: SizedBox(
+                              width: 35,
+                              height: 35,
+                              child:
+                                  Image.asset('assets/image/gmail_icon.png')),
+                        ),
                     ],
                   ),
                   SizedBox(height: 15),
