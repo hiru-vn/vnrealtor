@@ -109,6 +109,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 _allVideoAndImage,
                 onUpdateListImg: (listImg) {},
                 onAddImg: _upload,
+                onRemoveImg: (file) {
+                  _images.remove(file);
+                  _videos.remove(file);
+                  _allVideoAndImage.remove(file);
+                },
               ),
             ),
             Padding(

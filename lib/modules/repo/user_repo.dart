@@ -120,6 +120,22 @@ status
     return res['declineFriend'];
   }
 
+  Future followUser(String userId) async {
+    final res = await UserSrv()
+        .mutate('followUser', 'userId: "$userId"', fragment: '''
+id
+        ''');
+    return res['followUser'];
+  }
+
+    Future unfollowUser(String userId) async {
+    final res = await UserSrv()
+        .mutate('unfollowUser', 'userId: "$userId"', fragment: '''
+id
+        ''');
+    return res['unfollowUser'];
+  }
+
   Future changePassword(String oldPassword, String newPassword) async {
     final res = await UserSrv().mutate('changePassword',
         'oldPassword: "$oldPassword"\nnewPassword: "$newPassword"',
