@@ -81,9 +81,9 @@ class _ProfilePageState extends State<ProfilePage>
                               SizedBox(height: 15),
                         )
                       : EmptyWidget(
-                      assetImg: 'assets/image/no_post.png',
-                      content: 'Bạn chưa có bài đăng nào.',
-                    )),
+                          assetImg: 'assets/image/no_post.png',
+                          content: 'Bạn chưa có bài đăng nào.',
+                        )),
               ListView(
                 children: [],
               ),
@@ -103,15 +103,20 @@ class ProfilePageAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Container(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Padding(
-        padding:
-            const EdgeInsets.only(left: 20, top: 12, bottom: 10, right: 12),
+        padding: const EdgeInsets.only(left: 5, top: 12, bottom: 10, right: 12),
         child: Row(
           children: [
+            navigatorKey.currentState.canPop()
+                ? BackButton()
+                : SizedBox(
+                    width: 15,
+                  ),
             Image.asset('assets/image/logo_full.png'),
             Spacer(),
             GestureDetector(
               onTap: () {
-                showAlertDialog(context, 'Đang phát triển', navigatorKey: navigatorKey);
+                showAlertDialog(context, 'Đang phát triển',
+                    navigatorKey: navigatorKey);
               },
               child: SizedBox(
                   width: 42,

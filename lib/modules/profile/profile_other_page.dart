@@ -26,6 +26,7 @@ class ProfileOtherPage extends StatefulWidget {
 
 class _ProfileOtherPageState extends State<ProfileOtherPage> {
   PostBloc _postBloc;
+
   List<PostModel> _posts;
 
   @override
@@ -99,41 +100,42 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
   }
 }
 
-class ProfileOtherPageAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
-  ProfileOtherPageAppBar();
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      child: Padding(
-        padding:
-            const EdgeInsets.only(left: 20, top: 12, bottom: 10, right: 12),
-        child: Row(
-          children: [
-            Image.asset('assets/image/logo_full.png'),
-            Spacer(),
-            GestureDetector(
-              onTap: () {
-                showAlertDialog(context, 'Đang phát triển',
-                    navigatorKey: navigatorKey);
-              },
-              child: SizedBox(
-                  width: 42,
-                  height: 42,
-                  child: Icon(
-                    MdiIcons.menu,
-                    size: 26,
-                  )),
-            )
-          ],
-        ),
-      ),
-      color: ptSecondaryColor(context),
-    );
-  }
-}
+// class ProfileOtherPageAppBar extends StatelessWidget
+//     implements PreferredSizeWidget {
+//   Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
+//   ProfileOtherPageAppBar();
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+//       child: Padding(
+//         padding:
+//             const EdgeInsets.only(left: 20, top: 12, bottom: 10, right: 12),
+//         child: Row(
+//           children: [
+//             Image.asset('assets/image/logo_full.png'),
+//             Spacer(),
+//             GestureDetector(
+//               onTap: () {
+//                 showAlertDialog(context, 'Đang phát triển',
+//                     navigatorKey: navigatorKey);
+//               },
+//               child: SizedBox(
+//                 width: 42,
+//                 height: 42,
+//                 child: Icon(
+//                   MdiIcons.menu,
+//                   size: 26,
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//       color: ptSecondaryColor(context),
+//     );
+//   }
+// }
 
 class ProfileCard extends StatefulWidget {
   final UserModel user;
@@ -146,12 +148,14 @@ class ProfileCard extends StatefulWidget {
 
 class _ProfileCardState extends State<ProfileCard> {
   UserBloc _userBloc;
+  AuthBloc _authBloc;
   bool initFetchStatus = false;
 
   @override
   void didChangeDependencies() {
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
+      _authBloc = Provider.of<AuthBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -307,16 +311,49 @@ class _ProfileCardState extends State<ProfileCard> {
                   Row(children: [
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () async {
+                          BaseResponse res;
+                          if (_authBloc.userModel.followingIds
+                              .contains(widget.user.id)) {
+                            _authBloc.userModel.followingIds
+                                .remove(widget.user.id);
+                            setState(() {});
+                            res = await _userBloc.unfollowUser(widget.user.id);
+                            if (res.isSuccess) {
+                            } else {
+                              showToast(res.errMessage, context);
+                              _authBloc.userModel.followingIds
+                                  .add(widget.user.id);
+                              setState(() {});
+                            }
+                          } else {
+                            _authBloc.userModel.followingIds
+                                .add(widget.user.id);
+                            setState(() {});
+                            res = await _userBloc.followUser(widget.user.id);
+                            if (res.isSuccess) {
+                            } else {
+                              showToast(res.errMessage, context);
+                              _authBloc.userModel.followingIds
+                                  .remove(widget.user.id);
+                              setState(() {});
+                            }
+                          }
+                        },
                         child: Container(
                           padding: EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              border:
-                                  Border.all(color: ptPrimaryColor(context))),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: ptPrimaryColor(context),
+                            ),
+                          ),
                           child: Center(
                             child: Text(
-                              'Theo dõi',
+                              _authBloc.userModel.followingIds
+                                      .contains(widget.user.id)
+                                  ? 'Bỏ theo dõi'
+                                  : 'Theo dõi',
                               style: ptTitle(),
                             ),
                           ),
@@ -328,7 +365,7 @@ class _ProfileCardState extends State<ProfileCard> {
                     ),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () async{
+                        onTap: () async {
                           showSimpleLoadingDialog(context);
                           await InboxBloc.instance.navigateToChatWith(
                               widget.user.name,
