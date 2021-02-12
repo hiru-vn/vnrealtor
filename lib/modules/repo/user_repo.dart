@@ -25,6 +25,19 @@ idToken: "$idToken"
     return res['registerWithPhone'];
   }
 
+  Future getListFollower({String userId, String limit, String page}) async {
+    final res = await UserSrv().mutate(
+        'getListFollower',
+        '''
+userId: "$userId"
+limit: "$limit"
+Page: "$page"
+    ''',
+        fragment:
+            'data { id uid name email phone role reputationScore friendIds createdAt updatedAt followerIds followingIds }');
+    return res['getListFollower'];
+  }
+
   Future login(
       {String userName,
       String password,
@@ -121,14 +134,14 @@ status
   }
 
   Future followUser(String userId) async {
-    final res = await UserSrv()
-        .mutate('followUser', 'userId: "$userId"', fragment: '''
+    final res =
+        await UserSrv().mutate('followUser', 'userId: "$userId"', fragment: '''
 id
         ''');
     return res['followUser'];
   }
 
-    Future unfollowUser(String userId) async {
+  Future unfollowUser(String userId) async {
     final res = await UserSrv()
         .mutate('unfollowUser', 'userId: "$userId"', fragment: '''
 id

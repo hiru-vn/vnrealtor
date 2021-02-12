@@ -345,10 +345,19 @@ class _PostWidgetState extends State<PostWidget> {
                   color: Colors.white,
                 )),
         ],
-        onClickMenu: (val) {
+        onClickMenu: (val) async {
           if (val.menuTitle == 'Contact') {}
           if (val.menuTitle == 'Report') {}
-          if (val.menuTitle == 'Delete') {}
+          if (val.menuTitle == 'Delete') {
+            _postBloc.post.remove((item) => item.id == widget.post.id);
+            _postBloc.myPosts.removeWhere((item) => item.id == widget.post.id);
+            setState(() {});
+            final res = await _postBloc.deletePost(widget.post.id);
+            if (res.isSuccess) {
+            } else {
+              showToast(res.errMessage, context);
+            }
+          }
         },
         stateChanged: (val) {},
         onDismiss: () {});

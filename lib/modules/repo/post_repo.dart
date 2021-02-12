@@ -211,6 +211,12 @@ updatedAt
     return res["createPost"];
   }
 
+  Future deletePost(String postId) async {
+    final res = await PostSrv()
+        .delete(postId);
+    return res;
+  }
+
   Future getAllCommentByPostId({String postId, GraphqlFilter filter}) async {
     final res = await CommentSrv().getList(
         limit: filter?.limit,
