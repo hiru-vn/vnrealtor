@@ -43,59 +43,60 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                 Container(
                   height: 35,
                   width: 35,
+                  color: Colors.transparent,
                   child: Center(
                     child: Icon(
                       e.icon,
                     ),
                   ),
                 ),
+                // if (_notificationBloc.notifications
+                //         .any((element) => (!element.seen)) &&
+                //     e.isNoti)
+                // Positioned(
+                //   top: 2,
+                //   left: deviceWidth(context) / 8 + 6,
+                //   child: Container(
+                //     width: 8,
+                //     height: 8,
+                //     decoration: BoxDecoration(
+                //       color: Colors.red,
+                //       shape: BoxShape.circle,
+                //     ),
+                //   ),
+                // ),
                 if (_notificationBloc.notifications
                         .any((element) => (!element.seen)) &&
                     e.isNoti)
-                  // Positioned(
-                  //   top: 2,
-                  //   left: deviceWidth(context) / 8 + 6,
-                  //   child: Container(
-                  //     width: 8,
-                  //     height: 8,
-                  //     decoration: BoxDecoration(
-                  //       color: Colors.red,
-                  //       shape: BoxShape.circle,
-                  //     ),
-                  //   ),
-                  // ),
-                  if (_notificationBloc.notifications
-                          .any((element) => (!element.seen)) &&
-                      e.isNoti)
-                    Positioned(
-                      top: 0,
-                      left: deviceWidth(context) / 8 + 5,
-                      child: Container(
-                        padding: EdgeInsets.all(2.4),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(9),
-                        ),
-                        constraints: BoxConstraints(
-                          minWidth: 18,
-                          minHeight: 18,
-                        ),
-                        child: Center(
-                          child: Text(
-                            _notificationBloc.notifications
-                                .where((element) => (!element.seen))
-                                .toList()
-                                .length
-                                .toString(),
-                            style: TextStyle(
-                              color: ptPrimaryColor(context),
-                              fontSize: 10,
-                            ),
-                            textAlign: TextAlign.center,
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      padding: EdgeInsets.all(2.4),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(9),
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: 18,
+                        minHeight: 18,
+                      ),
+                      child: Center(
+                        child: Text(
+                          _notificationBloc.notifications
+                              .where((element) => (!element.seen))
+                              .toList()
+                              .length
+                              .toString(),
+                          style: TextStyle(
+                            color: ptPrimaryColor(context),
+                            fontSize: 10,
                           ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                    )
+                    ),
+                  )
               ],
             ),
             activeIcon: Stack(
@@ -104,7 +105,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                   height: 35,
                   width: 35,
                   decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: ptSecondaryColor(context)),
+                      shape: BoxShape.circle, color: Colors.transparent),
                   child: Center(
                     child: Icon(
                       e.iconActive,
@@ -116,7 +117,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                     e.isNoti)
                   Positioned(
                     top: 2,
-                    left: deviceWidth(context) / 8 + 6,
+                    right: 3,
                     child: Container(
                       width: 8,
                       height: 8,
