@@ -5,9 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
 import 'package:vnrealtor/navigator.dart';
 
 import 'app_id.dart';
+import 'dial_screen.dart';
 import 'import/page_builder.dart';
 import 'inbox_model.dart';
 import 'video_call_page.dart';
@@ -313,6 +315,13 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_users.length < 2)
+      return DialScreen(
+        names: widget.users
+            .where((element) => element.id != AuthBloc.instance.userModel.id)
+            .map((e) => e.name)
+            .toList(),
+      );
     return Scaffold(
         backgroundColor: Colors.black,
         body: Center(

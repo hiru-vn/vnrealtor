@@ -4,16 +4,22 @@ import 'package:vnrealtor/share/widget/spacing_box.dart';
 import 'package:vnrealtor/themes/color.dart';
 
 class DialScreen extends StatelessWidget {
+  final List<String> names;
+
+  const DialScreen({Key key, this.names}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ptDarkColor(context),
-      body: Body(),
+      body: Body(names: names),
     );
   }
 }
 
 class Body extends StatefulWidget {
+  final List<String> names;
+
+  const Body({Key key, this.names}) : super(key: key);
   @override
   _BodyState createState() => _BodyState();
 }
@@ -28,7 +34,7 @@ class _BodyState extends State<Body> {
           children: [
             SpacingBox(h: 3),
             Text(
-              "Anna williams",
+              widget?.names?.join(", ")??'Calling...',
               style: Theme.of(context)
                   .textTheme
                   .headline4
