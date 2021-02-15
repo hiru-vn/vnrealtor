@@ -7,7 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:vnrealtor/navigator.dart';
 
 import 'app_id.dart';
-import 'calling_screen.dart';
+import 'dial_screen.dart';
 import 'import/page_builder.dart';
 import 'inbox_model.dart';
 
@@ -19,7 +19,7 @@ class VideoCallPage extends StatefulWidget {
   const VideoCallPage({Key key, this.groupId, this.users}) : super(key: key);
   static Future navigate(String groupId, List<FbInboxUserModel> users) {
     return navigatorKey.currentState
-        .push(pageBuilder(VideoCallPage(groupId: groupId, users: users)));
+        .push(pageBuilder(VideoCallPage(groupId: groupId, users: users), transitionBuilder: transitionRightBuilder));
   }
 
   @override

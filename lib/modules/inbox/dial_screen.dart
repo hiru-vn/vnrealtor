@@ -39,7 +39,7 @@ class _BodyState extends State<Body> {
               "Calling…",
               style: TextStyle(color: Colors.white60),
             ),
-            SpacingBox(h: 1.5),
+            SpacingBox(h: 3),
             DialUserPic(
               image:
                   'https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png',
@@ -83,7 +83,9 @@ class _BodyState extends State<Body> {
             SpacingBox(h: 3),
             RoundedButton(
               iconSrc: Icons.call_end,
-              press: () {},
+              press: () {
+                navigatorKey.currentState.maybePop();
+              },
               color: Colors.red[700],
               iconColor: Colors.white,
             ),
@@ -177,7 +179,7 @@ class RoundedButton extends StatelessWidget {
   }
 }
 
-class DialUserPic extends StatelessWidget {
+class DialUserPic extends StatefulWidget {
   const DialUserPic({
     Key key,
     this.size = 192,
@@ -188,26 +190,47 @@ class DialUserPic extends StatelessWidget {
   final String image;
 
   @override
+  _DialUserPicState createState() => _DialUserPicState();
+}
+
+class _DialUserPicState extends State<DialUserPic>
+    with TickerProviderStateMixin {
+  AnimationController _animationController;
+  Tween<double> _tween = Tween(begin: 0.75, end: 1);
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+        duration: const Duration(milliseconds: 700), vsync: this);
+    _animationController.repeat(reverse: true);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(23),
-      height: deviceWidth(context) / 3,
-      width: deviceWidth(context) / 3,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [
-            Colors.white.withOpacity(0.02),
-            Colors.white.withOpacity(0.05)
-          ],
-          stops: [.5, 1],
+    return ScaleTransition(
+      scale: _tween.animate(CurvedAnimation(
+          parent: _animationController, curve: Curves.decelerate)),
+      child: Container(
+        padding: EdgeInsets.all(23),
+        height: deviceWidth(context) / 3 + 10,
+        width: deviceWidth(context) / 3 + 10,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(
+            colors: [
+              Colors.white.withOpacity(0.02),
+              Colors.white.withOpacity(0.05)
+            ],
+            stops: [.5, 1],
+          ),
         ),
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(100)),
-        child: Image.network(
-          image,
-          fit: BoxFit.cover,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
+          child: Image.network(
+            widget.image,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
