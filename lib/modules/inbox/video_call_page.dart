@@ -7,9 +7,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:vnrealtor/navigator.dart';
 
 import 'app_id.dart';
+import 'calling_screen.dart';
 import 'import/page_builder.dart';
 import 'inbox_model.dart';
-
 
 /// MultiChannel Example
 class VideoCallPage extends StatefulWidget {
@@ -287,6 +287,7 @@ class _VideoCallPageState extends State<VideoCallPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_users.length < 2) return DialScreen();
     return Scaffold(
         backgroundColor: Colors.black,
         body: Center(

@@ -65,7 +65,8 @@ class _InboxChatState extends State<InboxChat> {
       _inboxBloc = Provider.of<InboxBloc>(context);
       _authBloc = Provider.of<AuthBloc>(
           context); // this just to get userId, avatar, name. you can replace this with your params
-      loadUsers().then((value) => initMenu());
+      initMenu();
+      loadUsers();
       loadFirst20Message();
     }
     super.didChangeDependencies();

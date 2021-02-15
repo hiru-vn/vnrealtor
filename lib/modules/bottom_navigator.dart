@@ -78,8 +78,8 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                         borderRadius: BorderRadius.circular(9),
                       ),
                       constraints: BoxConstraints(
-                        minWidth: 18,
-                        minHeight: 18,
+                        minWidth: 17,
+                        minHeight: 17,
                       ),
                       child: Center(
                         child: Text(
@@ -89,8 +89,8 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                               .length
                               .toString(),
                           style: TextStyle(
-                            color: ptPrimaryColor(context),
-                            fontSize: 10,
+                            color: Colors.white,
+                            fontSize: 9.5,
                           ),
                           textAlign: TextAlign.center,
                         ),
