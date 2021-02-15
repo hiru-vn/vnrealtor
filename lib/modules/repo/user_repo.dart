@@ -5,6 +5,9 @@ import 'package:vnrealtor/utils/spref.dart';
 import 'filter.dart';
 
 class UserRepo {
+  String userFragment =
+      ' id uid name email phone role reputationScore friendIds createdAt updatedAt followerIds followingIds ';
+
   Future registerWithPhone(
       {String name,
       String email,
@@ -20,8 +23,7 @@ password: "$password"
 phone: "$phone"
 idToken: "$idToken"
     ''',
-        fragment:
-            'token user { id uid name email phone role reputationScore friendIds createdAt updatedAt followerIds followingIds}');
+        fragment: 'token user { $userFragment }');
     return res['registerWithPhone'];
   }
 
@@ -33,8 +35,7 @@ userId: "$userId"
 limit: "$limit"
 Page: "$page"
     ''',
-        fragment:
-            'data { id uid name email phone role reputationScore friendIds createdAt updatedAt followerIds followingIds }');
+        fragment: 'data { $userFragment }');
     return res['getListFollower'];
   }
 
@@ -51,8 +52,7 @@ Page: "$page"
   	deviceId: "$deviceToken"
     deviceToken: "$deviceToken"
     ''',
-        fragment:
-            'token user { id uid name email phone role reputationScore friendIds createdAt updatedAt followingIds followerIds}');
+        fragment: 'token user { $userFragment }');
     return res['loginUser'];
   }
 
@@ -78,8 +78,7 @@ Page: "$page"
 newPassword: "$password"
 idToken: "$idToken"
     ''',
-        fragment:
-            'id uid name email phone role reputationScore friendIds createdAt updatedAt followerIds followingIds');
+        fragment: '$userFragment');
     return res['resetPassword'];
   }
 
@@ -154,5 +153,11 @@ id
         'oldPassword: "$oldPassword"\nnewPassword: "$newPassword"',
         fragment: 'id');
     return res['changePassword'];
+  }
+
+  Future getFollowerIn7d(String userId) async {
+    final res = await UserSrv().query('getFollowerIn7d', 'userId: "$userId"',
+        fragment: 'data { $userFragment }');
+    return res['getFollowerIn7d'];
   }
 }

@@ -1,6 +1,7 @@
 import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
 import 'package:vnrealtor/modules/bloc/user_bloc.dart';
 import 'package:vnrealtor/modules/model/notification.dart';
+import 'package:vnrealtor/modules/model/user.dart';
 import 'package:vnrealtor/modules/profile/profile_other_page.dart';
 import 'package:vnrealtor/modules/profile/profile_page.dart';
 import 'package:vnrealtor/share/import.dart';
@@ -71,12 +72,11 @@ class _NotificationPageState extends State<NotificationPage>
                     ),
                   ),
                   SizedBox(
-                    height: 40,
-                    width: deviceWidth(context) / 2 - 45,
-                    child: Tab(
-                        text: 'Người theo dõi')
-                            //'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
-                  ),
+                      height: 40,
+                      width: deviceWidth(context) / 2 - 45,
+                      child: Tab(text: 'Người theo dõi')
+                      //'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
+                      ),
                 ]),
           ),
           Expanded(
@@ -84,8 +84,8 @@ class _NotificationPageState extends State<NotificationPage>
               NotificationTab(
                 list: _notificationBloc.notifications,
               ),
-              FriendRequestTab()
-              // FollowTab()
+              //FriendRequestTab()
+              FollowTab(list: _userBloc.followersIn7Days,)
             ]),
           )
         ],
@@ -127,7 +127,8 @@ class NotificationTab extends StatelessWidget {
                   style: ptBody(),
                 ),
                 subtitle: Text(
-                  Formart.timeAgo(DateTime.tryParse(list[index].createdAt))??'',
+                  Formart.timeAgo(DateTime.tryParse(list[index].createdAt)) ??
+                      '',
                   style: ptTiny(),
                 ),
               ),
@@ -261,6 +262,54 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
             assetImg: 'assets/image/no_user.png',
             title: 'Không có người theo dõi mới',
             content: 'Đăng bài có nhiều tương tác để có thêm người theo dõi',
+          );
+  }
+}
+
+class FollowTab extends StatelessWidget {
+  final List<UserModel> list;
+
+  const FollowTab({Key key, this.list}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return list.length > 0
+        ? RefreshIndicator(
+            color: ptPrimaryColor(context),
+            onRefresh: () async {
+              await NotificationBloc.instance.getListNotification(
+                  filter: GraphqlFilter(order: '{createdAt: -1}'));
+              return;
+            },
+            child: ListView.separated(
+              separatorBuilder: (context, index) => Divider(
+                height: 1,
+              ),
+              itemCount: list.length,
+              itemBuilder: (context, index) => ListTile(
+                tileColor: ptBackgroundColor(context),
+                leading: CircleAvatar(
+                  radius: 22,
+                  backgroundImage:
+                      (list[index].avatar == null || list[index].avatar == '')
+                          ? AssetImage('assets/image/logo.png')
+                          : NetworkImage(list[index].avatar),
+                ),
+                title: Text(
+                  list[index].name + ' đã theo dõi bạn',
+                  style: ptBody(),
+                ),
+                subtitle: Text(
+                  Formart.timeAgo(DateTime.tryParse(list[index].createdAt)) ??
+                      '',
+                  style: ptTiny(),
+                ),
+              ),
+            ),
+          )
+        : EmptyWidget(
+            assetImg: 'assets/image/no_user.png',
+            title: 'Bạn không có lượt theo dõi nào trong 7 ngày qua',
+            content: 'Đăng bài và tương tác nhiều để có thêm lượt theo dõi',
           );
   }
 }

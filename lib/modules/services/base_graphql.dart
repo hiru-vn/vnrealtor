@@ -152,6 +152,7 @@ class BaseService {
     final String deleteNode = 'mutation { deleteOne$_name(id: "$id") { id }}';
     final MutationOptions optionsDelete =
         MutationOptions(documentNode: gql(deleteNode));
+    print(deleteNode);
 
     final QueryResult result =
         await GraphQL.instance.client.mutate(optionsDelete);

@@ -150,12 +150,15 @@ class PostBloc extends ChangeNotifier {
 
   Future<BaseResponse> deletePost(String postId) async {
     try {
+      post.removeWhere((item) => item.id == postId);
+      myPosts.removeWhere((item) => item.id == postId);
+      notifyListeners();
       final res = await PostRepo().deletePost(postId);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.toString());
     } finally {
-      notifyListeners();
+      // notifyListeners();
     }
   }
 

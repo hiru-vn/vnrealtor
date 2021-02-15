@@ -11,21 +11,29 @@ class UserBloc extends ChangeNotifier {
   static final UserBloc instance = UserBloc._privateConstructor();
 
   List<FriendshipModel> friendRequestFromOtherUsers = [];
+  List<UserModel> followersIn7Days = [];
 
   Future init() async {
     final token = await SPref.instance.get('token');
     final id = await SPref.instance.get('id');
     if (token != null && id != null) {
-      try {
-        final res = await UserRepo().friendRequestFromOtherUsers();
-        final List listRaw = res;
-        final list = listRaw.map((e) => FriendshipModel.fromJson(e)).toList();
-        list.removeWhere(
-            (element) => element.status != FriendShipStatus.PENDING);
-        friendRequestFromOtherUsers = list;
-      } catch (e) {} finally {
-        notifyListeners();
-      }
+      getFriendRequestFromOtherUsers();
+      getFollowerIn7d();
+    }
+  }
+
+  Future<BaseResponse> getFriendRequestFromOtherUsers() async {
+    try {
+      final res = await UserRepo().friendRequestFromOtherUsers();
+      final List listRaw = res;
+      final list = listRaw.map((e) => FriendshipModel.fromJson(e)).toList();
+      list.removeWhere((element) => element.status != FriendShipStatus.PENDING);
+      friendRequestFromOtherUsers = list;
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
     }
   }
 
@@ -44,14 +52,19 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getFriendRequestFromOtherUsers() async {
+  Future getFollowerIn7d() async {
     try {
-      final res = await UserRepo().friendRequestFromOtherUsers();
-      final List listRaw = res;
-      final list = listRaw.map((e) => FriendshipModel.fromJson(e)).toList();
-      list.removeWhere((element) => element.status != FriendShipStatus.PENDING);
-      friendRequestFromOtherUsers = list;
-    } catch (e) {} finally {
+      final userId = await SPref.instance.get('id');
+      final res = await UserRepo().getFollowerIn7d(userId);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => UserModel.fromJson(e)).toList();
+      list.removeWhere(
+          (element) => element.id == AuthBloc.instance.userModel.id);
+      followersIn7Days = list;
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
       notifyListeners();
     }
   }

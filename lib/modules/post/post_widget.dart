@@ -28,7 +28,7 @@ class _PostWidgetState extends State<PostWidget> {
   @override
   void initState() {
     _isLike = widget.post.isUserLike;
-    initMenu();
+
     super.initState();
   }
 
@@ -36,6 +36,7 @@ class _PostWidgetState extends State<PostWidget> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
+      initMenu();
     }
     super.didChangeDependencies();
   }
@@ -349,9 +350,7 @@ class _PostWidgetState extends State<PostWidget> {
           if (val.menuTitle == 'Contact') {}
           if (val.menuTitle == 'Report') {}
           if (val.menuTitle == 'Delete') {
-            _postBloc.post.remove((item) => item.id == widget.post.id);
-            _postBloc.myPosts.removeWhere((item) => item.id == widget.post.id);
-            setState(() {});
+            
             final res = await _postBloc.deletePost(widget.post.id);
             if (res.isSuccess) {
             } else {
