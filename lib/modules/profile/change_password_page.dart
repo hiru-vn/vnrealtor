@@ -1,5 +1,5 @@
-import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/share/import.dart';
 
 class UpdatePasswordPage extends StatefulWidget {
   static Future navigate() {

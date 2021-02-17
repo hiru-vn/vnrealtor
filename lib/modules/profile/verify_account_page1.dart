@@ -1,10 +1,10 @@
-import 'package:vnrealtor/modules/bloc/verification_bloc.dart';
-import 'package:vnrealtor/modules/profile/verify_account_page2.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/bloc/verification_bloc.dart';
+import 'package:datcao/modules/profile/verify_account_page2.dart';
+import 'package:datcao/share/import.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:vnrealtor/utils/file_util.dart';
+import 'package:datcao/utils/file_util.dart';
 
 class VertifyAccountPage1 extends StatefulWidget {
   static Future navigate() {

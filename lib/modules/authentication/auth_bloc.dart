@@ -1,16 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:vnrealtor/modules/authentication/login.dart';
-import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/model/user.dart';
-import 'package:vnrealtor/modules/repo/user_repo.dart';
-import 'package:vnrealtor/modules/services/base_response.dart';
+import 'package:datcao/modules/authentication/login.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/repo/user_repo.dart';
+import 'package:datcao/modules/services/base_response.dart';
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
-import 'package:vnrealtor/modules/services/firebase_service.dart';
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/utils/device_info.dart';
-import 'package:vnrealtor/utils/formart.dart';
+import 'package:datcao/modules/services/firebase_service.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/utils/device_info.dart';
+import 'package:datcao/utils/formart.dart';
 
 enum AuthStatus {
   unAuthed,

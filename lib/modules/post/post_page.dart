@@ -1,10 +1,10 @@
 import 'package:flutter/rendering.dart';
-import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-import 'package:vnrealtor/modules/inbox/inbox_list.dart';
-import 'package:vnrealtor/modules/model/post.dart';
-import 'package:vnrealtor/modules/post/create_post_page.dart';
-import 'package:vnrealtor/modules/post/search_post_page.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_list.dart';
+import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/post/create_post_page.dart';
+import 'package:datcao/modules/post/search_post_page.dart';
+import 'package:datcao/share/import.dart';
 
 import 'post_widget.dart';
 
@@ -57,9 +57,9 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return PageView(
       controller: _pageController,
+      physics: NeverScrollableScrollPhysics(),
       children: [
         Scaffold(
-          
           backgroundColor: ptBackgroundColor(context),
           appBar: showAppBar ? PostPageAppBar() : null,
           body: RefreshIndicator(

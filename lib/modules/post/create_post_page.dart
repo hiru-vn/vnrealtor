@@ -1,14 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-import 'package:vnrealtor/modules/inbox/inbox_list.dart';
-import 'package:vnrealtor/modules/post/pick_coordinates.dart';
-import 'package:vnrealtor/modules/post/search_post_page.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_list.dart';
+import 'package:datcao/modules/post/pick_coordinates.dart';
+import 'package:datcao/modules/post/search_post_page.dart';
+import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:vnrealtor/utils/file_util.dart';
+import 'package:datcao/utils/file_util.dart';
 
 class CreatePostPage extends StatefulWidget {
   final PageController pageController;
@@ -365,12 +365,12 @@ class CreatePostPageAppBar extends StatelessWidget
 // import 'dart:io';
 
 // import 'package:flutter/material.dart';
-// import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-// import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-// import 'package:vnrealtor/modules/post/pick_coordinates.dart';
-// import 'package:vnrealtor/share/import.dart';
+// import 'package:datcao/modules/authentication/auth_bloc.dart';
+// import 'package:datcao/modules/bloc/post_bloc.dart';
+// import 'package:datcao/modules/post/pick_coordinates.dart';
+// import 'package:datcao/share/import.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:vnrealtor/utils/file_util.dart';
+// import 'package:datcao/utils/file_util.dart';
 
 // class CreatePostPage extends StatefulWidget {
 //   static navigate() {

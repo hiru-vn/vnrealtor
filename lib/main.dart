@@ -1,18 +1,18 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry/sentry.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/authentication/splash.dart';
-import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
-import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/bloc/verification_bloc.dart';
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/themes/lightTheme.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/authentication/splash.dart';
+import 'package:datcao/modules/bloc/notification_bloc.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/bloc/verification_bloc.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/themes/lightTheme.dart';
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
-import 'package:vnrealtor/utils/app_internalization.dart';
+import 'package:datcao/utils/app_internalization.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
 
 final _sentry = SentryClient(
     dsn:

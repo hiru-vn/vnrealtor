@@ -1,7 +1,7 @@
-import 'package:vnrealtor/modules/services/comment_srv.dart';
-import 'package:vnrealtor/modules/services/graphql_helper.dart';
-import 'package:vnrealtor/modules/services/post_srv.dart';
-import 'package:vnrealtor/utils/spref.dart';
+import 'package:datcao/modules/services/comment_srv.dart';
+import 'package:datcao/modules/services/graphql_helper.dart';
+import 'package:datcao/modules/services/post_srv.dart';
+import 'package:datcao/utils/spref.dart';
 
 import 'filter.dart';
 

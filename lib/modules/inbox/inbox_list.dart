@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/navigator.dart';
-import 'package:vnrealtor/share/widget/empty_widget.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/navigator.dart';
+import 'package:datcao/share/widget/empty_widget.dart';
 
 import 'import/animated_search_bar.dart';
 import 'import/app_bar.dart';

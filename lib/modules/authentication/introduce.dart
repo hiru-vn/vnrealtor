@@ -1,5 +1,5 @@
-import 'package:vnrealtor/modules/authentication/login.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/login.dart';
+import 'package:datcao/share/import.dart';
 
 class IntroducePage extends StatelessWidget {
   static Future navigate() {

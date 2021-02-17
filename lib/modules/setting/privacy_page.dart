@@ -1,30 +1,31 @@
+
 import 'package:datcao/share/import.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class AboutPage extends StatefulWidget {
+class PrivacyPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(AboutPage()));
+    return navigatorKey.currentState.push(pageBuilder(PrivacyPage()));
   }
 
   @override
-  _AboutPageState createState() => _AboutPageState();
+  _PrivacyPageState createState() => _PrivacyPageState();
 }
 
-class _AboutPageState extends State<AboutPage> {
+class _PrivacyPageState extends State<PrivacyPage> {
   bool isLoading = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar2(
-        'Về ứng dụng VNRealtor',
+         'Chính sách bảo mật',
       ),
       body: Stack(
         fit: StackFit.expand,
         children: [
           WebView(
             initialUrl:
-                'https://sites.google.com/view/rebixappvnrealtorabout/trang-ch%E1%BB%A7',
+                'https://sites.google.com/view/rebix-app-datcao-privacy/trang-ch%E1%BB%A7',
             onPageStarted: (str) {},
             onPageFinished: (str) {
               setState(() {

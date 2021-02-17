@@ -1,5 +1,5 @@
-import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/bloc/notification_bloc.dart';
+import 'package:datcao/share/import.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/rendering.dart';
 

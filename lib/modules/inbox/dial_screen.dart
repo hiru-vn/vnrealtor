@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/share/widget/spacing_box.dart';
-import 'package:vnrealtor/themes/color.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/spacing_box.dart';
+import 'package:datcao/themes/color.dart';
 
 class DialScreen extends StatelessWidget {
   final List<String> names;

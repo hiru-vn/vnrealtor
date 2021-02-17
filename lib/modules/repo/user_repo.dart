@@ -1,6 +1,6 @@
-import 'package:vnrealtor/modules/services/friendship_srv.dart';
-import 'package:vnrealtor/modules/services/user_srv.dart';
-import 'package:vnrealtor/utils/spref.dart';
+import 'package:datcao/modules/services/friendship_srv.dart';
+import 'package:datcao/modules/services/user_srv.dart';
+import 'package:datcao/utils/spref.dart';
 
 import 'filter.dart';
 

@@ -1,11 +1,11 @@
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
-import 'package:vnrealtor/modules/notification/notification_page.dart';
-import 'package:vnrealtor/modules/post/post_page.dart';
-import 'package:vnrealtor/modules/profile/profile_page.dart';
-import 'package:vnrealtor/modules/setting/setting_page.dart';
-import 'package:vnrealtor/modules/inbox/inbox_list.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
+import 'package:datcao/modules/notification/notification_page.dart';
+import 'package:datcao/modules/post/post_page.dart';
+import 'package:datcao/modules/profile/profile_page.dart';
+import 'package:datcao/modules/setting/setting_page.dart';
+import 'package:datcao/modules/inbox/inbox_list.dart';
+import 'package:datcao/share/import.dart';
 
 import 'bottom_navigator.dart';
 

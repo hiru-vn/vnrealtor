@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:vnrealtor/share/widget/spin_loader.dart';
+import 'package:datcao/share/widget/spin_loader.dart';
 
 class ImageViewNetwork extends StatelessWidget {
   final String url;

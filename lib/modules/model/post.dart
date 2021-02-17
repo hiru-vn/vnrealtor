@@ -1,4 +1,4 @@
-import 'package:vnrealtor/modules/model/user.dart';
+import 'package:datcao/modules/model/user.dart';
 
 import 'media_post.dart';
 

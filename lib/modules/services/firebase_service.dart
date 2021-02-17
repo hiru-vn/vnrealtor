@@ -1,7 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
-import 'package:vnrealtor/share/function/show_toast.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/bloc/notification_bloc.dart';
+import 'package:datcao/share/function/show_toast.dart';
+import 'package:datcao/share/import.dart';
 
 enum FcmType { message, like, comment, share, system }
 

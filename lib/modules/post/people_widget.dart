@@ -1,6 +1,6 @@
-import 'package:vnrealtor/modules/model/user.dart';
-import 'package:vnrealtor/modules/profile/profile_other_page.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/share/import.dart';
 
 class PeopleWidget extends StatelessWidget {
   final UserModel user;

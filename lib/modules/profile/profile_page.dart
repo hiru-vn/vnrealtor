@@ -1,11 +1,11 @@
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/model/user.dart';
-import 'package:vnrealtor/modules/post/post_widget.dart';
-import 'package:vnrealtor/modules/profile/update_profile_page.dart';
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/share/widget/empty_widget.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/post/post_widget.dart';
+import 'package:datcao/modules/profile/update_profile_page.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -405,14 +405,14 @@ class _ProfileCardState extends State<ProfileCard> {
   }
 }
 
-// import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-// import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-// import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
-// import 'package:vnrealtor/modules/model/friendship.dart';
-// import 'package:vnrealtor/modules/model/user.dart';
-// import 'package:vnrealtor/modules/post/people_widget.dart';
-// import 'package:vnrealtor/modules/profile/update_profile_page.dart';
-// import 'package:vnrealtor/share/import.dart';
+// import 'package:datcao/modules/authentication/auth_bloc.dart';
+// import 'package:datcao/modules/bloc/user_bloc.dart';
+// import 'package:datcao/modules/inbox/inbox_bloc.dart';
+// import 'package:datcao/modules/model/friendship.dart';
+// import 'package:datcao/modules/model/user.dart';
+// import 'package:datcao/modules/post/people_widget.dart';
+// import 'package:datcao/modules/profile/update_profile_page.dart';
+// import 'package:datcao/share/import.dart';
 
 // enum RelationShip {
 //   PENDING,

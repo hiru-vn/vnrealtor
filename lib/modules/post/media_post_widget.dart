@@ -1,15 +1,15 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-import 'package:vnrealtor/modules/model/media_post.dart';
-import 'package:vnrealtor/modules/model/post.dart';
-import 'package:vnrealtor/modules/post/comment_page.dart';
-import 'package:vnrealtor/share/function/share_to.dart';
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/share/widget/spin_loader.dart';
-import 'package:vnrealtor/utils/constants.dart';
-import 'package:vnrealtor/utils/file_util.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/model/media_post.dart';
+import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/post/comment_page.dart';
+import 'package:datcao/share/function/share_to.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/spin_loader.dart';
+import 'package:datcao/utils/constants.dart';
+import 'package:datcao/utils/file_util.dart';
 import 'package:video_player/video_player.dart';
 
 class MediaPostWidget extends StatelessWidget {

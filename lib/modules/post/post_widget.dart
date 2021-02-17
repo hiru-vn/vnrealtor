@@ -1,12 +1,12 @@
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-import 'package:vnrealtor/modules/model/post.dart';
-import 'package:vnrealtor/modules/post/media_post_widget.dart';
-import 'package:vnrealtor/modules/post/post_google_map.dart';
-import 'package:vnrealtor/modules/profile/profile_other_page.dart';
-import 'package:vnrealtor/modules/profile/profile_page.dart';
-import 'package:vnrealtor/share/function/share_to.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/post/media_post_widget.dart';
+import 'package:datcao/modules/post/post_google_map.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/modules/profile/profile_page.dart';
+import 'package:datcao/share/function/share_to.dart';
+import 'package:datcao/share/import.dart';
 import 'package:readmore/readmore.dart';
 import 'package:popup_menu/popup_menu.dart';
 

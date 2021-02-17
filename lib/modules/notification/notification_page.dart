@@ -1,11 +1,11 @@
-import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
-import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/model/notification.dart';
-import 'package:vnrealtor/modules/model/user.dart';
-import 'package:vnrealtor/modules/profile/profile_other_page.dart';
-import 'package:vnrealtor/modules/profile/profile_page.dart';
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/share/widget/empty_widget.dart';
+import 'package:datcao/modules/bloc/notification_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/model/notification.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/modules/profile/profile_page.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/empty_widget.dart';
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -50,34 +50,35 @@ class _NotificationPageState extends State<NotificationPage>
           Align(
             alignment: Alignment.center,
             child: TabBar(
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorWeight: 3,
-                indicatorColor: ptPrimaryColor(context),
-                indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
-                controller: _tabController,
-                isScrollable: true,
-                labelColor: Colors.black87,
-                unselectedLabelStyle:
-                    TextStyle(fontSize: 14, color: Colors.black54),
-                labelStyle: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold),
-                tabs: [
-                  SizedBox(
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorWeight: 3,
+              indicatorColor: ptPrimaryColor(context),
+              indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
+              controller: _tabController,
+              isScrollable: true,
+              labelColor: Colors.black87,
+              unselectedLabelStyle:
+                  TextStyle(fontSize: 14, color: Colors.black54),
+              labelStyle: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold),
+              tabs: [
+                SizedBox(
+                  height: 40,
+                  width: deviceWidth(context) / 2 - 45,
+                  child: Tab(
+                    text: 'Thông báo mới',
+                  ),
+                ),
+                SizedBox(
                     height: 40,
                     width: deviceWidth(context) / 2 - 45,
-                    child: Tab(
-                      text: 'Thông báo mới',
+                    child: Tab(text: 'Người theo dõi')
+                    //'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
                     ),
-                  ),
-                  SizedBox(
-                      height: 40,
-                      width: deviceWidth(context) / 2 - 45,
-                      child: Tab(text: 'Người theo dõi')
-                      //'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
-                      ),
-                ]),
+              ],
+            ),
           ),
           Expanded(
             child: TabBarView(controller: _tabController, children: [
@@ -85,7 +86,9 @@ class _NotificationPageState extends State<NotificationPage>
                 list: _notificationBloc.notifications,
               ),
               //FriendRequestTab()
-              FollowTab(list: _userBloc.followersIn7Days,)
+              FollowTab(
+                list: _userBloc.followersIn7Days,
+              )
             ]),
           )
         ],
@@ -191,7 +194,7 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                       ),
                       Text(
                         Formart.timeAgo(
-                                DateTime.tryParse(item.createdAt ?? '')) ??
+                                DateTime.tryParse(item.updatedAt ?? '')) ??
                             '',
                         style: ptTiny().copyWith(color: Colors.black54),
                       ),
@@ -299,7 +302,7 @@ class FollowTab extends StatelessWidget {
                   style: ptBody(),
                 ),
                 subtitle: Text(
-                  Formart.timeAgo(DateTime.tryParse(list[index].createdAt)) ??
+                  Formart.timeAgo(DateTime.tryParse(list[index].updatedAt)) ??
                       '',
                   style: ptTiny(),
                 ),

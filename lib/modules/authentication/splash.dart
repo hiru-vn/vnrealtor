@@ -1,12 +1,12 @@
-import 'package:vnrealtor/main.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/authentication/introduce.dart';
-import 'package:vnrealtor/modules/authentication/login.dart';
-import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/home_page.dart';
-import 'package:vnrealtor/modules/services/firebase_service.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/main.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/authentication/introduce.dart';
+import 'package:datcao/modules/authentication/login.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/home_page.dart';
+import 'package:datcao/modules/services/firebase_service.dart';
+import 'package:datcao/share/import.dart';
 
 class SplashPage extends StatefulWidget {
   static Future navigate() {

@@ -1,7 +1,7 @@
 // show a list of string options
 // when user tap on one, excute a callback function with string value as param
 
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/share/import.dart';
 
 class PickListItem {
   dynamic value;

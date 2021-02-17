@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:dash_chat/dash_chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/utils/file_util.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/utils/file_util.dart';
 import 'package:popup_menu/popup_menu.dart';
 import 'package:provider/provider.dart';
-import 'package:vnrealtor/navigator.dart';
+import 'package:datcao/navigator.dart';
 
 import 'google_map_widget.dart';
 import 'import/animated_search_bar.dart';

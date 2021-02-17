@@ -1,13 +1,13 @@
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
-import 'package:vnrealtor/modules/model/post.dart';
-import 'package:vnrealtor/modules/model/user.dart';
-import 'package:vnrealtor/modules/post/post_widget.dart';
-import 'package:vnrealtor/modules/profile/profile_page.dart';
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/share/widget/empty_widget.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
+import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/post/post_widget.dart';
+import 'package:datcao/modules/profile/profile_page.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileOtherPage extends StatefulWidget {

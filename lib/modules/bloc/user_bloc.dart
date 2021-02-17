@@ -1,8 +1,8 @@
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/model/friendship.dart';
-import 'package:vnrealtor/modules/model/user.dart';
-import 'package:vnrealtor/modules/repo/user_repo.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/model/friendship.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/repo/user_repo.dart';
+import 'package:datcao/share/import.dart';
 
 class UserBloc extends ChangeNotifier {
   UserBloc._privateConstructor() {

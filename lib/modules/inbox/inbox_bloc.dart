@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
-import 'package:vnrealtor/modules/inbox/inbox_chat.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/notification_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_chat.dart';
 import 'inbox_model.dart';
 
 class InboxBloc extends ChangeNotifier {

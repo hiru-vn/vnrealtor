@@ -1,5 +1,7 @@
-import 'package:vnrealtor/modules/profile/change_password_page.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/profile/change_password_page.dart';
+import 'package:datcao/share/import.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   static Future navigate() {
@@ -13,6 +15,22 @@ class UpdateProfilePage extends StatefulWidget {
 }
 
 class _UpdateProfilePageState extends State<UpdateProfilePage> {
+  AuthBloc _authBloc;
+  UserBloc _userBloc;
+
+  @override
+  void didChangeDependencies() {
+    if (_authBloc == null) {
+      _authBloc = Provider.of<AuthBloc>(context);
+      _userBloc = Provider.of(context);
+    }
+    super.didChangeDependencies();
+  }
+
+  Future _updateProfile() async {
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,9 +39,31 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         child: Column(
           children: [
             SpacingBox(h: 3),
-            SizedBox(
-              width: 90,
-              child: Image.asset('assets/image/logo.png'),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(45),
+              child: GestureDetector(
+                onTap: () {},
+                child: CircleAvatar(
+                  radius: 45,
+                  backgroundImage:
+                      NetworkImage(_authBloc.userModel.avatar ?? ''),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 35,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.4),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          MdiIcons.camera,
+                          color: Colors.white.withOpacity(0.6),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
             SpacingBox(h: 3),
             Container(

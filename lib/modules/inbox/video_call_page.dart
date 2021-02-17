@@ -4,8 +4,8 @@ import 'package:agora_rtc_engine/rtc_remote_view.dart' as RemoteView;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/navigator.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/navigator.dart';
 
 import 'app_id.dart';
 import 'dial_screen.dart';

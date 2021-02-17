@@ -6,8 +6,8 @@
 // **** CURRENT SELECTED IMAGE URL ****
 // WHEN IMAGE URL IS UPLOAD OR REMOVE - IMPLEMENT FROM FATHER WIDGET
 
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/utils/file_util.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/utils/file_util.dart';
 
 import 'video_view.dart';
 

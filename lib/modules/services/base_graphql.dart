@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:graphql/client.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/share/import.dart';
 
 class BaseService {
   String _module;
@@ -257,8 +257,8 @@ class BaseService {
 
 class GraphQL {
   static final HttpLink _httpLink = HttpLink(
-    uri: 'https://vnrealtor.herokuapp.com/graphql',
-    //uri: 'https://vnrealtor-sq73uv5o7a-as.a.run.app/graphql'
+    // uri: 'https://vnrealtor.herokuapp.com/graphql',
+    uri: 'https://vnrealtor-sq73uv5o7a-as.a.run.app/graphql'
   );
 
   static final AuthLink _authLink = AuthLink(getToken: () async {
