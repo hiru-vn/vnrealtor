@@ -190,7 +190,9 @@ class _InboxChatState extends State<InboxChat> {
   void onSend(ChatMessage message) {
     if (_file != null) {
       // add a loading gif
+      message.customProperties = <String, dynamic>{};
       message.image = 'assets/image/loading.gif';
+      message.customProperties['cache_file_path'] = _file.path;
     }
     setState(() {
       messages.add(message);
@@ -227,7 +229,6 @@ class _InboxChatState extends State<InboxChat> {
               _authBloc.userModel.avatar,
               filePath: fileUrl);
         });
-
         setState(() {
           _file = null;
         });
@@ -300,6 +301,14 @@ class _InboxChatState extends State<InboxChat> {
       backgroundColor: Colors.grey[50],
       body: DashChat(
         messageImageBuilder: (url, [messages]) {
+          if (url == 'assets/image/loading.gif') {
+            if (messages.customProperties == null) return Image.asset(url);
+            final mes = messages.customProperties['cache_file_path'];
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.file(File(mes)),
+            );
+          }
           if (FileUtil.getFbUrlFileType(url) == FileType.gif) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -318,6 +327,9 @@ class _InboxChatState extends State<InboxChat> {
               child: ImageViewNetwork(
                 url: url,
                 borderRadius: 10,
+                cacheFilePath: messages.customProperties != null
+                    ? messages.customProperties['cache_file_path']
+                    : null,
               ),
             );
 
