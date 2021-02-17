@@ -3,7 +3,6 @@ import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/notification.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
-import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 
@@ -290,6 +289,9 @@ class FollowTab extends StatelessWidget {
               itemCount: list.length,
               itemBuilder: (context, index) => ListTile(
                 tileColor: ptBackgroundColor(context),
+                onTap: () {
+                  ProfileOtherPage.navigate(list[index]);
+                },
                 leading: CircleAvatar(
                   radius: 22,
                   backgroundImage:

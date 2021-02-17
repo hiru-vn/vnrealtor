@@ -91,7 +91,8 @@ class _InboxListState extends State<InboxList>
                         final group = _inboxBloc.groupInboxList[index];
                         return ListTile(
                           onTap: () {
-                            InboxChat.navigate(group, group.lastUser)
+                            InboxChat.navigate(group, group.usersName.where((element) =>
+                                        element != _authBloc.userModel.name).toList().join(', '))
                                 .then((value) => reload());
                           },
                           tileColor:
@@ -104,11 +105,8 @@ class _InboxListState extends State<InboxList>
                                 'assets/image/default_avatar.png'),
                           ),
                           title: Text(
-                            group.users.indexWhere((element) =>
-                                        element == _authBloc.userModel.id) ==
-                                    0
-                                ? group.usersName[1]
-                                : group.usersName[0],
+                            group.usersName.where((element) =>
+                                        element != _authBloc.userModel.name).toList().join(', '),
                             style: ptTitle().copyWith(
                                 color: group.reader
                                         .contains(_authBloc.userModel.id)

@@ -73,6 +73,7 @@ class InboxBloc extends ChangeNotifier {
       String image,
       List<String> users,
       List<String> usersName) async {
+    users.sort();
     await firestore.collection(groupCollection).doc(users.join("-")).set({
       'lastUser': lastUser,
       'lastAvatar': lastAvatar,

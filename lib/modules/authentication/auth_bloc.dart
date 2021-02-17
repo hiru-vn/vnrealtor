@@ -1,3 +1,4 @@
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -119,6 +120,8 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('token', loginRes['token']);
       await SPref.instance.set('id', loginRes['user']["id"]);
       userModel = UserModel.fromJson(loginRes['user']);
+      InboxBloc.instance
+          .createUser(userModel.id, userModel.name, userModel.avatar);
       return BaseResponse.success(loginRes);
     } catch (e) {
       return BaseResponse.fail(e?.toString());
