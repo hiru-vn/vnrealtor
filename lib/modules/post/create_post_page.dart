@@ -9,6 +9,7 @@ import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/utils/file_util.dart';
+import 'package:hashtagable/hashtagable.dart';
 
 class CreatePostPage extends StatefulWidget {
   final PageController pageController;
@@ -129,12 +130,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 10),
-                        child: TextField(
+                        child: HashTagTextField(
                           maxLength: 400,
                           maxLines: null,
                           minLines: 6,
                           controller: _contentC,
-                          style: ptBigBody().copyWith(color: Colors.black54),
+                          basicStyle: ptBigBody().copyWith(color: Colors.black54),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Nội dung bài viết',

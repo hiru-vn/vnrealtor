@@ -121,12 +121,16 @@ class _PostWidgetState extends State<PostWidget> {
               child: ReadMoreText(
                 widget.post?.content ?? '',
                 trimLines: 2,
+                style: ptBody().copyWith(color: Colors.black87),
                 textAlign: TextAlign.start,
                 colorClickableText: Colors.pink,
                 trimMode: TrimMode.Line,
                 trimCollapsedText: 'Show more',
                 trimExpandedText: 'Show less',
-                moreStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                moreStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    ),
               ),
             ),
             if (widget.post.locationLat != null &&
@@ -350,7 +354,6 @@ class _PostWidgetState extends State<PostWidget> {
           if (val.menuTitle == 'Contact') {}
           if (val.menuTitle == 'Report') {}
           if (val.menuTitle == 'Delete') {
-            
             final res = await _postBloc.deletePost(widget.post.id);
             if (res.isSuccess) {
             } else {
