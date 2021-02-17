@@ -191,8 +191,14 @@ class _InboxChatState extends State<InboxChat> {
     if (_file != null) {
       // add a loading gif
       message.customProperties = <String, dynamic>{};
-      message.image = 'assets/image/loading.gif';
-      message.customProperties['cache_file_path'] = _file.path;
+      if (FileUtil.getFbUrlFileType(_file.path) == FileType.video) {
+        message.image = 'assets/image/loading_video.gif';
+        message.customProperties['cache_file_path'] = _file.path;
+      }
+      if (FileUtil.getFbUrlFileType(_file.path) == FileType.image) {
+        message.image = 'assets/image/loading.gif';
+        message.customProperties['cache_file_path'] = _file.path;
+      }
     }
     setState(() {
       messages.add(message);
