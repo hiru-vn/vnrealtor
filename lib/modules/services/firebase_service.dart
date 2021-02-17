@@ -1,3 +1,4 @@
+import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/share/function/show_toast.dart';
@@ -31,6 +32,11 @@ class FcmService {
       final type = getType(message.data['type']);
 
       if (type == FcmType.message) {
+        // final type = ModalRoute.of(navigatorKey.currentState.overlay.context)
+        //     .settings
+        //     .runtimeType;
+        // print(type);
+        // if (type == InboxList) return;
         showToastNoContext('Tin nhắn mới');
       }
 

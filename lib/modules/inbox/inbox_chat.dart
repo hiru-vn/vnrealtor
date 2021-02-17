@@ -74,8 +74,8 @@ class _InboxChatState extends State<InboxChat> {
 
   @override
   void initState() {
-    for (final id in widget.group.users) {
-      _users.add(ChatUser(uid: id, name: ''));
+    for (final user in widget.group.users) {
+      _users.add(ChatUser(uid: user.id, name: user.name));
     }
     super.initState();
   }
@@ -87,7 +87,7 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   Future<void> loadUsers() async {
-    final fbUsers = await _inboxBloc.getUsers(widget.group.users);
+    final fbUsers = widget.group.users;
     _fbUsers.addAll(fbUsers);
     for (final fbUser in fbUsers) {
       final user = _users.firstWhere((user) => user.uid == fbUser.id);

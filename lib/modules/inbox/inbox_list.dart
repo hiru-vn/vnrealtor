@@ -45,8 +45,8 @@ class _InboxListState extends State<InboxList>
 
   init() async {
     try {
-      await _inboxBloc.createUser(_authBloc.userModel.id,
-          _authBloc.userModel.name, _authBloc.userModel.avatar);
+      // await _inboxBloc.createUser(_authBloc.userModel.id,
+      //     _authBloc.userModel.name, _authBloc.userModel.avatar);
       final res = await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
       setState(() {
         _inboxBloc.groupInboxList = res;
@@ -89,10 +89,15 @@ class _InboxListState extends State<InboxList>
                       itemCount: _inboxBloc.groupInboxList.length,
                       itemBuilder: (context, index) {
                         final group = _inboxBloc.groupInboxList[index];
+                        final String nameGroup = group.users
+                            .where((element) =>
+                                element.id != _authBloc.userModel.id)
+                            .toList()
+                            .map((e) => e.name)
+                            .join(', ');
                         return ListTile(
                           onTap: () {
-                            InboxChat.navigate(group, group.usersName.where((element) =>
-                                        element != _authBloc.userModel.name).toList().join(', '))
+                            InboxChat.navigate(group, nameGroup)
                                 .then((value) => reload());
                           },
                           tileColor:
@@ -105,8 +110,7 @@ class _InboxListState extends State<InboxList>
                                 'assets/image/default_avatar.png'),
                           ),
                           title: Text(
-                            group.usersName.where((element) =>
-                                        element != _authBloc.userModel.name).toList().join(', '),
+                            nameGroup,
                             style: ptTitle().copyWith(
                                 color: group.reader
                                         .contains(_authBloc.userModel.id)
