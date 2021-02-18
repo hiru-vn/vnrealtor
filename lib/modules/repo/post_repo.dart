@@ -24,6 +24,9 @@ share
 userShareIds
 locationLat
 locationLong
+province
+district
+ward
 expirationDate
 publicity
 user {
@@ -108,6 +111,9 @@ publicity
 createdAt
 updatedAt
 }
+province
+district
+ward
 isUserLike
 isUserShare
 createdAt

@@ -72,7 +72,7 @@ class AppBar2 extends StatelessWidget implements PreferredSizeWidget {
           )),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [HexColor('#55e678'), HexColor('#3ad6db')],
+          colors: [HexColor('#0c818e'), HexColor('#37d0bb')],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),

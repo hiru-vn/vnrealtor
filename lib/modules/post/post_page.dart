@@ -285,7 +285,7 @@ class CreatePostCard extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 6),
-              Container(
+              if (postModel.province!=null) Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   color: Colors.white,
@@ -297,7 +297,7 @@ class CreatePostCard extends StatelessWidget {
                     Icon(Icons.location_pin, size: 16),
                     SizedBox(width: 1),
                     Text(
-                      'Hồ Chí Minh',
+                      postModel.province,
                       style: ptTiny(),
                     ),
                   ],

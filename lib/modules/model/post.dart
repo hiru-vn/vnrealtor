@@ -88,7 +88,7 @@ class PostModel {
     isUserShare = json['isUserShare'] ?? false;
     district = json['district'];
     province = json['province'];
-    
+    ward = json['ward'];
   }
 
   Map<String, dynamic> toJson() {

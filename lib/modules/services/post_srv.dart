@@ -34,6 +34,7 @@ type
 like
 userLikeIds
 commentIds
+
 description
 url
 locationLat
@@ -43,6 +44,9 @@ publicity
 createdAt
 updatedAt
 }
+province
+district
+ward
 createdAt
 updatedAt
   ''');
