@@ -171,7 +171,7 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
           }),
           child: Material(
             borderRadius: BorderRadius.circular(20),
-            elevation: 4,
+            // elevation: 4,
             child: Container(
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(

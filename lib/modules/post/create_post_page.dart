@@ -121,7 +121,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               padding: const EdgeInsets.all(8.0).copyWith(top: 8),
               child: Material(
                 borderRadius: BorderRadius.circular(10),
-                elevation: 5,
+                // elevation: 5,
                 color: Colors.white,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: 200),
@@ -129,7 +129,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 10),
+                            horizontal: 15, vertical: 5),
                         child: HashTagTextField(
                           maxLength: 400,
                           maxLines: null,
