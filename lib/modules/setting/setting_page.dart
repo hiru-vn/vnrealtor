@@ -135,10 +135,11 @@ class _SettingPageState extends State<SettingPage> {
                       ),
                       child: Center(
                         child: CircleAvatar(
-                          radius: 25,
-                          backgroundImage:
-                              AssetImage('assets/image/avatar.jpeg'),
-                        ),
+                            radius: 25,
+                            backgroundImage: AuthBloc.instance.userModel.avatar != null
+                                ? NetworkImage(AuthBloc.instance.userModel.avatar)
+                                : AssetImage('assets/image/default_avatar.png'),
+                          ),
                       ),
                     ),
                     SizedBox(width: 20),

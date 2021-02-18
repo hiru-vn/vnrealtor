@@ -15,6 +15,8 @@ locationLat
 locationLong
 expirationDate
 publicity
+isUserLike
+isUserShare
 user {
   id 
   uid 
@@ -26,6 +28,7 @@ user {
   createdAt 
   updatedAt 
   friendIds
+  avatar
 }
 mediaPosts {
 id

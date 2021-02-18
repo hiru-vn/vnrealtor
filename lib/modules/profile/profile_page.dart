@@ -198,7 +198,7 @@ class _ProfileCardState extends State<ProfileCard> {
                             radius: 37.5,
                             backgroundImage: widget.user.avatar != null
                                 ? NetworkImage(widget.user.avatar)
-                                : AssetImage('assets/image/avatar.jpeg'),
+                                : AssetImage('assets/image/default_avatar.png'),
                           ),
                         ),
                       ),
@@ -785,7 +785,7 @@ class _ProfileCardState extends State<ProfileCard> {
 //                         radius: 35,
 //                         backgroundImage: widget.user.avatar != null
 //                             ? NetworkImage(widget.user.avatar)
-//                             : AssetImage('assets/image/avatar.jpeg'),
+//                             : AssetImage('assets/image/default_avatar.png'),
 //                       ),
 //                       SizedBox(
 //                         width: 14,

@@ -153,15 +153,15 @@ class _PostDetailState extends State<PostDetail> {
                                             comment.updatedAt)),
                                         style: ptTiny(),
                                       ),
-                                      SizedBox(
-                                        width: 50,
-                                        child: Center(
-                                          child: Text(
-                                            'Trả lời',
-                                            style: ptSmall(),
-                                          ),
-                                        ),
-                                      ),
+                                      // SizedBox(
+                                      //   width: 50,
+                                      //   child: Center(
+                                      //     child: Text(
+                                      //       'Trả lời',
+                                      //       style: ptSmall(),
+                                      //     ),
+                                      //   ),
+                                      // ),
                                       Spacer(),
                                       GestureDetector(
                                         child: Row(children: [

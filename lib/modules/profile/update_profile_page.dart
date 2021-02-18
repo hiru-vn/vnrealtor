@@ -56,6 +56,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   Future _updateUserInfo() async {
+    _authBloc.userModel.name = _nameC.text;
+    _authBloc.userModel.email = _emailC.text;
+    _authBloc.userModel.phone = _phoneC.text;
     setState(() {
       isLoading = true;
     });
@@ -63,8 +66,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     setState(() {
       isLoading = false;
     });
-    if (res.isSuccess) {}
-    else showToast(res.errMessage, context);
+    if (res.isSuccess) {
+    } else
+      showToast(res.errMessage, context);
   }
 
   @override
@@ -82,27 +86,30 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                   child: GestureDetector(
                     onTap: () {
                       imagePicker(context,
-                          onImagePick: _updateAvatar, onCameraPick: _updateAvatar);
+                          onImagePick: _updateAvatar,
+                          onCameraPick: _updateAvatar);
                     },
                     child: CircleAvatar(
                       radius: 50,
                       backgroundImage:
                           NetworkImage(_authBloc.userModel.avatar ?? ''),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: 35,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.4),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              MdiIcons.camera,
-                              color: Colors.white.withOpacity(0.6),
+                      child: uploadingAvatar
+                          ? kLoadingSpinner
+                          : Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                height: 35,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withOpacity(0.4),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    MdiIcons.camera,
+                                    color: Colors.white.withOpacity(0.6),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -166,7 +173,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     );
   }
 
-  _buildFormField(BuildContext context, String text, TextEditingController controller) => Padding(
+  _buildFormField(BuildContext context, String text,
+          TextEditingController controller) =>
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Container(
             decoration: BoxDecoration(

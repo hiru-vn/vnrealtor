@@ -39,6 +39,7 @@ user {
   reputationScore 
   createdAt 
   updatedAt 
+  avatar
   friendIds
 }
 mediaPosts {
@@ -89,6 +90,7 @@ user {
   name 
   email 
   phone 
+  avatar
   role 
   reputationScore 
   createdAt 
@@ -188,7 +190,8 @@ user {
   uid 
   name 
   email 
-  phone 
+  phone
+  avatar
   role 
   reputationScore 
   createdAt 

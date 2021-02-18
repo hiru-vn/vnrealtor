@@ -121,7 +121,7 @@ class NotificationTab extends StatelessWidget {
                   radius: 22,
                   backgroundImage:
                       (list[index].image == null || list[index].image == '')
-                          ? AssetImage('assets/image/logo.png')
+                          ? AssetImage('assets/image/icon_white.png')
                           : NetworkImage(list[index].image),
                 ),
                 title: Text(
@@ -180,7 +180,7 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                     radius: 22,
                     backgroundImage: item.user1.avatar != null
                         ? NetworkImage(item.user1.avatar)
-                        : AssetImage('assets/image/avatar.jpeg'),
+                        : AssetImage('assets/image/default_avatar.png'),
                   ),
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,7 +296,7 @@ class FollowTab extends StatelessWidget {
                   radius: 22,
                   backgroundImage:
                       (list[index].avatar == null || list[index].avatar == '')
-                          ? AssetImage('assets/image/logo.png')
+                          ? AssetImage('assets/image/icon_white.png')
                           : NetworkImage(list[index].avatar),
                 ),
                 title: Text(

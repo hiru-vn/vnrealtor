@@ -267,7 +267,7 @@ class CreatePostCard extends StatelessWidget {
                           radius: 13,
                           backgroundImage: postModel.user.avatar != null
                               ? NetworkImage(postModel.user.avatar)
-                              : AssetImage('assets/image/avatar.jpeg'),
+                              : AssetImage('assets/image/default_avatar.png'),
                         ),
                       ),
                     ),
@@ -277,15 +277,16 @@ class CreatePostCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         postModel.user.name,
+                        overflow: TextOverflow.fade,
                         style: ptTiny().copyWith(
-                            color: Colors.white, fontWeight: FontWeight.w600),
+                            color: Colors.white, fontWeight: FontWeight.w600,),
                       ),
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 6),
-              if (postModel.province!=null) Container(
+              if (postModel.district!=null && postModel.district.trim() != "") Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   color: Colors.white,
@@ -297,7 +298,7 @@ class CreatePostCard extends StatelessWidget {
                     Icon(Icons.location_pin, size: 16),
                     SizedBox(width: 1),
                     Text(
-                      postModel.province,
+                      postModel.district,
                       style: ptTiny(),
                     ),
                   ],
