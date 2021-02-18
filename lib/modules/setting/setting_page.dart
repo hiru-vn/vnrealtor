@@ -107,6 +107,7 @@ class _SettingPageState extends State<SettingPage> {
       // },
     ];
     return Scaffold(
+      backgroundColor: ptBackgroundColor(context),
       appBar: AppBar(
         backgroundColor: ptPrimaryColorLight(context),
         centerTitle: true,
@@ -309,7 +310,7 @@ class ProfileItemCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Card(
-          elevation: 3,
+          // elevation: 3,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(6),
           ),

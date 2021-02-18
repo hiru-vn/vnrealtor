@@ -7,7 +7,7 @@ final lightTheme = ThemeData(
   accentColor: HexColor('#e4f4f7'),
   bottomAppBarColor: HexColor('#ffffff'),
   scaffoldBackgroundColor: HexColor('#ffffff'),
-  backgroundColor: HexColor('f4f4f4'),
+  backgroundColor: HexColor('f7f7f7'),
   cardTheme: CardTheme(
     color: HexColor('#FEFEFE'),
     shadowColor: HexColor('#FEFEFE'),

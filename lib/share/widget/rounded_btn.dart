@@ -32,7 +32,7 @@ class RoundedBtn extends StatelessWidget {
             : null,
       ),
       child: Material(
-        elevation: 4,
+        // elevation: 4,
         color: color ?? Colors.white24,
         borderRadius: BorderRadius.circular(30),
         child: InkWell(

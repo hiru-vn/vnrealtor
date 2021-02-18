@@ -117,7 +117,7 @@ class CreatePostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 5,
+      //elevation: 5,
       child: Container(
         width: deviceWidth(context),
         padding: EdgeInsets.symmetric(vertical: 15),
@@ -137,7 +137,7 @@ class CreatePostCard extends StatelessWidget {
                 },
                 child: Material(
                   borderRadius: BorderRadius.circular(12),
-                  elevation: 5,
+                  //elevation: 5,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 17, vertical: 13),

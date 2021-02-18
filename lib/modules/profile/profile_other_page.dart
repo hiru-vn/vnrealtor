@@ -172,7 +172,7 @@ class _ProfileCardState extends State<ProfileCard> {
           const EdgeInsets.symmetric(vertical: 8).copyWith(top: 0, bottom: 0),
       child: Material(
           borderRadius: BorderRadius.circular(5),
-          elevation: 3,
+          // elevation: 3,
           child: Container(
             width: deviceWidth(context),
             padding: EdgeInsets.symmetric(horizontal: 25, vertical: 14)

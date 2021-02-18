@@ -63,11 +63,11 @@ class _LoginPageState extends State<LoginPage> {
             SpacingBox(h: 1.5),
             Center(
                 child: SizedBox(
-                    width: deviceWidth(context) / 3,
+                    width: deviceWidth(context) / 3.2,
                     child: Image.asset('assets/image/logo.png'))),
-            SpacingBox(h: 1.5),
+            SpacingBox(h: 2),
             Text(
-              'Chào mừng bạn đến với VN Realtor App',
+              'Chào mừng bạn đến với DATCAO',
               style: ptTitle(),
             ),
             SpacingBox(h: 1.5),
