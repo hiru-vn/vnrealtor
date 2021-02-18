@@ -266,12 +266,11 @@ class _SettingPageState extends State<SettingPage> {
                   );
                 }),
               ),
-              SizedBox(height: 15),
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: ExpandBtn(
                   elevation: 0,
-                  text: 'Logout',
+                  text: 'Đăng xuất',
                   borderRadius: 5,
                   onPress: () {
                     AuthBloc.instance.logout();

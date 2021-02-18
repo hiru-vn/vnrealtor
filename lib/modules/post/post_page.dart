@@ -1,3 +1,4 @@
+import 'package:datcao/modules/post/post_detail.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_list.dart';
@@ -234,71 +235,76 @@ class CreatePostCard extends StatelessWidget {
 
   _buildStoryWidget(PostModel postModel) {
     return Center(
-      child: Material(
-        elevation: 4,
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          height: 154,
-          width: 119,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(postModel.mediaPosts[0].url))),
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: Row(
-                children: [
-                  Container(
-                    width: 26,
-                    height: 26,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(width: 1.5, color: Colors.white),
-                    ),
-                    child: Center(
-                      child: CircleAvatar(
-                        radius: 13,
-                        backgroundImage: postModel.user.avatar != null
-                            ? NetworkImage(postModel.user.avatar)
-                            : AssetImage('assets/image/avatar.jpeg'),
+      child: GestureDetector(
+        onTap: () {
+          PostDetail.navigate(postModel);
+        },
+        child: Material(
+          elevation: 4,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            height: 154,
+            width: 119,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(postModel.mediaPosts[0].url))),
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 26,
+                      height: 26,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(width: 1.5, color: Colors.white),
+                      ),
+                      child: Center(
+                        child: CircleAvatar(
+                          radius: 13,
+                          backgroundImage: postModel.user.avatar != null
+                              ? NetworkImage(postModel.user.avatar)
+                              : AssetImage('assets/image/avatar.jpeg'),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                    child: Text(
-                      postModel.user.name,
-                      style: ptTiny().copyWith(
-                          color: Colors.white, fontWeight: FontWeight.w600),
+                    SizedBox(
+                      width: 5,
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: Text(
+                        postModel.user.name,
+                        style: ptTiny().copyWith(
+                            color: Colors.white, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 6),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.white,
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.location_pin, size: 16),
-                  SizedBox(width: 1),
-                  Text(
-                    'Hồ Chí Minh',
-                    style: ptTiny(),
-                  ),
-                ],
-              ),
-            )
-          ]),
+              SizedBox(height: 6),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.location_pin, size: 16),
+                    SizedBox(width: 1),
+                    Text(
+                      'Hồ Chí Minh',
+                      style: ptTiny(),
+                    ),
+                  ],
+                ),
+              )
+            ]),
+          ),
         ),
       ),
     );

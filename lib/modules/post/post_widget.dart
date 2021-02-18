@@ -13,8 +13,9 @@ import 'package:popup_menu/popup_menu.dart';
 import 'comment_page.dart';
 
 class PostWidget extends StatefulWidget {
+  final Function commentCallBack;
   final PostModel post;
-  PostWidget(this.post);
+  PostWidget(this.post, {this.commentCallBack});
   @override
   _PostWidgetState createState() => _PostWidgetState();
 }
@@ -50,7 +51,7 @@ class _PostWidgetState extends State<PostWidget> {
   Widget build(BuildContext context) {
     PopupMenu.context = context;
     return Padding(
-      padding: const EdgeInsets.only(top: 15),
+      padding: const EdgeInsets.only(top: 10),
       child: Container(
         width: deviceWidth(context),
         color: Colors.white,
@@ -120,188 +121,231 @@ class _PostWidgetState extends State<PostWidget> {
               padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 5),
               child: ReadMoreText(
                 widget.post?.content ?? '',
-                trimLines: 2,
+                trimLength: 100,
                 style: ptBody().copyWith(color: Colors.black87),
                 textAlign: TextAlign.start,
                 colorClickableText: Colors.pink,
-                trimMode: TrimMode.Line,
+                trimMode: TrimMode.Length,
                 trimCollapsedText: 'Show more',
                 trimExpandedText: 'Show less',
                 moreStyle: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
-            if (widget.post.locationLat != null &&
-                widget.post.locationLong != null)
-              Container(
-                width: deviceWidth(context),
-                child: Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () async {
-                        await showGoogleMapPoint(context,
-                            widget.post.locationLat, widget.post.locationLong);
-                        FocusScope.of(context).requestFocus(FocusNode());
-                      },
-                      child: SizedBox(
-                        height: 30,
-                        child: Padding(
-                            padding: const EdgeInsets.only(right: 15),
-                            child: Text(
-                              'Xem vị trí',
-                              style: TextStyle(color: Colors.blue),
-                            )),
-                      ),
-                    )),
-              ),
-            if ((widget.post?.mediaPosts?.length ?? 0) > 0)
-              Container(
-                height: deviceWidth(context) / 2 - 5,
-                width: deviceWidth(context),
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: widget.post?.mediaPosts?.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      width: deviceWidth(context) /
-                          (widget.post?.mediaPosts?.length == 1 ? 1 : 2),
-                      child: MediaPostWidget(
-                        post: widget.post?.mediaPosts[index],
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) => SizedBox(
-                    width: 0.8,
-                  ),
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
+            ),
+            if ((widget.post?.mediaPosts?.length ?? 0) > 0)
+              Stack(
                 children: [
                   Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: ptPrimaryColor(context),
-                    ),
-                    padding: EdgeInsets.all(4),
-                    child: Icon(
-                      MdiIcons.thumbUp,
-                      size: 11,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text(
-                    widget.post?.like?.toString() ?? '0',
-                    style: ptSmall(),
-                  ),
-                  Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      showComment(widget.post);
-                    },
-                    child: Text(
-                      '${widget.post?.commentIds?.length.toString() ?? '0'} comments',
-                      style: ptSmall(),
+                    height: deviceWidth(context) / 2 - 5,
+                    width: deviceWidth(context),
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.post?.mediaPosts?.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: deviceWidth(context) /
+                              (widget.post?.mediaPosts?.length == 1 ? 1 : 2),
+                          child: MediaPostWidget(
+                            post: widget.post?.mediaPosts[index],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => SizedBox(
+                        width: 0.8,
+                      ),
                     ),
                   ),
+                  if (widget.post.locationLat != null &&
+                      widget.post.locationLong != null)
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: GestureDetector(
+                          onTap: () async {
+                            await showGoogleMapPoint(
+                                context,
+                                widget.post.locationLat,
+                                widget.post.locationLong);
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          },
+                          child: Text(
+                            'Xem vị trí',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 1),
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
-            ),
-            Divider(),
+            SizedBox(height: 10),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 15),
+            //   child: Row(
+            //     children: [
+            //       Container(
+            //         decoration: BoxDecoration(
+            //           shape: BoxShape.circle,
+            //           color: ptPrimaryColor(context),
+            //         ),
+            //         padding: EdgeInsets.all(4),
+            //         child: Icon(
+            //           MdiIcons.thumbUp,
+            //           size: 11,
+            //           color: Colors.white,
+            //         ),
+            //       ),
+            //       SizedBox(
+            //         width: 5,
+            //       ),
+            //       Text(
+            //         widget.post?.like?.toString() ?? '0',
+            //         style: ptSmall(),
+            //       ),
+            //       Spacer(),
+            //       GestureDetector(
+            //         onTap: () {
+            //           showComment(widget.post);
+            //         },
+            //         child: Text(
+            //           '${widget.post?.commentIds?.length.toString() ?? '0'} comments',
+            //           style: ptSmall(),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            // Divider(),
             Row(
               children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      _isLike = !_isLike;
-                      if (_isLike) {
-                        widget.post.like++;
-                        _postBloc.likePost(widget.post.id);
-                      } else {
-                        if (widget.post.like > 0) widget.post.like--;
-                        _postBloc.unlikePost(widget.post.id);
-                      }
-                      setState(() {});
-                    },
-                    child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            MdiIcons.thumbUpOutline,
-                            size: 19,
-                            color: _isLike
-                                ? ptPrimaryColor(context)
-                                : Colors.black54,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            'Like',
-                            style: TextStyle(
-                                color: _isLike
-                                    ? ptPrimaryColor(context)
-                                    : Colors.black54),
-                          ),
-                        ]),
-                  ),
+                SizedBox(
+                  width: 15,
                 ),
-                Expanded(
-                  child: Row(
+                GestureDetector(
+                  onTap: () {
+                    _isLike = !_isLike;
+                    if (_isLike) {
+                      widget.post.like++;
+                      _postBloc.likePost(widget.post.id);
+                    } else {
+                      if (widget.post.like > 0) widget.post.like--;
+                      _postBloc.unlikePost(widget.post.id);
+                    }
+                    setState(() {});
+                  },
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _isLike
+                            ? Icon(
+                                MdiIcons.heartOutline,
+                                size: 24,
+                                color: ptPrimaryColor(context),
+                              )
+                            : Icon(
+                                MdiIcons.heart,
+                                size: 23,
+                                color: Colors.red,
+                              ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text('${widget.post.like} lượt thích',
+                            style: ptTiny()
+                                .copyWith(color: ptPrimaryColor(context))),
+                      ]),
+                ),
+                SizedBox(
+                  width: 15,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    if (widget.commentCallBack != null)
+                      widget.commentCallBack();
+                    else
+                      showComment(widget.post);
+                  },
+                  child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          MdiIcons.commentOutline,
-                          color: Colors.black54,
-                          size: 19,
+                          MdiIcons.chatOutline,
+                          color: ptPrimaryColor(context),
+                          size: 23,
                         ),
                         SizedBox(
-                          width: 5,
+                          height: 5,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            showComment(widget.post);
-                          },
-                          child: Text(
-                            'Comment',
-                            style: TextStyle(color: Colors.black54),
-                          ),
-                        ),
+                        Text('${widget.post.commentIds.length} bình luận',
+                            style: ptTiny()
+                                .copyWith(color: ptPrimaryColor(context))),
                       ]),
                 ),
-                Expanded(
-                  child: Row(
+                SizedBox(
+                  width: 15,
+                ),
+                GestureDetector(
+                  onTap: () => shareTo(context),
+                  child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           MdiIcons.shareOutline,
-                          color: Colors.black54,
-                          size: 20,
+                          color: ptPrimaryColor(context),
+                          size: 24,
                         ),
                         SizedBox(
-                          width: 5,
+                          height: 5,
+                        ),
+                        Text('${widget.post.share} chia sẻ',
+                            style: ptTiny()
+                                .copyWith(color: ptPrimaryColor(context))),
+                      ]),
+                ),
+                Spacer(),
+                GestureDetector(
+                  onTap: () => showAlertDialog(context, 'Đang phát triển',
+                      navigatorKey: navigatorKey),
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          MdiIcons.bookmarkOutline,
+                          color: ptPrimaryColor(context),
+                          size: 24,
+                        ),
+                        SizedBox(
+                          height: 5,
                         ),
                         GestureDetector(
                           onTap: () => shareTo(context),
-                          child: Text(
-                            'Share',
-                            style: TextStyle(color: Colors.black54),
-                          ),
+                          child: Text('Lưu',
+                              style: ptTiny()
+                                  .copyWith(color: ptPrimaryColor(context))),
                         ),
                       ]),
-                )
+                ),
+                SizedBox(
+                  width: 20,
+                ),
               ],
             ),
+
             SizedBox(
               height: 10,
             ),
