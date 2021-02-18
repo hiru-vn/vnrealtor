@@ -52,6 +52,19 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> updateUser(UserModel user) async {
+    try {
+      final res = await UserRepo()
+          .updateUser(user.id, user.name, user.email, user.phone, user.avatar);
+
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
+
   Future getFollowerIn7d() async {
     try {
       final userId = await SPref.instance.get('id');

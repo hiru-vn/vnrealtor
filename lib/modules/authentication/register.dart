@@ -100,6 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
             SpacingBox(h: 2),
             _buildFormField(context, 'Số điện thoại', _phoneC,
                 validator: TextFieldValidator.phoneValidator),
+           
             SpacingBox(h: 2),
             _buildFormField(
               context,
