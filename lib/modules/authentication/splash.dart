@@ -26,7 +26,7 @@ class _SplashPageState extends State<SplashPage> {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
       Future.delayed(
-        Duration(milliseconds: 50),
+        Duration(milliseconds: 1000),
         () async {
           final firstTime =
               (await SPref.instance.getBool('first_time')) ?? false;
@@ -58,19 +58,28 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        fit: StackFit.expand,
         children: [
           Container(
             height: deviceHeight(context),
             width: deviceWidth(context),
-            child: splash,
+          ),
+          Positioned(
+            bottom: -150,
+            child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                    width: deviceWidth(context),
+                    child: splash)),
           ),
           Center(
-            child: SizedBox(
-              width: deviceWidth(context) / 3.2,
-              child: ShowUp(
-                child: Image.asset('assets/image/logo_full_white.png'),
-                delay: 100,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: deviceHeight(context)/6),
+              child: SizedBox(
+                width: deviceWidth(context) / 2.5,
+                child: ShowUp(
+                  child: Image.asset('assets/image/logo_full_white.png'),
+                  delay: 100,
+                ),
               ),
             ),
           ),

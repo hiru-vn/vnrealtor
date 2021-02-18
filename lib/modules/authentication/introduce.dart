@@ -68,9 +68,11 @@ class IntroSlide extends StatelessWidget {
                   colorFilter:
                       ColorFilter.mode(Colors.black38, BlendMode.darken),
                   image: AssetImage('assets/image/bg_intro.jpg'))),
-          child: SizedBox(
-              width: deviceWidth(context) / 3,
-              child: Image.asset('assets/image/logo_full_white.png')),
+          child: Center(
+            child: SizedBox(
+                width: deviceWidth(context) / 2.3,
+                child: Image.asset('assets/image/logo_full_white.png',)),
+          ),
         ),
       ),
       Positioned(

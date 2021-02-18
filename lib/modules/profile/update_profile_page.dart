@@ -85,7 +85,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                           onImagePick: _updateAvatar, onCameraPick: _updateAvatar);
                     },
                     child: CircleAvatar(
-                      radius: 45,
+                      radius: 50,
                       backgroundImage:
                           NetworkImage(_authBloc.userModel.avatar ?? ''),
                       child: Align(
@@ -106,7 +106,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     ),
                   ),
                 ),
-                SpacingBox(h: 3),
+                SpacingBox(h: 2),
                 Container(
                   width: deviceWidth(context),
                   color: Colors.white,

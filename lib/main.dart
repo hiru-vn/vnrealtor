@@ -35,7 +35,7 @@ void main() async {
 
 Image splash = Image.asset(
   'assets/image/bg_splash.png',
-  fit: BoxFit.fill,
+  fit: BoxFit.fitWidth,
 );
 
 class MyApp extends StatelessWidget {

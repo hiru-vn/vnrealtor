@@ -248,7 +248,7 @@ class _PostWidgetState extends State<PostWidget> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _isLike
+                        !_isLike
                             ? Icon(
                                 MdiIcons.heartOutline,
                                 size: 24,
@@ -333,7 +333,7 @@ class _PostWidgetState extends State<PostWidget> {
                           height: 5,
                         ),
                         GestureDetector(
-                          onTap: () => shareTo(context),
+                          onTap: () {} ,
                           child: Text('Lưu',
                               style: ptTiny()
                                   .copyWith(color: ptPrimaryColor(context))),
