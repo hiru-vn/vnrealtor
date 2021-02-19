@@ -1,11 +1,11 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
-import 'package:datcao/modules/post/post_history_page.dart';
 import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/modules/profile/verify_account_page1.dart';
 import 'package:datcao/modules/setting/about_page.dart';
 import 'package:datcao/modules/setting/point_page.dart';
 import 'package:datcao/modules/setting/policy_page.dart';
 import 'package:datcao/modules/setting/privacy_page.dart';
+import 'package:package_info/package_info.dart';
 import 'package:datcao/share/import.dart';
 
 class SettingPage extends StatefulWidget {
@@ -135,11 +135,12 @@ class _SettingPageState extends State<SettingPage> {
                       ),
                       child: Center(
                         child: CircleAvatar(
-                            radius: 25,
-                            backgroundImage: AuthBloc.instance.userModel.avatar != null
-                                ? NetworkImage(AuthBloc.instance.userModel.avatar)
-                                : AssetImage('assets/image/default_avatar.png'),
-                          ),
+                          radius: 25,
+                          backgroundImage: AuthBloc.instance.userModel.avatar !=
+                                  null
+                              ? NetworkImage(AuthBloc.instance.userModel.avatar)
+                              : AssetImage('assets/image/default_avatar.png'),
+                        ),
                       ),
                     ),
                     SizedBox(width: 20),
@@ -282,10 +283,15 @@ class _SettingPageState extends State<SettingPage> {
                 ),
               ),
               SizedBox(height: 10),
-              Text(
-                'v1.0.21',
-                style: ptSmall().copyWith(color: Colors.black54),
-              ),
+              FutureBuilder<PackageInfo>(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) return SizedBox.shrink();
+                    return Text(
+                      'v${snapshot.data.version}',
+                      style: ptSmall().copyWith(color: Colors.black54),
+                    );
+                  }),
               SizedBox(height: 65),
             ],
           ),
