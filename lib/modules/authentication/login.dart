@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/authentication/register.dart';
-import 'package:vnrealtor/modules/authentication/reset_password_dialog.dart';
-import 'package:vnrealtor/modules/home_page.dart';
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/share/widget/appbar.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/authentication/register.dart';
+import 'package:datcao/modules/authentication/reset_password_dialog.dart';
+import 'package:datcao/modules/home_page.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/appbar.dart';
 
 class LoginPage extends StatefulWidget {
   static Future navigate() {
@@ -63,11 +63,11 @@ class _LoginPageState extends State<LoginPage> {
             SpacingBox(h: 1.5),
             Center(
                 child: SizedBox(
-                    width: deviceWidth(context) / 3,
+                    width: deviceWidth(context) / 3.2,
                     child: Image.asset('assets/image/logo.png'))),
-            SpacingBox(h: 1.5),
+            SpacingBox(h: 2),
             Text(
-              'Chào mừng bạn đến với VN Realtor App',
+              'Chào mừng bạn đến với DATCAO',
               style: ptTitle(),
             ),
             SpacingBox(h: 1.5),

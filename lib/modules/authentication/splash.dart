@@ -1,10 +1,12 @@
-import 'package:vnrealtor/main.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/authentication/introduce.dart';
-import 'package:vnrealtor/modules/authentication/login.dart';
-import 'package:vnrealtor/modules/home_page.dart';
-import 'package:vnrealtor/modules/services/firebase_service.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/main.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/authentication/introduce.dart';
+import 'package:datcao/modules/authentication/login.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/home_page.dart';
+import 'package:datcao/modules/services/firebase_service.dart';
+import 'package:datcao/share/import.dart';
 
 class SplashPage extends StatefulWidget {
   static Future navigate() {
@@ -24,7 +26,7 @@ class _SplashPageState extends State<SplashPage> {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
       Future.delayed(
-        Duration(milliseconds: 500),
+        Duration(milliseconds: 1000),
         () async {
           final firstTime =
               (await SPref.instance.getBool('first_time')) ?? false;
@@ -36,11 +38,15 @@ class _SplashPageState extends State<SplashPage> {
           if (!isLog) {
             LoginPage.navigate();
           } else {
-            FcmService.instance.init();
             final res = await _authBloc.getUserInfo();
-            if (res.isSuccess)
+            if (res.isSuccess) {
+              await Future.wait([
+                FcmService.instance.init(),
+                PostBloc.instance.init(),
+                UserBloc.instance.init(),
+              ]);
               HomePage.navigate();
-            else
+            } else
               IntroducePage.navigate();
           }
         },
@@ -52,19 +58,28 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        fit: StackFit.expand,
         children: [
           Container(
             height: deviceHeight(context),
             width: deviceWidth(context),
-            child: splash,
+          ),
+          Positioned(
+            bottom: -150,
+            child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                    width: deviceWidth(context),
+                    child: splash)),
           ),
           Center(
-            child: SizedBox(
-              width: deviceWidth(context) / 3.2,
-              child: ShowUp(
-                child: Image.asset('assets/image/logo_full_white.png'),
-                delay: 100,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: deviceHeight(context)/6),
+              child: SizedBox(
+                width: deviceWidth(context) / 2.5,
+                child: ShowUp(
+                  child: Image.asset('assets/image/logo_full_white.png'),
+                  delay: 100,
+                ),
               ),
             ),
           ),

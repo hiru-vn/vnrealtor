@@ -1,5 +1,10 @@
-import 'package:vnrealtor/modules/profile/change_password_page.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'dart:io';
+
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/profile/change_password_page.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/utils/file_util.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   static Future navigate() {
@@ -13,77 +18,164 @@ class UpdateProfilePage extends StatefulWidget {
 }
 
 class _UpdateProfilePageState extends State<UpdateProfilePage> {
+  AuthBloc _authBloc;
+  UserBloc _userBloc;
+  bool uploadingAvatar = false;
+  bool isLoading = false;
+  TextEditingController _nameC = TextEditingController();
+  TextEditingController _emailC = TextEditingController();
+  TextEditingController _phoneC = TextEditingController();
+  TextEditingController _facebookC = TextEditingController();
+
+  @override
+  void didChangeDependencies() {
+    if (_authBloc == null) {
+      _authBloc = Provider.of<AuthBloc>(context);
+      _userBloc = Provider.of(context);
+      _nameC.text = _authBloc.userModel.name;
+      _emailC.text = _authBloc.userModel.email;
+      _phoneC.text = _authBloc.userModel.phone;
+      // _facebookC.text = _authBloc.userModel.
+    }
+    super.didChangeDependencies();
+  }
+
+  Future _updateAvatar(String filePath) async {
+    try {
+      setState(() {
+        uploadingAvatar = true;
+      });
+      final url = await FileUtil.uploadFireStorage(File(filePath));
+      setState(() {
+        _authBloc.userModel.avatar = url;
+        uploadingAvatar = false;
+      });
+    } catch (e) {
+      showToast(e.toString(), context);
+    }
+  }
+
+  Future _updateUserInfo() async {
+    _authBloc.userModel.name = _nameC.text;
+    _authBloc.userModel.email = _emailC.text;
+    _authBloc.userModel.phone = _phoneC.text;
+    setState(() {
+      isLoading = true;
+    });
+    final res = await _userBloc.updateUser(_authBloc.userModel);
+    setState(() {
+      isLoading = false;
+    });
+    if (res.isSuccess) {
+    } else
+      showToast(res.errMessage, context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar2('Cập nhật thông tin'),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SpacingBox(h: 3),
-            SizedBox(
-              width: 90,
-              child: Image.asset('assets/image/logo.png'),
-            ),
-            SpacingBox(h: 3),
-            Container(
-              width: deviceWidth(context),
-              color: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              child: Column(
-                children: [
-                  _buildFormField(context, 'Tên người dùng'),
-                  SizedBox(height: 15),
-                  _buildFormField(context, 'Email'),
-                  SizedBox(height: 15),
-                  _buildFormField(context, 'Số điện thoại'),
-                  SpacingBox(h: 3),
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        RoundedBtn(
-                          height: 45,
-                          text: 'Cập nhật',
-                          onPressed: () async {
-                            await navigatorKey.currentState.maybePop();
-                            await navigatorKey.currentState.maybePop();
-                          },
-                          width: 140,
-                          color: ptPrimaryColor(context),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 8,
-                          ),
-                        ),
-                        RoundedBtn(
-                          height: 45,
-                          text: 'Đổi mật khẩu',
-                          onPressed: () async {
-                            UpdatePasswordPage.navigate();
-                          },
-                          width: 140,
-                          color: Colors.blue[300],
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 8,
-                          ),
-                        ),
-                      ],
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar2('Cập nhật thông tin'),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                SpacingBox(h: 3),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(45),
+                  child: GestureDetector(
+                    onTap: () {
+                      imagePicker(context,
+                          onImagePick: _updateAvatar,
+                          onCameraPick: _updateAvatar);
+                    },
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage:
+                          NetworkImage(_authBloc.userModel.avatar ?? ''),
+                      child: uploadingAvatar
+                          ? kLoadingSpinner
+                          : Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                height: 35,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withOpacity(0.4),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    MdiIcons.camera,
+                                    color: Colors.white.withOpacity(0.6),
+                                  ),
+                                ),
+                              ),
+                            ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                ],
-              ),
-            )
-          ],
+                ),
+                SpacingBox(h: 2),
+                Container(
+                  width: deviceWidth(context),
+                  color: Colors.white,
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: Column(
+                    children: [
+                      _buildFormField(context, 'Tên người dùng', _nameC),
+                      SizedBox(height: 15),
+                      _buildFormField(context, 'Email', _emailC),
+                      SizedBox(height: 15),
+                      _buildFormField(context, 'Số điện thoại', _phoneC),
+                      SizedBox(height: 15),
+                      _buildFormField(context, 'Facebook', _facebookC),
+                      SpacingBox(h: 3),
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            RoundedBtn(
+                              height: 45,
+                              text: 'Cập nhật',
+                              onPressed: _updateUserInfo,
+                              width: 140,
+                              color: ptPrimaryColor(context),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 8,
+                              ),
+                            ),
+                            RoundedBtn(
+                              height: 45,
+                              text: 'Đổi mật khẩu',
+                              onPressed: () async {
+                                UpdatePasswordPage.navigate();
+                              },
+                              width: 140,
+                              color: Colors.blue[300],
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 8,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
         ),
-      ),
+        if (isLoading) kLoadingSpinner,
+      ],
     );
   }
 
-  _buildFormField(BuildContext context, String text) => Padding(
+  _buildFormField(BuildContext context, String text,
+          TextEditingController controller) =>
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Container(
             decoration: BoxDecoration(
@@ -92,6 +184,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 25),
               child: TextField(
+                controller: controller,
                 decoration:
                     InputDecoration(border: InputBorder.none, hintText: text),
               ),

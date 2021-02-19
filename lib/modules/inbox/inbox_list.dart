@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/navigator.dart';
-import 'package:vnrealtor/share/widget/empty_widget.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/navigator.dart';
+import 'package:datcao/share/widget/empty_widget.dart';
 
 import 'import/animated_search_bar.dart';
 import 'import/app_bar.dart';
@@ -38,18 +38,20 @@ class _InboxListState extends State<InboxList>
     if (_inboxBloc == null || _authBloc == null) {
       _inboxBloc = Provider.of<InboxBloc>(context);
       _authBloc = Provider.of<AuthBloc>(context);
-      init();
+      if (mounted) init();
     }
     super.didChangeDependencies();
   }
 
   init() async {
-    await _inboxBloc.createUser(_authBloc.userModel.id,
-        _authBloc.userModel.name, _authBloc.userModel.avatar);
-    final res = await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
-    setState(() {
-      _inboxBloc.groupInboxList = res;
-    });
+    try {
+      // await _inboxBloc.createUser(_authBloc.userModel.id,
+      //     _authBloc.userModel.name, _authBloc.userModel.avatar);
+      final res = await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
+      setState(() {
+        _inboxBloc.groupInboxList = res;
+      });
+    } catch (e) {}
   }
 
   reload() async {
@@ -64,6 +66,7 @@ class _InboxListState extends State<InboxList>
     return Scaffold(
       appBar: MyAppBar(
         title: ' Hộp thư tin nhắn',
+        automaticallyImplyLeading: true,
         actions: [
           Center(
             child: AnimatedSearchBar(
@@ -86,9 +89,15 @@ class _InboxListState extends State<InboxList>
                       itemCount: _inboxBloc.groupInboxList.length,
                       itemBuilder: (context, index) {
                         final group = _inboxBloc.groupInboxList[index];
+                        final String nameGroup = group.users
+                            .where((element) =>
+                                element.id != _authBloc.userModel.id)
+                            .toList()
+                            .map((e) => e.name)
+                            .join(', ');
                         return ListTile(
                           onTap: () {
-                            InboxChat.navigate(group, group.lastUser)
+                            InboxChat.navigate(group, nameGroup)
                                 .then((value) => reload());
                           },
                           tileColor:
@@ -101,11 +110,7 @@ class _InboxListState extends State<InboxList>
                                 'assets/image/default_avatar.png'),
                           ),
                           title: Text(
-                            group.users.indexWhere((element) =>
-                                        element == _authBloc.userModel.id) ==
-                                    0
-                                ? group.usersName[1]
-                                : group.usersName[0],
+                            nameGroup,
                             style: ptTitle().copyWith(
                                 color: group.reader
                                         .contains(_authBloc.userModel.id)

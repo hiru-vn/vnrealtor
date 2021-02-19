@@ -4,12 +4,13 @@ import 'package:agora_rtc_engine/rtc_remote_view.dart' as RemoteView;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:vnrealtor/navigator.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/navigator.dart';
 
 import 'app_id.dart';
+import 'dial_screen.dart';
 import 'import/page_builder.dart';
 import 'inbox_model.dart';
-
 
 /// MultiChannel Example
 class VideoCallPage extends StatefulWidget {
@@ -18,8 +19,9 @@ class VideoCallPage extends StatefulWidget {
 
   const VideoCallPage({Key key, this.groupId, this.users}) : super(key: key);
   static Future navigate(String groupId, List<FbInboxUserModel> users) {
-    return navigatorKey.currentState
-        .push(pageBuilder(VideoCallPage(groupId: groupId, users: users)));
+    return navigatorKey.currentState.push(pageBuilder(
+        VideoCallPage(groupId: groupId, users: users),
+        transitionBuilder: transitionRightBuilder));
   }
 
   @override
@@ -287,6 +289,13 @@ class _VideoCallPageState extends State<VideoCallPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_users.length < 2)
+      return DialScreen(
+        names: widget.users
+            .where((element) => element.id != AuthBloc.instance.userModel.id)
+            .map((e) => e.name)
+            .toList(),
+      );
     return Scaffold(
         backgroundColor: Colors.black,
         body: Center(

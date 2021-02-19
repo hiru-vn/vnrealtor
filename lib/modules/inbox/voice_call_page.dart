@@ -5,9 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:vnrealtor/navigator.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/navigator.dart';
 
 import 'app_id.dart';
+import 'dial_screen.dart';
 import 'import/page_builder.dart';
 import 'inbox_model.dart';
 import 'video_call_page.dart';
@@ -19,8 +21,9 @@ class VoiceCallPage extends StatefulWidget {
 
   const VoiceCallPage({Key key, this.groupId, this.users}) : super(key: key);
   static Future navigate(String groupId, List<FbInboxUserModel> users) {
-    return navigatorKey.currentState
-        .push(pageBuilder(VoiceCallPage(groupId: groupId, users: users)));
+    return navigatorKey.currentState.push(pageBuilder(
+        VoiceCallPage(groupId: groupId, users: users),
+        transitionBuilder: transitionRightBuilder));
   }
 
   @override
@@ -173,7 +176,7 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
       Center(
         child: SizedBox(
             width: MediaQuery.of(context).size.width / 6,
-            height:MediaQuery.of(context).size.width / 6,
+            height: MediaQuery.of(context).size.width / 6,
             child: Image.asset(
               'assets/image/default_avatar.png',
               fit: BoxFit.cover,
@@ -276,9 +279,7 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
                 RawMaterialButton(
                   onPressed: () => _switchSpeakerphone(),
                   child: Icon(
-                    enableSpeakerphone
-                        ? Icons.volume_up
-                        : Icons.volume_down,
+                    enableSpeakerphone ? Icons.volume_up : Icons.volume_down,
                     color:
                         enableSpeakerphone ? Colors.white : Colors.blueAccent,
                     size: 20.0,
@@ -314,6 +315,13 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_users.length < 2)
+      return DialScreen(
+        names: widget.users
+            .where((element) => element.id != AuthBloc.instance.userModel.id)
+            .map((e) => e.name)
+            .toList(),
+      );
     return Scaffold(
         backgroundColor: Colors.black,
         body: Center(

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/share/import.dart';
 
 class PickCoordinates extends StatefulWidget {
   static Future navigate() {

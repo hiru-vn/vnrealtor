@@ -1,4 +1,4 @@
-import 'package:vnrealtor/modules/model/user.dart';
+import 'package:datcao/modules/model/user.dart';
 
 import 'media_post.dart';
 
@@ -23,6 +23,9 @@ class PostModel {
   String updatedAt;
   bool isUserLike;
   bool isUserShare;
+  String province;
+  String district;
+  String ward;
 
   PostModel(
       {this.id,
@@ -44,7 +47,10 @@ class PostModel {
       this.createdAt,
       this.updatedAt,
       this.isUserLike,
-      this.isUserShare});
+      this.isUserShare,
+      this.district,
+      this.province,
+      this.ward});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -80,6 +86,9 @@ class PostModel {
     updatedAt = json['updatedAt'];
     isUserLike = json['isUserLike'] ?? false;
     isUserShare = json['isUserShare'] ?? false;
+    district = json['district'];
+    province = json['province'];
+    ward = json['ward'];
   }
 
   Map<String, dynamic> toJson() {

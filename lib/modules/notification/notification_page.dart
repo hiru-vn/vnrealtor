@@ -1,9 +1,10 @@
-import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
-import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/model/notification.dart';
-import 'package:vnrealtor/modules/profile/profile_page.dart';
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/share/widget/empty_widget.dart';
+import 'package:datcao/modules/bloc/notification_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/model/notification.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/empty_widget.dart';
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -48,42 +49,45 @@ class _NotificationPageState extends State<NotificationPage>
           Align(
             alignment: Alignment.center,
             child: TabBar(
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorWeight: 3,
-                indicatorColor: ptPrimaryColor(context),
-                indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
-                controller: _tabController,
-                isScrollable: true,
-                labelColor: Colors.black87,
-                unselectedLabelStyle:
-                    TextStyle(fontSize: 14, color: Colors.black54),
-                labelStyle: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold),
-                tabs: [
-                  SizedBox(
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorWeight: 3,
+              indicatorColor: ptPrimaryColor(context),
+              indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
+              controller: _tabController,
+              isScrollable: true,
+              labelColor: Colors.black87,
+              unselectedLabelStyle:
+                  TextStyle(fontSize: 14, color: Colors.black54),
+              labelStyle: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold),
+              tabs: [
+                SizedBox(
+                  height: 40,
+                  width: deviceWidth(context) / 2 - 45,
+                  child: Tab(
+                    text: 'Thông báo mới',
+                  ),
+                ),
+                SizedBox(
                     height: 40,
                     width: deviceWidth(context) / 2 - 45,
-                    child: Tab(
-                      text: 'Thông báo mới',
+                    child: Tab(text: 'Người theo dõi')
+                    //'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
                     ),
-                  ),
-                  SizedBox(
-                    height: 40,
-                    width: deviceWidth(context) / 2 - 45,
-                    child: Tab(
-                        text:
-                            'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
-                  ),
-                ]),
+              ],
+            ),
           ),
           Expanded(
             child: TabBarView(controller: _tabController, children: [
               NotificationTab(
                 list: _notificationBloc.notifications,
               ),
-              FriendRequestTab()
+              //FriendRequestTab()
+              FollowTab(
+                list: _userBloc.followersIn7Days,
+              )
             ]),
           )
         ],
@@ -117,7 +121,7 @@ class NotificationTab extends StatelessWidget {
                   radius: 22,
                   backgroundImage:
                       (list[index].image == null || list[index].image == '')
-                          ? AssetImage('assets/image/logo.png')
+                          ? AssetImage('assets/image/icon_white.png')
                           : NetworkImage(list[index].image),
                 ),
                 title: Text(
@@ -125,7 +129,8 @@ class NotificationTab extends StatelessWidget {
                   style: ptBody(),
                 ),
                 subtitle: Text(
-                  Formart.timeAgo(DateTime.tryParse(list[index].createdAt))??'',
+                  Formart.timeAgo(DateTime.tryParse(list[index].createdAt)) ??
+                      '',
                   style: ptTiny(),
                 ),
               ),
@@ -168,14 +173,14 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                 final item = _userBloc.friendRequestFromOtherUsers[index];
                 return ListTile(
                   onTap: () {
-                    ProfilePage.navigate(item.user1);
+                    ProfileOtherPage.navigate(item.user1);
                   },
                   tileColor: ptBackgroundColor(context),
                   leading: CircleAvatar(
                     radius: 22,
                     backgroundImage: item.user1.avatar != null
                         ? NetworkImage(item.user1.avatar)
-                        : AssetImage('assets/image/avatar.jpeg'),
+                        : AssetImage('assets/image/default_avatar.png'),
                   ),
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +193,7 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                       ),
                       Text(
                         Formart.timeAgo(
-                                DateTime.tryParse(item.createdAt ?? '')) ??
+                                DateTime.tryParse(item.updatedAt ?? '')) ??
                             '',
                         style: ptTiny().copyWith(color: Colors.black54),
                       ),
@@ -257,8 +262,59 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
           )
         : EmptyWidget(
             assetImg: 'assets/image/no_user.png',
-            title: 'Không có lời mời kết bạn',
-            content: 'Tìm kiếm và kết bạn để có thêm nhiều bạn bè hơn',
+            title: 'Không có người theo dõi mới',
+            content: 'Đăng bài có nhiều tương tác để có thêm người theo dõi',
+          );
+  }
+}
+
+class FollowTab extends StatelessWidget {
+  final List<UserModel> list;
+
+  const FollowTab({Key key, this.list}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return list.length > 0
+        ? RefreshIndicator(
+            color: ptPrimaryColor(context),
+            onRefresh: () async {
+              await NotificationBloc.instance.getListNotification(
+                  filter: GraphqlFilter(order: '{createdAt: -1}'));
+              return;
+            },
+            child: ListView.separated(
+              separatorBuilder: (context, index) => Divider(
+                height: 1,
+              ),
+              itemCount: list.length,
+              itemBuilder: (context, index) => ListTile(
+                tileColor: ptBackgroundColor(context),
+                onTap: () {
+                  ProfileOtherPage.navigate(list[index]);
+                },
+                leading: CircleAvatar(
+                  radius: 22,
+                  backgroundImage:
+                      (list[index].avatar == null || list[index].avatar == '')
+                          ? AssetImage('assets/image/icon_white.png')
+                          : NetworkImage(list[index].avatar),
+                ),
+                title: Text(
+                  list[index].name + ' đã theo dõi bạn',
+                  style: ptBody(),
+                ),
+                subtitle: Text(
+                  Formart.timeAgo(DateTime.tryParse(list[index].updatedAt)) ??
+                      '',
+                  style: ptTiny(),
+                ),
+              ),
+            ),
+          )
+        : EmptyWidget(
+            assetImg: 'assets/image/no_user.png',
+            title: 'Bạn không có lượt theo dõi nào trong 7 ngày qua',
+            content: 'Đăng bài và tương tác nhiều để có thêm lượt theo dõi',
           );
   }
 }

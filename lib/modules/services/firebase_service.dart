@@ -1,7 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:vnrealtor/modules/bloc/notification_bloc.dart';
-import 'package:vnrealtor/share/function/show_toast.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/bloc/notification_bloc.dart';
+import 'package:datcao/share/function/show_toast.dart';
+import 'package:datcao/share/import.dart';
 
 enum FcmType { message, like, comment, share, system }
 
@@ -22,7 +22,7 @@ class FcmService {
     return null;
   }
 
-  void init() async {
+  Future init() async {
     await FirebaseMessaging.instance.requestPermission();
     await FirebaseMessaging.instance.getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -31,6 +31,11 @@ class FcmService {
       final type = getType(message.data['type']);
 
       if (type == FcmType.message) {
+        // final type = ModalRoute.of(navigatorKey.currentState.overlay.context)
+        //     .settings
+        //     .runtimeType;
+        // print(type);
+        // if (type == InboxList) return;
         showToastNoContext('Tin nhắn mới');
       }
 

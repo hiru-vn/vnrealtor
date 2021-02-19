@@ -26,6 +26,7 @@ class FileUtil {
           .ref()
           .child('${path ?? 'root'}/${Path.basename(file.path)}');
       UploadTask uploadTask = storageReference.putFile(file);
+      print('uploading...');
       await uploadTask.whenComplete(() {});
       print('File Uploaded');
       final fileURL = await storageReference.getDownloadURL();

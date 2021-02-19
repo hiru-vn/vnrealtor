@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/home_page.dart';
-import 'package:vnrealtor/modules/setting/policy_page.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/home_page.dart';
+import 'package:datcao/modules/setting/policy_page.dart';
+import 'package:datcao/share/import.dart';
 
 class RegisterPage extends StatefulWidget {
   static Future navigate() {
@@ -100,6 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
             SpacingBox(h: 2),
             _buildFormField(context, 'Số điện thoại', _phoneC,
                 validator: TextFieldValidator.phoneValidator),
+           
             SpacingBox(h: 2),
             _buildFormField(
               context,

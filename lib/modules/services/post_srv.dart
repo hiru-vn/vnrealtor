@@ -15,6 +15,8 @@ locationLat
 locationLong
 expirationDate
 publicity
+isUserLike
+isUserShare
 user {
   id 
   uid 
@@ -26,6 +28,7 @@ user {
   createdAt 
   updatedAt 
   friendIds
+  avatar
 }
 mediaPosts {
 id
@@ -34,6 +37,7 @@ type
 like
 userLikeIds
 commentIds
+
 description
 url
 locationLat
@@ -43,6 +47,9 @@ publicity
 createdAt
 updatedAt
 }
+province
+district
+ward
 createdAt
 updatedAt
   ''');

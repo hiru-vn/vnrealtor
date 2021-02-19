@@ -1,10 +1,11 @@
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/inbox/inbox_bloc.dart';
-import 'package:vnrealtor/modules/notification/notification_page.dart';
-import 'package:vnrealtor/modules/post/post_page.dart';
-import 'package:vnrealtor/modules/setting/setting_page.dart';
-import 'package:vnrealtor/modules/inbox/inbox_list.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
+import 'package:datcao/modules/notification/notification_page.dart';
+import 'package:datcao/modules/post/post_page.dart';
+import 'package:datcao/modules/profile/profile_page.dart';
+import 'package:datcao/modules/setting/setting_page.dart';
+import 'package:datcao/modules/inbox/inbox_list.dart';
+import 'package:datcao/share/import.dart';
 
 import 'bottom_navigator.dart';
 
@@ -26,10 +27,12 @@ class _HomePageState extends State<HomePage>
   void initState() {
     _pages.addAll([
       PostPage(),
-      InboxList(),
       NotificationPage(),
+      ProfilePage(),
       SettingPage(),
     ]);
+    InboxBloc.instance.createUser(AuthBloc.instance.userModel.id,
+        AuthBloc.instance.userModel.name, AuthBloc.instance.userModel.avatar);
 
     super.initState();
   }
@@ -51,12 +54,13 @@ class _HomePageState extends State<HomePage>
         bottomNavigationBar: BottomNavigator(
           selectedIndex: _selectedIndex,
           list: [
-            BottomTabModel(false, 'Home', MdiIcons.homeOutline, MdiIcons.home),
-            BottomTabModel(false, 'Chat', MdiIcons.chatOutline, MdiIcons.chat),
             BottomTabModel(
-                true, 'Notification', MdiIcons.bellOutline, MdiIcons.bell),
+                false, 'Trang chủ', MdiIcons.homeOutline, MdiIcons.home),
             BottomTabModel(
-                false, 'More', Icons.settings_outlined, Icons.settings)
+                true, 'Thông báo', MdiIcons.bellOutline, MdiIcons.bell),
+            BottomTabModel(false, 'Hồ sơ', Icons.person_outline, Icons.person),
+            BottomTabModel(
+                false, 'Menu', Icons.settings_outlined, Icons.settings)
           ],
           onSelect: (index) {
             setState(() {

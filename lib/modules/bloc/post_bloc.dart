@@ -1,13 +1,20 @@
-import 'package:vnrealtor/modules/model/comment.dart';
-import 'package:vnrealtor/modules/model/post.dart';
-import 'package:vnrealtor/modules/repo/post_repo.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/model/comment.dart';
+import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/repo/post_repo.dart';
+import 'package:datcao/share/import.dart';
 
 class PostBloc extends ChangeNotifier {
   PostBloc._privateConstructor();
   static final PostBloc instance = PostBloc._privateConstructor();
 
   List<PostModel> post = [];
+  List<PostModel> myPosts;
+  List<PostModel> stories = [];
+
+  Future init() async {
+    getNewFeed(filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
+    getStoryFollowing();
+  }
 
   Future<BaseResponse> getNewFeed({GraphqlFilter filter}) async {
     try {
@@ -36,12 +43,13 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getMyPost({GraphqlFilter filter}) async {
+  Future<BaseResponse> getMyPost() async {
     try {
-      final res = await PostRepo().getMyPost(filter: filter);
+      final id = await SPref.instance.get('id');
+      final res = await PostRepo().getPostByUserId(id);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
-      post = list;
+      myPosts = list;
       return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e.toString());
@@ -50,9 +58,38 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getAllCommentByPostId(String postId, {GraphqlFilter filter}) async {
+  Future<BaseResponse> getStoryFollowing() async {
     try {
-      final res = await PostRepo().getAllCommentByPostId(postId: postId, filter: filter);
+      final res = await PostRepo().getStoryFollowing();
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      stories = list;
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getUserPost(String id) async {
+    try {
+      final res = await PostRepo().getPostByUserId(id);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getAllCommentByPostId(String postId,
+      {GraphqlFilter filter}) async {
+    try {
+      final res = await PostRepo()
+          .getAllCommentByPostId(postId: postId, filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
@@ -63,10 +100,11 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getListMediaPostComment(String postMediaId, {GraphqlFilter filter}) async {
+  Future<BaseResponse> getListMediaPostComment(String postMediaId,
+      {GraphqlFilter filter}) async {
     try {
-      final res =
-          await PostRepo().getAllCommentByMediaPostId(postMediaId: postMediaId, filter: filter);
+      final res = await PostRepo()
+          .getAllCommentByMediaPostId(postMediaId: postMediaId, filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
@@ -107,6 +145,20 @@ class PostBloc extends ChangeNotifier {
       return BaseResponse.fail(e?.toString());
     } finally {
       notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> deletePost(String postId) async {
+    try {
+      post.removeWhere((item) => item.id == postId);
+      myPosts.removeWhere((item) => item.id == postId);
+      notifyListeners();
+      final res = await PostRepo().deletePost(postId);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      // notifyListeners();
     }
   }
 

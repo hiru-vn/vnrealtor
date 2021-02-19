@@ -10,8 +10,11 @@ uid: String
 email: String
 role: String
 reputationScore: Int
+avatar
 friendIds: [ID]
 createdAt: DateTime
 updatedAt: DateTime
+followerIds: [ID]
+followingIds: [ID]
   ''');
 }

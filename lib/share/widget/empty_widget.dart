@@ -1,4 +1,4 @@
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/share/import.dart';
 
 class EmptyWidget extends StatelessWidget {
   final String assetImg;

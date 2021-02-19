@@ -32,10 +32,11 @@ void imagePicker(BuildContext context,
                 SizedBox(
                   height: 12,
                 ),
-                Divider(height: 1, color: Colors.grey),
-                SizedBox(
-                  height: 16,
-                ),
+                if (onVideoPick != null) Divider(height: 1, color: Colors.grey),
+                if (onVideoPick != null)
+                  SizedBox(
+                    height: 16,
+                  ),
                 if (onCameraPick != null) ...[
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,

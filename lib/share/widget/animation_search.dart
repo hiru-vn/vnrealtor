@@ -18,8 +18,8 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
 
   @override
   void initState() {
-    _width = widget.width??180;
-    _height = widget.height??48;
+    _width = widget.width ?? 180;
+    _height = widget.height ?? 48;
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
         setState(() {
@@ -38,7 +38,8 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
       height: _height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(_height / 2),
-        boxShadow: _folded ? null : kElevationToShadow[1],
+        border: _folded ? null : Border.all(color: Colors.black12),
+        // boxShadow: _folded ? null : kElevationToShadow[1],
         color: Colors.white,
       ),
       child: Row(

@@ -1,10 +1,10 @@
-import 'package:vnrealtor/modules/bloc/verification_bloc.dart';
-import 'package:vnrealtor/modules/profile/verify_account_page2.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/bloc/verification_bloc.dart';
+import 'package:datcao/modules/profile/verify_account_page2.dart';
+import 'package:datcao/share/import.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:vnrealtor/utils/file_util.dart';
+import 'package:datcao/utils/file_util.dart';
 
 class VertifyAccountPage1 extends StatefulWidget {
   static Future navigate() {
@@ -77,10 +77,11 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                             }),
                         validator: TextFieldValidator.notEmptyValidator),
                     SizedBox(height: 15),
-                    _buildPictureCollect('Mặt trước minh nhân dân/ Hộ chiếu'),
+                    _buildPictureCollect(
+                        'Mặt trước minh nhân dân/ Hộ chiếu', true),
                     SizedBox(height: 15),
                     _buildPictureCollect(
-                        'Mặt sau chứng minh nhân dân/ Hộ chiếu'),
+                        'Mặt sau chứng minh nhân dân/ Hộ chiếu', false),
                     SizedBox(height: 25),
                     RoundedBtn(
                       height: 45,
@@ -171,17 +172,25 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
     );
   }
 
-  _buildPictureCollect(String text) => Container(
+  _buildPictureCollect(String text, bool isFront) => Container(
         height: 180,
         width: deviceWidth(context),
         child: Stack(children: [
-          if (_verificationBloc.imageFront != null)
+          if (_verificationBloc.imageFront != null && isFront)
             Positioned(
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
               child: Image.network(_verificationBloc.imageFront),
+            ),
+          if (_verificationBloc.imageBehind != null && !isFront)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Image.network(_verificationBloc.imageBehind),
             ),
           Positioned(
             top: 15,
@@ -200,7 +209,10 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                           .then((value) async {
                         if (value == null) return;
                         final url = await FileUtil.uploadFireStorage(value);
-                        _verificationBloc.imageFront = url;
+                        if (isFront)
+                          _verificationBloc.imageFront = url;
+                        else
+                          _verificationBloc.imageBehind = url;
                         setState(() {});
                       });
                     }),

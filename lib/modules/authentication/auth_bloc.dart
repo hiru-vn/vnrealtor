@@ -1,15 +1,17 @@
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:vnrealtor/modules/authentication/login.dart';
-import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/model/user.dart';
-import 'package:vnrealtor/modules/repo/user_repo.dart';
-import 'package:vnrealtor/modules/services/base_response.dart';
+import 'package:datcao/modules/authentication/login.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/repo/user_repo.dart';
+import 'package:datcao/modules/services/base_response.dart';
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
-import 'package:vnrealtor/modules/services/firebase_service.dart';
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/utils/device_info.dart';
-import 'package:vnrealtor/utils/formart.dart';
+import 'package:datcao/modules/services/firebase_service.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/utils/device_info.dart';
+import 'package:datcao/utils/formart.dart';
 
 enum AuthStatus {
   unAuthed,
@@ -95,6 +97,7 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('id', res['user']["id"]);
       userModel = UserModel.fromJson(res['user']);
       UserBloc.instance.init();
+      PostBloc.instance.init();
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e?.toString());
@@ -117,6 +120,8 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('token', loginRes['token']);
       await SPref.instance.set('id', loginRes['user']["id"]);
       userModel = UserModel.fromJson(loginRes['user']);
+      InboxBloc.instance
+          .createUser(userModel.id, userModel.name, userModel.avatar);
       return BaseResponse.success(loginRes);
     } catch (e) {
       return BaseResponse.fail(e?.toString());

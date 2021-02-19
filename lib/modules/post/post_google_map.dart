@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/share/import.dart';
 
 Future showGoogleMapPoint(BuildContext context, double lat, double long,
     {double height}) {

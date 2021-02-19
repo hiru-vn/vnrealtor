@@ -1,4 +1,4 @@
-import 'package:vnrealtor/modules/model/user.dart';
+import 'package:datcao/modules/model/user.dart';
 
 enum FriendShipStatus { PENDING, DECLINE, ACCEPTED }
 

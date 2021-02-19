@@ -1,10 +1,11 @@
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/share/import.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppBar1 extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
   final List<Widget> actions;
+  final Color textColor;
   final Color bgColor;
   final Widget leading;
   final String title;
@@ -15,6 +16,7 @@ class AppBar1 extends StatelessWidget implements PreferredSizeWidget {
       {this.actions,
       this.bgColor,
       this.leading,
+      this.textColor,
       this.title,
       this.centerTitle = false,
       this.automaticallyImplyLeading = false});
@@ -28,10 +30,13 @@ class AppBar1 extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: centerTitle,
       title: Text(
         title ?? 'VNRealtor',
-        style: ptBigTitle().copyWith(
-            color: (bgColor != null && bgColor != Colors.white)
-                ? Colors.white
-                : Colors.black87),
+        style: ptTitle().copyWith(
+            color: textColor != null
+                ? textColor
+                : ((bgColor != null && bgColor != Colors.white)
+                    ? Colors.white
+                    : Colors.black87),
+            fontSize: 15.5),
       ),
       actions: actions,
     );
@@ -67,7 +72,7 @@ class AppBar2 extends StatelessWidget implements PreferredSizeWidget {
           )),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [HexColor('#55e678'), HexColor('#3ad6db')],
+          colors: [HexColor('#0c818e'), HexColor('#37d0bb')],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),

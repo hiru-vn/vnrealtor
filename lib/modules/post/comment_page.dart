@@ -1,10 +1,10 @@
 import 'package:flutter/rendering.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-import 'package:vnrealtor/modules/model/comment.dart';
-import 'package:vnrealtor/modules/model/media_post.dart';
-import 'package:vnrealtor/modules/model/post.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/model/comment.dart';
+import 'package:datcao/modules/model/media_post.dart';
+import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/share/import.dart';
 
 class CommentPage extends StatefulWidget {
   final PostModel post;
@@ -189,15 +189,15 @@ class _CommentPageState extends State<CommentPage> {
                                             comment.updatedAt)),
                                         style: ptTiny(),
                                       ),
-                                      SizedBox(
-                                        width: 50,
-                                        child: Center(
-                                          child: Text(
-                                            'Trả lời',
-                                            style: ptSmall(),
-                                          ),
-                                        ),
-                                      ),
+                                      // SizedBox(
+                                      //   width: 50,
+                                      //   child: Center(
+                                      //     child: Text(
+                                      //       'Trả lời',
+                                      //       style: ptSmall(),
+                                      //     ),
+                                      //   ),
+                                      // ),
                                       Spacer(),
                                       GestureDetector(
                                         child: Row(children: [

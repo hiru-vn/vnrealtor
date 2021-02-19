@@ -1,11 +1,11 @@
-import 'package:vnrealtor/modules/bloc/post_bloc.dart';
-import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/modules/model/post.dart';
-import 'package:vnrealtor/modules/model/user.dart';
-import 'package:vnrealtor/modules/post/post_map.dart';
-import 'package:vnrealtor/modules/post/people_widget.dart';
-import 'package:vnrealtor/modules/post/post_widget.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/post/post_map.dart';
+import 'package:datcao/modules/post/people_widget.dart';
+import 'package:datcao/modules/post/post_widget.dart';
+import 'package:datcao/share/import.dart';
 
 class SearchPostPage extends StatefulWidget {
   static Future navigate() {

@@ -1,7 +1,7 @@
-import 'package:vnrealtor/modules/services/comment_srv.dart';
-import 'package:vnrealtor/modules/services/graphql_helper.dart';
-import 'package:vnrealtor/modules/services/post_srv.dart';
-import 'package:vnrealtor/utils/spref.dart';
+import 'package:datcao/modules/services/comment_srv.dart';
+import 'package:datcao/modules/services/graphql_helper.dart';
+import 'package:datcao/modules/services/post_srv.dart';
+import 'package:datcao/utils/spref.dart';
 
 import 'filter.dart';
 
@@ -24,6 +24,9 @@ share
 userShareIds
 locationLat
 locationLong
+province
+district
+ward
 expirationDate
 publicity
 user {
@@ -36,6 +39,7 @@ user {
   reputationScore 
   createdAt 
   updatedAt 
+  avatar
   friendIds
 }
 mediaPosts {
@@ -63,22 +67,74 @@ updatedAt
     return res['getNewsFeed'];
   }
 
-  Future getMyPost({GraphqlFilter filter}) async {
-    final id = await SPref.instance.get('id');
-    final res = await PostSrv().getList(
-        limit: filter?.limit,
-        offset: filter?.offset,
-        search: filter?.search,
-        page: filter?.page,
-        order: '{createdAt: -1}',
-        filter: 'userId: "$id"');
+  Future getStoryFollowing({int page}) async {
+    
+    final res = await PostSrv().query('getStoryFollowing', '', fragment: '''
+    data {
+id: _id
+content
+mediaPostIds
+commentIds
+userId
+like
+userLikeIds
+share
+userShareIds
+locationLat
+locationLong
+expirationDate
+publicity
+user {
+  id 
+  uid 
+  name 
+  email 
+  phone 
+  avatar
+  role 
+  reputationScore 
+  createdAt 
+  updatedAt 
+  friendIds
+}
+mediaPosts {
+id
+userId
+type
+like
+userLikeIds
+commentIds
+description
+url
+locationLat
+locationLong
+expirationDate
+publicity
+createdAt
+updatedAt
+}
+province
+district
+ward
+isUserLike
+isUserShare
+createdAt
+updatedAt
+}
+    ''');
+    return res['getStoryFollowing'];
+  }
+
+  Future getPostByUserId(String userId) async {
+    final res = await PostSrv()
+        .getList(limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}');
     return res;
   }
 
   Future createComment(
       {String postId, String mediaPostId, String content}) async {
     String data = '''
-content: "$content"
+content: """$content"""
 like: 0
     ''';
     if (mediaPostId != null) {
@@ -100,7 +156,9 @@ like: 0
   Future createPost(String content, String expirationDate, bool publicity,
       double lat, double long, List<String> images, List<String> videos) async {
     String data = '''
-content: "$content"
+content: """
+${content.toString()}
+"""
 publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}
@@ -132,7 +190,8 @@ user {
   uid 
   name 
   email 
-  phone 
+  phone
+  avatar
   role 
   reputationScore 
   createdAt 
@@ -159,6 +218,12 @@ createdAt
 updatedAt
     ''');
     return res["createPost"];
+  }
+
+  Future deletePost(String postId) async {
+    final res = await PostSrv()
+        .delete(postId);
+    return res;
   }
 
   Future getAllCommentByPostId({String postId, GraphqlFilter filter}) async {

@@ -1,4 +1,4 @@
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/share/import.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class AboutPage extends StatefulWidget {

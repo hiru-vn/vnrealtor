@@ -1,11 +1,12 @@
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/post/post_history_page.dart';
-import 'package:vnrealtor/modules/profile/profile_page.dart';
-import 'package:vnrealtor/modules/profile/verify_account_page1.dart';
-import 'package:vnrealtor/modules/setting/about_page.dart';
-import 'package:vnrealtor/modules/setting/point_page.dart';
-import 'package:vnrealtor/modules/setting/policy_page.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/post/post_history_page.dart';
+import 'package:datcao/modules/profile/profile_page.dart';
+import 'package:datcao/modules/profile/verify_account_page1.dart';
+import 'package:datcao/modules/setting/about_page.dart';
+import 'package:datcao/modules/setting/point_page.dart';
+import 'package:datcao/modules/setting/policy_page.dart';
+import 'package:datcao/modules/setting/privacy_page.dart';
+import 'package:datcao/share/import.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -26,13 +27,13 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     final list = [
-      {
-        "name": "Bài đăng của tôi",
-        "img": "assets/image/post.png",
-        "action": () {
-          PostHistoryPage.navigate();
-        }
-      },
+      // {
+      //   "name": "Bài đăng của tôi",
+      //   "img": "assets/image/post.png",
+      //   "action": () {
+      //     PostHistoryPage.navigate();
+      //   }
+      // },
       {
         "name": "Điểm uy tín: 23",
         "img": "assets/image/star_point.png",
@@ -62,10 +63,17 @@ class _SettingPageState extends State<SettingPage> {
         }
       },
       {
-        "name": "Điều khoản & chính sách",
+        "name": "Điều khoản sử dụng",
         "img": "assets/image/policy.png",
         "action": () {
           PolicyPage.navigate();
+        }
+      },
+      {
+        "name": "Chính sách bảo mật",
+        "img": "assets/image/privacy.png",
+        "action": () {
+          PrivacyPage.navigate();
         }
       },
       {
@@ -99,6 +107,7 @@ class _SettingPageState extends State<SettingPage> {
       // },
     ];
     return Scaffold(
+      backgroundColor: ptBackgroundColor(context),
       appBar: AppBar(
         backgroundColor: ptPrimaryColorLight(context),
         centerTitle: true,
@@ -126,10 +135,11 @@ class _SettingPageState extends State<SettingPage> {
                       ),
                       child: Center(
                         child: CircleAvatar(
-                          radius: 25,
-                          backgroundImage:
-                              AssetImage('assets/image/avatar.jpeg'),
-                        ),
+                            radius: 25,
+                            backgroundImage: AuthBloc.instance.userModel.avatar != null
+                                ? NetworkImage(AuthBloc.instance.userModel.avatar)
+                                : AssetImage('assets/image/default_avatar.png'),
+                          ),
                       ),
                     ),
                     SizedBox(width: 20),
@@ -257,12 +267,11 @@ class _SettingPageState extends State<SettingPage> {
                   );
                 }),
               ),
-              SizedBox(height: 15),
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: ExpandBtn(
                   elevation: 0,
-                  text: 'Logout',
+                  text: 'Đăng xuất',
                   borderRadius: 5,
                   onPress: () {
                     AuthBloc.instance.logout();
@@ -277,7 +286,7 @@ class _SettingPageState extends State<SettingPage> {
                 'v1.0.21',
                 style: ptSmall().copyWith(color: Colors.black54),
               ),
-              SizedBox(height: 50),
+              SizedBox(height: 65),
             ],
           ),
         ),
@@ -301,7 +310,7 @@ class ProfileItemCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Card(
-          elevation: 3,
+          // elevation: 3,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(6),
           ),

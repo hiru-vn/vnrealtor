@@ -1,5 +1,5 @@
-import 'package:vnrealtor/modules/repo/verification_repo.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/repo/verification_repo.dart';
+import 'package:datcao/share/import.dart';
 
 class VerificationBloc extends ChangeNotifier {
   VerificationBloc._privateConstructor();

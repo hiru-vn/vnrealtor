@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:dash_chat/dash_chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/utils/file_util.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/utils/file_util.dart';
 import 'package:popup_menu/popup_menu.dart';
 import 'package:provider/provider.dart';
-import 'package:vnrealtor/navigator.dart';
+import 'package:datcao/navigator.dart';
 
 import 'google_map_widget.dart';
 import 'import/animated_search_bar.dart';
@@ -65,7 +65,8 @@ class _InboxChatState extends State<InboxChat> {
       _inboxBloc = Provider.of<InboxBloc>(context);
       _authBloc = Provider.of<AuthBloc>(
           context); // this just to get userId, avatar, name. you can replace this with your params
-      loadUsers().then((value) => initMenu());
+      initMenu();
+      loadUsers();
       loadFirst20Message();
     }
     super.didChangeDependencies();
@@ -73,8 +74,8 @@ class _InboxChatState extends State<InboxChat> {
 
   @override
   void initState() {
-    for (final id in widget.group.users) {
-      _users.add(ChatUser(uid: id, name: ''));
+    for (final user in widget.group.users) {
+      _users.add(ChatUser(uid: user.id, name: user.name));
     }
     super.initState();
   }
@@ -86,7 +87,7 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   Future<void> loadUsers() async {
-    final fbUsers = await _inboxBloc.getUsers(widget.group.users);
+    final fbUsers = widget.group.users;
     _fbUsers.addAll(fbUsers);
     for (final fbUser in fbUsers) {
       final user = _users.firstWhere((user) => user.uid == fbUser.id);
@@ -189,7 +190,15 @@ class _InboxChatState extends State<InboxChat> {
   void onSend(ChatMessage message) {
     if (_file != null) {
       // add a loading gif
-      message.image = 'assets/image/loading.gif';
+      message.customProperties = <String, dynamic>{};
+      if (FileUtil.getFbUrlFileType(_file.path) == FileType.video) {
+        message.image = 'assets/image/loading_video.gif';
+        message.customProperties['cache_file_path'] = _file.path;
+      }
+      if (FileUtil.getFbUrlFileType(_file.path) == FileType.image) {
+        message.image = 'assets/image/loading.gif';
+        message.customProperties['cache_file_path'] = _file.path;
+      }
     }
     setState(() {
       messages.add(message);
@@ -226,7 +235,6 @@ class _InboxChatState extends State<InboxChat> {
               _authBloc.userModel.avatar,
               filePath: fileUrl);
         });
-
         setState(() {
           _file = null;
         });
@@ -299,6 +307,14 @@ class _InboxChatState extends State<InboxChat> {
       backgroundColor: Colors.grey[50],
       body: DashChat(
         messageImageBuilder: (url, [messages]) {
+          if (url == 'assets/image/loading.gif') {
+            if (messages.customProperties == null) return Image.asset(url);
+            final mes = messages.customProperties['cache_file_path'];
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.file(File(mes)),
+            );
+          }
           if (FileUtil.getFbUrlFileType(url) == FileType.gif) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -317,6 +333,9 @@ class _InboxChatState extends State<InboxChat> {
               child: ImageViewNetwork(
                 url: url,
                 borderRadius: 10,
+                cacheFilePath: messages.customProperties != null
+                    ? messages.customProperties['cache_file_path']
+                    : null,
               ),
             );
 

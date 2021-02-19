@@ -10,6 +10,8 @@ class UserModel {
   String createdAt;
   String updatedAt;
   String avatar;
+  List<String> followerIds;
+  List<String> followingIds;
 
   UserModel(
       {this.id,
@@ -22,7 +24,9 @@ class UserModel {
       this.friendIds,
       this.createdAt,
       this.updatedAt,
-      this.avatar});
+      this.avatar,
+      this.followerIds,
+      this.followingIds});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -32,10 +36,15 @@ class UserModel {
     phone = json['phone'];
     role = json['role'];
     reputationScore = json['reputationScore'];
-    friendIds = json['friendIds']!=null? json['friendIds'].cast<String>(): [];
+    friendIds =
+        json['friendIds'] != null ? json['friendIds'].cast<String>() : [];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     avatar = json['avatar'];
+    followerIds =
+        json['followerIds'] != null ? json['followerIds'].cast<String>() : [];
+    followingIds =
+        json['followingIds'] != null ? json['followingIds'].cast<String>() : [];
   }
 
   Map<String, dynamic> toJson() {
@@ -50,6 +59,8 @@ class UserModel {
     data['friendIds'] = this.friendIds;
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
+    data['followingIds'] = this.followingIds;
+    data['followerIds'] = this.followerIds;
     return data;
   }
 }
