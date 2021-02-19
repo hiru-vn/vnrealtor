@@ -288,4 +288,18 @@ updatedAt
         fragment: 'id');
     return res;
   }
+
+  Future increaseLikeCmt({String cmtId}) async {
+    final res = await PostSrv().mutate(
+        'increaseLikeCmt', 'cmtId: "$cmtId"',
+        fragment: 'id');
+    return res;
+  }
+
+  Future decreaseLikeCmt({String cmtId}) async {
+    final res = await PostSrv().mutate(
+        'decreaseLikeCmt', 'cmtId: "$cmtId"',
+        fragment: 'id');
+    return res;
+  }
 }

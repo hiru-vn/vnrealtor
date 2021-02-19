@@ -2,6 +2,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/post/comment_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/share/import.dart';
 
@@ -56,6 +57,7 @@ class _PostDetailState extends State<PostDetail> {
         like: 0,
         user: AuthBloc.instance.userModel,
         updatedAt: DateTime.now().toIso8601String()));
+    setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res =
         await _postBloc.createComment(text, postId: widget.postModel?.id);
@@ -99,94 +101,7 @@ class _PostDetailState extends State<PostDetail> {
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             final comment = comments[index];
-                            return CustomListTile(
-                              onTap: () {
-                                // InboxChat.navigate();
-                              },
-                              tileColor: Colors.white,
-                              leading: Container(
-                                padding: EdgeInsets.all(1),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 1, color: Colors.black45),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {},
-                                  child: CircleAvatar(
-                                    radius: 18,
-                                    backgroundImage: comment.user.avatar != null
-                                        ? NetworkImage(comment.user.avatar)
-                                        : AssetImage(
-                                            'assets/image/default_avatar.png'),
-                                  ),
-                                ),
-                              ),
-                              title: Padding(
-                                padding: const EdgeInsets.only(top: 13),
-                                child: Text(
-                                  comment.user?.name ?? '',
-                                  style: ptTitle().copyWith(
-                                      color: Colors.black87, fontSize: 15),
-                                ),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 2,
-                                  ),
-                                  Text(
-                                    comment.content ?? '',
-                                    style: ptTiny().copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black87,
-                                        fontSize: 13.5),
-                                  ),
-                                  SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        Formart.formatToDate(DateTime.tryParse(
-                                            comment.updatedAt)),
-                                        style: ptTiny(),
-                                      ),
-                                      // SizedBox(
-                                      //   width: 50,
-                                      //   child: Center(
-                                      //     child: Text(
-                                      //       'Trả lời',
-                                      //       style: ptSmall(),
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                      Spacer(),
-                                      GestureDetector(
-                                        child: Row(children: [
-                                          Icon(
-                                            MdiIcons.thumbUp,
-                                            size: 17,
-                                            color: comment.isLike
-                                                ? Colors.red
-                                                : Colors.grey[200],
-                                          ),
-                                          SizedBox(width: 4),
-                                          Text(
-                                            comment.like.toString(),
-                                            style: ptTiny(),
-                                          )
-                                        ]),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 4,
-                                  ),
-                                ],
-                              ),
-                            );
+                            return new CommentWidget(comment: comment);
                           },
                           separatorBuilder: (context, index) =>
                               SizedBox.shrink(),

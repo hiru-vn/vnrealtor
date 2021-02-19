@@ -188,6 +188,17 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> likeComment(String commentId) async {
+    try {
+      final res = await PostRepo().increaseLikeCmt(cmtId: commentId);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> unlikePost(String postId) async {
     try {
       final res = await PostRepo().decreaseLikePost(postId: postId);
@@ -203,6 +214,17 @@ class PostBloc extends ChangeNotifier {
     try {
       final res =
           await PostRepo().decreaseLikeMediaPost(postMediaId: postMediaId);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> unlikeComment(String commentId) async {
+    try {
+      final res = await PostRepo().decreaseLikeCmt(cmtId: commentId);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.toString());

@@ -1,3 +1,4 @@
+import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -50,6 +51,7 @@ class _CommentPageState extends State<CommentPage> {
         like: 0,
         user: AuthBloc.instance.userModel,
         updatedAt: DateTime.now().toIso8601String()));
+    setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text,
         postId: widget.post?.id, mediaPostId: widget.mediaPost?.id);
@@ -77,7 +79,8 @@ class _CommentPageState extends State<CommentPage> {
       res =
           await _postBloc.getAllCommentByPostId(widget.post.id, filter: filter);
     if (isMediaPost)
-      res = await _postBloc.getListMediaPostComment(widget.mediaPost.id, filter: filter);
+      res = await _postBloc.getListMediaPostComment(widget.mediaPost.id,
+          filter: filter);
     if (res == null) return;
     if (res.isSuccess) {
       if (mounted)
@@ -135,94 +138,7 @@ class _CommentPageState extends State<CommentPage> {
                           itemCount: comments.length,
                           itemBuilder: (context, index) {
                             final comment = comments[index];
-                            return CustomListTile(
-                              onTap: () {
-                                // InboxChat.navigate();
-                              },
-                              tileColor: Colors.white,
-                              leading: Container(
-                                padding: EdgeInsets.all(1),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 1, color: Colors.black45),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {},
-                                  child: CircleAvatar(
-                                    radius: 18,
-                                    backgroundImage: comment.user.avatar != null
-                                        ? NetworkImage(comment.user.avatar)
-                                        : AssetImage(
-                                            'assets/image/default_avatar.png'),
-                                  ),
-                                ),
-                              ),
-                              title: Padding(
-                                padding: const EdgeInsets.only(top: 13),
-                                child: Text(
-                                  comment.user?.name ?? '',
-                                  style: ptTitle().copyWith(
-                                      color: Colors.black87, fontSize: 15),
-                                ),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 2,
-                                  ),
-                                  Text(
-                                    comment.content ?? '',
-                                    style: ptTiny().copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black87,
-                                        fontSize: 13.5),
-                                  ),
-                                  SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        Formart.formatToDate(DateTime.tryParse(
-                                            comment.updatedAt)),
-                                        style: ptTiny(),
-                                      ),
-                                      // SizedBox(
-                                      //   width: 50,
-                                      //   child: Center(
-                                      //     child: Text(
-                                      //       'Trả lời',
-                                      //       style: ptSmall(),
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                      Spacer(),
-                                      GestureDetector(
-                                        child: Row(children: [
-                                          Icon(
-                                            MdiIcons.thumbUp,
-                                            size: 17,
-                                            color: comment.isLike
-                                                ? Colors.red
-                                                : Colors.grey[200],
-                                          ),
-                                          SizedBox(width: 4),
-                                          Text(
-                                            comment.like.toString(),
-                                            style: ptTiny(),
-                                          )
-                                        ]),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 4,
-                                  ),
-                                ],
-                              ),
-                            );
+                            return new CommentWidget(comment: comment);
                           },
                           separatorBuilder: (context, index) =>
                               SizedBox.shrink(),
@@ -273,6 +189,138 @@ class _CommentPageState extends State<CommentPage> {
             ),
           ),
           if (comments == null) kLoadingSpinner
+        ],
+      ),
+    );
+  }
+}
+
+class CommentWidget extends StatefulWidget {
+  final CommentModel comment;
+
+  const CommentWidget({Key key, this.comment}) : super(key: key);
+  @override
+  _CommentWidgetState createState() => _CommentWidgetState();
+}
+
+class _CommentWidgetState extends State<CommentWidget> {
+  bool _isLike = false;
+  PostBloc _postBloc;
+
+  @override
+  void initState() {
+    if (widget.comment.userLikeIds != null)
+      _isLike =
+          widget.comment.userLikeIds.contains(AuthBloc.instance.userModel.id);
+
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_postBloc == null) {
+      _postBloc = Provider.of<PostBloc>(context);
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomListTile(
+      onTap: () {
+        // ProfileOtherPage.navigate(user);
+      },
+      tileColor: Colors.white,
+      leading: Container(
+        padding: EdgeInsets.all(1),
+        decoration: BoxDecoration(
+          border: Border.all(width: 1, color: Colors.black45),
+          shape: BoxShape.circle,
+        ),
+        child: GestureDetector(
+          onTap: () {},
+          child: CircleAvatar(
+            radius: 18,
+            backgroundImage: widget.comment.user.avatar != null
+                ? NetworkImage(widget.comment.user.avatar)
+                : AssetImage('assets/image/default_avatar.png'),
+          ),
+        ),
+      ),
+      title: Padding(
+        padding: const EdgeInsets.only(top: 13),
+        child: Text(
+          widget.comment.user?.name ?? '',
+          style: ptTitle().copyWith(color: Colors.black87, fontSize: 15),
+        ),
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 2,
+          ),
+          Text(
+            widget.comment.content ?? '',
+            style: ptTiny().copyWith(
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+                fontSize: 13.5),
+          ),
+          SizedBox(
+            height: 2,
+          ),
+          Row(
+            children: [
+              Text(
+                Formart.formatToDate(
+                    DateTime.tryParse(widget.comment.updatedAt)),
+                style: ptTiny(),
+              ),
+              // SizedBox(
+              //   width: 50,
+              //   child: Center(
+              //     child: Text(
+              //       'Trả lời',
+              //       style: ptSmall(),
+              //     ),
+              //   ),
+              // ),
+              Spacer(),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isLike = !_isLike;
+                  });
+                  if (_isLike) {
+                    widget.comment.userLikeIds
+                        .add(AuthBloc.instance.userModel.id);
+                    widget.comment.like++;
+                    _postBloc.likeComment(widget.comment.id);
+                  } else {
+                    if (widget.comment.like > 0) widget.comment.like--;
+                    _postBloc.unlikeComment(widget.comment.id);
+                  }
+                  setState(() {});
+                },
+                child: Row(children: [
+                  Icon(
+                    MdiIcons.thumbUp,
+                    size: 17,
+                    color: _isLike ? ptPrimaryColor(context) : Colors.grey[200],
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    widget.comment.like.toString(),
+                    style: ptTiny(),
+                  )
+                ]),
+              )
+            ],
+          ),
+          SizedBox(
+            height: 4,
+          ),
         ],
       ),
     );

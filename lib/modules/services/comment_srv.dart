@@ -23,5 +23,6 @@ user {
 }
 createdAt: DateTime
 updatedAt: DateTime
+userLikeIds
   ''');
 }
