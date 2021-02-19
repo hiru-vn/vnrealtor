@@ -32,11 +32,14 @@ class _PostDetailState extends State<PostDetail> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
-      _getComments(filter: GraphqlFilter(limit: 20));
       if (widget.postModel != null) {
         _post = widget.postModel;
-      } else
+        _getComments(_post.id, filter: GraphqlFilter(limit: 20));
+      } else {
         _getPost();
+        _getComments(widget.postId, filter: GraphqlFilter(limit: 20));
+      }
+      
     }
     super.didChangeDependencies();
   }
@@ -47,15 +50,16 @@ class _PostDetailState extends State<PostDetail> {
       setState(() {
         _post = res.data;
       });
+      
     } else {
       navigatorKey.currentState.maybePop();
       showToast(res.errMessage, context);
     }
   }
 
-  Future _getComments({GraphqlFilter filter}) async {
+  Future _getComments(String postId, {GraphqlFilter filter}) async {
     BaseResponse res =
-        await _postBloc.getAllCommentByPostId(_post.id, filter: filter);
+        await _postBloc.getAllCommentByPostId(postId, filter: filter);
     if (res == null) return;
     if (res.isSuccess) {
       if (mounted)
