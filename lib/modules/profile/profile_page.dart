@@ -85,9 +85,22 @@ class _ProfilePageState extends State<ProfilePage>
                           assetImg: 'assets/image/no_post.png',
                           content: 'Bạn chưa có bài đăng nào.',
                         )),
-              ListView(
-                children: [],
-              ),
+              _postBloc.savePosts == null
+                  ? kLoadingSpinner
+                  : (_postBloc.savePosts.length != 0
+                      ? ListView.separated(
+                          itemCount: _postBloc.savePosts.length,
+                          itemBuilder: (context, index) {
+                            final post = _postBloc.savePosts[index];
+                            return PostWidget(post);
+                          },
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: 15),
+                        )
+                      : EmptyWidget(
+                          assetImg: 'assets/image/no_post.png',
+                          content: 'Kho lưu trữ trống.',
+                        )),
             ],
           ),
         ),

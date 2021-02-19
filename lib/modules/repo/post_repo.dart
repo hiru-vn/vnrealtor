@@ -68,7 +68,6 @@ updatedAt
   }
 
   Future getStoryFollowing({int page}) async {
-    
     final res = await PostSrv().query('getStoryFollowing', '', fragment: '''
     data {
 id: _id
@@ -125,9 +124,17 @@ updatedAt
     return res['getStoryFollowing'];
   }
 
+  Future getPostList(List<String> ids) async {
+    final res = await PostSrv().getList(
+        // limit: 20,
+        order: '{createdAt: -1}',
+        filter: '{_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
+    return res;
+  }
+
   Future getPostByUserId(String userId) async {
-    final res = await PostSrv()
-        .getList(limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}');
+    final res = await PostSrv().getList(
+        limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}');
     return res;
   }
 
@@ -221,9 +228,16 @@ updatedAt
   }
 
   Future deletePost(String postId) async {
-    final res = await PostSrv()
-        .delete(postId);
+    final res = await PostSrv().delete(postId);
     return res;
+  }
+
+  Future savePost(String postId) async {
+    final res =
+        await PostSrv().mutate('savePost', 'postId: "$postId"', fragment: '''
+        id
+        ''');
+    return res['savePost'];
   }
 
   Future getAllCommentByPostId({String postId, GraphqlFilter filter}) async {

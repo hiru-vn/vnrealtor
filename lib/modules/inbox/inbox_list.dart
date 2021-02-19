@@ -106,8 +106,10 @@ class _InboxListState extends State<InboxList>
                                   : ptBackgroundColor(context),
                           leading: CircleAvatar(
                             radius: 22,
-                            backgroundImage: AssetImage(group.image ??
-                                'assets/image/default_avatar.png'),
+                            backgroundImage: group.image != null
+                                ? NetworkImage(group.image)
+                                : AssetImage(group.image ??
+                                    'assets/image/default_avatar.png'),
                           ),
                           title: Text(
                             nameGroup,

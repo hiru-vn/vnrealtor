@@ -1,3 +1,4 @@
+import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
@@ -10,10 +11,12 @@ class PostBloc extends ChangeNotifier {
   List<PostModel> post = [];
   List<PostModel> myPosts;
   List<PostModel> stories = [];
+  List<PostModel> savePosts = [];
 
   Future init() async {
     getNewFeed(filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
     getStoryFollowing();
+    getListPost(AuthBloc.instance.userModel.savedPostIds);
   }
 
   Future<BaseResponse> getNewFeed({GraphqlFilter filter}) async {
@@ -201,6 +204,32 @@ class PostBloc extends ChangeNotifier {
       final res =
           await PostRepo().decreaseLikeMediaPost(postMediaId: postMediaId);
       return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> savePost(PostModel post) async {
+    try {
+      savePosts.add(post);
+      final res = await PostRepo().savePost(post.id);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getListPost(List<String> ids) async {
+    try {
+      final res = await PostRepo().getPostList(ids);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      savePosts = list;
+      return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e.toString());
     } finally {
