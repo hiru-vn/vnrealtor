@@ -24,11 +24,13 @@ class _PostWidgetState extends State<PostWidget> {
   final GlobalKey<State<StatefulWidget>> moreBtnKey =
       GlobalKey<State<StatefulWidget>>();
   bool _isLike = false;
+  bool _isSave = false;
   PostBloc _postBloc;
 
   @override
   void initState() {
     _isLike = widget.post.isUserLike;
+    _isSave = AuthBloc.instance.userModel.savedPostIds.contains(widget.post.id);
 
     super.initState();
   }
@@ -164,7 +166,7 @@ class _PostWidgetState extends State<PostWidget> {
                       right: 10,
                       child: Container(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                         decoration: BoxDecoration(
                           color: Colors.blue.withOpacity(0.7),
                           borderRadius: BorderRadius.circular(15),
@@ -180,6 +182,7 @@ class _PostWidgetState extends State<PostWidget> {
                           child: Text(
                             'Xem vị trí',
                             style: TextStyle(
+                                fontSize: 12.5,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 1),
@@ -318,26 +321,46 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
                 Spacer(),
                 GestureDetector(
-                  onTap: () => showAlertDialog(context, 'Đang phát triển',
-                      navigatorKey: navigatorKey),
+                  onTap: () async {
+                    if (_isSave) {
+                      showToast('Bài viết đã được lưu', context,
+                          isSuccess: true);
+                      return;
+                    }
+                    setState(() {
+                      _isSave = true;
+                    });
+                    final res = await _postBloc.savePost(widget.post);
+                    if (res.isSuccess) {
+                    } else {
+                      setState(() {
+                        _isSave = false;
+                        _postBloc.myPosts.remove(widget.post);
+                      });
+                      showToast(res.errMessage, context);
+                    }
+                  },
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          MdiIcons.bookmarkOutline,
-                          color: ptPrimaryColor(context),
-                          size: 24,
-                        ),
+                        !_isSave
+                            ? Icon(
+                                MdiIcons.bookmarkOutline,
+                                color: ptPrimaryColor(context),
+                                size: 24,
+                              )
+                            : Icon(
+                                MdiIcons.bookmark,
+                                color: ptPrimaryColor(context),
+                                size: 24,
+                              ),
                         SizedBox(
                           height: 5,
                         ),
-                        GestureDetector(
-                          onTap: () {} ,
-                          child: Text('Lưu',
-                              style: ptTiny()
-                                  .copyWith(color: ptPrimaryColor(context))),
-                        ),
+                        Text('Lưu',
+                            style: ptTiny()
+                                .copyWith(color: ptPrimaryColor(context))),
                       ]),
                 ),
                 SizedBox(
