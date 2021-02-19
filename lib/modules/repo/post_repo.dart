@@ -128,7 +128,13 @@ updatedAt
     final res = await PostSrv().getList(
         // limit: 20,
         order: '{createdAt: -1}',
-        filter: '{_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
+        filter:
+            '{_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
+    return res;
+  }
+
+  Future getOnePost(String id) async {
+    final res = await PostSrv().getItem(id);
     return res;
   }
 
@@ -290,16 +296,14 @@ updatedAt
   }
 
   Future increaseLikeCmt({String cmtId}) async {
-    final res = await PostSrv().mutate(
-        'increaseLikeCmt', 'cmtId: "$cmtId"',
-        fragment: 'id');
+    final res = await PostSrv()
+        .mutate('increaseLikeCmt', 'cmtId: "$cmtId"', fragment: 'id');
     return res;
   }
 
   Future decreaseLikeCmt({String cmtId}) async {
-    final res = await PostSrv().mutate(
-        'decreaseLikeCmt', 'cmtId: "$cmtId"',
-        fragment: 'id');
+    final res = await PostSrv()
+        .mutate('decreaseLikeCmt', 'cmtId: "$cmtId"', fragment: 'id');
     return res;
   }
 }

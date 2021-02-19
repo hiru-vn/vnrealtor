@@ -258,4 +258,15 @@ class PostBloc extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<BaseResponse> getOnePost(String id) async {
+    try {
+      final res = await PostRepo().getOnePost(id);
+      return BaseResponse.success(PostModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
 }

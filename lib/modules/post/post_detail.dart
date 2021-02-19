@@ -8,11 +8,13 @@ import 'package:datcao/share/import.dart';
 
 class PostDetail extends StatefulWidget {
   final PostModel postModel;
+  final String postId;
 
-  const PostDetail({Key key, this.postModel}) : super(key: key);
-  static Future navigate(PostModel postModel) {
+  const PostDetail({Key key, this.postModel, this.postId}) : super(key: key);
+  static Future navigate(PostModel postModel, {String postId}) {
     return navigatorKey.currentState.push(pageBuilder(PostDetail(
       postModel: postModel,
+      postId: postId,
     )));
   }
 
@@ -24,19 +26,36 @@ class _PostDetailState extends State<PostDetail> {
   List<CommentModel> comments;
   TextEditingController _commentC = TextEditingController();
   PostBloc _postBloc;
+  PostModel _post;
 
   @override
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
       _getComments(filter: GraphqlFilter(limit: 20));
+      if (widget.postModel != null) {
+        _post = widget.postModel;
+      } else
+        _getPost();
     }
     super.didChangeDependencies();
   }
 
+  Future _getPost() async {
+    final res = await _postBloc.getOnePost(widget.postId);
+    if (res.isSuccess) {
+      setState(() {
+        _post = res.data;
+      });
+    } else {
+      navigatorKey.currentState.maybePop();
+      showToast(res.errMessage, context);
+    }
+  }
+
   Future _getComments({GraphqlFilter filter}) async {
-    BaseResponse res = await _postBloc
-        .getAllCommentByPostId(widget.postModel.id, filter: filter);
+    BaseResponse res =
+        await _postBloc.getAllCommentByPostId(_post.id, filter: filter);
     if (res == null) return;
     if (res.isSuccess) {
       if (mounted)
@@ -59,21 +78,26 @@ class _PostDetailState extends State<PostDetail> {
         updatedAt: DateTime.now().toIso8601String()));
     setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
-    BaseResponse res =
-        await _postBloc.createComment(text, postId: widget.postModel?.id);
+    BaseResponse res = await _postBloc.createComment(text, postId: _post?.id);
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
-      widget.postModel.commentIds.add((res.data as CommentModel).id);
+      _post.commentIds.add((res.data as CommentModel).id);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_post == null)
+      return Container(
+          height: deviceHeight(context),
+          width: deviceWidth(context),
+          color: Colors.white,
+          child: kLoadingSpinner);
     return Scaffold(
       appBar: AppBar1(
         centerTitle: true,
-        title: 'Bài viết của ${widget.postModel.user.name}',
+        title: 'Bài viết của ${_post.user.name}',
         automaticallyImplyLeading: true,
         bgColor: ptSecondaryColor(context),
         textColor: ptPrimaryColor(context),
@@ -90,7 +114,7 @@ class _PostDetailState extends State<PostDetail> {
               child: Column(
                 children: [
                   PostWidget(
-                    widget.postModel,
+                    _post,
                     commentCallBack: () {},
                   ),
                   comments != null
