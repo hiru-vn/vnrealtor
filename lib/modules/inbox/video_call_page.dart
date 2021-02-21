@@ -289,7 +289,7 @@ class _VideoCallPageState extends State<VideoCallPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_users.length < 2)
+    if (_users.length < 1)
       return DialScreen(
         names: widget.users
             .where((element) => element.id != AuthBloc.instance.userModel.id)
