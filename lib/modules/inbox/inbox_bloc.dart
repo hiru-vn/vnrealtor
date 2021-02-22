@@ -11,7 +11,7 @@ class InboxBloc extends ChangeNotifier {
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  List<FbInboxGroupModel> groupInboxList = [];
+  List<FbInboxGroupModel> groupInboxList;
 
   DocumentReference getGroup(String id) {
     return firestore.collection('group').doc(id);

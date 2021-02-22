@@ -84,6 +84,7 @@ class _NotificationPageState extends State<NotificationPage>
             child: TabBarView(controller: _tabController, children: [
               NotificationTab(
                 list: _notificationBloc.notifications,
+                notificationBloc: _notificationBloc,
               ),
               //FriendRequestTab()
               FollowTab(
@@ -99,10 +100,16 @@ class _NotificationPageState extends State<NotificationPage>
 
 class NotificationTab extends StatelessWidget {
   final List<NotificationModel> list;
+  final NotificationBloc notificationBloc;
 
-  const NotificationTab({Key key, this.list}) : super(key: key);
+  const NotificationTab({Key key, this.list, this.notificationBloc})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
+    if (notificationBloc.isLoadNoti) return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ListSkeleton(),
+    );
     return list.length > 0
         ? RefreshIndicator(
             color: ptPrimaryColor(context),
@@ -120,8 +127,9 @@ class NotificationTab extends StatelessWidget {
                 onTap: () {
                   if (['LIKE', 'COMMENT', 'SHARE']
                       .contains(list[index].type.toUpperCase())) {
-                        PostDetail.navigate(null, postId: list[index].data['modelId']);
-                      }
+                    PostDetail.navigate(null,
+                        postId: list[index].data['modelId']);
+                  }
                 },
                 tileColor: ptBackgroundColor(context),
                 leading: CircleAvatar(

@@ -39,7 +39,6 @@ class _PostDetailState extends State<PostDetail> {
         _getPost();
         _getComments(widget.postId, filter: GraphqlFilter(limit: 20));
       }
-      
     }
     super.didChangeDependencies();
   }
@@ -50,7 +49,6 @@ class _PostDetailState extends State<PostDetail> {
       setState(() {
         _post = res.data;
       });
-      
     } else {
       navigatorKey.currentState.maybePop();
       showToast(res.errMessage, context);
@@ -92,16 +90,10 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   Widget build(BuildContext context) {
-    if (_post == null)
-      return Container(
-          height: deviceHeight(context),
-          width: deviceWidth(context),
-          color: Colors.white,
-          child: kLoadingSpinner);
     return Scaffold(
       appBar: AppBar1(
         centerTitle: true,
-        title: 'Bài viết của ${_post.user.name}',
+        title: _post != null ? 'Bài viết của ${_post.user.name}' : '',
         automaticallyImplyLeading: true,
         bgColor: ptSecondaryColor(context),
         textColor: ptPrimaryColor(context),
@@ -117,10 +109,12 @@ class _PostDetailState extends State<PostDetail> {
               padding: const EdgeInsets.only(bottom: 100),
               child: Column(
                 children: [
-                  PostWidget(
-                    _post,
-                    commentCallBack: () {},
-                  ),
+                  _post == null
+                      ? PostSkeleton(count: 1,)
+                      : PostWidget(
+                          _post,
+                          commentCallBack: () {},
+                        ),
                   comments != null
                       ? ListView.separated(
                           padding: EdgeInsets.zero,
@@ -134,7 +128,7 @@ class _PostDetailState extends State<PostDetail> {
                           separatorBuilder: (context, index) =>
                               SizedBox.shrink(),
                         )
-                      : SizedBox.shrink(),
+                      : ListSkeleton(),
                 ],
               ),
             ),
