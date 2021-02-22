@@ -2,6 +2,7 @@ import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/notification.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
@@ -116,6 +117,12 @@ class NotificationTab extends StatelessWidget {
               ),
               itemCount: list.length,
               itemBuilder: (context, index) => ListTile(
+                onTap: () {
+                  if (['LIKE', 'COMMENT', 'SHARE']
+                      .contains(list[index].type.toUpperCase())) {
+                        PostDetail.navigate(null, postId: list[index].data['modelId']);
+                      }
+                },
                 tileColor: ptBackgroundColor(context),
                 leading: CircleAvatar(
                   radius: 22,
