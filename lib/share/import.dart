@@ -30,3 +30,4 @@ export 'package:datcao/utils/validator.dart';
 export 'package:datcao/modules/repo/filter.dart';
 export 'package:datcao/modules/services/base_response.dart';
 export 'package:datcao/share/widget/loading_widget.dart';
+export 'package:datcao/share/widget/skeleton_loader.dart';

@@ -96,100 +96,95 @@ class _CommentPageState extends State<CommentPage> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       initialChildSize: 1,
-      builder: (context, controller) => Stack(
-        children: [
-          Scaffold(
-            appBar: AppBar1(
-              title: 'Comments',
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: DropdownButton(
-                      value: sort,
-                      style: ptBody().copyWith(color: Colors.black87),
-                      items: [
-                        DropdownMenuItem(
-                          child: Text('Mới nhất'),
-                          value: '{createdAt: -1}',
-                        ),
-                        DropdownMenuItem(
-                          child: Text('Cũ nhất'),
-                          value: '{createdAt: 1}',
-                        ),
-                      ],
-                      underline: SizedBox.shrink(),
-                      onChanged: (val) {
-                        setState(() {
-                          sort = val;
-                        });
-                        _getComments(
-                            filter: GraphqlFilter(limit: 20, order: val));
-                      }),
-                )
-              ],
-            ),
-            body: Column(
-              children: [
-                comments != null
-                    ? Expanded(
-                        child: ListView.separated(
-                          controller: controller,
-                          padding: EdgeInsets.zero,
-                          itemCount: comments.length,
-                          itemBuilder: (context, index) {
-                            final comment = comments[index];
-                            return new CommentWidget(comment: comment);
-                          },
-                          separatorBuilder: (context, index) =>
-                              SizedBox.shrink(),
-                        ),
-                      )
-                    : Spacer(),
-                Container(
-                  width: deviceWidth(context),
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  color: ptBackgroundColor(context),
-                  child: Center(
-                    child: TextField(
-                      controller: _commentC,
-                      maxLines: null,
-                      maxLength: 200,
-                      onSubmitted: _comment,
-                      decoration: InputDecoration(
-                        suffixIcon: GestureDetector(
-                            onTap: () {
-                              _comment(_commentC.text);
-                            },
-                            child: Icon(Icons.send)),
-                        contentPadding: EdgeInsets.all(10),
-                        isDense: true,
-                        hintText: 'Viết bình luận.',
-                        border: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.black38,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.black38,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.black38,
-                          ),
-                        ),
-                        fillColor: Colors.white,
-                        filled: true,
+      builder: (context, controller) => Scaffold(
+        appBar: AppBar1(
+          title: 'Comments',
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DropdownButton(
+                  value: sort,
+                  style: ptBody().copyWith(color: Colors.black87),
+                  items: [
+                    DropdownMenuItem(
+                      child: Text('Mới nhất'),
+                      value: '{createdAt: -1}',
+                    ),
+                    DropdownMenuItem(
+                      child: Text('Cũ nhất'),
+                      value: '{createdAt: 1}',
+                    ),
+                  ],
+                  underline: SizedBox.shrink(),
+                  onChanged: (val) {
+                    setState(() {
+                      sort = val;
+                    });
+                    _getComments(
+                        filter: GraphqlFilter(limit: 20, order: val));
+                  }),
+            )
+          ],
+        ),
+        body: Column(
+          children: [
+            comments != null
+                ? Expanded(
+                    child: ListView.separated(
+                      controller: controller,
+                      padding: EdgeInsets.zero,
+                      itemCount: comments.length,
+                      itemBuilder: (context, index) {
+                        final comment = comments[index];
+                        return new CommentWidget(comment: comment);
+                      },
+                      separatorBuilder: (context, index) =>
+                          SizedBox.shrink(),
+                    ),
+                  )
+                : Expanded(child: ListSkeleton()),
+            Container(
+              width: deviceWidth(context),
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              color: ptBackgroundColor(context),
+              child: Center(
+                child: TextField(
+                  controller: _commentC,
+                  maxLines: null,
+                  maxLength: 200,
+                  onSubmitted: _comment,
+                  decoration: InputDecoration(
+                    suffixIcon: GestureDetector(
+                        onTap: () {
+                          _comment(_commentC.text);
+                        },
+                        child: Icon(Icons.send)),
+                    contentPadding: EdgeInsets.all(10),
+                    isDense: true,
+                    hintText: 'Viết bình luận.',
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.black38,
                       ),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.black38,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.black38,
+                      ),
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-          if (comments == null) kLoadingSpinner
-        ],
+          ],
+        ),
       ),
     );
   }

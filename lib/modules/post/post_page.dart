@@ -85,6 +85,7 @@ class _PostPageState extends State<PostPage> {
                     postBloc: _postBloc,
                     pageController: _pageController,
                   ),
+                  if (_postBloc.isLoadFeed) PostSkeleton(),
                   ListView.builder(
                     padding: EdgeInsets.all(0),
                     shrinkWrap: true,
@@ -216,17 +217,20 @@ class CreatePostCard extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
-            SizedBox(
-              height: 170,
-              child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: postBloc.stories.length,
-                  separatorBuilder: (context, index) => SizedBox(width: 15),
-                  itemBuilder: (context, index) {
-                    return _buildStoryWidget(postBloc.stories[index]);
-                  }),
-            ),
+            postBloc.isLoadStory
+                ? StorySkeleton()
+                : SizedBox(
+                    height: 170,
+                    child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        itemCount: postBloc.stories.length,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(width: 15),
+                        itemBuilder: (context, index) {
+                          return _buildStoryWidget(postBloc.stories[index]);
+                        }),
+                  ),
           ],
         ),
       ),
@@ -279,31 +283,34 @@ class CreatePostCard extends StatelessWidget {
                         postModel.user.name,
                         overflow: TextOverflow.fade,
                         style: ptTiny().copyWith(
-                            color: Colors.white, fontWeight: FontWeight.w600,),
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 6),
-              if (postModel.district!=null && postModel.district.trim() != "") Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colors.white,
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.location_pin, size: 16),
-                    SizedBox(width: 1),
-                    Text(
-                      postModel.district,
-                      style: ptTiny(),
-                    ),
-                  ],
-                ),
-              )
+              if (postModel.district != null && postModel.district.trim() != "")
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white,
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.location_pin, size: 16),
+                      SizedBox(width: 1),
+                      Text(
+                        postModel.district,
+                        style: ptTiny(),
+                      ),
+                    ],
+                  ),
+                )
             ]),
           ),
         ),

@@ -8,6 +8,9 @@ class PostBloc extends ChangeNotifier {
   PostBloc._privateConstructor();
   static final PostBloc instance = PostBloc._privateConstructor();
 
+  bool isLoadFeed = true;
+  bool isLoadStory = true;
+
   List<PostModel> post = [];
   List<PostModel> myPosts;
   List<PostModel> stories = [];
@@ -21,6 +24,8 @@ class PostBloc extends ChangeNotifier {
 
   Future<BaseResponse> getNewFeed({GraphqlFilter filter}) async {
     try {
+      isLoadFeed = true;
+      notifyListeners();
       final res = await PostRepo().getNewFeed(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
@@ -29,6 +34,7 @@ class PostBloc extends ChangeNotifier {
     } catch (e) {
       return BaseResponse.fail(e.toString());
     } finally {
+      isLoadFeed = false;
       notifyListeners();
     }
   }
@@ -63,6 +69,7 @@ class PostBloc extends ChangeNotifier {
 
   Future<BaseResponse> getStoryFollowing() async {
     try {
+      isLoadStory = true;
       final res = await PostRepo().getStoryFollowing();
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
@@ -71,6 +78,7 @@ class PostBloc extends ChangeNotifier {
     } catch (e) {
       return BaseResponse.fail(e.toString());
     } finally {
+      isLoadStory = false;
       notifyListeners();
     }
   }

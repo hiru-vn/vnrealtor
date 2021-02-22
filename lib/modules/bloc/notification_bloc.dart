@@ -7,10 +7,15 @@ class NotificationBloc extends ChangeNotifier {
   static final NotificationBloc instance =
       NotificationBloc._privateConstructor();
 
+  bool isLoadNoti = true;
   List<NotificationModel> notifications = [];
 
   Future<BaseResponse> getListNotification({GraphqlFilter filter}) async {
     try {
+      if (notifications.length == 0) {
+        isLoadNoti = true;
+        notifyListeners();
+      }
       final res = await NotificationRepo().getListNotification(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => NotificationModel.fromJson(e)).toList();
@@ -19,11 +24,13 @@ class NotificationBloc extends ChangeNotifier {
     } catch (e) {
       return BaseResponse.fail(e.toString());
     } finally {
+      isLoadNoti = false;
       notifyListeners();
     }
   }
 
-  Future<BaseResponse> sendNotiMessage(List<String> users, String content) async {
+  Future<BaseResponse> sendNotiMessage(
+      List<String> users, String content) async {
     try {
       final res = await NotificationRepo().sendNotiMessage(users, content);
       return BaseResponse.success(res);
