@@ -74,7 +74,7 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
         },
         body: Container(
           child: _posts == null
-              ? kLoadingSpinner
+              ? SingleChildScrollView(child: PostSkeleton())
               : (_posts.length != 0
                   ? ListView.separated(
                       itemCount: _posts.length,
