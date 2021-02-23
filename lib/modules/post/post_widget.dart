@@ -91,6 +91,31 @@ class _PostWidgetState extends State<PostWidget> {
                             style: ptTitle(),
                           ),
                           SizedBox(width: 8),
+                          if (widget.post?.user?.role == 'AGENT')
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.blue[600],
+                              ),
+                              padding: EdgeInsets.all(1.3),
+                              child: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 11,
+                              ),
+                            )
+                        ],
+                      ),
+                      SizedBox(height: 3),
+                      Row(
+                        children: [
+                          Text(
+                            Formart.formatToDate(DateTime.tryParse(
+                                    widget.post?.createdAt)) ??
+                                '',
+                            style: ptSmall().copyWith(color: Colors.black54),
+                          ),
+                          SizedBox(width: 8),
                           Text(
                             widget.post?.user?.reputationScore.toString(),
                             style: ptTitle().copyWith(color: Colors.yellow),
@@ -98,13 +123,6 @@ class _PostWidgetState extends State<PostWidget> {
                           SizedBox(width: 2),
                           Image.asset('assets/image/coin.png'),
                         ],
-                      ),
-                      SizedBox(height: 3),
-                      Text(
-                        Formart.formatToDate(
-                                DateTime.tryParse(widget.post?.createdAt)) ??
-                            '',
-                        style: ptSmall().copyWith(color: Colors.black54),
                       ),
                     ],
                   ),
@@ -422,8 +440,11 @@ class _PostWidgetState extends State<PostWidget> {
         onClickMenu: (val) async {
           if (val.menuTitle == 'Liên hệ') {
             showSimpleLoadingDialog(context);
-            await InboxBloc.instance.navigateToChatWith(widget.post.user.name,
-                widget.post.user.avatar, DateTime.now(), widget.post.user.avatar, [
+            await InboxBloc.instance.navigateToChatWith(
+                widget.post.user.name,
+                widget.post.user.avatar,
+                DateTime.now(),
+                widget.post.user.avatar, [
               AuthBloc.instance.userModel.id,
               widget.post.user.id,
             ]);

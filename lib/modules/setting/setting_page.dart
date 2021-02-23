@@ -148,10 +148,28 @@ class _SettingPageState extends State<SettingPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          _authBloc.userModel?.name ?? '',
-                          style:
-                              ptTitle().copyWith(fontWeight: FontWeight.w900),
+                        Row(
+                          children: [
+                            Text(
+                              _authBloc.userModel?.name ?? '',
+                              style: ptTitle()
+                                  .copyWith(fontWeight: FontWeight.w900),
+                            ),
+                            SizedBox(width: 8),
+                            if (_authBloc.userModel?.role == 'AGENT')
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.blue[600],
+                                ),
+                                padding: EdgeInsets.all(1.3),
+                                child: Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 11,
+                                ),
+                              )
+                          ],
                         ),
                         SizedBox(height: 3),
                         GestureDetector(
@@ -191,7 +209,9 @@ class _SettingPageState extends State<SettingPage> {
                                   padding: const EdgeInsets.all(10)
                                       .copyWith(bottom: 5),
                                   child: Text(
-                                    'Xác thực nhà môi giới',
+                                    _authBloc.userModel.role != 'AGENT'
+                                        ? 'Xác thực nhà môi giới'
+                                        : 'Bạn đã là nhà môi giới',
                                     maxLines: null,
                                     style: ptBody().copyWith(
                                       color: Colors.white,
@@ -203,7 +223,9 @@ class _SettingPageState extends State<SettingPage> {
                                   padding:
                                       const EdgeInsets.all(10).copyWith(top: 0),
                                   child: Text(
-                                    'Để đăng bài bds, bạn sẽ cần cung cấp thêm 1 số thông tin.',
+                                    _authBloc.userModel.role != 'AGENT'
+                                        ? 'Để đăng bài bds, bạn sẽ cần cung cấp thêm 1 số thông tin.'
+                                        : 'Cập nhật lại thông tin nhà môi giới của bạn tại đây',
                                     maxLines: 2,
                                     style: ptTiny().copyWith(
                                       color: Colors.white,
@@ -220,7 +242,10 @@ class _SettingPageState extends State<SettingPage> {
                               height: 45,
                               width: 45,
                               decoration: BoxDecoration(
-                                  shape: BoxShape.circle, color: Colors.white),
+                                  shape: BoxShape.circle,
+                                  color: _authBloc.userModel.role != 'AGENT'
+                                      ? Colors.transparent
+                                      : Colors.white),
                               child: Center(
                                 child: Container(
                                   height: 41,
@@ -229,22 +254,26 @@ class _SettingPageState extends State<SettingPage> {
                                     shape: BoxShape.circle,
                                     color: ptDarkColor(context),
                                   ),
-                                  child: Center(
-                                    child: Container(
-                                      height: 38,
-                                      width: 38,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white),
-                                      child: Center(
-                                        child: Icon(
-                                          Icons.verified_user,
-                                          color: ptDarkColor(context),
-                                          size: 27,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  child: _authBloc.userModel.role == 'AGENT'
+                                      ? Center(
+                                          child: Container(
+                                            height: 38,
+                                            width: 38,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.white),
+                                            child: Center(
+                                              child: Icon(
+                                                      Icons.verified_user,
+                                                      color:
+                                                          ptDarkColor(context),
+                                                      size: 27,
+                                                    ),
+                                            ),
+                                          ),
+                                        )
+                                      : Image.asset(
+                                          'assets/image/no_agency.png'),
                                 ),
                               ),
                             ),
