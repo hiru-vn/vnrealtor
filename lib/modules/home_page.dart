@@ -66,9 +66,9 @@ class _HomePageState extends State<HomePage>
             setState(() {
               _selectedIndex = index;
             });
-            if (index == 1) //message
-              InboxBloc.instance
-                  .getList20InboxGroup(AuthBloc.instance.userModel.id);
+            // if (index == 1) //message
+            //   InboxBloc.instance
+            //       .getList20InboxGroup(AuthBloc.instance.userModel.id);
             // if (index == 2)
             //   NotificationBloc.instance.getListNotification(
             //       filter: GraphqlFilter(order: '{createdAt: -1}'));

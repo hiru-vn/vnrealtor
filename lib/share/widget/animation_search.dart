@@ -86,7 +86,7 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
                 },
               ),
             ),
-          )
+          ),
         ],
       ),
     );

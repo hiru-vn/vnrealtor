@@ -1,6 +1,7 @@
 import 'package:datcao/modules/services/comment_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/modules/services/post_srv.dart';
+import 'package:datcao/modules/services/report_srv.dart';
 import 'package:datcao/utils/spref.dart';
 
 import 'filter.dart';
@@ -304,6 +305,12 @@ updatedAt
   Future decreaseLikeCmt({String cmtId}) async {
     final res = await PostSrv()
         .mutate('decreaseLikeCmt', 'cmtId: "$cmtId"', fragment: 'id');
+    return res;
+  }
+
+  Future createReport({String type, String content, String postId}) async {
+    final res = await ReportSrv()
+        .add('postId: "$postId"  type: "$type"  content: "$content"', fragment: 'id');
     return res;
   }
 }

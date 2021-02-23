@@ -73,7 +73,7 @@ class _PostPageState extends State<PostPage> {
               color: ptPrimaryColor(context),
               onRefresh: () async {
                 await _postBloc.getNewFeed(
-                    filter: GraphqlFilter(limit: 10, order: "{createdAt: -1}"));
+                    filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
                 return;
               },
               child: SingleChildScrollView(
@@ -102,7 +102,10 @@ class _PostPageState extends State<PostPage> {
                         return PostWidget(item);
                       },
                     ),
-                    if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed) PostSkeleton(count: 1,),
+                    if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
+                      PostSkeleton(
+                        count: 1,
+                      ),
                     SizedBox(
                       height: 70,
                     ),
@@ -306,15 +309,18 @@ class CreatePostCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     color: Colors.white,
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                  padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.location_pin, size: 16),
                       SizedBox(width: 1),
-                      Text(
-                        postModel.district,
-                        style: ptTiny(),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 95),
+                        child: Text(
+                          postModel.district,
+                          style: ptTiny(),
+                        ),
                       ),
                     ],
                   ),

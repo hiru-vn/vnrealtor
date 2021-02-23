@@ -98,7 +98,7 @@ class _CommentPageState extends State<CommentPage> {
       initialChildSize: 1,
       builder: (context, controller) => Scaffold(
         appBar: AppBar1(
-          title: 'Comments',
+          title: 'Bình luận',
           actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),

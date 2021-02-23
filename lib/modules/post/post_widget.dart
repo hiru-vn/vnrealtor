@@ -3,6 +3,7 @@ import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/media_post_widget.dart';
 import 'package:datcao/modules/post/post_google_map.dart';
+import 'package:datcao/modules/post/report_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/share/function/share_to.dart';
@@ -398,29 +399,31 @@ class _PostWidgetState extends State<PostWidget> {
         items: [
           if (widget.post.userId != AuthBloc.instance.userModel.id) ...[
             MenuItem(
-                title: 'Contact',
+                title: 'Liên hệ',
                 image: Icon(
                   Icons.post_add,
                   color: Colors.white,
                 )),
             MenuItem(
-                title: 'Report',
+                title: 'Báo cáo',
                 image: Icon(
                   Icons.report,
                   color: Colors.white,
                 )),
           ] else
             MenuItem(
-                title: 'Delete',
+                title: 'Xóa bài',
                 image: Icon(
                   Icons.delete,
                   color: Colors.white,
                 )),
         ],
         onClickMenu: (val) async {
-          if (val.menuTitle == 'Contact') {}
-          if (val.menuTitle == 'Report') {}
-          if (val.menuTitle == 'Delete') {
+          if (val.menuTitle == 'Liên hệ') {}
+          if (val.menuTitle == 'Báo cáo') {
+            showReport(widget.post, context);
+          }
+          if (val.menuTitle == 'Xóa bài') {
             final res = await _postBloc.deletePost(widget.post.id);
             if (res.isSuccess) {
             } else {

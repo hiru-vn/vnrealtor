@@ -53,7 +53,7 @@ class PostBloc extends ChangeNotifier {
       notifyListeners();
       final res = await PostRepo().getNewFeed(
           filter: GraphqlFilter(
-              limit: 10, order: "{createdAt: -1}", page: feedPage++),
+              limit: 20, order: "{createdAt: -1}", page: feedPage++),
           timeSort: '-1',
           timestamp: lastFetchFeedPage1.toString());
       final List listRaw = res['data'];
@@ -305,6 +305,19 @@ class PostBloc extends ChangeNotifier {
       if (res == null)
         return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
       return BaseResponse.success(PostModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> createReport(String type, String content, String postId) async {
+    try {
+      final res = await PostRepo().createReport(type: type, content: content, postId: postId);
+      if (res == null)
+        return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
+      return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.toString());
     } finally {

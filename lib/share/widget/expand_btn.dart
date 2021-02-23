@@ -8,6 +8,7 @@ class ExpandBtn extends StatelessWidget {
   final double height;
   final int elevation;
   final double borderRadius;
+  final bool isLoading;
 
   const ExpandBtn(
       {Key key,
@@ -17,6 +18,7 @@ class ExpandBtn extends StatelessWidget {
       this.textColor,
       this.borderRadius,
       this.elevation,
+      this.isLoading = false,
       this.height})
       : super(key: key);
   @override
@@ -24,17 +26,23 @@ class ExpandBtn extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: height ?? 55,
-      child: RaisedButton(
+      child: FlatButton(
         // elevation: elevation?.toDouble() ?? 5,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? 15),
         ),
         color: color ?? ptPrimaryColor(context),
         onPressed: onPress,
-        child: Text(
-          text,
-          style: ptButton().copyWith(color: textColor ?? Colors.white),
-        ),
+        child: isLoading
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(),
+              )
+            : Text(
+                text,
+                style: ptButton().copyWith(color: textColor ?? Colors.white),
+              ),
       ),
     );
   }
