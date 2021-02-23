@@ -274,6 +274,8 @@ class PostBloc extends ChangeNotifier {
   Future<BaseResponse> savePost(PostModel post) async {
     try {
       savePosts.add(post);
+      savePosts.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
+      AuthBloc.instance.userModel.savedPostIds.add(post.id);
       final res = await PostRepo().savePost(post.id);
       return BaseResponse.success(res);
     } catch (e) {

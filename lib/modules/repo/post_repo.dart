@@ -127,7 +127,7 @@ updatedAt
   Future getPostList(List<String> ids) async {
     final res = await PostSrv().getList(
         // limit: 20,
-        order: '{createdAt: -1}',
+        order: '{createdAt: 1}',
         filter:
             '{_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
     return res;

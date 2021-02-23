@@ -102,7 +102,7 @@ class _PostPageState extends State<PostPage> {
                         return PostWidget(item);
                       },
                     ),
-                    if (_postBloc.isLoadMoreFeed || !_postBloc.isEndFeed) PostSkeleton(),
+                    if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed) PostSkeleton(count: 1,),
                     SizedBox(
                       height: 70,
                     ),
