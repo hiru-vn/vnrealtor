@@ -8,8 +8,12 @@ class PostBloc extends ChangeNotifier {
   PostBloc._privateConstructor();
   static final PostBloc instance = PostBloc._privateConstructor();
 
-  bool isLoadFeed = true;
+  bool isReloadFeed = true;
+  bool isLoadMoreFeed = true;
   bool isLoadStory = true;
+  bool isEndFeed = false;
+  DateTime lastFetchFeedPage1;
+  int feedPage = 1;
 
   List<PostModel> post = [];
   List<PostModel> myPosts;
@@ -17,24 +21,50 @@ class PostBloc extends ChangeNotifier {
   List<PostModel> savePosts = [];
 
   Future init() async {
-    getNewFeed(filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
+    getNewFeed(filter: GraphqlFilter(limit: 10, order: "{createdAt: -1}"));
     getStoryFollowing();
     getListPost(AuthBloc.instance.userModel.savedPostIds);
   }
 
   Future<BaseResponse> getNewFeed({GraphqlFilter filter}) async {
     try {
-      isLoadFeed = true;
+      isEndFeed = false;
+      isReloadFeed = true;
       notifyListeners();
       final res = await PostRepo().getNewFeed(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       post = list;
+      lastFetchFeedPage1 = DateTime.now();
+      feedPage = 1;
       return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e.toString());
     } finally {
-      isLoadFeed = false;
+      isReloadFeed = false;
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> loadMoreNewFeed() async {
+    try {
+      if (isEndFeed) return BaseResponse.success(<PostModel>[]);
+      isLoadMoreFeed = true;
+      notifyListeners();
+      final res = await PostRepo().getNewFeed(
+          filter: GraphqlFilter(
+              limit: 10, order: "{createdAt: -1}", page: feedPage++),
+          timeSort: '-1',
+          timestamp: lastFetchFeedPage1.toString());
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      if (list.length == 0) isEndFeed = true;
+      post.addAll(list);
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      isLoadMoreFeed = false;
       notifyListeners();
     }
   }

@@ -17,7 +17,7 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar2(
-        'Về ứng dụng VNRealtor',
+        'Về ứng dụng Datcao',
       ),
       body: Stack(
         fit: StackFit.expand,

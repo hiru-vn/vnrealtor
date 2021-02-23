@@ -1,4 +1,5 @@
 import 'package:datcao/modules/post/post_detail.dart';
+import 'package:datcao/share/widget/load_more.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_list.dart';
@@ -63,43 +64,50 @@ class _PostPageState extends State<PostPage> {
         Scaffold(
           backgroundColor: ptBackgroundColor(context),
           appBar: showAppBar ? PostPageAppBar() : null,
-          body: RefreshIndicator(
-            color: ptPrimaryColor(context),
-            onRefresh: () async {
-              await _postBloc.getNewFeed(
-                  filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
-              return;
+          body: LoadMoreScrollView(
+            scrollController: _controller,
+            onLoadMore: () {
+              _postBloc.loadMoreNewFeed();
             },
-            child: SingleChildScrollView(
-              controller: _controller,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: (!showAppBar)
-                        ? MediaQuery.of(context).padding.top +
-                            kToolbarHeight +
-                            10
-                        : 0,
-                  ),
-                  CreatePostCard(
-                    postBloc: _postBloc,
-                    pageController: _pageController,
-                  ),
-                  if (_postBloc.isLoadFeed) PostSkeleton(),
-                  ListView.builder(
-                    padding: EdgeInsets.all(0),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: _postBloc.post.length,
-                    itemBuilder: (context, index) {
-                      final item = _postBloc.post[index];
-                      return PostWidget(item);
-                    },
-                  ),
-                  SizedBox(
-                    height: 70,
-                  ),
-                ],
+            list: RefreshIndicator(
+              color: ptPrimaryColor(context),
+              onRefresh: () async {
+                await _postBloc.getNewFeed(
+                    filter: GraphqlFilter(limit: 10, order: "{createdAt: -1}"));
+                return;
+              },
+              child: SingleChildScrollView(
+                controller: _controller,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: (!showAppBar)
+                          ? MediaQuery.of(context).padding.top +
+                              kToolbarHeight +
+                              10
+                          : 0,
+                    ),
+                    CreatePostCard(
+                      postBloc: _postBloc,
+                      pageController: _pageController,
+                    ),
+                    if (_postBloc.isReloadFeed) PostSkeleton(),
+                    ListView.builder(
+                      padding: EdgeInsets.all(0),
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: _postBloc.post.length,
+                      itemBuilder: (context, index) {
+                        final item = _postBloc.post[index];
+                        return PostWidget(item);
+                      },
+                    ),
+                    if (_postBloc.isLoadMoreFeed || !_postBloc.isEndFeed) PostSkeleton(),
+                    SizedBox(
+                      height: 70,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

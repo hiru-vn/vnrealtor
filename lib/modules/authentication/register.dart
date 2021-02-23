@@ -139,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         text: ' Điều kiện và điều khoản ',
                         style: TextStyle(color: Colors.red),
                       ),
-                      TextSpan(text: 'của VNRealtor'),
+                      TextSpan(text: 'của Datcao'),
                     ],
                   ),
                 ),

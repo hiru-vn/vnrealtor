@@ -6,11 +6,11 @@ import 'package:datcao/utils/spref.dart';
 import 'filter.dart';
 
 class PostRepo {
-  Future getNewFeed({GraphqlFilter filter}) async {
+  Future getNewFeed({GraphqlFilter filter, String timestamp, String timeSort}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
     final data =
-        'q:{limit: ${filter?.limit}, page: ${filter?.page ?? 1}, offset: ${filter?.offset}, filter: ${filter?.filter}, search: "${filter?.search}" , order: ${filter?.order} }';
+        'q:{limit: ${filter?.limit}, page: ${filter?.page ?? 1}, offset: ${filter?.offset}, filter: ${filter?.filter}, search: "${filter?.search}" , order: ${filter?.order} , timeSort: $timeSort, timestamp: "$timestamp" }';
     final res = await PostSrv().query('getNewsFeed', data, fragment: '''
     data {
 id

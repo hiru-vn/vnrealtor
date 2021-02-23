@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Material(
-                  elevation: 5,
+                  elevation: 0,
                   borderRadius: BorderRadius.circular(15),
                   child: Padding(
                     padding:
@@ -113,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Material(
-                elevation: 5,
+                elevation: 0,
                 borderRadius: BorderRadius.circular(15),
                 child: Padding(
                   padding:

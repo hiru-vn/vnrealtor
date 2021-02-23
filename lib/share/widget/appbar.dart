@@ -29,7 +29,7 @@ class AppBar1 extends StatelessWidget implements PreferredSizeWidget {
       leading: leading,
       centerTitle: centerTitle,
       title: Text(
-        title ?? 'VNRealtor',
+        title ?? 'Datcao',
         style: ptTitle().copyWith(
             color: textColor != null
                 ? textColor
