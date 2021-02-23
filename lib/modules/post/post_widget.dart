@@ -1,5 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/media_post_widget.dart';
 import 'package:datcao/modules/post/post_google_map.dart';
@@ -419,7 +420,15 @@ class _PostWidgetState extends State<PostWidget> {
                 )),
         ],
         onClickMenu: (val) async {
-          if (val.menuTitle == 'Liên hệ') {}
+          if (val.menuTitle == 'Liên hệ') {
+            showSimpleLoadingDialog(context);
+            await InboxBloc.instance.navigateToChatWith(widget.post.user.name,
+                widget.post.user.avatar, DateTime.now(), widget.post.user.avatar, [
+              AuthBloc.instance.userModel.id,
+              widget.post.user.id,
+            ]);
+            navigatorKey.currentState.maybePop();
+          }
           if (val.menuTitle == 'Báo cáo') {
             showReport(widget.post, context);
           }

@@ -84,6 +84,7 @@ class _ReportPostPageState extends State<ReportPostPage> {
                 icon: Icon(MdiIcons.close),
                 onPressed: () {
                   navigatorKey.currentState.maybePop();
+                  
                 },
               ),
             ],
