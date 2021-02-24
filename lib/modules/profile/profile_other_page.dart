@@ -224,19 +224,19 @@ class _ProfileCardState extends State<ProfileCard> {
                                   style: ptBigTitle(),
                                 ),
                                 SizedBox(width: 8),
-                            if (widget.user.role == 'AGENT')
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.blue[600],
-                                ),
-                                padding: EdgeInsets.all(1.3),
-                                child: Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  size: 11,
-                                ),
-                              )
+                                if (widget.user.role == 'AGENT')
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.blue[600],
+                                    ),
+                                    padding: EdgeInsets.all(1.3),
+                                    child: Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 11,
+                                    ),
+                                  )
                               ],
                             ),
                             SizedBox(
@@ -249,8 +249,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        widget.user.totalPost
-                                            .toString(),
+                                        widget.user.totalPost.toString(),
                                         style: ptTitle(),
                                       ),
                                       Text(
@@ -311,12 +310,37 @@ class _ProfileCardState extends State<ProfileCard> {
                   SizedBox(height: 5),
                   Row(
                     children: [
-                      Text(
-                        'Điểm uy tín: ${widget.user.reputationScore.toString()}',
-                        style: ptBody().copyWith(color: Colors.black54),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Điểm uy tín: ${widget.user.reputationScore.toString()}',
+                                style: ptBody().copyWith(color: Colors.black54),
+                              ),
+                              SizedBox(width: 5),
+                              Image.asset('assets/image/coin.png'),
+                            ],
+                          ),
+                          if (_authBloc.userModel.followingIds
+                              .contains(widget.user.id))
+                            Row(
+                              children: [
+                                Text('Đang theo dõi'),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Icon(
+                                  Icons.check,
+                                  color: ptPrimaryColor(context),
+                                  size: 15,
+                                )
+                              ],
+                            ),
+                        ],
                       ),
-                      SizedBox(width: 5),
-                      Image.asset('assets/image/coin.png'),
                       Spacer(),
                       SizedBox(
                           width: 31,
@@ -389,38 +413,42 @@ class _ProfileCardState extends State<ProfileCard> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 12,
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () async {
-                          showSimpleLoadingDialog(context);
-                          await InboxBloc.instance.navigateToChatWith(
-                              widget.user.name,
-                              widget.user.avatar,
-                              DateTime.now(),
-                              widget.user.avatar, [
-                            AuthBloc.instance.userModel.id,
-                            widget.user.id,
-                          ]);
-                          navigatorKey.currentState.maybePop();
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              border:
-                                  Border.all(color: ptPrimaryColor(context))),
-                          child: Center(
-                            child: Text(
-                              'Nhắn tin',
-                              style: ptTitle(),
+                    if (_authBloc.userModel.followingIds
+                        .contains(widget.user.id))
+                      SizedBox(
+                        width: 12,
+                      ),
+                    if (_authBloc.userModel.followingIds
+                        .contains(widget.user.id))
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () async {
+                            showSimpleLoadingDialog(context);
+                            await InboxBloc.instance.navigateToChatWith(
+                                widget.user.name,
+                                widget.user.avatar,
+                                DateTime.now(),
+                                widget.user.avatar, [
+                              AuthBloc.instance.userModel.id,
+                              widget.user.id,
+                            ]);
+                            navigatorKey.currentState.maybePop();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                border:
+                                    Border.all(color: ptPrimaryColor(context))),
+                            child: Center(
+                              child: Text(
+                                'Nhắn tin',
+                                style: ptTitle(),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    )
+                      )
                   ]),
                   SizedBox(height: 10),
                 ]),
