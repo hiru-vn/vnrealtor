@@ -47,7 +47,8 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         .toList();
     _allVideoAndImage = [..._videos, ..._images];
     _expirationDate = DateTime.tryParse(widget.post.expirationDate);
-    _pos = LatLng(widget.post.locationLat, widget.post.locationLong);
+    if (widget.post.locationLat != null)
+      _pos = LatLng(widget.post.locationLat, widget.post.locationLong);
     _contentC.text = widget.post.content;
     _shareWith = widget.post.publicity ? 'public' : 'friend';
     super.initState();

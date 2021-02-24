@@ -55,7 +55,7 @@ class PostModel {
       this.ward});
 
   PostModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id']??json['_id'];
     content = json['content'];
     mediaPostIds =
         json['mediaPostIds'] != null ? json['mediaPostIds'].cast<String>() : [];

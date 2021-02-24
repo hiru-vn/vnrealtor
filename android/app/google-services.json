@@ -8,25 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:259055496489:android:77d221a474b1fccdecdb38",
+        "mobilesdk_app_id": "1:259055496489:android:aeb0bce864bb224cecdb38",
         "android_client_info": {
-          "package_name": "rexbix.app.vnrealtor"
+          "package_name": "com.datcao.mobile"
         }
       },
       "oauth_client": [
         {
-          "client_id": "259055496489-1lhigk4nlo5ujupe7grq88up3itunm7j.apps.googleusercontent.com",
+          "client_id": "259055496489-ah8ktq2lb26oeuagur17orjbha4utq4f.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "rexbix.app.vnrealtor",
-            "certificate_hash": "29c5572815790610174102fa577c525343d98c0a"
-          }
-        },
-        {
-          "client_id": "259055496489-bp6t2sl3dik1mntjmdjlgcdetvspt6hc.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "rexbix.app.vnrealtor",
+            "package_name": "com.datcao.mobile",
             "certificate_hash": "4cd17c36f6303b4a935dfa725b609806ca7422ab"
           }
         },
@@ -46,6 +38,65 @@
             {
               "client_id": "259055496489-qc7leopq838len75t6hmudgq41khuqnk.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "259055496489-ml3ci8ch84tqeteu55gavhb6ln5mltpa.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.datcao.mobile"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259055496489:android:77d221a474b1fccdecdb38",
+        "android_client_info": {
+          "package_name": "com.datcao.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259055496489-1lhigk4nlo5ujupe7grq88up3itunm7j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datcao.mobile",
+            "certificate_hash": "29c5572815790610174102fa577c525343d98c0a"
+          }
+        },
+        {
+          "client_id": "259055496489-bp6t2sl3dik1mntjmdjlgcdetvspt6hc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datcao.mobile",
+            "certificate_hash": "4cd17c36f6303b4a935dfa725b609806ca7422ab"
+          }
+        },
+        {
+          "client_id": "259055496489-qc7leopq838len75t6hmudgq41khuqnk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlfwTbMaibFui5RlXhRMpxB-WNNrOv2iw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259055496489-qc7leopq838len75t6hmudgq41khuqnk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "259055496489-ml3ci8ch84tqeteu55gavhb6ln5mltpa.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.datcao.mobile"
+              }
             }
           ]
         }

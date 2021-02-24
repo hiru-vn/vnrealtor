@@ -23,7 +23,8 @@ $postFragment
   Future getStoryFollowing({int page}) async {
     final res = await PostSrv().query('getStoryFollowing', '', fragment: '''
     data {
-$postFragment
+id: _id
+${postFragment.replaceFirst('id', '')}
 }
     ''');
     return res['getStoryFollowing'];

@@ -477,6 +477,11 @@ class _PostWidgetState extends State<PostWidget> {
             showReport(widget.post, context);
           }
           if (val.menuTitle == 'Xóa bài') {
+            final confirm = await showConfirmDialog(
+                context, 'Vui lòng xác nhận xóa bài viết này.',
+                confirmTap: () {},
+                navigatorKey: navigatorKey);
+            if (!confirm) return;
             final res = await _postBloc.deletePost(widget.post.id);
             if (res.isSuccess) {
             } else {
