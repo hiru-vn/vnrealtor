@@ -73,6 +73,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
     }
     showSimpleLoadingDialog(context);
     final res = await _postBloc.updatePost(
+        widget.post.id,
         _contentC.text.trim(),
         _expirationDate?.toIso8601String(),
         _shareWith == 'public',
@@ -84,10 +85,10 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
     if (res.isSuccess) {
       _postBloc.post.insert(0, res.data);
       navigatorKey.currentState.maybePop();
-      FocusScope.of(context).requestFocus(FocusNode());
     } else {
       showToast(res.errMessage, context);
     }
+    FocusScope.of(context).requestFocus(FocusNode());
   }
 
   Future _upload(String filePath) async {

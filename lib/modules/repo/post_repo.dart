@@ -110,12 +110,10 @@ $postFragment
     return res;
   }
 
-Future updatePost(String content, String expirationDate, bool publicity,
+Future updatePost(String id ,String content, String expirationDate, bool publicity,
       double lat, double long, List<String> images, List<String> videos) async {
     String data = '''
-content: """
-${content.toString()}
-"""
+content: "${content.toString()}"
 publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}
@@ -128,7 +126,7 @@ images: ${GraphqlHelper.listStringToGraphqlString(images)}
       data += '\nlocationLat: $lat\nlocationLong: $long';
     }
     final res =
-        await PostSrv().mutate('updatePost', 'data: {$data}', fragment: '''
+        await PostSrv().mutate('updatePost', 'id: "$id"  data: {$data}', fragment: '''
 $postFragment
     ''');
     return res["updatePost"];

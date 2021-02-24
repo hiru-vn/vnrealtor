@@ -192,6 +192,7 @@ class PostBloc extends ChangeNotifier {
   }
 
   Future<BaseResponse> updatePost(
+    String id,
       String content,
       String expirationDate,
       bool publicity,
@@ -200,7 +201,7 @@ class PostBloc extends ChangeNotifier {
       List<String> images,
       List<String> videos) async {
     try {
-      final res = await PostRepo().updatePost(
+      final res = await PostRepo().updatePost(id,
           content, expirationDate, publicity, lat, long, images, videos);
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
