@@ -71,6 +71,19 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future searchPostByHashTag(String hashTags) async {
+    try {
+      final res = await PostRepo().searchPostByHashTag(hashTags);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> searchPostWithFilter({GraphqlFilter filter}) async {
     try {
       final res = await PostRepo().getNewFeed(filter: filter);
@@ -334,9 +347,11 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> createReport(String type, String content, String postId) async {
+  Future<BaseResponse> createReport(
+      String type, String content, String postId) async {
     try {
-      final res = await PostRepo().createReport(type: type, content: content, postId: postId);
+      final res = await PostRepo()
+          .createReport(type: type, content: content, postId: postId);
       if (res == null)
         return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
       return BaseResponse.success(res);

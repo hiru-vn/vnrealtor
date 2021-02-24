@@ -5,6 +5,7 @@ import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/media_post_widget.dart';
 import 'package:datcao/modules/post/post_google_map.dart';
 import 'package:datcao/modules/post/report_post_page.dart';
+import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/modules/post/update_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/share_to.dart';
@@ -163,7 +164,9 @@ class _PostWidgetState extends State<PostWidget> {
                 child: Wrap(
                   children: widget.post.hashTag
                       .map((e) => GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              SearchPostPage.navigate(hashTag: e);
+                            },
                             child: Padding(
                               padding: const EdgeInsets.all(5).copyWith(top: 0),
                               child: Text(e),

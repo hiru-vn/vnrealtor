@@ -30,6 +30,15 @@ ${postFragment.replaceFirst('id', '')}
     return res['getStoryFollowing'];
   }
 
+  Future searchPostByHashTag(String hashTags) async {
+    final res = await PostSrv().query('searchPostByHashTag', 'hashTags: "$hashTags"', fragment: '''
+    data {
+$postFragment
+}
+    ''');
+    return res['searchPostByHashTag'];
+  }
+
   Future getPostList(List<String> ids) async {
     final res = await PostSrv().getList(
         // limit: 20,

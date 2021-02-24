@@ -35,7 +35,7 @@ class _SettingPageState extends State<SettingPage> {
       //   }
       // },
       {
-        "name": "Điểm uy tín: 23",
+        "name": "Điểm uy tín: ${_authBloc.userModel.reputationScore.toString()}",
         "img": "assets/image/star_point.png",
         "action": () {
           PointPage.navigate();

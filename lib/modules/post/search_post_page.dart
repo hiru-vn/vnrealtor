@@ -6,10 +6,15 @@ import 'package:datcao/modules/post/post_map.dart';
 import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/share/import.dart';
+import 'package:hashtagable/hashtagable.dart';
 
 class SearchPostPage extends StatefulWidget {
-  static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(SearchPostPage()));
+  final String hashTag;
+
+  const SearchPostPage({Key key, this.hashTag}) : super(key: key);
+  static Future navigate({String hashTag}) {
+    return navigatorKey.currentState
+        .push(pageBuilder(SearchPostPage(hashTag: hashTag)));
   }
 
   @override
@@ -21,6 +26,7 @@ class _SearchPostPageState extends State<SearchPostPage>
   UserBloc _userBloc;
   PostBloc _postBloc;
   TabController _tabController;
+  TextEditingController _searchC = TextEditingController();
   List<UserModel> users = [];
   List<PostModel> posts = [];
   bool isLoading = false;
@@ -28,6 +34,7 @@ class _SearchPostPageState extends State<SearchPostPage>
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
+
     super.initState();
   }
 
@@ -37,6 +44,13 @@ class _SearchPostPageState extends State<SearchPostPage>
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
       _postBloc = Provider.of<PostBloc>(context);
+      if (widget.hashTag != null) {
+        isLoading = true;
+        _searchC.text = widget.hashTag;
+        _searchPostByHashTag(widget.hashTag).then((value) => setState(() {
+              isLoading = false;
+            }));
+      }
     }
   }
 
@@ -45,7 +59,16 @@ class _SearchPostPageState extends State<SearchPostPage>
     setState(() {
       isLoading = true;
     });
-    await Future.wait([_searchUser(text), _searchPost(text)]);
+    if (text.contains('#')) {
+      List<String> hashTags = [];
+      RegExp exp = new RegExp(r"\B#\w\w+");
+      exp.allMatches(text).forEach((match) {
+        hashTags.add(match.group(0));
+      });
+      await Future.wait([_searchUser(text), _searchPostByHashTag(hashTags[0])]);
+    } else {
+      await Future.wait([_searchUser(text), _searchPost(text)]);
+    }
     setState(() {
       isLoading = false;
     });
@@ -67,7 +90,22 @@ class _SearchPostPageState extends State<SearchPostPage>
   }
 
   Future _searchPost(String text) async {
-    final res = await _postBloc.searchPostWithFilter(filter: GraphqlFilter(search: text, order: '{createdAt: -1}'));
+    final res = await _postBloc.searchPostWithFilter(
+        filter: GraphqlFilter(search: text, order: '{createdAt: -1}'));
+    if (res.isSuccess) {
+      setState(() {
+        posts = res.data;
+      });
+    } else {
+      showToast('Có lỗi xảy ra trong quá trình tìm kiếm', context);
+      setState(() {
+        posts = [];
+      });
+    }
+  }
+
+  Future _searchPostByHashTag(String hashTag) async {
+    final res = await _postBloc.searchPostByHashTag(hashTag);
     if (res.isSuccess) {
       setState(() {
         posts = res.data;
@@ -103,8 +141,9 @@ class _SearchPostPageState extends State<SearchPostPage>
                   width: 10,
                 ),
                 Expanded(
-                  child: TextField(
-                    style: ptBody(),
+                  child: HashTagTextField(
+                    controller: _searchC,
+                    basicStyle: ptBody(),
                     onSubmitted: _search,
                     decoration: InputDecoration(
                       hintText: 'Tìm kiếm dự án, địa điểm',
