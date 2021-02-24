@@ -71,55 +71,7 @@ updatedAt
   Future getStoryFollowing({int page}) async {
     final res = await PostSrv().query('getStoryFollowing', '', fragment: '''
     data {
-id: _id
-content
-mediaPostIds
-commentIds
-userId
-like
-userLikeIds
-share
-userShareIds
-locationLat
-locationLong
-expirationDate
-publicity
-user {
-  id 
-  uid 
-  name 
-  email 
-  phone 
-  avatar
-  role 
-  reputationScore 
-  createdAt 
-  updatedAt 
-  friendIds
-}
-mediaPosts {
-id
-userId
-type
-like
-userLikeIds
-commentIds
-description
-url
-locationLat
-locationLong
-expirationDate
-publicity
-createdAt
-updatedAt
-}
-province
-district
-ward
-isUserLike
-isUserShare
-createdAt
-updatedAt
+$postFragment
 }
     ''');
     return res['getStoryFollowing'];
@@ -186,50 +138,7 @@ images: ${GraphqlHelper.listStringToGraphqlString(images)}
     }
     final res =
         await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''
-id
-content
-mediaPostIds
-commentIds
-userId
-like
-userLikeIds
-share
-userShareIds
-locationLat
-locationLong
-expirationDate
-publicity
-user {
-  id 
-  uid 
-  name 
-  email 
-  phone
-  avatar
-  role 
-  reputationScore 
-  createdAt 
-  updatedAt
-  friendIds
-}
-mediaPosts {
-id
-userId
-type
-like
-userLikeIds
-commentIds
-description
-url
-locationLat
-locationLong
-expirationDate
-publicity
-createdAt
-updatedAt
-}
-createdAt
-updatedAt
+$postFragment
     ''');
     return res["createPost"];
   }
@@ -237,6 +146,30 @@ updatedAt
   Future deletePost(String postId) async {
     final res = await PostSrv().delete(postId);
     return res;
+  }
+
+Future updatePost(String content, String expirationDate, bool publicity,
+      double lat, double long, List<String> images, List<String> videos) async {
+    String data = '''
+content: """
+${content.toString()}
+"""
+publicity: $publicity
+videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
+images: ${GraphqlHelper.listStringToGraphqlString(images)}
+    ''';
+
+    if (expirationDate != null) {
+      data += '\nexpirationDate: "$expirationDate"';
+    }
+    if (lat != null && long != null) {
+      data += '\nlocationLat: $lat\nlocationLong: $long';
+    }
+    final res =
+        await PostSrv().mutate('updatePost', 'data: {$data}', fragment: '''
+$postFragment
+    ''');
+    return res["updatePost"];
   }
 
   Future savePost(String postId) async {
@@ -313,4 +246,51 @@ updatedAt
         .add('postId: "$postId"  type: "$type"  content: "$content"', fragment: 'id');
     return res;
   }
+
+  String postFragment = '''
+  id
+content
+mediaPostIds
+commentIds
+userId
+like
+userLikeIds
+share
+userShareIds
+locationLat
+locationLong
+expirationDate
+publicity
+user {
+  id 
+  uid 
+  name 
+  email 
+  phone
+  avatar
+  role 
+  reputationScore 
+  createdAt 
+  updatedAt
+  friendIds
+}
+mediaPosts {
+id
+userId
+type
+like
+userLikeIds
+commentIds
+description
+url
+locationLat
+locationLong
+expirationDate
+publicity
+createdAt
+updatedAt
+}
+createdAt
+updatedAt
+  ''';
 }

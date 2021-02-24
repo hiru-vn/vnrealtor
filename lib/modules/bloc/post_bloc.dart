@@ -8,6 +8,8 @@ class PostBloc extends ChangeNotifier {
   PostBloc._privateConstructor();
   static final PostBloc instance = PostBloc._privateConstructor();
 
+  PageController pageController = PageController();
+
   bool isReloadFeed = true;
   bool isLoadMoreFeed = true;
   bool isLoadStory = true;
@@ -166,6 +168,26 @@ class PostBloc extends ChangeNotifier {
       List<String> videos) async {
     try {
       final res = await PostRepo().createPost(
+          content, expirationDate, publicity, lat, long, images, videos);
+      return BaseResponse.success(PostModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      // wait to reload post
+      Future.delayed(Duration(seconds: 1), () => notifyListeners());
+    }
+  }
+
+  Future<BaseResponse> updatePost(
+      String content,
+      String expirationDate,
+      bool publicity,
+      double lat,
+      double long,
+      List<String> images,
+      List<String> videos) async {
+    try {
+      final res = await PostRepo().updatePost(
           content, expirationDate, publicity, lat, long, images, videos);
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {

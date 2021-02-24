@@ -5,8 +5,8 @@ import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/media_post_widget.dart';
 import 'package:datcao/modules/post/post_google_map.dart';
 import 'package:datcao/modules/post/report_post_page.dart';
+import 'package:datcao/modules/post/update_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
-import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
 import 'package:readmore/readmore.dart';
@@ -429,13 +429,20 @@ class _PostWidgetState extends State<PostWidget> {
                   Icons.report,
                   color: Colors.white,
                 )),
-          ] else
+          ] else ... [
             MenuItem(
                 title: 'Xóa bài',
                 image: Icon(
                   Icons.delete,
                   color: Colors.white,
                 )),
+            MenuItem(
+                title: 'Sửa bài',
+                image: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                )),
+          ]
         ],
         onClickMenu: (val) async {
           if (val.menuTitle == 'Liên hệ') {
@@ -459,6 +466,9 @@ class _PostWidgetState extends State<PostWidget> {
             } else {
               showToast(res.errMessage, context);
             }
+          }
+          if (val.menuTitle == 'Sửa bài') {
+            UpdatePostPage.navigate(widget.post);
           }
         },
         stateChanged: (val) {},

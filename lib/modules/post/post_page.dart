@@ -19,7 +19,7 @@ class _PostPageState extends State<PostPage> {
   bool showAppBar = true;
   PostBloc _postBloc;
   ScrollController _controller = ScrollController();
-  PageController _pageController = PageController();
+  
 
   @override
   void initState() {
@@ -58,7 +58,7 @@ class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     return PageView(
-      controller: _pageController,
+      controller: _postBloc.pageController,
       physics: NeverScrollableScrollPhysics(),
       children: [
         Scaffold(
@@ -89,7 +89,7 @@ class _PostPageState extends State<PostPage> {
                     ),
                     CreatePostCard(
                       postBloc: _postBloc,
-                      pageController: _pageController,
+                      pageController: _postBloc.pageController,
                     ),
                     if (_postBloc.isReloadFeed) PostSkeleton(),
                     ListView.builder(
@@ -115,7 +115,7 @@ class _PostPageState extends State<PostPage> {
             ),
           ),
         ),
-        CreatePostPage(_pageController),
+        CreatePostPage(_postBloc.pageController),
       ],
     );
   }
