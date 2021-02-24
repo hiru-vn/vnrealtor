@@ -150,6 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                     // if (TextF _nameC.text)
                     showDialog(
                         context: context,
+                        barrierDismissible: false,
                         builder: (context) => ResetPasswordDialog());
                   },
                   child: Text(
