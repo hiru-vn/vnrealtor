@@ -13,6 +13,7 @@ class UserModel {
   List<String> followerIds;
   List<String> followingIds;
   List<String> savedPostIds;
+  int totalPost;
 
   UserModel(
       {this.id,
@@ -26,6 +27,7 @@ class UserModel {
       this.createdAt,
       this.updatedAt,
       this.avatar,
+      this.totalPost,
       this.followerIds,
       this.followingIds, this.savedPostIds});
 
@@ -41,6 +43,7 @@ class UserModel {
         json['friendIds'] != null ? json['friendIds'].cast<String>() : [];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    totalPost = json['totalPost']??0;
     avatar = json['avatar'];
     followerIds =
         json['followerIds'] != null ? json['followerIds'].cast<String>() : [];

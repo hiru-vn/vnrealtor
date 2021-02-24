@@ -142,7 +142,7 @@ class _PostWidgetState extends State<PostWidget> {
             Padding(
               padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 5),
               child: ReadMoreText(
-                widget.post?.content ?? '',
+                widget.post?.content?.trim() ?? '',
                 trimLength: 100,
                 style: ptBody().copyWith(color: Colors.black87),
                 textAlign: TextAlign.start,
@@ -156,6 +156,22 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
               ),
             ),
+
+            if ((widget.post?.hashTag?.length ?? 0) > 0)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Wrap(
+                  children: widget.post.hashTag
+                      .map((e) => GestureDetector(
+                            onTap: () {},
+                            child: Padding(
+                              padding: const EdgeInsets.all(5).copyWith(top: 0),
+                              child: Text(e),
+                            ),
+                          ))
+                      .toList(),
+                ),
+              ),
             if ((widget.post?.mediaPosts?.length ?? 0) > 0)
               Stack(
                 children: [
@@ -429,7 +445,7 @@ class _PostWidgetState extends State<PostWidget> {
                   Icons.report,
                   color: Colors.white,
                 )),
-          ] else ... [
+          ] else ...[
             MenuItem(
                 title: 'Xóa bài',
                 image: Icon(

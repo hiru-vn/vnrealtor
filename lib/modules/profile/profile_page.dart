@@ -238,6 +238,21 @@ class _ProfileCardState extends State<ProfileCard> {
                                   widget.user.name ?? '',
                                   style: ptBigTitle(),
                                 ),
+                                SizedBox(width: 8),
+                                if (AuthBloc.instance.userModel?.role ==
+                                    'AGENT')
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.blue[600],
+                                    ),
+                                    padding: EdgeInsets.all(1.3),
+                                    child: Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 11,
+                                    ),
+                                  )
                               ],
                             ),
                             SizedBox(
@@ -250,7 +265,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        '200',
+                                        AuthBloc.instance.userModel.totalPost
+                                            .toString(),
                                         style: ptTitle(),
                                       ),
                                       Text(

@@ -17,6 +17,7 @@ expirationDate
 publicity
 isUserLike
 isUserShare
+hashTag
 user {
   id 
   uid 
@@ -29,6 +30,7 @@ user {
   updatedAt 
   friendIds
   avatar
+  totalPost
 }
 mediaPosts {
 id

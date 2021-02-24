@@ -26,6 +26,7 @@ class PostModel {
   String province;
   String district;
   String ward;
+  List<String> hashTag;
 
   PostModel(
       {this.id,
@@ -50,6 +51,7 @@ class PostModel {
       this.isUserShare,
       this.district,
       this.province,
+      this.hashTag,
       this.ward});
 
   PostModel.fromJson(Map<String, dynamic> json) {
@@ -66,6 +68,7 @@ class PostModel {
     share = json['share'];
     userShareIds =
         json['userShareIds'] != null ? json['userShareIds'].cast<String>() : [];
+    hashTag = json['hashTag'] != null ? json['hashTag'].cast<String>() : [];
     locationLat = json['locationLat'] == null
         ? null
         : (json['locationLat'] as num).toDouble();

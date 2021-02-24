@@ -14,55 +14,7 @@ class PostRepo {
         'q:{limit: ${filter?.limit}, page: ${filter?.page ?? 1}, offset: ${filter?.offset}, filter: ${filter?.filter}, search: "${filter?.search}" , order: ${filter?.order} , timeSort: $timeSort, timestamp: "$timestamp" }';
     final res = await PostSrv().query('getNewsFeed', data, fragment: '''
     data {
-id
-content
-mediaPostIds
-commentIds
-userId
-like
-userLikeIds
-share
-userShareIds
-locationLat
-locationLong
-province
-district
-ward
-expirationDate
-publicity
-user {
-  id 
-  uid 
-  name 
-  email 
-  phone 
-  role 
-  reputationScore 
-  createdAt 
-  updatedAt 
-  avatar
-  friendIds
-}
-mediaPosts {
-id
-userId
-type
-like
-userLikeIds
-commentIds
-description
-url
-locationLat
-locationLong
-expirationDate
-publicity
-createdAt
-updatedAt
-}
-isUserLike
-isUserShare
-createdAt
-updatedAt
+$postFragment
 }
     ''');
     return res['getNewsFeed'];
@@ -248,7 +200,7 @@ $postFragment
   }
 
   String postFragment = '''
-  id
+id
 content
 mediaPostIds
 commentIds
@@ -259,6 +211,10 @@ share
 userShareIds
 locationLat
 locationLong
+province
+district
+ward
+hashTag
 expirationDate
 publicity
 user {
@@ -266,12 +222,13 @@ user {
   uid 
   name 
   email 
-  phone
-  avatar
+  phone 
   role 
   reputationScore 
   createdAt 
-  updatedAt
+  updatedAt 
+  avatar
+  totalPost
   friendIds
 }
 mediaPosts {
@@ -290,6 +247,8 @@ publicity
 createdAt
 updatedAt
 }
+isUserLike
+isUserShare
 createdAt
 updatedAt
   ''';

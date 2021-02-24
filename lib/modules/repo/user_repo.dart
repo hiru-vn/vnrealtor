@@ -6,7 +6,7 @@ import 'filter.dart';
 
 class UserRepo {
   String userFragment =
-      ' id uid name email phone role reputationScore friendIds createdAt updatedAt followerIds followingIds avatar';
+      ' id uid name email phone totalPost role reputationScore friendIds createdAt updatedAt followerIds followingIds avatar';
 
   Future registerWithPhone(
       {String name,

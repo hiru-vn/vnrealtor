@@ -17,5 +17,6 @@ updatedAt: DateTime
 followerIds: [ID]
 followingIds: [ID]
 savedPostIds: [ID]
+totalPost
   ''');
 }
