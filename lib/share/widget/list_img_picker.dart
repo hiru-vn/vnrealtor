@@ -242,11 +242,9 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
                                   context, 'Xác nhận xóa hình ảnh này?',
                                   navigatorKey: navigatorKey,
                                   confirmTap: () async {
-                                widget.listImg.removeAt(index);
-                                setState(() {});
+                                // widget.listImg.removeAt(index);
                                 //await navigatorKey.currentState.maybePop();
-                                if (widget.onRemoveImg != null ||
-                                    widget.listImg[index] != null)
+                                if (widget.onRemoveImg != null)
                                   widget.onRemoveImg(widget.listImg[index]);
                                 if (widget.onUpdateListImg != null)
                                   widget.onUpdateListImg(widget.listImg);
