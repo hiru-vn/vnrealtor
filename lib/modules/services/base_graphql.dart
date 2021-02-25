@@ -257,9 +257,8 @@ class BaseService {
 
 class GraphQL {
   static final HttpLink _httpLink = HttpLink(
-    uri: 'https://vnrealtor.herokuapp.com/graphql',
-    // uri: 'https://vnrealtor-sq73uv5o7a-as.a.run.app/graphql'
-  );
+      //uri: 'https://vnrealtor.herokuapp.com/graphql',
+      uri: 'https://vnrealtor-sq73uv5o7a-as.a.run.app/graphql');
 
   static final AuthLink _authLink = AuthLink(getToken: () async {
     final token = await SPref.instance.get('token');

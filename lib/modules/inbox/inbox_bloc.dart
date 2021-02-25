@@ -81,11 +81,17 @@ class InboxBloc extends ChangeNotifier {
   }
 
   Future<List<FbInboxUserModel>> getUsers(List<String> users) async {
-    final List<DocumentSnapshot> snapShots = await Future.wait(
-        users.map((e) => firestore.collection(userCollection).doc(e).get()));
-    final listUser =
-        snapShots.map((e) => FbInboxUserModel.fromJson(e.data())).toList();
-    return listUser;
+    try {
+      final List<DocumentSnapshot> snapShots = await Future.wait(
+          users.map((e) => firestore.collection(userCollection).doc(e).get()));
+      print(snapShots[0].data());
+      print(snapShots[1].data());
+      final listUser =
+          snapShots.map((e) => FbInboxUserModel.fromJson(e.data())).toList();
+      return listUser;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<void> addMessage(String groupId, String text, DateTime time,
@@ -193,11 +199,14 @@ class InboxBloc extends ChangeNotifier {
           await firestore.collection(groupCollection).doc(idGroups[i]).get();
       final users =
           await getUsers((item.data()['userIds'] as List).cast<String>());
-      list.add(FbInboxGroupModel.fromJson(item.data(), item.id, users));
+      if (users != null) {
+        list.add(FbInboxGroupModel.fromJson(item.data(), item.id, users));
+        list.sort((a, b) =>
+            DateTime.tryParse(b.time).compareTo(DateTime.tryParse(a.time)));
+        groupInboxList = list;
+        // notifyListeners();
+      }
     }
-    list.sort((a, b) =>
-        DateTime.tryParse(b.time).compareTo(DateTime.tryParse(a.time)));
-    groupInboxList = list;
 
     return list;
   }

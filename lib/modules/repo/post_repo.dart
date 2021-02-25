@@ -113,7 +113,9 @@ $postFragment
 Future updatePost(String id ,String content, String expirationDate, bool publicity,
       double lat, double long, List<String> images, List<String> videos) async {
     String data = '''
-content: "${content.toString()}"
+content: """
+${content.toString()}
+"""
 publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}

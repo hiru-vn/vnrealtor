@@ -245,7 +245,8 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
                                 widget.listImg.removeAt(index);
                                 setState(() {});
                                 //await navigatorKey.currentState.maybePop();
-                                if (widget.onRemoveImg != null)
+                                if (widget.onRemoveImg != null ||
+                                    widget.listImg[index] != null)
                                   widget.onRemoveImg(widget.listImg[index]);
                                 if (widget.onUpdateListImg != null)
                                   widget.onUpdateListImg(widget.listImg);
