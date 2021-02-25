@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 class AnimatedSearchBar extends StatefulWidget {
   final double width;
   final double height;
+  final String value;
+  final Function(String) onSearch;
+  final TextEditingController controller;
 
-  const AnimatedSearchBar({Key key, this.width, this.height}) : super(key: key);
+  const AnimatedSearchBar(
+      {Key key, this.width, this.height, this.onSearch, this.value, this.controller})
+      : super(key: key);
 
   @override
   _AnimatedSearchBarState createState() => _AnimatedSearchBarState();
@@ -49,6 +54,8 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
               padding: EdgeInsets.only(left: 12),
               child: !_folded
                   ? TextField(
+                      onChanged: widget.onSearch,
+                      controller: widget.controller,
                       focusNode: _focusNode,
                       decoration: InputDecoration(
                           hintText: 'Tìm kiếm',

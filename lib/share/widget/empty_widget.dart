@@ -20,9 +20,13 @@ class EmptyWidget extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
-            Text(
-              title,
-              style: ptBigTitle(),
+            SizedBox(
+              width: deviceWidth(context) / 1.25,
+              child: Text(
+                title,
+                style: ptBigTitle(),
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
           if (content != null) ...[

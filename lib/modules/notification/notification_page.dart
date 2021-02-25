@@ -17,6 +17,7 @@ class _NotificationPageState extends State<NotificationPage>
   TabController _tabController;
   UserBloc _userBloc;
   NotificationBloc _notificationBloc;
+  TextEditingController _searchC = TextEditingController();
 
   @override
   void initState() {
@@ -42,7 +43,11 @@ class _NotificationPageState extends State<NotificationPage>
       appBar: AppBar1(
         title: 'Thông báo',
         actions: [
-          Center(child: AnimatedSearchBar()),
+          Center(
+              child: AnimatedSearchBar(
+            onSearch: (val) {},
+            controller: _searchC,
+          )),
         ],
       ),
       body: Column(
@@ -83,12 +88,20 @@ class _NotificationPageState extends State<NotificationPage>
           Expanded(
             child: TabBarView(controller: _tabController, children: [
               NotificationTab(
-                list: _notificationBloc.notifications,
+                list: _notificationBloc.notifications
+                    .where((element) =>
+                        element.body.contains(_searchC.text) ||
+                        element.title.contains(_searchC.text))
+                    .toList(),
                 notificationBloc: _notificationBloc,
+                search: _searchC.text,
               ),
               //FriendRequestTab()
               FollowTab(
-                list: _userBloc.followersIn7Days,
+                list: _userBloc.followersIn7Days
+                    .where((element) => element.name.contains(_searchC.text))
+                    .toList(),
+                search: _searchC.text,
               )
             ]),
           )
@@ -101,8 +114,10 @@ class _NotificationPageState extends State<NotificationPage>
 class NotificationTab extends StatelessWidget {
   final List<NotificationModel> list;
   final NotificationBloc notificationBloc;
+  final String search;
 
-  const NotificationTab({Key key, this.list, this.notificationBloc})
+  const NotificationTab(
+      {Key key, this.list, this.notificationBloc, this.search})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -160,12 +175,18 @@ class NotificationTab extends StatelessWidget {
           )
         : EmptyWidget(
             assetImg: 'assets/image/no_notification.png',
-            title: 'Bạn chưa có thông báo mới',
+            title: search?.trim() == '' ? 'Bạn chưa có thông báo mới' : '',
+            content: search?.trim() == ''
+                ? ''
+                : 'Không tìm thấy kết quả cho: $search',
           );
   }
 }
 
 class FriendRequestTab extends StatefulWidget {
+  final String search;
+
+  const FriendRequestTab({Key key, this.search}) : super(key: key);
   @override
   _FriendRequestTabState createState() => _FriendRequestTabState();
 }
@@ -292,8 +313,9 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
 
 class FollowTab extends StatelessWidget {
   final List<UserModel> list;
+  final String search;
 
-  const FollowTab({Key key, this.list}) : super(key: key);
+  const FollowTab({Key key, this.list, this.search}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return list.length > 0
@@ -335,8 +357,12 @@ class FollowTab extends StatelessWidget {
           )
         : EmptyWidget(
             assetImg: 'assets/image/no_user.png',
-            title: 'Bạn không có lượt theo dõi nào trong 7 ngày qua',
-            content: 'Đăng bài và tương tác nhiều để có thêm lượt theo dõi',
+            title: search?.trim() == ''
+                ? 'Bạn không có lượt theo dõi nào trong 7 ngày qua'
+                : '',
+            content: search?.trim() == ''
+                ? 'Đăng bài và tương tác nhiều để có thêm lượt theo dõi'
+                : 'Không tìm thấy kết quả cho: $search',
           );
   }
 }
