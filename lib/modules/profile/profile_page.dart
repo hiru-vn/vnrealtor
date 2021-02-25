@@ -3,6 +3,7 @@ import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_widget.dart';
+import 'package:datcao/modules/profile/follow_page.dart';
 import 'package:datcao/modules/profile/update_profile_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
@@ -277,37 +278,47 @@ class _ProfileCardState extends State<ProfileCard> {
                                   ),
                                 ),
                                 Expanded(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        AuthBloc.instance.userModel.followerIds
-                                            .length
-                                            .toString(),
-                                        style: ptTitle(),
-                                      ),
-                                      Text(
-                                        'follower',
-                                        style: ptBody(),
-                                      )
-                                    ],
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      FollowPage.navigate(widget.user);
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          AuthBloc.instance.userModel
+                                              .followerIds.length
+                                              .toString(),
+                                          style: ptTitle(),
+                                        ),
+                                        Text(
+                                          'follower',
+                                          style: ptBody(),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Expanded(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        AuthBloc.instance.userModel.followerIds
-                                            .length
-                                            .toString(),
-                                        style: ptTitle(),
-                                      ),
-                                      Text(
-                                        'following',
-                                        style: ptBody(),
-                                      ),
-                                    ],
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      FollowPage.navigate(widget.user);
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          AuthBloc.instance.userModel
+                                              .followerIds.length
+                                              .toString(),
+                                          style: ptTitle(),
+                                        ),
+                                        Text(
+                                          'following',
+                                          style: ptBody(),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 )
                               ],

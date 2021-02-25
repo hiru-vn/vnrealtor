@@ -120,8 +120,7 @@ class _CommentPageState extends State<CommentPage> {
                     setState(() {
                       sort = val;
                     });
-                    _getComments(
-                        filter: GraphqlFilter(limit: 20, order: val));
+                    _getComments(filter: GraphqlFilter(limit: 20, order: val));
                   }),
             )
           ],
@@ -138,8 +137,7 @@ class _CommentPageState extends State<CommentPage> {
                         final comment = comments[index];
                         return new CommentWidget(comment: comment);
                       },
-                      separatorBuilder: (context, index) =>
-                          SizedBox.shrink(),
+                      separatorBuilder: (context, index) => SizedBox.shrink(),
                     ),
                   )
                 : Expanded(child: ListSkeleton()),
@@ -223,7 +221,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   Widget build(BuildContext context) {
     return CustomListTile(
       onTap: () {
-        // ProfileOtherPage.navigate(user);
+        ProfileOtherPage.navigate(widget.comment.user);
       },
       tileColor: Colors.white,
       leading: Container(

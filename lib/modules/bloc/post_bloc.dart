@@ -55,7 +55,7 @@ class PostBloc extends ChangeNotifier {
       notifyListeners();
       final res = await PostRepo().getNewFeed(
           filter: GraphqlFilter(
-              limit: 20, order: "{createdAt: -1}", page: feedPage++),
+              limit: 20, order: "{createdAt: -1}", page: ++feedPage),
           timeSort: '-1',
           timestamp: lastFetchFeedPage1.toString());
       final List listRaw = res['data'];

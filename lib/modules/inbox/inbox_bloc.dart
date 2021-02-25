@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:datcao/share/import.dart';
 import 'package:flutter/material.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
@@ -49,6 +50,10 @@ class InboxBloc extends ChangeNotifier {
       });
     }
     final users = await getUsers(userIds);
+    if (users == null) { 
+      showToastNoContext('Người này không nhận tin nhắn');
+      return;
+    }
     await InboxChat.navigate(
         FbInboxGroupModel(
             userIds.join("-"),

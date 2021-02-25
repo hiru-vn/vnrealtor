@@ -1,6 +1,7 @@
 import 'package:datcao/modules/services/friendship_srv.dart';
 import 'package:datcao/modules/services/user_srv.dart';
 import 'package:datcao/utils/spref.dart';
+import 'package:datcao/modules/services/graphql_helper.dart';
 
 import 'filter.dart';
 
@@ -71,6 +72,15 @@ Page: "$page"
     return res;
   }
 
+  Future getListUserIn(List<String> ids) async {
+    final res = await UserSrv().getList(
+        // limit: 20,
+        order: '{createdAt: 1}',
+        filter:
+            '{_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
+    return res;
+  }
+
   Future resetPassWithPhone({String password, String idToken}) async {
     final res = await UserSrv().mutate(
         'resetPassword',
@@ -82,7 +92,8 @@ idToken: "$idToken"
     return res['resetPassword'];
   }
 
-  Future updateUser(String id, String name, String email, String phone, String avatar) async {
+  Future updateUser(
+      String id, String name, String email, String phone, String avatar) async {
     final res = await UserSrv().update(
         id: id,
         data: '''
