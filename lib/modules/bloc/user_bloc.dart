@@ -68,7 +68,7 @@ class UserBloc extends ChangeNotifier {
   Future<BaseResponse> updateUser(UserModel user) async {
     try {
       final res = await UserRepo()
-          .updateUser(user.id, user.name, user.email, user.phone, user.avatar);
+          .updateUser(user.id, user.name, user.email, user.phone, user.avatar, user.description, user.facebookUrl);
 
       return BaseResponse.success(res);
     } catch (e) {

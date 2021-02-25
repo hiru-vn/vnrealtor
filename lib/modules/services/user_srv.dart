@@ -19,5 +19,7 @@ followingIds: [ID]
 savedPostIds: [ID]
 totalPost
 notiCount
+description
+facebookUrl
   ''');
 }

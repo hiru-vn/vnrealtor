@@ -20,6 +20,9 @@ user {
   reputationScore 
   createdAt 
   updatedAt 
+  avatar
+  description
+  facebookUrl
 }
 createdAt: DateTime
 updatedAt: DateTime

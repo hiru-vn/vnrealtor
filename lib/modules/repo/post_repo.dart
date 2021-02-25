@@ -2,7 +2,6 @@ import 'package:datcao/modules/services/comment_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/modules/services/post_srv.dart';
 import 'package:datcao/modules/services/report_srv.dart';
-import 'package:datcao/utils/spref.dart';
 
 import 'filter.dart';
 
@@ -107,6 +106,11 @@ $postFragment
 
   Future deletePost(String postId) async {
     final res = await PostSrv().delete(postId);
+    return res;
+  }
+
+  Future deleteComment(String commentId) async {
+    final res = await CommentSrv().delete(commentId);
     return res;
   }
 
@@ -240,6 +244,8 @@ user {
   avatar
   totalPost
   friendIds
+  facebookUrl
+  description
 }
 mediaPosts {
 id

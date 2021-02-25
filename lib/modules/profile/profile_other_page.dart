@@ -316,8 +316,8 @@ class _ProfileCardState extends State<ProfileCard> {
                   //       : 'Người dùng cơ bản',
                   //   style: ptSmall().copyWith(color: Colors.blue),
                   // ),
-                  Text(
-                      'Chuyên cung cấp dịch vụ nhà đất, căn hộ cho thuê ở quận Tân Phú, Hồ Chí Minh'),
+                  if (widget.user.description != null)
+                    Text(widget.user.description),
                   SizedBox(height: 5),
                   Row(
                     children: [

@@ -161,6 +161,7 @@ class ProfileCard extends StatefulWidget {
 
 class _ProfileCardState extends State<ProfileCard> {
   UserBloc _userBloc;
+  AuthBloc _authBloc;
   bool initFetchStatus = false;
   Uri _emailLaunchUri;
 
@@ -177,6 +178,7 @@ class _ProfileCardState extends State<ProfileCard> {
   void didChangeDependencies() {
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
+      _authBloc = Provider.of(context);
     }
     super.didChangeDependencies();
   }
@@ -335,8 +337,8 @@ class _ProfileCardState extends State<ProfileCard> {
                   //       : 'Người dùng cơ bản',
                   //   style: ptSmall().copyWith(color: Colors.blue),
                   // ),
-                  Text(
-                      'Chuyên cung cấp dịch vụ nhà đất, căn hộ cho thuê ở quận Tân Phú, Hồ Chí Minh'),
+                  if (_authBloc.userModel.description != null)
+                    Text(_authBloc.userModel.description),
                   SizedBox(height: 5),
                   Row(
                     children: [

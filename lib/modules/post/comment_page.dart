@@ -6,6 +6,7 @@ import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/media_post.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/share/import.dart';
+import 'package:popup_menu/popup_menu.dart';
 
 class CommentPage extends StatefulWidget {
   final PostModel post;
@@ -318,4 +319,29 @@ class _CommentWidgetState extends State<CommentWidget> {
       ),
     );
   }
+
+  initMenu() {
+    menu = PopupMenu(
+        items: [
+          MenuItem(
+              title: 'Xóa bài',
+              image: Icon(
+                Icons.delete,
+                color: Colors.white,
+              )),
+        ],
+        onClickMenu: (val) async {
+          if (val.menuTitle == 'Xóa bài') {
+            final res = await _postBloc.deleteComment(widget.comment.id);
+            if (res.isSuccess) {
+            } else {
+              showToast(res.errMessage, context);
+            }
+          }
+        },
+        stateChanged: (val) {},
+        onDismiss: () {});
+  }
+
+  PopupMenu menu;
 }

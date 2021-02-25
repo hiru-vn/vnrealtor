@@ -31,6 +31,8 @@ user {
   friendIds
   avatar
   totalPost
+  facebookUrl
+  description
 }
 mediaPosts {
 id

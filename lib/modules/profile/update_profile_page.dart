@@ -26,6 +26,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   TextEditingController _emailC = TextEditingController();
   TextEditingController _phoneC = TextEditingController();
   TextEditingController _facebookC = TextEditingController();
+  TextEditingController _descriptionC = TextEditingController();
 
   @override
   void didChangeDependencies() {
@@ -35,7 +36,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       _nameC.text = _authBloc.userModel.name;
       _emailC.text = _authBloc.userModel.email;
       _phoneC.text = _authBloc.userModel.phone;
-      // _facebookC.text = _authBloc.userModel.
+      _facebookC.text = _authBloc.userModel.facebookUrl;
+      _descriptionC.text = _authBloc.userModel.description;
     }
     super.didChangeDependencies();
   }
@@ -60,6 +62,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     _authBloc.userModel.name = _nameC.text;
     _authBloc.userModel.email = _emailC.text;
     _authBloc.userModel.phone = _phoneC.text;
+    _authBloc.userModel.facebookUrl = _facebookC.text;
+    _authBloc.userModel.description = _descriptionC.text;
     setState(() {
       isLoading = true;
     });
@@ -130,7 +134,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                       SizedBox(height: 10),
                       _buildFormField(context, 'Facebook', _facebookC),
                       SizedBox(height: 10),
-                      _buildFormField(context, 'Giới thiệu ngắn', _facebookC, maxLine: 4),
+                      _buildFormField(context, 'Giới thiệu ngắn', _descriptionC, maxLine: 4),
                       SpacingBox(h: 3),
                       Padding(
                         padding: const EdgeInsets.all(15),

@@ -200,7 +200,7 @@ class CreatePostCard extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            Divider(
               height: 22,
             ),
             Padding(
@@ -217,7 +217,8 @@ class CreatePostCard extends StatelessWidget {
                     width: 6,
                   ),
                   Text(
-                    'Bài viết nổi bật',
+                    // 'Bài viết nổi bật',
+                    '',
                     style: ptBody().copyWith(
                       fontWeight: FontWeight.w600,
                     ),

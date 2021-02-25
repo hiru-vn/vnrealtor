@@ -239,6 +239,17 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+    Future<BaseResponse> deleteComment(String postId) async {
+    try {
+      final res = await PostRepo().deleteComment(postId);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
+
   Future<BaseResponse> likePost(String postId) async {
     try {
       final res = await PostRepo().increaseLikePost(postId: postId);
