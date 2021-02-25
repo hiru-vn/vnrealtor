@@ -14,6 +14,7 @@ class UserModel {
   List<String> followingIds;
   List<String> savedPostIds;
   int totalPost;
+  int notiCount;
 
   UserModel(
       {this.id,
@@ -29,7 +30,9 @@ class UserModel {
       this.avatar,
       this.totalPost,
       this.followerIds,
-      this.followingIds, this.savedPostIds});
+      this.notiCount,
+      this.followingIds,
+      this.savedPostIds});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -43,13 +46,15 @@ class UserModel {
         json['friendIds'] != null ? json['friendIds'].cast<String>() : [];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    totalPost = json['totalPost']??0;
+    totalPost = json['totalPost'] ?? 0;
     avatar = json['avatar'];
     followerIds =
         json['followerIds'] != null ? json['followerIds'].cast<String>() : [];
     followingIds =
         json['followingIds'] != null ? json['followingIds'].cast<String>() : [];
-    savedPostIds = json['savedPostIds'] != null ? json['savedPostIds'].cast<String>() : [];
+    savedPostIds =
+        json['savedPostIds'] != null ? json['savedPostIds'].cast<String>() : [];
+    notiCount = json['notiCount'];
   }
 
   Map<String, dynamic> toJson() {
@@ -67,6 +72,8 @@ class UserModel {
     data['followingIds'] = this.followingIds;
     data['followerIds'] = this.followerIds;
     data['savedPostIds'] = this.savedPostIds;
+    data['notiCount'] = this.notiCount;
+
     return data;
   }
 }

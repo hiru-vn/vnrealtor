@@ -50,6 +50,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         _authBloc.userModel.avatar = url;
         uploadingAvatar = false;
       });
+      
     } catch (e) {
       showToast(e.toString(), context);
     }
@@ -67,6 +68,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       isLoading = false;
     });
     if (res.isSuccess) {
+      showToast('Cập nhật thành công', context, isSuccess: true);
     } else
       showToast(res.errMessage, context);
   }
@@ -121,12 +123,14 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                   child: Column(
                     children: [
                       _buildFormField(context, 'Tên người dùng', _nameC),
-                      SizedBox(height: 15),
+                      SizedBox(height: 10),
                       _buildFormField(context, 'Email', _emailC),
-                      SizedBox(height: 15),
+                      SizedBox(height: 10),
                       _buildFormField(context, 'Số điện thoại', _phoneC),
-                      SizedBox(height: 15),
+                      SizedBox(height: 10),
                       _buildFormField(context, 'Facebook', _facebookC),
+                      SizedBox(height: 10),
+                      _buildFormField(context, 'Giới thiệu ngắn', _facebookC, maxLine: 4),
                       SpacingBox(h: 3),
                       Padding(
                         padding: const EdgeInsets.all(15),
@@ -174,7 +178,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   _buildFormField(BuildContext context, String text,
-          TextEditingController controller) =>
+          TextEditingController controller, {int maxLine}) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Container(
@@ -182,8 +186,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 borderRadius: BorderRadius.circular(3),
                 color: ptBackgroundColor(context)),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 25),
+              padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 20),
               child: TextField(
+                maxLines: maxLine,
                 controller: controller,
                 decoration:
                     InputDecoration(border: InputBorder.none, hintText: text),

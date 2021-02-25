@@ -21,7 +21,7 @@ class _NotificationPageState extends State<NotificationPage>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    
+
     super.initState();
   }
 
@@ -106,10 +106,11 @@ class NotificationTab extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    if (notificationBloc.isLoadNoti) return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ListSkeleton(),
-    );
+    if (notificationBloc.isLoadNoti)
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: ListSkeleton(),
+      );
     return list.length > 0
         ? RefreshIndicator(
             color: ptPrimaryColor(context),
@@ -125,13 +126,19 @@ class NotificationTab extends StatelessWidget {
               itemCount: list.length,
               itemBuilder: (context, index) => ListTile(
                 onTap: () {
+                  if (!list[index].seen) {
+                    notificationBloc.seenNoti(list[index].id);
+                    list[index].seen = true;
+                  }
                   if (['LIKE', 'COMMENT', 'SHARE']
                       .contains(list[index].type.toUpperCase())) {
                     PostDetail.navigate(null,
                         postId: list[index].data['modelId']);
                   }
                 },
-                tileColor: ptBackgroundColor(context),
+                tileColor: list[index].seen
+                    ? Colors.white
+                    : ptBackgroundColor(context),
                 leading: CircleAvatar(
                   radius: 22,
                   backgroundImage:

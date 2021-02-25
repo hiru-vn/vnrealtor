@@ -52,7 +52,7 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
-    Future<BaseResponse> getListUserIn(List<String> ids) async {
+  Future<BaseResponse> getListUserIn(List<String> ids) async {
     try {
       final res = await UserRepo().getListUserIn(ids);
       final List listRaw = res['data'];
@@ -69,6 +69,20 @@ class UserBloc extends ChangeNotifier {
     try {
       final res = await UserRepo()
           .updateUser(user.id, user.name, user.email, user.phone, user.avatar);
+
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> seenAllNoti() async {
+    try {
+      if (AuthBloc.instance.userModel.notiCount == 0) return BaseResponse.success('');
+      AuthBloc.instance.userModel.notiCount = 0;
+      final res = await UserRepo().seenAllNoti();
 
       return BaseResponse.success(res);
     } catch (e) {

@@ -1,4 +1,5 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/notification/notification_page.dart';
 import 'package:datcao/modules/post/post_page.dart';
@@ -69,9 +70,9 @@ class _HomePageState extends State<HomePage>
             // if (index == 1) //message
             //   InboxBloc.instance
             //       .getList20InboxGroup(AuthBloc.instance.userModel.id);
-            // if (index == 2)
-            //   NotificationBloc.instance.getListNotification(
-            //       filter: GraphqlFilter(order: '{createdAt: -1}'));
+            if (index == 2) {
+              UserBloc.instance.seenAllNoti();
+            }
           },
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/share/import.dart';
 import 'package:flutter/widgets.dart';
@@ -30,10 +31,12 @@ class BottomNavigator extends StatefulWidget {
 
 class _BottomNavigatorState extends State<BottomNavigator> {
   NotificationBloc _notificationBloc;
+  AuthBloc _authBloc;
 
   @override
   Widget build(BuildContext context) {
     _notificationBloc = Provider.of<NotificationBloc>(context);
+    _authBloc = Provider.of(context);
     final List<BottomNavigationBarItem> bottomNavBarItems = widget.list
         .map(
           (e) => BottomNavigationBarItem(
@@ -65,9 +68,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                 //     ),
                 //   ),
                 // ),
-                if (_notificationBloc.notifications
-                        .any((element) => (!element.seen)) &&
-                    e.isNoti)
+                if (_authBloc.userModel.notiCount > 0)
                   Positioned(
                     top: 0,
                     right: 0,
@@ -83,11 +84,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                       ),
                       child: Center(
                         child: Text(
-                          _notificationBloc.notifications
-                              .where((element) => (!element.seen))
-                              .toList()
-                              .length
-                              .toString(),
+                          _authBloc.userModel.notiCount.toString(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 9.5,
@@ -112,9 +109,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                     ),
                   ),
                 ),
-                if (_notificationBloc.notifications
-                        .any((element) => (!element.seen)) &&
-                    e.isNoti)
+                if (_authBloc.userModel.notiCount > 0)
                   Positioned(
                     top: 2,
                     right: 3,

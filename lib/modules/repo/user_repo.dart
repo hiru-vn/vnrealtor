@@ -106,6 +106,17 @@ avatar: "$avatar",
     return res['id'];
   }
 
+  Future seenAllNoti() async {
+    final id = await SPref.instance.get('id');
+    final res = await UserSrv().update(
+        id: id,
+        data: '''
+notiCount: 0
+    ''',
+        fragment: 'id');
+    return res['id'];
+  }
+
   Future getMyFriendShipWith(String userId) async {
     final res = await UserSrv()
         .query('getMyFriendShipWith', 'userId: "$userId"', fragment: '''

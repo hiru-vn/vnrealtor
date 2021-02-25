@@ -24,4 +24,14 @@ content: "$content"
     ''');
     return res;
   }
+
+  Future seenNoti(String id) async {
+    final res = await NotificationSrv().mutate(
+        'seenNotifification',
+        '''
+id: "$id"
+    ''',
+        fragment: 'id');
+    return res['id'];
+  }
 }

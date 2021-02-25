@@ -18,5 +18,6 @@ followerIds: [ID]
 followingIds: [ID]
 savedPostIds: [ID]
 totalPost
+notiCount
   ''');
 }
