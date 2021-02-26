@@ -291,6 +291,7 @@ class _InboxChatState extends State<InboxChat> {
             child: AnimatedSearchBar(
               width: MediaQuery.of(context).size.width / 2,
               height: 40,
+              
             ),
           ),
           IconButton(

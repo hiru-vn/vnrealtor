@@ -174,10 +174,10 @@ class _SettingPageState extends State<SettingPage> {
                         SizedBox(height: 3),
                         GestureDetector(
                           onTap: () {
-                            ProfilePage.navigate(_authBloc.userModel);
+                            showAlertDialog(context, 'Đang cập nhật', navigatorKey: null);
                           },
                           child: Text(
-                            'Thông tin người dùng',
+                            'Cài đặt thông báo ứng dụng',
                             style: ptSmall().copyWith(color: Colors.blue[300]),
                           ),
                         ),

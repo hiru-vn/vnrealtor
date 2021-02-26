@@ -68,7 +68,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                 //     ),
                 //   ),
                 // ),
-                if (_authBloc.userModel.notiCount > 0)
+                if ((_authBloc?.userModel?.notiCount??0) > 0)
                   Positioned(
                     top: 0,
                     right: 0,
@@ -84,7 +84,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                       ),
                       child: Center(
                         child: Text(
-                          _authBloc.userModel.notiCount.toString(),
+                          _authBloc?.userModel?.notiCount.toString(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 9.5,
@@ -109,7 +109,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                     ),
                   ),
                 ),
-                if (_authBloc.userModel.notiCount > 0)
+                if ((_authBloc?.userModel?.notiCount??0) > 0)
                   Positioned(
                     top: 2,
                     right: 3,

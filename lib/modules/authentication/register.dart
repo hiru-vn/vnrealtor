@@ -15,11 +15,11 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  TextEditingController _nameC = TextEditingController(text: 'huy nguyen');
-  TextEditingController _emailC = TextEditingController(text: 'huy@gmail.com');
-  TextEditingController _phoneC = TextEditingController(text: '0987654321');
-  TextEditingController _passC = TextEditingController(text: '123123');
-  TextEditingController _repassC = TextEditingController(text: '123123');
+  TextEditingController _nameC = TextEditingController(text: '');
+  TextEditingController _emailC = TextEditingController(text: '');
+  TextEditingController _phoneC = TextEditingController(text: '');
+  TextEditingController _passC = TextEditingController(text: '');
+  TextEditingController _repassC = TextEditingController(text: '');
   TextEditingController _otpC = TextEditingController(text: '');
   AuthBloc _authBloc;
   StreamSubscription listener;

@@ -18,8 +18,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   AuthBloc _authBloc;
-  TextEditingController _nameC = TextEditingController(text: '0123123123');
-  TextEditingController _passC = TextEditingController(text: '123123');
+  TextEditingController _nameC = TextEditingController(text: '');
+  TextEditingController _passC = TextEditingController(text: '');
 
   final _formKey = GlobalKey<FormState>();
 
