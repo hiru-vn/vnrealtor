@@ -86,6 +86,7 @@ class Formart {
       default:
         print(err);
         message = "Lỗi Đăng Nhập";
+        return err;
     }
     return message;
   }

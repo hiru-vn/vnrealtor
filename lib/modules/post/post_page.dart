@@ -205,32 +205,32 @@ class CreatePostCard extends StatelessWidget {
             Divider(
               height: 22,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 6,
-                  ),
-                  Image.asset('assets/image/map_icon.png'),
-                  SizedBox(
-                    width: 6,
-                  ),
-                  Text(
-                    // 'Bài viết nổi bật',
-                    '',
-                    style: ptBody().copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(
+            //     horizontal: 20,
+            //   ),
+            //   child: Row(
+            //     children: [
+            //       SizedBox(
+            //         width: 6,
+            //       ),
+            //       Image.asset('assets/image/map_icon.png'),
+            //       SizedBox(
+            //         width: 6,
+            //       ),
+            //       Text(
+            //         // 'Bài viết nổi bật',
+            //         '',
+            //         style: ptBody().copyWith(
+            //           fontWeight: FontWeight.w600,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: 10,
+            // ),
             postBloc.isLoadStory
                 ? StorySkeleton()
                 : SizedBox(
