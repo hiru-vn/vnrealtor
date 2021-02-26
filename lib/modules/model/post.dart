@@ -5,6 +5,7 @@ import 'media_post.dart';
 class PostModel {
   String id;
   String content;
+  String rawContent;
   List<String> mediaPostIds;
   List<String> commentIds;
   String userId;
@@ -52,11 +53,13 @@ class PostModel {
       this.district,
       this.province,
       this.hashTag,
+      this.rawContent,
       this.ward});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id']??json['_id'];
     content = json['content'];
+    rawContent = json['rawContent'];
     mediaPostIds =
         json['mediaPostIds'] != null ? json['mediaPostIds'].cast<String>() : [];
     commentIds =
@@ -66,6 +69,7 @@ class PostModel {
     userLikeIds =
         json['userLikeIds'] != null ? json['userLikeIds'].cast<String>() : [];
     share = json['share'];
+
     userShareIds =
         json['userShareIds'] != null ? json['userShareIds'].cast<String>() : [];
     hashTag = json['hashTag'] != null ? json['hashTag'].cast<String>() : [];

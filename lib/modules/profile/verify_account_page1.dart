@@ -207,13 +207,17 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                     onGranted: () {
                       ImagePicker.pickImage(source: ImageSource.camera)
                           .then((value) async {
-                        if (value == null) return;
-                        final url = await FileUtil.uploadFireStorage(value);
-                        if (isFront)
-                          _verificationBloc.imageFront = url;
-                        else
-                          _verificationBloc.imageBehind = url;
-                        setState(() {});
+                        try {
+                          if (value == null) return;
+                          final url = await FileUtil.uploadFireStorage(value);
+                          if (isFront)
+                            _verificationBloc.imageFront = url;
+                          else
+                            _verificationBloc.imageBehind = url;
+                          setState(() {});
+                        } catch (e) {
+                          showToast(e.toString(), context);
+                        }
                       });
                     }),
                 child: Container(

@@ -49,9 +49,9 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
     _expirationDate = DateTime.tryParse(widget.post.expirationDate);
     if (widget.post.locationLat != null)
       _pos = LatLng(widget.post.locationLat, widget.post.locationLong);
-    _contentC.text = widget.post.content;
-    if (widget.post.hashTag.length > 0)
-      _contentC.text += ('\n' + widget.post.hashTag.join('  '));
+    _contentC.text = widget.post.rawContent ?? widget.post.content;
+    //if (widget.post.hashTag.length > 0)
+    // _contentC.text += ('\n' + widget.post.hashTag.join('  '));
     _shareWith = widget.post.publicity ? 'public' : 'friend';
     super.initState();
   }

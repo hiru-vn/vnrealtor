@@ -68,7 +68,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                 //     ),
                 //   ),
                 // ),
-                if ((_authBloc?.userModel?.notiCount??0) > 0)
+                if ((_authBloc?.userModel?.notiCount??0) > 0 && e.isNoti)
                   Positioned(
                     top: 0,
                     right: 0,
@@ -109,7 +109,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                     ),
                   ),
                 ),
-                if ((_authBloc?.userModel?.notiCount??0) > 0)
+                if ((_authBloc?.userModel?.notiCount??0) > 0 && e.isNoti)
                   Positioned(
                     top: 2,
                     right: 3,

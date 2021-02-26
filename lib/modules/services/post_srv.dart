@@ -34,6 +34,7 @@ user {
   facebookUrl
   description
 }
+rawContent
 mediaPosts {
 id
 userId

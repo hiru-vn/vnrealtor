@@ -231,6 +231,7 @@ ward
 hashTag
 expirationDate
 publicity
+rawContent
 user {
   id 
   uid 
