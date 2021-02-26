@@ -100,7 +100,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       width: deviceWidth(context),
       height: deviceHeight(context),
       child: Scaffold(
-        appBar: CreatePostPageAppBar(widget.pageController),
+        appBar: CreatePostPageAppBar(widget.pageController, _createPost),
         body: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -135,7 +135,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           maxLines: null,
                           minLines: 6,
                           controller: _contentC,
-                          basicStyle: ptBigBody().copyWith(color: Colors.black54),
+                          basicStyle:
+                              ptBigBody().copyWith(color: Colors.black54),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Nội dung bài viết',
@@ -159,21 +160,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   SizedBox(
                     height: 3.0,
                   ),
-                  Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Center(
-                        child: RoundedBtn(
-                          height: 45,
-                          text: 'Đăng bài',
-                          onPressed: _createPost,
-                          width: 150,
-                          color: ptPrimaryColor(context),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 8,
-                          ),
-                        ),
-                      )),
+                  // Padding(
+                  //     padding: const EdgeInsets.all(15),
+                  //     child: Center(
+                  //       child: RoundedBtn(
+                  //         height: 45,
+                  //         text: 'Đăng bài',
+                  //         onPressed: _createPost,
+                  //         width: 150,
+                  //         color: ptPrimaryColor(context),
+                  //         padding: EdgeInsets.symmetric(
+                  //           horizontal: 15,
+                  //           vertical: 8,
+                  //         ),
+                  //       ),
+                  //     )),
                   SizedBox(
                     height: _activityNode.hasFocus
                         ? MediaQuery.of(context).viewInsets.bottom
@@ -308,8 +309,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
 class CreatePostPageAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   final PageController controller;
+  final Function createPost;
   Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
-  CreatePostPageAppBar(this.controller);
+  CreatePostPageAppBar(this.controller, this.createPost);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -330,31 +332,13 @@ class CreatePostPageAppBar extends StatelessWidget
             ),
             Image.asset('assets/image/logo_full.png'),
             Spacer(),
-            GestureDetector(
-              onTap: () {
-                SearchPostPage.navigate();
-              },
-              child: SizedBox(
-                width: 42,
-                height: 42,
-                child: Icon(
-                  Icons.search,
-                  size: 26,
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                InboxList.navigate();
-              },
-              child: SizedBox(
-                  width: 42,
-                  height: 42,
-                  child: Icon(
-                    MdiIcons.chatProcessing,
-                    size: 26,
-                  )),
-            )
+            FlatButton(
+                color: ptPrimaryColor(context),
+                onPressed: createPost,
+                child: Text(
+                  'Đăng',
+                  style: ptTitle().copyWith(color: Colors.white),
+                )),
           ],
         ),
       ),

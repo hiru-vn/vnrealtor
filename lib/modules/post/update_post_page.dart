@@ -125,11 +125,24 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
       height: deviceHeight(context),
       child: Scaffold(
         appBar: AppBar1(
-          centerTitle: true,
           title: widget.post.user != null ? 'Bài viết của tôi' : '',
           automaticallyImplyLeading: true,
           bgColor: ptSecondaryColor(context),
           textColor: ptPrimaryColor(context),
+          actions: [
+            Center(
+              child: FlatButton(
+                  color: ptPrimaryColor(context),
+                  onPressed: _updatePost,
+                  child: Text(
+                    'Cập nhật',
+                    style: ptTitle().copyWith(color: Colors.white),
+                  )),
+            ),
+            SizedBox(
+              width: 12,
+            )
+          ],
         ),
         body: SingleChildScrollView(
           child:
@@ -190,21 +203,21 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   SizedBox(
                     height: 3.0,
                   ),
-                  Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Center(
-                        child: RoundedBtn(
-                          height: 45,
-                          text: 'Cập nhật',
-                          onPressed: _updatePost,
-                          width: 150,
-                          color: ptPrimaryColor(context),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 8,
-                          ),
-                        ),
-                      )),
+                  // Padding(
+                  //     padding: const EdgeInsets.all(15),
+                  //     child: Center(
+                  //       child: RoundedBtn(
+                  //         height: 45,
+                  //         text: 'Cập nhật',
+                  //         onPressed: _updatePost,
+                  //         width: 150,
+                  //         color: ptPrimaryColor(context),
+                  //         padding: EdgeInsets.symmetric(
+                  //           horizontal: 15,
+                  //           vertical: 8,
+                  //         ),
+                  //       ),
+                  //     )),
                   SizedBox(
                     height: _activityNode.hasFocus
                         ? MediaQuery.of(context).viewInsets.bottom

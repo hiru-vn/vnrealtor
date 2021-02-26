@@ -19,7 +19,6 @@ class _PostPageState extends State<PostPage> {
   bool showAppBar = true;
   PostBloc _postBloc;
   ScrollController _controller = ScrollController();
-  
 
   @override
   void initState() {
@@ -57,67 +56,70 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PageView(
-      controller: _postBloc.pageController,
-      physics: NeverScrollableScrollPhysics(),
-      children: [
-        Scaffold(
-          backgroundColor: ptBackgroundColor(context),
-          appBar: showAppBar ? PostPageAppBar() : null,
-          body: LoadMoreScrollView(
-            scrollController: _controller,
-            onLoadMore: () {
-              _postBloc.loadMoreNewFeed();
-            },
-            list: RefreshIndicator(
-              color: ptPrimaryColor(context),
-              onRefresh: () async {
-                await _postBloc.getNewFeed(
-                    filter: GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
-                return;
-              },
-              child: SingleChildScrollView(
-                controller: _controller,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: (!showAppBar)
-                          ? MediaQuery.of(context).padding.top +
-                              kToolbarHeight +
-                              10
-                          : 0,
+    return PageView.builder(
+        controller: _postBloc.pageController,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          if (index == 0)
+            return Scaffold(
+              backgroundColor: ptBackgroundColor(context),
+              appBar:
+                  showAppBar ? PostPageAppBar() : null,
+              body: LoadMoreScrollView(
+                scrollController: _controller,
+                onLoadMore: () {
+                  _postBloc.loadMoreNewFeed();
+                },
+                list: RefreshIndicator(
+                  color: ptPrimaryColor(context),
+                  onRefresh: () async {
+                    await _postBloc.getNewFeed(
+                        filter:
+                            GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
+                    return;
+                  },
+                  child: SingleChildScrollView(
+                    controller: _controller,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: (!showAppBar)
+                              ? MediaQuery.of(context).padding.top +
+                                  kToolbarHeight +
+                                  10
+                              : 0,
+                        ),
+                        CreatePostCard(
+                          postBloc: _postBloc,
+                          pageController: _postBloc.pageController,
+                        ),
+                        if (_postBloc.isReloadFeed) PostSkeleton(),
+                        ListView.builder(
+                          padding: EdgeInsets.all(0),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: _postBloc.post.length,
+                          itemBuilder: (context, index) {
+                            final item = _postBloc.post[index];
+                            return PostWidget(item);
+                          },
+                        ),
+                        if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
+                          PostSkeleton(
+                            count: 1,
+                          ),
+                        SizedBox(
+                          height: 70,
+                        ),
+                      ],
                     ),
-                    CreatePostCard(
-                      postBloc: _postBloc,
-                      pageController: _postBloc.pageController,
-                    ),
-                    if (_postBloc.isReloadFeed) PostSkeleton(),
-                    ListView.builder(
-                      padding: EdgeInsets.all(0),
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: _postBloc.post.length,
-                      itemBuilder: (context, index) {
-                        final item = _postBloc.post[index];
-                        return PostWidget(item);
-                      },
-                    ),
-                    if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
-                      PostSkeleton(
-                        count: 1,
-                      ),
-                    SizedBox(
-                      height: 70,
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
-        CreatePostPage(_postBloc.pageController),
-      ],
-    );
+            );
+          else
+            return CreatePostPage(_postBloc.pageController);
+        });
   }
 }
 
@@ -348,31 +350,32 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             Image.asset('assets/image/logo_full.png'),
             Spacer(),
-            GestureDetector(
-              onTap: () {
-                SearchPostPage.navigate();
-              },
-              child: SizedBox(
-                width: 42,
-                height: 42,
-                child: Icon(
-                  Icons.search,
-                  size: 26,
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                InboxList.navigate();
-              },
-              child: SizedBox(
+            
+              GestureDetector(
+                onTap: () {
+                  SearchPostPage.navigate();
+                },
+                child: SizedBox(
                   width: 42,
                   height: 42,
                   child: Icon(
-                    MdiIcons.chatProcessing,
+                    Icons.search,
                     size: 26,
-                  )),
-            )
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  InboxList.navigate();
+                },
+                child: SizedBox(
+                    width: 42,
+                    height: 42,
+                    child: Icon(
+                      MdiIcons.chatProcessing,
+                      size: 26,
+                    )),
+              )
           ],
         ),
       ),
