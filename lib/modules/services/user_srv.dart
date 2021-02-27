@@ -21,5 +21,10 @@ totalPost
 notiCount
 description
 facebookUrl
+settings {
+likeNoti
+shareNoti
+commentNoti
+}
   ''');
 }

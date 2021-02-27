@@ -1,5 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/model/friendship.dart';
+import 'package:datcao/modules/model/setting.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
@@ -69,6 +70,19 @@ class UserBloc extends ChangeNotifier {
     try {
       final res = await UserRepo()
           .updateUser(user.id, user.name, user.email, user.phone, user.avatar, user.description, user.facebookUrl);
+
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> updateSetting(SettingModel setting) async {
+    try {
+      final res = await UserRepo()
+          .updateSetting(setting.likeNoti, setting.commentNoti, setting.shareNoti);
 
       return BaseResponse.success(res);
     } catch (e) {

@@ -7,7 +7,7 @@ import 'filter.dart';
 
 class UserRepo {
   String userFragment =
-      ' id uid name email phone totalPost description facebookUrl role reputationScore friendIds createdAt updatedAt followerIds followingIds avatar';
+      ' id uid name email phone totalPost description facebookUrl role reputationScore friendIds createdAt updatedAt followerIds followingIds avatar settings { likeNoti shareNoti commentNoti}';
 
   Future registerWithPhone(
       {String name,
@@ -103,6 +103,18 @@ phone: "$phone",
 avatar: "$avatar",
 description: "$description",
 facebookUrl: "$facebookUrl"
+    ''',
+        fragment: 'id');
+    return res['id'];
+  }
+
+  Future updateSetting(bool like, bool share, bool comment) async {
+    final res = await UserSrv().mutate(
+        'updateSetting',
+         '''
+likeNoti: $like
+shareNoti: $share
+commentNoti: $comment
     ''',
         fragment: 'id');
     return res['id'];

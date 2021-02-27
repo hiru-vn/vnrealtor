@@ -3,7 +3,7 @@ import 'package:datcao/modules/profile/verify_account_page1.dart';
 import 'package:datcao/modules/setting/about_page.dart';
 import 'package:datcao/modules/setting/point_page.dart';
 import 'package:datcao/modules/setting/policy_page.dart';
-import 'package:datcao/modules/setting/privacy_page.dart';
+import 'package:datcao/modules/setting/setting_notify_page.dart';
 import 'package:package_info/package_info.dart';
 import 'package:datcao/share/import.dart';
 
@@ -34,7 +34,8 @@ class _SettingPageState extends State<SettingPage> {
       //   }
       // },
       {
-        "name": "Điểm uy tín: ${_authBloc.userModel.reputationScore.toString()}",
+        "name":
+            "Điểm uy tín: ${_authBloc.userModel.reputationScore.toString()}",
         "img": "assets/image/star_point.png",
         "action": () {
           PointPage.navigate();
@@ -42,37 +43,45 @@ class _SettingPageState extends State<SettingPage> {
       },
       {
         "name": "Chia sẻ ứng dụng",
-        "img": "assets/image/share_app.jpg",
+        "img": "assets/image/share_app.png",
         "action": () {
           showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
         }
       },
+      // {
+      //   "name": "Ngôn ngữ",
+      //   "img": "assets/image/language.png",
+      //   "action": () {
+      //     pickList(context,
+      //         title: 'Chọn ngôn ngữ',
+      //         onPicked: (value) {},
+      //         options: [
+      //           PickListItem('vi', 'Tiếng Việt'),
+      //           PickListItem('en', 'English')
+      //         ],
+      //         closeText: 'Xong');
+      //   }
+      // },
+
+      // {
+      //   "name": "Chính sách bảo mật",
+      //   "img": "assets/image/privacy.png",
+      //   "action": () {
+      //     PrivacyPage.navigate();
+      //   }
+      // },
       {
-        "name": "Ngôn ngữ",
-        "img": "assets/image/language.png",
+        "name": "Trang",
+        "img": "assets/image/page.png",
         "action": () {
-          pickList(context,
-              title: 'Chọn ngôn ngữ',
-              onPicked: (value) {},
-              options: [
-                PickListItem('vi', 'Tiếng Việt'),
-                PickListItem('en', 'English')
-              ],
-              closeText: 'Xong');
+          AboutPage.navigate();
         }
       },
       {
-        "name": "Điều khoản sử dụng",
-        "img": "assets/image/policy.png",
+        "name": "Bài viết đã lưu",
+        "img": "assets/image/saved_post.png",
         "action": () {
           PolicyPage.navigate();
-        }
-      },
-      {
-        "name": "Chính sách bảo mật",
-        "img": "assets/image/privacy.png",
-        "action": () {
-          PrivacyPage.navigate();
         }
       },
       {
@@ -83,19 +92,26 @@ class _SettingPageState extends State<SettingPage> {
         }
       },
       {
-        "name": "Phản hồi & Hỗ trợ",
-        "img": "assets/image/feedback.png",
+        "name": "Điều khoản và\nchính sách",
+        "img": "assets/image/policy.png",
         "action": () {
-          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
+          PolicyPage.navigate();
         }
       },
-      {
-        "name": "Chế độ tối",
-        "img": "assets/image/night_mode.png",
-        "action": () {
-          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
-        }
-      },
+      // {
+      //   "name": "Phản hồi & Hỗ trợ",
+      //   "img": "assets/image/feedback.png",
+      //   "action": () {
+      //     showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
+      //   }
+      // },
+      // {
+      //   "name": "Chế độ tối",
+      //   "img": "assets/image/night_mode.png",
+      //   "action": () {
+      //     showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
+      //   }
+      // },
       // {
       //   "name": "Đánh giá ứng dụng",
       //   "img": "assets/image/rate_us.png",
@@ -173,7 +189,7 @@ class _SettingPageState extends State<SettingPage> {
                         SizedBox(height: 3),
                         GestureDetector(
                           onTap: () {
-                            showAlertDialog(context, 'Đang cập nhật', navigatorKey: null);
+                            SettingNotifyPage.navigate();
                           },
                           child: Text(
                             'Cài đặt thông báo ứng dụng',
@@ -192,48 +208,15 @@ class _SettingPageState extends State<SettingPage> {
                     VertifyAccountPage1.navigate();
                   },
                   child: Card(
-                    color: ptDarkColor(context),
+                    elevation: 0,
+                    color: ptSecondaryColor(context),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(1),
                       child: Row(
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10)
-                                      .copyWith(bottom: 5),
-                                  child: Text(
-                                    _authBloc.userModel.role != 'AGENT'
-                                        ? 'Xác thực nhà môi giới'
-                                        : 'Bạn đã là nhà môi giới',
-                                    maxLines: null,
-                                    style: ptBody().copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.all(10).copyWith(top: 0),
-                                  child: Text(
-                                    _authBloc.userModel.role != 'AGENT'
-                                        ? 'Để đăng bài bds, bạn sẽ cần cung cấp thêm 1 số thông tin.'
-                                        : 'Cập nhật lại thông tin nhà môi giới của bạn tại đây',
-                                    maxLines: 2,
-                                    style: ptTiny().copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 5),
@@ -244,7 +227,7 @@ class _SettingPageState extends State<SettingPage> {
                                   shape: BoxShape.circle,
                                   color: _authBloc.userModel.role != 'AGENT'
                                       ? Colors.transparent
-                                      : Colors.white),
+                                      : ptSecondaryColor(context)),
                               child: Center(
                                 child: Container(
                                   height: 41,
@@ -260,14 +243,14 @@ class _SettingPageState extends State<SettingPage> {
                                             width: 38,
                                             decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
-                                                color: Colors.white),
+                                                color:
+                                                    ptSecondaryColor(context)),
                                             child: Center(
                                               child: Icon(
-                                                      Icons.verified_user,
-                                                      color:
-                                                          ptDarkColor(context),
-                                                      size: 27,
-                                                    ),
+                                                Icons.verified_user,
+                                                color: ptDarkColor(context),
+                                                size: 27,
+                                              ),
                                             ),
                                           ),
                                         )
@@ -275,6 +258,37 @@ class _SettingPageState extends State<SettingPage> {
                                           'assets/image/no_agency.png'),
                                 ),
                               ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10)
+                                      .copyWith(bottom: 5, left: 3),
+                                  child: Text(
+                                    _authBloc.userModel.role != 'AGENT'
+                                        ? 'Xác thực nhà môi giới'
+                                        : 'Bạn đã là nhà môi giới',
+                                    maxLines: null,
+                                    style: ptBody().copyWith(
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10)
+                                      .copyWith(top: 0, left: 3),
+                                  child: Text(
+                                    _authBloc.userModel.role != 'AGENT'
+                                        ? 'Để đăng bài bds, bạn sẽ cần cung cấp thêm 1 số thông tin.'
+                                        : 'Cập nhật lại thông tin nhà môi giới của bạn tại đây',
+                                    maxLines: 2,
+                                    style: ptSmall(),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],

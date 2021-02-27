@@ -1,3 +1,5 @@
+import 'package:datcao/modules/model/setting.dart';
+
 class UserModel {
   String id;
   String uid;
@@ -17,6 +19,7 @@ class UserModel {
   int notiCount;
   String description;
   String facebookUrl;
+  SettingModel setting;
 
   UserModel(
       {this.id,
@@ -34,8 +37,10 @@ class UserModel {
       this.followerIds,
       this.notiCount,
       this.followingIds,
-      this.savedPostIds, 
-      this.description, this.facebookUrl});
+      this.savedPostIds,
+      this.description,
+      this.facebookUrl,
+      this.setting});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -60,6 +65,7 @@ class UserModel {
     notiCount = json['notiCount'];
     description = json['description'];
     facebookUrl = json['facebookUrl'];
+    setting = SettingModel.fromJson(json['settings']);
   }
 
   Map<String, dynamic> toJson() {
