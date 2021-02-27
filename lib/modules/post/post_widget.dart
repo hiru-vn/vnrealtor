@@ -73,7 +73,7 @@ class _PostWidgetState extends State<PostWidget> {
                       ProfileOtherPage.navigate(widget.post?.user);
                     },
                     child: CircleAvatar(
-                      radius: 25,
+                      radius: 22,
                       backgroundImage: widget.post?.user?.avatar != null
                           ? NetworkImage(widget.post?.user?.avatar)
                           : AssetImage('assets/image/default_avatar.png'),
@@ -119,7 +119,7 @@ class _PostWidgetState extends State<PostWidget> {
                           SizedBox(width: 8),
                           Text(
                             widget.post?.user?.reputationScore.toString(),
-                            style: ptTitle().copyWith(color: Colors.yellow),
+                            style: ptBody().copyWith(color: Colors.yellow),
                           ),
                           SizedBox(width: 2),
                           Image.asset('assets/image/coin.png'),
@@ -326,7 +326,7 @@ class _PostWidgetState extends State<PostWidget> {
                         Icon(
                           MdiIcons.chatOutline,
                           color: ptPrimaryColor(context),
-                          size: 23,
+                          size: 24,
                         ),
                         SizedBox(
                           height: 5,
