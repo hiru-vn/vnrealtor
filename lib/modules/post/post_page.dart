@@ -155,7 +155,7 @@ class CreatePostCard extends StatelessWidget {
                   //elevation: 5,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 17, vertical: 13),
+                        horizontal: 17, vertical: 11),
                     child: Row(
                       children: [
                         Text(
