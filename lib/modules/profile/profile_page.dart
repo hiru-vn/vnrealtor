@@ -311,7 +311,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                       children: [
                                         Text(
                                           AuthBloc.instance.userModel
-                                              .followerIds.length
+                                              .followingIds.length
                                               .toString(),
                                           style: ptTitle(),
                                         ),

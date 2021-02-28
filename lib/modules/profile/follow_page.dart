@@ -86,13 +86,13 @@ class _FollowPageState extends State<FollowPage>
                   height: 40,
                   width: deviceWidth(context) / 2 - 45,
                   child: Tab(
-                    text: 'Đang theo dõi',
+                    text: 'Được theo dõi',
                   ),
                 ),
                 SizedBox(
                     height: 40,
                     width: deviceWidth(context) / 2 - 45,
-                    child: Tab(text: 'Được theo dõi')
+                    child: Tab(text: 'Đang theo dõi')
                     //'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
                     ),
               ],

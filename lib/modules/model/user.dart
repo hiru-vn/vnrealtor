@@ -65,7 +65,7 @@ class UserModel {
     notiCount = json['notiCount'];
     description = json['description'];
     facebookUrl = json['facebookUrl'];
-    setting = SettingModel.fromJson(json['settings']);
+    if (json['settings']!=null) setting = SettingModel.fromJson(json['settings']);
   }
 
   Map<String, dynamic> toJson() {
