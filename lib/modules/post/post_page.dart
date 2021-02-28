@@ -63,8 +63,7 @@ class _PostPageState extends State<PostPage> {
           if (index == 0)
             return Scaffold(
               backgroundColor: ptBackgroundColor(context),
-              appBar:
-                  showAppBar ? PostPageAppBar() : null,
+              appBar: showAppBar ? PostPageAppBar() : null,
               body: LoadMoreScrollView(
                 scrollController: _controller,
                 onLoadMore: () {
@@ -233,18 +232,20 @@ class CreatePostCard extends StatelessWidget {
             // ),
             postBloc.isLoadStory
                 ? StorySkeleton()
-                : SizedBox(
-                    height: 170,
-                    child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        itemCount: postBloc.stories.length,
-                        separatorBuilder: (context, index) =>
-                            SizedBox(width: 15),
-                        itemBuilder: (context, index) {
-                          return _buildStoryWidget(postBloc.stories[index]);
-                        }),
-                  ),
+                : postBloc.stories.length == 0
+                    ? SizedBox.shrink()
+                    : SizedBox(
+                        height: 170,
+                        child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            itemCount: postBloc.stories.length,
+                            separatorBuilder: (context, index) =>
+                                SizedBox(width: 15),
+                            itemBuilder: (context, index) {
+                              return _buildStoryWidget(postBloc.stories[index]);
+                            }),
+                      ),
           ],
         ),
       ),
@@ -350,32 +351,31 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             Image.asset('assets/image/logo_full.png'),
             Spacer(),
-            
-              GestureDetector(
-                onTap: () {
-                  SearchPostPage.navigate();
-                },
-                child: SizedBox(
+            GestureDetector(
+              onTap: () {
+                SearchPostPage.navigate();
+              },
+              child: SizedBox(
+                width: 42,
+                height: 42,
+                child: Icon(
+                  Icons.search,
+                  size: 26,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                InboxList.navigate();
+              },
+              child: SizedBox(
                   width: 42,
                   height: 42,
                   child: Icon(
-                    Icons.search,
+                    MdiIcons.chatProcessing,
                     size: 26,
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  InboxList.navigate();
-                },
-                child: SizedBox(
-                    width: 42,
-                    height: 42,
-                    child: Icon(
-                      MdiIcons.chatProcessing,
-                      size: 26,
-                    )),
-              )
+                  )),
+            )
           ],
         ),
       ),
