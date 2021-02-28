@@ -261,7 +261,7 @@ class _PostWidgetState extends State<PostWidget> {
             //           showComment(widget.post);
             //         },
             //         child: Text(
-            //           '${widget.post?.commentIds?.length.toString() ?? '0'} comments',
+            //           '${widget.post?.commentIds?.length.toString() ?? '0'} bình luận',
             //           style: ptSmall(),
             //         ),
             //       ),

@@ -75,7 +75,7 @@ class _SettingPageState extends State<SettingPage> {
         "name": "Trang",
         "img": "assets/image/page.png",
         "action": () {
-          AboutPage.navigate();
+          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
         }
       },
       {

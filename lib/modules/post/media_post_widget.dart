@@ -163,7 +163,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                               width: 5,
                             ),
                             Text(
-                              'Like',
+                              'Thích',
                               style: TextStyle(
                                   color: _isLike
                                       ? ptPrimaryColor(context)
@@ -190,7 +190,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                               showComment(widget.post, context);
                             },
                             child: Text(
-                              'Comment',
+                              'Bình luận',
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -212,7 +212,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                           GestureDetector(
                             onTap: () => shareTo(context),
                             child: Text(
-                              'Share',
+                              'Chia sẻ',
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -254,7 +254,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                       showComment(widget.post, context);
                     },
                     child: Text(
-                      '${widget.post?.commentIds?.length.toString() ?? '0'} comments',
+                      '${widget.post?.commentIds?.length.toString() ?? '0'} bình luận',
                       style: ptSmall().copyWith(color: Colors.white),
                     ),
                   ),
@@ -394,7 +394,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                               width: 5,
                             ),
                             Text(
-                              'Like',
+                              'Thích',
                               style: TextStyle(
                                   color: _isLike
                                       ? ptPrimaryColor(context)
@@ -421,7 +421,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                               showComment(widget.post, context);
                             },
                             child: Text(
-                              'Comment',
+                              'Bình luận',
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -443,7 +443,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                           GestureDetector(
                             onTap: () => shareTo(context),
                             child: Text(
-                              'Share',
+                              'Chia sẻ',
                               style: TextStyle(color: Colors.white),
                             ),
                           ),

@@ -80,7 +80,7 @@ class _InboxListState extends State<InboxList>
       body: _inboxBloc.groupInboxList != null
           ? _inboxBloc.groupInboxList.length == 0
               ? EmptyWidget(
-                  assetImg: 'assets/image/no_message.dart',
+                  // assetImg: 'assets/image/no_message.dart',
                   title: 'Bạn chưa có tin nhắn nào.',
                 )
               : RefreshIndicator(
@@ -183,7 +183,7 @@ class _InboxListState extends State<InboxList>
                           ),
                         )
                       : EmptyWidget(
-                          assetImg: 'assets/image/no_message.png',
+                          // assetImg: 'assets/image/no_message.png',
                           title: 'Bạn chưa có tin nhắn nào',
                           content:
                               'Bạn có thể nhắn tin với người khác khi cả 2 là bạn bè.',

@@ -349,10 +349,26 @@ class _ProfileCardState extends State<ProfileCard> {
                       SizedBox(width: 5),
                       Image.asset('assets/image/coin.png'),
                       Spacer(),
-                      SizedBox(
-                          width: 31,
-                          height: 31,
-                          child: Image.asset('assets/image/facebook_icon.png')),
+                      if (widget.user.facebookUrl != null)
+                        FutureBuilder(
+                            future: canLaunch(widget.user.facebookUrl),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) return SizedBox.shrink();
+                              if (snapshot.data == false)
+                                return SizedBox.shrink();
+                              if (snapshot.data == true)
+                                return GestureDetector(
+                                  onTap: () {
+                                    launch(widget.user.facebookUrl);
+                                  },
+                                  child: SizedBox(
+                                      width: 31,
+                                      height: 31,
+                                      child: Image.asset(
+                                          'assets/image/facebook_icon.png')),
+                                );
+                              return SizedBox.shrink();
+                            }),
                       SizedBox(width: 15),
                       if (widget.user.email != null)
                         GestureDetector(
