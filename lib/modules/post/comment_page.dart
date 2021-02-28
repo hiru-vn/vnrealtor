@@ -145,41 +145,58 @@ class _CommentPageState extends State<CommentPage> {
             Container(
               width: deviceWidth(context),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              color: ptBackgroundColor(context),
-              child: Center(
-                child: TextField(
-                  controller: _commentC,
-                  maxLines: null,
-                  maxLength: 200,
-                  onSubmitted: _comment,
-                  decoration: InputDecoration(
-                    suffixIcon: GestureDetector(
-                        onTap: () {
-                          _comment(_commentC.text);
-                        },
-                        child: Icon(Icons.send)),
-                    contentPadding: EdgeInsets.all(10),
-                    isDense: true,
-                    hintText: 'Viết bình luận.',
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.black38,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.black38,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.black38,
-                      ),
-                    ),
-                    fillColor: Colors.white,
-                    filled: true,
+              color: Colors.white70,
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 21,
+                    backgroundImage: AuthBloc.instance.userModel.avatar != null
+                        ? NetworkImage(AuthBloc.instance.userModel.avatar)
+                        : AssetImage('assets/image/default_avatar.png'),
                   ),
-                ),
+                  SizedBox(
+                    width: 7,
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: _commentC,
+                      maxLines: null,
+                      // maxLength: 200,
+                      onSubmitted: _comment,
+                      decoration: InputDecoration(
+                        suffixIcon: GestureDetector(
+                            onTap: () {
+                              _comment(_commentC.text);
+                            },
+                            child: Icon(Icons.send)),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                        isDense: true,
+                        hintText: 'Viết bình luận.',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                          ),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                          ),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                          ),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        fillColor: ptSecondaryColor(context),
+                        filled: true,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -245,7 +262,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         padding: const EdgeInsets.only(top: 13),
         child: Text(
           widget.comment.user?.name ?? '',
-          style: ptTitle().copyWith(color: Colors.black87, fontSize: 15),
+          style: ptTitle().copyWith(fontSize: 15),
         ),
       ),
       subtitle: Column(
@@ -256,10 +273,8 @@ class _CommentWidgetState extends State<CommentWidget> {
           ),
           Text(
             widget.comment.content ?? '',
-            style: ptTiny().copyWith(
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-                fontSize: 13.5),
+            style:
+                ptTiny().copyWith(fontWeight: FontWeight.w500, fontSize: 13.5),
           ),
           SizedBox(
             height: 2,

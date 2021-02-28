@@ -110,7 +110,9 @@ class _PostDetailState extends State<PostDetail> {
               child: Column(
                 children: [
                   _post == null
-                      ? PostSkeleton(count: 1,)
+                      ? PostSkeleton(
+                          count: 1,
+                        )
                       : PostWidget(
                           _post,
                           commentCallBack: () {},
@@ -138,41 +140,58 @@ class _PostDetailState extends State<PostDetail> {
             child: Container(
               width: deviceWidth(context),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              color: ptBackgroundColor(context),
-              child: Center(
-                child: TextField(
-                  controller: _commentC,
-                  maxLines: null,
-                  maxLength: 200,
-                  onSubmitted: _comment,
-                  decoration: InputDecoration(
-                    suffixIcon: GestureDetector(
-                        onTap: () {
-                          _comment(_commentC.text);
-                        },
-                        child: Icon(Icons.send)),
-                    contentPadding: EdgeInsets.all(10),
-                    isDense: true,
-                    hintText: 'Viết bình luận.',
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.black38,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.black38,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.black38,
-                      ),
-                    ),
-                    fillColor: Colors.white,
-                    filled: true,
+              color: Colors.white70,
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 21,
+                    backgroundImage: AuthBloc.instance.userModel.avatar != null
+                        ? NetworkImage(AuthBloc.instance.userModel.avatar)
+                        : AssetImage('assets/image/default_avatar.png'),
                   ),
-                ),
+                  SizedBox(
+                    width: 7,
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: _commentC,
+                      maxLines: null,
+                      // maxLength: 200,
+                      onSubmitted: _comment,
+                      decoration: InputDecoration(
+                        suffixIcon: GestureDetector(
+                            onTap: () {
+                              _comment(_commentC.text);
+                            },
+                            child: Icon(Icons.send)),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                        isDense: true,
+                        hintText: 'Viết bình luận.',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                          ),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                          ),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                          ),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        fillColor: ptSecondaryColor(context),
+                        filled: true,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
