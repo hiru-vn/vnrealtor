@@ -6,7 +6,8 @@ import 'package:datcao/modules/services/report_srv.dart';
 import 'filter.dart';
 
 class PostRepo {
-  Future getNewFeed({GraphqlFilter filter, String timestamp, String timeSort}) async {
+  Future getNewFeed(
+      {GraphqlFilter filter, String timestamp, String timeSort}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
     final data =
@@ -30,7 +31,8 @@ ${postFragment.replaceFirst('id', '')}
   }
 
   Future searchPostByHashTag(String hashTags) async {
-    final res = await PostSrv().query('searchPostByHashTag', 'hashTags: "$hashTags"', fragment: '''
+    final res = await PostSrv()
+        .query('searchPostByHashTag', 'hashTags: "$hashTags"', fragment: '''
     data {
 $postFragment
 }
@@ -61,7 +63,9 @@ $postFragment
   Future createComment(
       {String postId, String mediaPostId, String content}) async {
     String data = '''
-content: """$content"""
+content: """
+$content
+"""
 like: 0
     ''';
     if (mediaPostId != null) {
@@ -114,8 +118,15 @@ $postFragment
     return res;
   }
 
-Future updatePost(String id ,String content, String expirationDate, bool publicity,
-      double lat, double long, List<String> images, List<String> videos) async {
+  Future updatePost(
+      String id,
+      String content,
+      String expirationDate,
+      bool publicity,
+      double lat,
+      double long,
+      List<String> images,
+      List<String> videos) async {
     String data = '''
 content: """
 ${content.toString()}
@@ -131,8 +142,8 @@ images: ${GraphqlHelper.listStringToGraphqlString(images)}
     if (lat != null && long != null) {
       data += '\nlocationLat: $lat\nlocationLong: $long';
     }
-    final res =
-        await PostSrv().mutate('updatePost', 'id: "$id"  data: {$data}', fragment: '''
+    final res = await PostSrv()
+        .mutate('updatePost', 'id: "$id"  data: {$data}', fragment: '''
 $postFragment
     ''');
     return res["updatePost"];
@@ -208,8 +219,9 @@ $postFragment
   }
 
   Future createReport({String type, String content, String postId}) async {
-    final res = await ReportSrv()
-        .add('postId: "$postId"  type: "$type"  content: "$content"', fragment: 'id');
+    final res = await ReportSrv().add(
+        'postId: "$postId"  type: "$type"  content: "$content"',
+        fragment: 'id');
     return res;
   }
 

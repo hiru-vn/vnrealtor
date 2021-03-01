@@ -340,7 +340,16 @@ class _PostWidgetState extends State<PostWidget> {
                   width: 15,
                 ),
                 GestureDetector(
-                  onTap: () => shareTo(context),
+                  onTap: () => shareTo(context,
+                      content: widget.post.content,
+                      image: widget.post.mediaPosts
+                          .where((element) => element.type == 'PICTURE')
+                          .map((e) => e.url)
+                          .toList(),
+                      video: widget.post.mediaPosts
+                          .where((element) => element.type == 'VIDEO')
+                          .map((e) => e.url)
+                          .toList()),
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,

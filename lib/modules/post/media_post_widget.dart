@@ -210,7 +210,8 @@ class _DetailImagePostState extends State<DetailImagePost> {
                             width: 5,
                           ),
                           GestureDetector(
-                            onTap: () => shareTo(context),
+                            onTap: () =>
+                                shareTo(context, image: [widget.post.url]),
                             child: Text(
                               'Chia sẻ',
                               style: TextStyle(color: Colors.white),
@@ -441,7 +442,8 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                             width: 5,
                           ),
                           GestureDetector(
-                            onTap: () => shareTo(context),
+                            onTap: () =>
+                                shareTo(context, video: [widget.post.url]),
                             child: Text(
                               'Chia sẻ',
                               style: TextStyle(color: Colors.white),

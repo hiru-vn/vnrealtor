@@ -13,8 +13,10 @@ class IntroducePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          width: deviceWidth(context),
-          child: PageView(controller: _pageC, children: [
+        width: deviceWidth(context),
+        child: PageView(
+          controller: _pageC,
+          children: [
             IntroSlide(
               index: 0,
               text: 'Kết nối mua, bán, cho thuê bất động sản dễ dàng',
@@ -42,7 +44,9 @@ class IntroducePage extends StatelessWidget {
                 LoginPage.navigate();
               },
             ),
-          ])),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -71,7 +75,9 @@ class IntroSlide extends StatelessWidget {
           child: Center(
             child: SizedBox(
                 width: deviceWidth(context) / 2.3,
-                child: Image.asset('assets/image/logo_full_white.png',)),
+                child: Image.asset(
+                  'assets/image/logo_full_white.png',
+                )),
           ),
         ),
       ),
