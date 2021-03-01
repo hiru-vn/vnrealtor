@@ -66,8 +66,8 @@ class _RegisterPageState extends State<RegisterPage> {
     // HomePage.navigate();
   }
 
-  _codeSubmit() {
-    _authBloc.submitOtpRegister(
+  _codeSubmit() async {
+    await _authBloc.submitOtpRegister(
         _nameC.text, _emailC.text, _passC.text, _phoneC.text, _otpC.text);
     _otpC.clear();
   }
@@ -165,108 +165,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   _buildOtpDialog() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.only(bottom: Responsive.heightMultiplier * 10),
-        child: Stack(
-          // mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Material(
-                child: Container(
-                  color: Colors.white,
-                  width: deviceWidth(context) / 1.4,
-                  height: 150,
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          'Nhập OTP chúng tôi gửi qua tin nhắn cho bạn',
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      SpacingBox(h: 2),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3),
-                              color: ptBackgroundColor(context)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: TextField(
-                              maxLength: 6,
-                              textAlign: TextAlign.center,
-                              keyboardType: TextInputType.number,
-                              onChanged: (str) {
-                                if (str.length == 6) {
-                                  _codeSubmit();
-                                }
-                              },
-                              style: ptBigTitle().copyWith(letterSpacing: 10),
-                              controller: _otpC,
-                              decoration: InputDecoration(
-                                  counterText: "",
-                                  border: InputBorder.none,
-                                  hintText: ''),
-                            ),
-                          ),
-                        ),
-                      ),
-                      StreamBuilder(
-                          stream: _authBloc.authStatusStream,
-                          builder: (context, snap) {
-                            if (snap.hasData &&
-                                (snap.data as AuthResponse).status ==
-                                    AuthStatus.successOtp)
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 15),
-                                child: kLoadingSpinner,
-                              );
-                            return SizedBox.shrink();
-                          })
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              right:
-                  (deviceWidth(context) - deviceWidth(context) / 1.4) / 2 - 25,
-              top: deviceHeight(context) / 2 -
-                  90 -
-                  Responsive.heightMultiplier * 10,
-              child: Material(
-                color: Colors.transparent,
-                child: GestureDetector(
-                  onTap: () {
-                    navigatorKey.currentState.maybePop();
-                  },
-                  child: Container(
-                    height: 48,
-                    width: 48,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.close,
-                        size: 25,
-                        color: ptPrimaryColor(context),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    return OtpDialog(codeSubmit: _codeSubmit, otpC: _otpC);
   }
 
   _buildFormField(
@@ -297,4 +196,137 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
       );
+}
+
+class OtpDialog extends StatefulWidget {
+  final Function codeSubmit;
+  final TextEditingController otpC;
+
+  const OtpDialog({Key key, this.codeSubmit, this.otpC}) : super(key: key);
+
+  @override
+  _OtpDialogState createState() => _OtpDialogState();
+}
+
+class _OtpDialogState extends State<OtpDialog> {
+  AuthBloc _authBloc;
+  bool isLoading = false;
+
+  @override
+  void didChangeDependencies() {
+    if (_authBloc == null) {
+      _authBloc = Provider.of(context);
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.only(bottom: Responsive.heightMultiplier * 10),
+        child: Stack(
+          // mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Material(
+                child: Container(
+                  color: Colors.white,
+                  width: deviceWidth(context) / 1.4,
+                  height: 220,
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          'Nhập OTP chúng tôi gửi qua tin nhắn cho bạn',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SpacingBox(h: 2),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              color: ptBackgroundColor(context)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: TextField(
+                              maxLength: 6,
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.number,
+                              onChanged: (str) async {
+                                if (str.length == 6) {
+                                  widget.codeSubmit();
+                                }
+                              },
+                              style: ptBigTitle().copyWith(letterSpacing: 10),
+                              controller: widget.otpC,
+                              decoration: InputDecoration(
+                                  counterText: "",
+                                  border: InputBorder.none,
+                                  hintText: ''),
+                            ),
+                          ),
+                        ),
+                      ),
+                      StreamBuilder(
+                          stream: _authBloc.authStatusStream,
+                          builder: (context, snap) {
+                            if (snap.hasData &&
+                                (snap.data as AuthResponse).status ==
+                                    AuthStatus.successOtp)
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 15),
+                                child: kLoadingSpinner,
+                              );
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 15),
+                              child: Text(
+                                  'Mã OTP gồm 6 chữ số\nmã sẽ hết hạn sau 60 giây', textAlign: TextAlign.center,),
+                            );
+                          })
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              right:
+                  (deviceWidth(context) - deviceWidth(context) / 1.4) / 2 - 25,
+              top: (deviceHeight(context) - Responsive.heightMultiplier * 10) /
+                      2 -
+                  180,
+              child: Material(
+                color: Colors.transparent,
+                child: GestureDetector(
+                  onTap: () {
+                    navigatorKey.currentState.maybePop();
+                  },
+                  child: Container(
+                    height: 48,
+                    width: 48,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.close,
+                        size: 25,
+                        color: ptPrimaryColor(context),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

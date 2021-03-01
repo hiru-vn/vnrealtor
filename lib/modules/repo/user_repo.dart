@@ -101,7 +101,9 @@ name: "$name"
 email: "$email"
 phone: "$phone",
 avatar: "$avatar",
-description: "$description",
+description: """
+$description
+"""",
 facebookUrl: "$facebookUrl"
     ''',
         fragment: 'id');
