@@ -4,6 +4,7 @@ import 'package:datcao/modules/model/notification.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/modules/setting/setting_notify_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 
@@ -47,6 +48,14 @@ class _NotificationPageState extends State<NotificationPage>
               child: AnimatedSearchBar(
             onSearch: (val) {},
             controller: _searchC,
+          )),
+          Center(
+              child: IconButton(
+            splashColor: Colors.white,
+            onPressed: () {
+              SettingNotifyPage.navigate();
+            },
+            icon: Icon(Icons.settings_outlined),
           )),
         ],
       ),
@@ -174,7 +183,9 @@ class NotificationTab extends StatelessWidget {
             ),
           )
         : EmptyWidget(
-            assetImg: search?.trim() != ''? null: 'assets/image/no_notification.png',
+            assetImg: search?.trim() != ''
+                ? null
+                : 'assets/image/no_notification.png',
             title: search?.trim() == '' ? 'Bạn chưa có thông báo mới' : '',
             content: search?.trim() == ''
                 ? ''
@@ -356,7 +367,7 @@ class FollowTab extends StatelessWidget {
             ),
           )
         : EmptyWidget(
-            assetImg: search?.trim() != ''? null: 'assets/image/no_user.png',
+            assetImg: search?.trim() != '' ? null : 'assets/image/no_user.png',
             title: search?.trim() == ''
                 ? 'Bạn không có lượt theo dõi nào trong 7 ngày qua'
                 : '',

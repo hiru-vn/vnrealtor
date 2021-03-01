@@ -188,14 +188,12 @@ class _SettingPageState extends State<SettingPage> {
                           ],
                         ),
                         SizedBox(height: 3),
-                        GestureDetector(
-                          onTap: () {
-                            SettingNotifyPage.navigate();
-                          },
-                          child: Text(
-                            'Cài đặt thông báo ứng dụng',
-                            style: ptSmall().copyWith(color: Colors.blue[300]),
-                          ),
+                        Text(
+                          AuthBloc.instance.userModel.role == 'AGENT'
+                              ? 'Nhà môi giới bất động sản'
+                              : 'Người dùng cơ bản',
+                          style: ptSmall()
+                              .copyWith(color: ptPrimaryColor(context)),
                         ),
                       ],
                     )

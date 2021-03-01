@@ -52,7 +52,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         _authBloc.userModel.avatar = url;
         uploadingAvatar = false;
       });
-      
     } catch (e) {
       showToast(e.toString(), context);
     }
@@ -73,6 +72,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     });
     if (res.isSuccess) {
       showToast('Cập nhật thành công', context, isSuccess: true);
+      navigatorKey.currentState.maybePop();
     } else
       showToast(res.errMessage, context);
   }
@@ -134,7 +134,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                       SizedBox(height: 10),
                       _buildFormField(context, 'Facebook', _facebookC),
                       SizedBox(height: 10),
-                      _buildFormField(context, 'Giới thiệu ngắn', _descriptionC, maxLine: 4),
+                      _buildFormField(context, 'Giới thiệu ngắn', _descriptionC,
+                          maxLine: 4),
                       SpacingBox(h: 3),
                       Padding(
                         padding: const EdgeInsets.all(15),
@@ -181,8 +182,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     );
   }
 
-  _buildFormField(BuildContext context, String text,
-          TextEditingController controller, {int maxLine}) =>
+  _buildFormField(
+          BuildContext context, String text, TextEditingController controller,
+          {int maxLine}) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Container(

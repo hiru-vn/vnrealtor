@@ -335,21 +335,21 @@ class _ProfileCardState extends State<ProfileCard> {
                               Image.asset('assets/image/coin.png'),
                             ],
                           ),
-                          if (_authBloc.userModel.followingIds
-                              .contains(widget.user.id))
-                            Row(
-                              children: [
-                                Text('Đang theo dõi'),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Icon(
-                                  Icons.check,
-                                  color: ptPrimaryColor(context),
-                                  size: 15,
-                                )
-                              ],
-                            ),
+                          // if (_authBloc.userModel.followingIds
+                          //     .contains(widget.user.id))
+                          //   Row(
+                          //     children: [
+                          //       Text('Đang theo dõi'),
+                          //       SizedBox(
+                          //         width: 5,
+                          //       ),
+                          //       Icon(
+                          //         Icons.check,
+                          //         color: ptPrimaryColor(context),
+                          //         size: 15,
+                          //       )
+                          //     ],
+                          //   ),
                         ],
                       ),
                       Spacer(),
