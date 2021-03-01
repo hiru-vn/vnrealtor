@@ -1,6 +1,6 @@
-import 'package:vnrealtor/modules/model/user.dart';
-import 'package:vnrealtor/modules/profile/profile_page.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/share/import.dart';
 
 class PeopleWidget extends StatelessWidget {
   final UserModel user;
@@ -12,14 +12,14 @@ class PeopleWidget extends StatelessWidget {
       padding: const EdgeInsets.all(5).copyWith(bottom: 0),
       child: GestureDetector(
         onTap: () {
-          ProfilePage.navigate(user);
+          ProfileOtherPage.navigate(user);
         },
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Row(children: [
               CircleAvatar(
-                radius: 25,
+                radius: 22,
                 backgroundImage: user.avatar != null
                     ? NetworkImage(user.avatar)
                     : AssetImage('assets/image/default_avatar.png'),
@@ -33,15 +33,32 @@ class PeopleWidget extends StatelessWidget {
                     children: [
                       Text(
                         user.name ?? '',
-                        style: ptTitle(),
+                        style: ptTitle().copyWith(fontSize: 14),
                       ),
                       SizedBox(
-                        width: 8,
+                        width: 6,
                       ),
+                      if (user?.role == 'AGENT') ...[
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue[600],
+                          ),
+                          padding: EdgeInsets.all(1.3),
+                          child: Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 11,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 6,
+                        ),
+                      ],
                       Image.asset('assets/image/coin.png'),
                       SizedBox(width: 2),
                       Text(
-                        '3',
+                        user.totalPost.toString(),
                         style: ptBody().copyWith(color: Colors.yellow),
                       ),
                     ],
@@ -50,12 +67,12 @@ class PeopleWidget extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        user.role?.toLowerCase() == 'agency'
+                        user.role?.toUpperCase() == 'AGENT'
                             ? 'Nhà môi giới'
                             : 'Người dùng',
                         style: ptSmall().copyWith(color: Colors.grey),
                       ),
-                      if (user.role?.toLowerCase() == 'agency') ...[
+                      if (user.role?.toUpperCase() == 'AGENT') ...[
                         Text(
                           '  •  ',
                           style: ptSmall().copyWith(color: Colors.grey),

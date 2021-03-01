@@ -1,5 +1,5 @@
-import 'package:vnrealtor/modules/bloc/verification_bloc.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/bloc/verification_bloc.dart';
+import 'package:datcao/share/import.dart';
 
 class VertifyAccountPage2 extends StatefulWidget {
   static Future navigate() {

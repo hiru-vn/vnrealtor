@@ -14,6 +14,7 @@ class VideoViewNetwork extends StatelessWidget {
     String genTag = tag ?? url + Random().nextInt(10000000).toString();
     return GestureDetector(
       onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
         Navigator.push(context, MaterialPageRoute(builder: (_) {
           return DetailVideoScreen(
             url,
@@ -101,7 +102,10 @@ class _DetailVideoScreenState extends State<DetailVideoScreen> {
             top: kToolbarHeight,
             right: 10,
             child: InkWell(
-              onTap: () => Navigator.of(context).maybePop(),
+              onTap: () async {
+                await Navigator.of(context).maybePop();
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
               child: Container(
                 decoration: BoxDecoration(
                     color: Colors.black45,

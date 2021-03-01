@@ -1,4 +1,4 @@
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/share/import.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class AboutPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar2(
-        'Về ứng dụng VNRealtor',
+        'Về ứng dụng Datcao',
       ),
       body: Stack(
         fit: StackFit.expand,

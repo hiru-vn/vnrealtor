@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:graphql/client.dart';
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/share/import.dart';
 
 class BaseService {
   String _module;
@@ -152,6 +152,7 @@ class BaseService {
     final String deleteNode = 'mutation { deleteOne$_name(id: "$id") { id }}';
     final MutationOptions optionsDelete =
         MutationOptions(documentNode: gql(deleteNode));
+    print(deleteNode);
 
     final QueryResult result =
         await GraphQL.instance.client.mutate(optionsDelete);
@@ -256,9 +257,10 @@ class BaseService {
 
 class GraphQL {
   static final HttpLink _httpLink = HttpLink(
-    uri: 'https://vnrealtor.herokuapp.com/graphql',
-    //uri: 'https://vnrealtor-sq73uv5o7a-as.a.run.app/graphql'
-  );
+      // uri: 'https://vnrealtor.herokuapp.com/graphql',
+      uri: 'https://vnrealtor-sq73uv5o7a-as.a.run.app/graphql'
+      // uri: 'https://datcao-be-hv2wn47voq-as.a.run.app/graphql'
+      );
 
   static final AuthLink _authLink = AuthLink(getToken: () async {
     final token = await SPref.instance.get('token');

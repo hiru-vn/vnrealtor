@@ -1,4 +1,4 @@
-name: vnrealtor
+name: datcao
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.0.10+10
+version: 0.1.19+40
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -35,8 +35,8 @@ dev_dependencies:
     sdk: flutter
   sentry: ">=3.0.0 <4.0.0"
   shared_preferences: ^0.5.12+2
-  flutter_local_notifications: ^3.0.3
-  timeago: ^2.0.29
+  # flutter_local_notifications: ^3.0.3
+  timeago: ^2.0.30
   google_fonts: ^1.1.1
   flutter_spinkit: "^4.1.2"
   animated_theme_switcher: ^1.0.5
@@ -61,6 +61,10 @@ dev_dependencies:
   dash_chat: ^1.1.15
   agora_rtc_engine: ^3.2.1
   file_utils: ^0.1.4
+  url_launcher: ^5.7.10
+  hashtagable: ^1.0.8
+  skeleton_loader: ^1.0.2+2
+  share: ^0.6.5+4
 
   # firebase
   firebase_auth: ^0.20.0+1
@@ -70,11 +74,12 @@ dev_dependencies:
   google_maps_flutter: ^1.1.1
   geolocator: ^6.1.14
   firebase_messaging: ^8.0.0-dev.14
+  package_info: ^0.4.3+4
 
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/image/logo.png"
+  image_path: "assets/image/icon_white.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

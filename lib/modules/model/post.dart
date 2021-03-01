@@ -1,10 +1,11 @@
-import 'package:vnrealtor/modules/model/user.dart';
+import 'package:datcao/modules/model/user.dart';
 
 import 'media_post.dart';
 
 class PostModel {
   String id;
   String content;
+  String rawContent;
   List<String> mediaPostIds;
   List<String> commentIds;
   String userId;
@@ -23,6 +24,10 @@ class PostModel {
   String updatedAt;
   bool isUserLike;
   bool isUserShare;
+  String province;
+  String district;
+  String ward;
+  List<String> hashTag;
 
   PostModel(
       {this.id,
@@ -44,11 +49,17 @@ class PostModel {
       this.createdAt,
       this.updatedAt,
       this.isUserLike,
-      this.isUserShare});
+      this.isUserShare,
+      this.district,
+      this.province,
+      this.hashTag,
+      this.rawContent,
+      this.ward});
 
   PostModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id']??json['_id'];
     content = json['content'];
+    rawContent = json['rawContent'];
     mediaPostIds =
         json['mediaPostIds'] != null ? json['mediaPostIds'].cast<String>() : [];
     commentIds =
@@ -58,8 +69,10 @@ class PostModel {
     userLikeIds =
         json['userLikeIds'] != null ? json['userLikeIds'].cast<String>() : [];
     share = json['share'];
+
     userShareIds =
         json['userShareIds'] != null ? json['userShareIds'].cast<String>() : [];
+    hashTag = json['hashTag'] != null ? json['hashTag'].cast<String>() : [];
     locationLat = json['locationLat'] == null
         ? null
         : (json['locationLat'] as num).toDouble();
@@ -80,6 +93,9 @@ class PostModel {
     updatedAt = json['updatedAt'];
     isUserLike = json['isUserLike'] ?? false;
     isUserShare = json['isUserShare'] ?? false;
+    district = json['district'];
+    province = json['province'];
+    ward = json['ward'];
   }
 
   Map<String, dynamic> toJson() {

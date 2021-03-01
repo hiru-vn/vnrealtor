@@ -1,0 +1,47 @@
+
+import 'package:datcao/share/import.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+class PrivacyPage extends StatefulWidget {
+  static Future navigate() {
+    return navigatorKey.currentState.push(pageBuilder(PrivacyPage()));
+  }
+
+  @override
+  _PrivacyPageState createState() => _PrivacyPageState();
+}
+
+class _PrivacyPageState extends State<PrivacyPage> {
+  bool isLoading = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar2(
+         'Chính sách bảo mật',
+      ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          WebView(
+            initialUrl:
+                'https://sites.google.com/view/rebix-app-datcao-privacy/trang-ch%E1%BB%A7',
+            onPageStarted: (str) {},
+            onPageFinished: (str) {
+              setState(() {
+                isLoading = false;
+              });
+            },
+          ),
+          if (isLoading)
+            Container(
+              color: Colors.white,
+              child: Center(
+                child: kLoadingSpinner,
+              ),
+            )
+        ],
+      ),
+    );
+  }
+}

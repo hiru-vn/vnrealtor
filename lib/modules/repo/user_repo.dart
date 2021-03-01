@@ -1,10 +1,14 @@
-import 'package:vnrealtor/modules/services/friendship_srv.dart';
-import 'package:vnrealtor/modules/services/user_srv.dart';
-import 'package:vnrealtor/utils/spref.dart';
+import 'package:datcao/modules/services/friendship_srv.dart';
+import 'package:datcao/modules/services/user_srv.dart';
+import 'package:datcao/utils/spref.dart';
+import 'package:datcao/modules/services/graphql_helper.dart';
 
 import 'filter.dart';
 
 class UserRepo {
+  String userFragment =
+      ' id uid name email phone totalPost description facebookUrl role reputationScore friendIds createdAt updatedAt followerIds followingIds avatar settings { likeNoti shareNoti commentNoti}';
+
   Future registerWithPhone(
       {String name,
       String email,
@@ -20,9 +24,20 @@ password: "$password"
 phone: "$phone"
 idToken: "$idToken"
     ''',
-        fragment:
-            'token user { id uid name email phone role reputationScore friendIds createdAt updatedAt}');
+        fragment: 'token user { $userFragment }');
     return res['registerWithPhone'];
+  }
+
+  Future getListFollower({String userId, String limit, String page}) async {
+    final res = await UserSrv().mutate(
+        'getListFollower',
+        '''
+userId: "$userId"
+limit: "$limit"
+Page: "$page"
+    ''',
+        fragment: 'data { $userFragment }');
+    return res['getListFollower'];
   }
 
   Future login(
@@ -38,8 +53,7 @@ idToken: "$idToken"
   	deviceId: "$deviceToken"
     deviceToken: "$deviceToken"
     ''',
-        fragment:
-            'token user { id uid name email phone role reputationScore friendIds createdAt updatedAt}');
+        fragment: 'token user { $userFragment }');
     return res['loginUser'];
   }
 
@@ -58,6 +72,15 @@ idToken: "$idToken"
     return res;
   }
 
+  Future getListUserIn(List<String> ids) async {
+    final res = await UserSrv().getList(
+        // limit: 20,
+        order: '{createdAt: 1}',
+        filter:
+            '{_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
+    return res;
+  }
+
   Future resetPassWithPhone({String password, String idToken}) async {
     final res = await UserSrv().mutate(
         'resetPassword',
@@ -65,9 +88,49 @@ idToken: "$idToken"
 newPassword: "$password"
 idToken: "$idToken"
     ''',
-        fragment:
-            'id uid name email phone role reputationScore friendIds createdAt updatedAt');
+        fragment: '$userFragment');
     return res['resetPassword'];
+  }
+
+  Future updateUser(String id, String name, String email, String phone,
+      String avatar, String description, String facebookUrl) async {
+    final res = await UserSrv().update(
+        id: id,
+        data: '''
+name: "$name"
+email: "$email"
+phone: "$phone",
+avatar: "$avatar",
+description: """
+$description
+""",
+facebookUrl: "$facebookUrl"
+    ''',
+        fragment: 'id');
+    return res['id'];
+  }
+
+  Future updateSetting(bool like, bool share, bool comment) async {
+    final res = await UserSrv().mutate(
+        'updateSetting',
+        '''
+likeNoti: $like
+shareNoti: $share
+commentNoti: $comment
+    ''',
+        fragment: 'id');
+    return res['id'];
+  }
+
+  Future seenAllNoti() async {
+    final id = await SPref.instance.get('id');
+    final res = await UserSrv().update(
+        id: id,
+        data: '''
+notiCount: 0
+    ''',
+        fragment: 'id');
+    return res['id'];
   }
 
   Future getMyFriendShipWith(String userId) async {
@@ -120,10 +183,32 @@ status
     return res['declineFriend'];
   }
 
+  Future followUser(String userId) async {
+    final res =
+        await UserSrv().mutate('followUser', 'userId: "$userId"', fragment: '''
+id
+        ''');
+    return res['followUser'];
+  }
+
+  Future unfollowUser(String userId) async {
+    final res = await UserSrv()
+        .mutate('unfollowUser', 'userId: "$userId"', fragment: '''
+id
+        ''');
+    return res['unfollowUser'];
+  }
+
   Future changePassword(String oldPassword, String newPassword) async {
     final res = await UserSrv().mutate('changePassword',
         'oldPassword: "$oldPassword"\nnewPassword: "$newPassword"',
         fragment: 'id');
     return res['changePassword'];
+  }
+
+  Future getFollowerIn7d(String userId) async {
+    final res = await UserSrv().query('getFollowerIn7d', 'userId: "$userId"',
+        fragment: 'data { $userFragment }');
+    return res['getFollowerIn7d'];
   }
 }

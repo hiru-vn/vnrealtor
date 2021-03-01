@@ -1,3 +1,5 @@
+import 'package:datcao/modules/model/setting.dart';
+
 class UserModel {
   String id;
   String uid;
@@ -10,6 +12,14 @@ class UserModel {
   String createdAt;
   String updatedAt;
   String avatar;
+  List<String> followerIds;
+  List<String> followingIds;
+  List<String> savedPostIds;
+  int totalPost;
+  int notiCount;
+  String description;
+  String facebookUrl;
+  SettingModel setting;
 
   UserModel(
       {this.id,
@@ -22,7 +32,15 @@ class UserModel {
       this.friendIds,
       this.createdAt,
       this.updatedAt,
-      this.avatar});
+      this.avatar,
+      this.totalPost,
+      this.followerIds,
+      this.notiCount,
+      this.followingIds,
+      this.savedPostIds,
+      this.description,
+      this.facebookUrl,
+      this.setting});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -32,10 +50,22 @@ class UserModel {
     phone = json['phone'];
     role = json['role'];
     reputationScore = json['reputationScore'];
-    friendIds = json['friendIds']!=null? json['friendIds'].cast<String>(): [];
+    friendIds =
+        json['friendIds'] != null ? json['friendIds'].cast<String>() : [];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    totalPost = json['totalPost'] ?? 0;
     avatar = json['avatar'];
+    followerIds =
+        json['followerIds'] != null ? json['followerIds'].cast<String>() : [];
+    followingIds =
+        json['followingIds'] != null ? json['followingIds'].cast<String>() : [];
+    savedPostIds =
+        json['savedPostIds'] != null ? json['savedPostIds'].cast<String>() : [];
+    notiCount = json['notiCount'];
+    description = json['description'];
+    facebookUrl = json['facebookUrl'];
+    if (json['settings']!=null) setting = SettingModel.fromJson(json['settings']);
   }
 
   Map<String, dynamic> toJson() {
@@ -50,6 +80,13 @@ class UserModel {
     data['friendIds'] = this.friendIds;
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
+    data['followingIds'] = this.followingIds;
+    data['followerIds'] = this.followerIds;
+    data['savedPostIds'] = this.savedPostIds;
+    data['notiCount'] = this.notiCount;
+    data['description'] = this.description;
+    data['facebookUrl'] = this.facebookUrl;
+
     return data;
   }
 }

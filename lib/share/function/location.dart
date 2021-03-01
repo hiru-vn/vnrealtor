@@ -1,5 +1,5 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:vnrealtor/utils/spref.dart';
+import 'package:datcao/utils/spref.dart';
 
 /// Determine the current position of the device.
 ///

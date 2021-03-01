@@ -1,4 +1,4 @@
-import 'package:vnrealtor/modules/model/user.dart';
+import 'package:datcao/modules/model/user.dart';
 
 class CommentModel {
   String id;
@@ -11,6 +11,7 @@ class CommentModel {
   String createdAt;
   String updatedAt;
   bool isLike = false;
+  List<String> userLikeIds = [];
 
   CommentModel(
       {this.id,
@@ -21,7 +22,8 @@ class CommentModel {
       this.like,
       this.user,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.userLikeIds});
 
   CommentModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -33,6 +35,7 @@ class CommentModel {
     user = json['user'] != null ? UserModel.fromJson(json['user']) : null;
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    userLikeIds = json['userLikeIds'] != null ? json['userLikeIds'].cast<String>() : [];
   }
 
   Map<String, dynamic> toJson() {
@@ -48,6 +51,7 @@ class CommentModel {
     }
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
+    data['userLikeIds'] = this.userLikeIds;
     return data;
   }
 }

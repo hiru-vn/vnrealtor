@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 class AnimatedSearchBar extends StatefulWidget {
   final double width;
   final double height;
+  final String value;
+  final Function(String) onSearch;
+  final TextEditingController controller;
 
-  const AnimatedSearchBar({Key key, this.width, this.height}) : super(key: key);
+  const AnimatedSearchBar(
+      {Key key, this.width, this.height, this.onSearch, this.value, this.controller})
+      : super(key: key);
 
   @override
   _AnimatedSearchBarState createState() => _AnimatedSearchBarState();
@@ -18,8 +23,8 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
 
   @override
   void initState() {
-    _width = widget.width??180;
-    _height = widget.height??48;
+    _width = widget.width ?? 180;
+    _height = widget.height ?? 48;
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
         setState(() {
@@ -38,7 +43,8 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
       height: _height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(_height / 2),
-        boxShadow: _folded ? null : kElevationToShadow[1],
+        border: _folded ? null : Border.all(color: Colors.black12),
+        // boxShadow: _folded ? null : kElevationToShadow[1],
         color: Colors.white,
       ),
       child: Row(
@@ -48,6 +54,8 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
               padding: EdgeInsets.only(left: 12),
               child: !_folded
                   ? TextField(
+                      onChanged: widget.onSearch,
+                      controller: widget.controller,
                       focusNode: _focusNode,
                       decoration: InputDecoration(
                           hintText: 'Tìm kiếm',
@@ -85,7 +93,7 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
                 },
               ),
             ),
-          )
+          ),
         ],
       ),
     );

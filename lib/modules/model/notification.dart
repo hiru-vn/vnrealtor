@@ -26,7 +26,7 @@ class NotificationModel {
       this.toUserId,
       this.fromUserId,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,});
 
   NotificationModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];

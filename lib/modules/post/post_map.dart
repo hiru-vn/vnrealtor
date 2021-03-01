@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/share/import.dart';
 
 class PostMap extends StatefulWidget {
   @override

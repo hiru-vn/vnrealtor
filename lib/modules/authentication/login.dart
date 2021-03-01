@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:vnrealtor/modules/authentication/auth_bloc.dart';
-import 'package:vnrealtor/modules/authentication/register.dart';
-import 'package:vnrealtor/modules/authentication/reset_password_dialog.dart';
-import 'package:vnrealtor/modules/home_page.dart';
-import 'package:vnrealtor/share/import.dart';
-import 'package:vnrealtor/share/widget/appbar.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/authentication/register.dart';
+import 'package:datcao/modules/authentication/reset_password_dialog.dart';
+import 'package:datcao/modules/home_page.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/appbar.dart';
 
 class LoginPage extends StatefulWidget {
   static Future navigate() {
@@ -18,8 +18,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   AuthBloc _authBloc;
-  TextEditingController _nameC = TextEditingController(text: '0123123123');
-  TextEditingController _passC = TextEditingController(text: '123123');
+  TextEditingController _nameC = TextEditingController(text: '');
+  TextEditingController _passC = TextEditingController(text: '');
 
   final _formKey = GlobalKey<FormState>();
 
@@ -63,11 +63,11 @@ class _LoginPageState extends State<LoginPage> {
             SpacingBox(h: 1.5),
             Center(
                 child: SizedBox(
-                    width: deviceWidth(context) / 3,
+                    width: deviceWidth(context) / 3.2,
                     child: Image.asset('assets/image/logo.png'))),
-            SpacingBox(h: 1.5),
+            SpacingBox(h: 2),
             Text(
-              'Chào mừng bạn đến với VN Realtor App',
+              'Chào mừng bạn đến với DATCAO',
               style: ptTitle(),
             ),
             SpacingBox(h: 1.5),
@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Material(
-                  elevation: 5,
+                  elevation: 0,
                   borderRadius: BorderRadius.circular(15),
                   child: Padding(
                     padding:
@@ -113,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Material(
-                elevation: 5,
+                elevation: 0,
                 borderRadius: BorderRadius.circular(15),
                 child: Padding(
                   padding:
@@ -150,6 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                     // if (TextF _nameC.text)
                     showDialog(
                         context: context,
+                        barrierDismissible: false,
                         builder: (context) => ResetPasswordDialog());
                   },
                   child: Text(

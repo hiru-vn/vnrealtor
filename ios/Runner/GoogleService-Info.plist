@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>259055496489-ml3ci8ch84tqeteu55gavhb6ln5mltpa.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.259055496489-ml3ci8ch84tqeteu55gavhb6ln5mltpa</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>259055496489-1lhigk4nlo5ujupe7grq88up3itunm7j.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAJX_LxQUBV47XdAQzjPuRQkTbWjq6jSjc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>259055496489</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.datcao.mobile</string>
+	<key>PROJECT_ID</key>
+	<string>vnrealtor-52b40</string>
+	<key>STORAGE_BUCKET</key>
+	<string>vnrealtor-52b40.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:259055496489:ios:b409c41808cdeccbecdb38</string>
+	<key>DATABASE_URL</key>
+	<string>https://vnrealtor-52b40-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

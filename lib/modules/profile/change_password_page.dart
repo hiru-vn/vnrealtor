@@ -1,5 +1,5 @@
-import 'package:vnrealtor/modules/bloc/user_bloc.dart';
-import 'package:vnrealtor/share/import.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/share/import.dart';
 
 class UpdatePasswordPage extends StatefulWidget {
   static Future navigate() {
@@ -83,20 +83,21 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
                         }),
                         SpacingBox(h: 3),
                         Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: Center(
-                              child: RoundedBtn(
-                                height: 45,
-                                text: 'Cập nhật',
-                                onPressed: _submit,
-                                width: 150,
-                                color: ptPrimaryColor(context),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                  vertical: 8,
-                                ),
+                          padding: const EdgeInsets.all(15),
+                          child: Center(
+                            child: RoundedBtn(
+                              height: 45,
+                              text: 'Cập nhật',
+                              onPressed: _submit,
+                              width: 150,
+                              color: ptPrimaryColor(context),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 8,
                               ),
-                            )),
+                            ),
+                          ),
+                        ),
                         SizedBox(height: 10),
                       ],
                     ),
