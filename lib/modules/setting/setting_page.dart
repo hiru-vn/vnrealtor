@@ -3,6 +3,7 @@ import 'package:datcao/modules/profile/verify_account_page1.dart';
 import 'package:datcao/modules/setting/about_page.dart';
 import 'package:datcao/modules/setting/point_page.dart';
 import 'package:datcao/modules/setting/policy_page.dart';
+import 'package:datcao/modules/setting/saved_post_page.dart';
 import 'package:datcao/modules/setting/setting_notify_page.dart';
 import 'package:package_info/package_info.dart';
 import 'package:datcao/share/import.dart';
@@ -74,14 +75,14 @@ class _SettingPageState extends State<SettingPage> {
         "name": "Trang",
         "img": "assets/image/page.png",
         "action": () {
-          AboutPage.navigate();
+          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
         }
       },
       {
         "name": "Bài viết đã lưu",
         "img": "assets/image/saved_post.png",
         "action": () {
-          PolicyPage.navigate();
+          SavedPostPage.navigate();
         }
       },
       {

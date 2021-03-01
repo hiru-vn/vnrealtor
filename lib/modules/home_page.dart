@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage>
                 true, 'Thông báo', MdiIcons.bellOutline, MdiIcons.bell),
             BottomTabModel(false, 'Hồ sơ', Icons.person_outline, Icons.person),
             BottomTabModel(
-                false, 'Menu', Icons.settings_outlined, Icons.settings)
+                false, 'Menu', Icons.menu, Icons.menu_outlined)
           ],
           onSelect: (index) {
             setState(() {

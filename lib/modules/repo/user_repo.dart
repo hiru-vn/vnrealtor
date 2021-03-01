@@ -103,7 +103,7 @@ phone: "$phone",
 avatar: "$avatar",
 description: """
 $description
-"""",
+""",
 facebookUrl: "$facebookUrl"
     ''',
         fragment: 'id');
@@ -113,7 +113,7 @@ facebookUrl: "$facebookUrl"
   Future updateSetting(bool like, bool share, bool comment) async {
     final res = await UserSrv().mutate(
         'updateSetting',
-         '''
+        '''
 likeNoti: $like
 shareNoti: $share
 commentNoti: $comment

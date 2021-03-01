@@ -6,7 +6,7 @@ class EmptyWidget extends StatelessWidget {
   final String content;
 
   const EmptyWidget(
-      {Key key, @required this.assetImg, this.title, this.content})
+      {Key key,this.assetImg, this.title, this.content})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class EmptyWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
+          if (assetImg!=null) SizedBox(
               width: deviceWidth(context) / 1.7, child: Image.asset(assetImg)),
           if (title != null) ...[
             SizedBox(
