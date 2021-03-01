@@ -5,6 +5,7 @@ import 'package:datcao/modules/setting/point_page.dart';
 import 'package:datcao/modules/setting/policy_page.dart';
 import 'package:datcao/modules/setting/saved_post_page.dart';
 import 'package:datcao/modules/setting/setting_notify_page.dart';
+import 'package:datcao/share/function/share_to.dart';
 import 'package:package_info/package_info.dart';
 import 'package:datcao/share/import.dart';
 
@@ -46,7 +47,12 @@ class _SettingPageState extends State<SettingPage> {
         "name": "Chia sẻ ứng dụng",
         "img": "assets/image/share_app.png",
         "action": () {
-          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
+          shareTo(context,
+              image: [
+                'https://firebasestorage.googleapis.com/v0/b/vnrealtor-52b40.appspot.com/o/datacao_promote.png?alt=media&token=b7d7db60-f108-46eb-8a50-22f003f2dc83'
+              ],
+              content:
+                  'Tải về ứng dụng Datcao: mạng xã hội bất động sản dành cho người Việt');
         }
       },
       // {
