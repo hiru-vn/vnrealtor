@@ -753,7 +753,7 @@ packages:
       name: timeago
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.29"
+    version: "2.0.30"
   toast:
     dependency: "direct dev"
     description:

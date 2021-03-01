@@ -282,7 +282,7 @@ class _CommentWidgetState extends State<CommentWidget> {
           Row(
             children: [
               Text(
-                Formart.formatToDate(
+                Formart.timeAgo(
                     DateTime.tryParse(widget.comment.updatedAt)),
                 style: ptTiny(),
               ),
