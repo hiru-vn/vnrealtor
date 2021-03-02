@@ -25,11 +25,11 @@ class ExpandBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: height ?? 55,
+      height: height ?? 45,
       child: FlatButton(
         // elevation: elevation?.toDouble() ?? 5,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius ?? 15),
+          borderRadius: BorderRadius.circular(borderRadius ?? 0),
         ),
         color: color ?? ptPrimaryColor(context),
         onPressed: onPress,

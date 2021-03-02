@@ -375,8 +375,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                     launch(widget.user.facebookUrl);
                                   },
                                   child: SizedBox(
-                                      width: 26,
-                                      height: 26,
+                                      width: 23,
+                                      height: 23,
                                       child: Image.asset(
                                           'assets/image/facebook_icon.png')),
                                 );
@@ -389,54 +389,36 @@ class _ProfileCardState extends State<ProfileCard> {
                             launch(_emailLaunchUri.toString());
                           },
                           child: SizedBox(
-                              width: 29,
-                              height: 29,
+                              width: 26,
+                              height: 26,
                               child:
                                   Image.asset('assets/image/gmail_icon.png')),
                         ),
                     ],
                   ),
                   SizedBox(height: 15),
-                  Row(children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          UpdateProfilePage.navigate();
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              border:
-                                  Border.all(color: ptPrimaryColor(context))),
-                          child: Center(
-                            child: Text(
-                              'Sửa thông tin cá nhân',
-                              style: ptTitle(),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // SizedBox(
-                    //   width: 12,
-                    // ),
-                    // Expanded(
-                    //   child: Container(
-                    //     padding: EdgeInsets.all(6),
-                    //     decoration: BoxDecoration(
-                    //         borderRadius: BorderRadius.circular(6),
-                    //         border: Border.all(color: ptPrimaryColor(context))),
-                    //     child: Center(
-                    //       child: Text(
-                    //         'Nhắn tin',
-                    //         style: ptTitle(),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // )
-                  ]),
-                  SizedBox(height: 10),
+                  // Row(children: [
+                  //   Expanded(
+                  //     child: GestureDetector(
+                  //       onTap: () {
+                  //         UpdateProfilePage.navigate();
+                  //       },
+                  //       child: Container(
+                  //         padding: EdgeInsets.all(6),
+                  //         decoration: BoxDecoration(
+                  //             borderRadius: BorderRadius.circular(6),
+                  //             border:
+                  //                 Border.all(color: ptPrimaryColor(context))),
+                  //         child: Center(
+                  //           child: Text(
+                  //             'Sửa thông tin cá nhân',
+                  //             style: ptTitle(),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // SizedBox(height: 10),
                   Center(
                     child: TabBar(
                         indicatorSize: TabBarIndicatorSize.label,

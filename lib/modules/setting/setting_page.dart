@@ -1,4 +1,5 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/profile/update_profile_page.dart';
 import 'package:datcao/modules/profile/verify_account_page1.dart';
 import 'package:datcao/modules/setting/about_page.dart';
 import 'package:datcao/modules/setting/point_page.dart';
@@ -194,12 +195,17 @@ class _SettingPageState extends State<SettingPage> {
                           ],
                         ),
                         SizedBox(height: 3),
-                        Text(
-                          AuthBloc.instance.userModel.role == 'AGENT'
-                              ? 'Nhà môi giới bất động sản'
-                              : 'Người dùng cơ bản',
-                          style: ptSmall()
-                              .copyWith(color: ptPrimaryColor(context)),
+                        GestureDetector(
+                          onTap: () {
+                            UpdateProfilePage.navigate();
+                          },
+                          child: Text(
+                            AuthBloc.instance.userModel.role == 'AGENT'
+                                ? 'Cập nhật thông tin'
+                                : 'Cập nhật thông tin',
+                            style: ptSmall()
+                                .copyWith(color: ptPrimaryColor(context)),
+                          ),
                         ),
                       ],
                     )

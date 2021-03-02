@@ -92,7 +92,7 @@ class _PostPageState extends State<PostPage> {
                           postBloc: _postBloc,
                           pageController: _postBloc.pageController,
                         ),
-                        if (_postBloc.isReloadFeed ) PostSkeleton(),
+                        if (_postBloc.isReloadFeed) PostSkeleton(),
                         ListView.builder(
                           padding: EdgeInsets.all(0),
                           shrinkWrap: true,
@@ -150,7 +150,7 @@ class CreatePostCard extends StatelessWidget {
                       curve: Curves.decelerate);
                 },
                 child: Material(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(0),
                   //elevation: 5,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

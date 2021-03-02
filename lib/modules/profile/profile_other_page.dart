@@ -357,8 +357,8 @@ class _ProfileCardState extends State<ProfileCard> {
                       ),
                       Spacer(),
                       SizedBox(
-                          width: 26,
-                          height: 26,
+                          width: 23,
+                          height: 23,
                           child: Image.asset('assets/image/facebook_icon.png')),
                       SizedBox(width: 15),
                       if (widget.user.email != null)
@@ -367,8 +367,8 @@ class _ProfileCardState extends State<ProfileCard> {
                             launch(_emailLaunchUri.toString());
                           },
                           child: SizedBox(
-                              width: 29,
-                              height: 29,
+                              width: 26,
+                              height: 26,
                               child:
                                   Image.asset('assets/image/gmail_icon.png')),
                         ),
