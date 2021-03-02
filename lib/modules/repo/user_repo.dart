@@ -28,6 +28,23 @@ idToken: "$idToken"
     return res['registerWithPhone'];
   }
 
+  Future registerCompany(String name, String ownerName, String email,
+      String password, String phone, String idToken) async {
+    final res = await UserSrv().mutate(
+        'registerCompany',
+        ''' data : {
+name: "$name"
+ownerName: "$ownerName"
+email: "$email"
+password: "$password"
+phone: "$phone"
+idToken: "$idToken"
+      }
+    ''',
+        fragment: 'token user { $userFragment }');
+    return res['registerCompany'];
+  }
+
   Future getListFollower({String userId, String limit, String page}) async {
     final res = await UserSrv().mutate(
         'getListFollower',

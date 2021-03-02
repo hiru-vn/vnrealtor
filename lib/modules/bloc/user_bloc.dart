@@ -19,7 +19,7 @@ class UserBloc extends ChangeNotifier {
     final token = await SPref.instance.get('token');
     final id = await SPref.instance.get('id');
     if (token != null && id != null) {
-      getFriendRequestFromOtherUsers();
+      // getFriendRequestFromOtherUsers();
       getFollowerIn7d();
       setUserlocation();
     }

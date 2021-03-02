@@ -208,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
               width: deviceWidth(context) * 0.9,
               child: Center(
                 child: GestureDetector(
-                  onTap: () => RegisterPage.navigate(),
+                  onTap: () => RegisterPage.navigate(isCompany: true),
                   child: Text.rich(
                     TextSpan(
                       children: [
