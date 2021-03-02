@@ -128,19 +128,19 @@ class ProfilePageAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
             Image.asset('assets/image/logo_full.png'),
             Spacer(),
-            GestureDetector(
-              onTap: () {
-                showAlertDialog(context, 'Đang phát triển',
-                    navigatorKey: navigatorKey);
-              },
-              child: SizedBox(
-                  width: 42,
-                  height: 42,
-                  child: Icon(
-                    MdiIcons.menu,
-                    size: 26,
-                  )),
-            )
+            // GestureDetector(
+            //   onTap: () {
+            //     showAlertDialog(context, 'Đang phát triển',
+            //         navigatorKey: navigatorKey);
+            //   },
+            //   child: SizedBox(
+            //       width: 42,
+            //       height: 42,
+            //       child: Icon(
+            //         MdiIcons.menu,
+            //         size: 26,
+            //       )),
+            // )
           ],
         ),
       ),

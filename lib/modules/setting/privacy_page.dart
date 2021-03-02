@@ -1,4 +1,3 @@
-
 import 'package:datcao/share/import.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -17,8 +16,9 @@ class _PrivacyPageState extends State<PrivacyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar2(
-         'Chính sách bảo mật',
+      appBar: AppBar1(
+        title: 'Về ứng dụng Datcao',
+        automaticallyImplyLeading: true,
       ),
       body: Stack(
         fit: StackFit.expand,
