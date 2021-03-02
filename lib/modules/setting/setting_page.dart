@@ -93,7 +93,7 @@ class _SettingPageState extends State<SettingPage> {
       },
       {
         "name": "Về chúng tôi",
-        "img": "assets/image/logo.png",
+        "img": "assets/image/about.png",
         "action": () {
           AboutPage.navigate();
         }
