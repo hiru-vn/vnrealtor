@@ -4,6 +4,7 @@ import 'package:datcao/modules/model/setting.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class UserBloc extends ChangeNotifier {
   UserBloc._privateConstructor() {
@@ -20,6 +21,7 @@ class UserBloc extends ChangeNotifier {
     if (token != null && id != null) {
       getFriendRequestFromOtherUsers();
       getFollowerIn7d();
+      setUserlocation();
     }
   }
 
@@ -68,8 +70,8 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> updateUser(UserModel user) async {
     try {
-      final res = await UserRepo()
-          .updateUser(user.id, user.name, user.email, user.phone, user.avatar, user.description, user.facebookUrl);
+      final res = await UserRepo().updateUser(user.id, user.name, user.email,
+          user.phone, user.avatar, user.description, user.facebookUrl);
 
       return BaseResponse.success(res);
     } catch (e) {
@@ -81,8 +83,8 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> updateSetting(SettingModel setting) async {
     try {
-      final res = await UserRepo()
-          .updateSetting(setting.likeNoti, setting.commentNoti, setting.shareNoti);
+      final res = await UserRepo().updateSetting(
+          setting.likeNoti, setting.commentNoti, setting.shareNoti);
 
       return BaseResponse.success(res);
     } catch (e) {
@@ -94,9 +96,25 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> seenAllNoti() async {
     try {
-      if (AuthBloc.instance.userModel.notiCount == 0) return BaseResponse.success('');
+      if (AuthBloc.instance.userModel.notiCount == 0)
+        return BaseResponse.success('');
       AuthBloc.instance.userModel.notiCount = 0;
       final res = await UserRepo().seenAllNoti();
+
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> setUserlocation() async {
+    try {
+      final pos = await getDevicePosition();
+      final id = await SPref.instance.get('id');
+      final res =
+          await UserRepo().setUserlocation(id, pos.latitude, pos.longitude);
 
       return BaseResponse.success(res);
     } catch (e) {

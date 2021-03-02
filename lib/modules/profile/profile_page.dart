@@ -273,11 +273,15 @@ class _ProfileCardState extends State<ProfileCard> {
                                         style: ptTitle(),
                                       ),
                                       Text(
-                                        'bài viết',
-                                        style: ptBody(),
-                                      )
+                                        'Số lượt\nthích',
+                                        style: ptSmall(),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ],
                                   ),
+                                ),
+                                VerticalDivider(
+                                  width: 4,
                                 ),
                                 Expanded(
                                   child: GestureDetector(
@@ -293,13 +297,19 @@ class _ProfileCardState extends State<ProfileCard> {
                                               .toString(),
                                           style: ptTitle(),
                                         ),
-                                        Text(
-                                          'follower',
-                                          style: ptBody(),
+                                        FittedBox(
+                                          child: Text(
+                                            'Người theo\ndõi',
+                                            style: ptSmall(),
+                                            textAlign: TextAlign.center,
+                                          ),
                                         )
                                       ],
                                     ),
                                   ),
+                                ),
+                                VerticalDivider(
+                                  width: 4,
                                 ),
                                 Expanded(
                                   child: GestureDetector(
@@ -315,9 +325,12 @@ class _ProfileCardState extends State<ProfileCard> {
                                               .toString(),
                                           style: ptTitle(),
                                         ),
-                                        Text(
-                                          'following',
-                                          style: ptBody(),
+                                        FittedBox(
+                                          child: Text(
+                                            'Đang theo\ndõi',
+                                            style: ptSmall(),
+                                            textAlign: TextAlign.center,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -362,8 +375,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                     launch(widget.user.facebookUrl);
                                   },
                                   child: SizedBox(
-                                      width: 31,
-                                      height: 31,
+                                      width: 26,
+                                      height: 26,
                                       child: Image.asset(
                                           'assets/image/facebook_icon.png')),
                                 );
@@ -376,8 +389,8 @@ class _ProfileCardState extends State<ProfileCard> {
                             launch(_emailLaunchUri.toString());
                           },
                           child: SizedBox(
-                              width: 35,
-                              height: 35,
+                              width: 29,
+                              height: 29,
                               child:
                                   Image.asset('assets/image/gmail_icon.png')),
                         ),

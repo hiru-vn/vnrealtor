@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:datcao/share/import.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Future showGoogleMapPoint(BuildContext context, double lat, double long,
     {double height}) {
@@ -34,6 +35,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   Completer<GoogleMapController> _controller = Completer();
   CameraPosition _initPos;
   Marker selectedMarker;
+  LatLng selectedPoint;
 
   @override
   void initState() {
@@ -41,6 +43,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       target: LatLng(widget.lat, widget.long),
       zoom: 15,
     );
+    selectedPoint = LatLng(widget.lat, widget.long);
     super.initState();
 
     selectedMarker = Marker(
@@ -59,6 +62,19 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
         bearing: 0, target: LatLng(widget.lat, widget.long), tilt: 0, zoom: 15);
     final GoogleMapController controller = await _controller.future;
     controller.moveCamera(CameraUpdate.newCameraPosition(_curPos));
+  }
+
+  _launchMap(LatLng pos) async {
+    if (pos == null) {
+      showToast('Chưa chọn toạ độ', context);
+      return;
+    }
+    var mapSchema = 'geo:${pos.latitude},${pos.longitude}';
+    if (await canLaunch(mapSchema)) {
+      await launch(mapSchema);
+    } else {
+      throw 'Could not launch $mapSchema';
+    }
   }
 
   @override
@@ -89,6 +105,36 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                 child: Icon(
                   Icons.close,
                   color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 15,
+            left: 12,
+            child: InkWell(
+              onTap: () => _launchMap(selectedPoint),
+              child: Material(
+                borderRadius: BorderRadius.circular(20),
+                elevation: 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)),
+                  height: 40,
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.map_outlined,
+                        color: Colors.blue,
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text('Mở trong Google Map')
+                    ],
+                  ),
                 ),
               ),
             ),

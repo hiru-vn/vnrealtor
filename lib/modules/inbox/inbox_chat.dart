@@ -9,7 +9,7 @@ import 'package:datcao/utils/file_util.dart';
 import 'package:popup_menu/popup_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:datcao/navigator.dart';
-
+import 'package:share/share.dart';
 import 'google_map_widget.dart';
 import 'import/animated_search_bar.dart';
 import 'import/app_bar.dart';
@@ -291,7 +291,6 @@ class _InboxChatState extends State<InboxChat> {
             child: AnimatedSearchBar(
               width: MediaQuery.of(context).size.width / 2,
               height: 40,
-              
             ),
           ),
           IconButton(
@@ -451,14 +450,15 @@ class _InboxChatState extends State<InboxChat> {
                             children: [
                               ActionItem(
                                 img: 'assets/image/location.png',
-                                name: 'Location',
+                                name: 'Gắn vị trí',
                                 onTap: () async {
                                   await navigatorKey.currentState.maybePop();
-                                  showGoogleMap(context,
+                                  final res = await showGoogleMap(context,
                                       height:
                                           MediaQuery.of(context).size.height -
                                               kToolbarHeight -
                                               500);
+                                  print(res);
                                 },
                               ),
                               SizedBox(
@@ -467,7 +467,7 @@ class _InboxChatState extends State<InboxChat> {
                               ),
                               ActionItem(
                                 img: 'assets/image/invite_chat.jpg',
-                                name: 'Invite',
+                                name: 'Mới người khac',
                                 onTap: () async {
                                   await navigatorKey.currentState.maybePop();
                                 },

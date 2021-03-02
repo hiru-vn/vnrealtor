@@ -254,8 +254,9 @@ class _ProfileCardState extends State<ProfileCard> {
                                         style: ptTitle(),
                                       ),
                                       Text(
-                                        'bài viết',
+                                        'Số lượt\nthích',
                                         style: ptBody(),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ],
                                   ),
@@ -274,8 +275,9 @@ class _ProfileCardState extends State<ProfileCard> {
                                           style: ptTitle(),
                                         ),
                                         Text(
-                                          'follower',
+                                          'Người theo\ndõi',
                                           style: ptBody(),
+                                          textAlign: TextAlign.center,
                                         )
                                       ],
                                     ),
@@ -295,8 +297,9 @@ class _ProfileCardState extends State<ProfileCard> {
                                           style: ptTitle(),
                                         ),
                                         Text(
-                                          'following',
+                                          'Đang theo\ndõi',
                                           style: ptBody(),
+                                          textAlign: TextAlign.center,
                                         )
                                       ],
                                     ),
@@ -354,8 +357,8 @@ class _ProfileCardState extends State<ProfileCard> {
                       ),
                       Spacer(),
                       SizedBox(
-                          width: 31,
-                          height: 31,
+                          width: 26,
+                          height: 26,
                           child: Image.asset('assets/image/facebook_icon.png')),
                       SizedBox(width: 15),
                       if (widget.user.email != null)
@@ -364,8 +367,8 @@ class _ProfileCardState extends State<ProfileCard> {
                             launch(_emailLaunchUri.toString());
                           },
                           child: SizedBox(
-                              width: 35,
-                              height: 35,
+                              width: 29,
+                              height: 29,
                               child:
                                   Image.asset('assets/image/gmail_icon.png')),
                         ),

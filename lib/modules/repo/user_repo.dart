@@ -72,6 +72,22 @@ Page: "$page"
     return res;
   }
 
+  Future setUserlocation(
+    String userId,
+    double lat,
+    double long,
+  ) async {
+    final res = await UserSrv().mutate(
+        'setUserlocation',
+        '''
+    userId: "$userId"
+    lat: $lat
+  	long: $long
+    ''',
+        fragment: 'id');
+    return res['setUserlocation'];
+  }
+
   Future getListUserIn(List<String> ids) async {
     final res = await UserSrv().getList(
         // limit: 20,
