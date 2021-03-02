@@ -74,7 +74,7 @@ class _PostPageState extends State<PostPage> {
                   onRefresh: () async {
                     await _postBloc.getNewFeed(
                         filter:
-                            GraphqlFilter(limit: 20, order: "{createdAt: -1}"));
+                            GraphqlFilter(limit: 15, order: "{updatedAt: -1}"));
                     return;
                   },
                   child: SingleChildScrollView(

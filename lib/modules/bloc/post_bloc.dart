@@ -23,7 +23,7 @@ class PostBloc extends ChangeNotifier {
   List<PostModel> savePosts = [];
 
   Future init() async {
-    getNewFeed(filter: GraphqlFilter(limit: 10, order: "{createdAt: -1}"));
+    getNewFeed(filter: GraphqlFilter(limit: 15, order: "{updatedAt: -1}"));
     getStoryFollowing();
     getListPost(AuthBloc.instance.userModel.savedPostIds);
   }
@@ -55,7 +55,7 @@ class PostBloc extends ChangeNotifier {
       notifyListeners();
       final res = await PostRepo().getNewFeed(
           filter: GraphqlFilter(
-              limit: 20, order: "{createdAt: -1}", page: ++feedPage),
+              limit: 15, order: "{updatedAt: -1}", page: ++feedPage),
           timeSort: '-1',
           timestamp: lastFetchFeedPage1.toString());
       final List listRaw = res['data'];
@@ -192,7 +192,7 @@ class PostBloc extends ChangeNotifier {
   }
 
   Future<BaseResponse> updatePost(
-    String id,
+      String id,
       String content,
       String expirationDate,
       bool publicity,
@@ -201,8 +201,8 @@ class PostBloc extends ChangeNotifier {
       List<String> images,
       List<String> videos) async {
     try {
-      final res = await PostRepo().updatePost(id,
-          content, expirationDate, publicity, lat, long, images, videos);
+      final res = await PostRepo().updatePost(
+          id, content, expirationDate, publicity, lat, long, images, videos);
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());
@@ -239,7 +239,7 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-    Future<BaseResponse> deleteComment(String postId) async {
+  Future<BaseResponse> deleteComment(String postId) async {
     try {
       final res = await PostRepo().deleteComment(postId);
       return BaseResponse.success(res);

@@ -500,7 +500,12 @@ class _PostWidgetState extends State<PostWidget> {
             }
           }
           if (val.menuTitle == 'Sửa bài') {
-            UpdatePostPage.navigate(widget.post);
+            final res = await UpdatePostPage.navigate(widget.post);
+            if (res == true) {
+              await _postBloc.getNewFeed(
+                  filter: GraphqlFilter(limit: 15, order: "{updatedAt: -1}"));
+              return;
+            }
           }
         },
         stateChanged: (val) {},
