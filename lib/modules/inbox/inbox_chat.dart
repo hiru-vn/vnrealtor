@@ -287,12 +287,12 @@ class _InboxChatState extends State<InboxChat> {
         automaticallyImplyLeading: true,
         bgColor: Colors.white,
         actions: [
-          Center(
-            child: AnimatedSearchBar(
-              width: MediaQuery.of(context).size.width / 2,
-              height: 40,
-            ),
-          ),
+          // Center(
+          //   child: AnimatedSearchBar(
+          //     width: MediaQuery.of(context).size.width / 2,
+          //     height: 40,
+          //   ),
+          // ),
           IconButton(
               key: moreBtnKey,
               icon: Icon(
@@ -570,7 +570,7 @@ class LoadEarlierWidget extends StatelessWidget {
                     )
                   ]),
               child: Text(
-                "Load more",
+                "Cũ hơn",
                 style: TextStyle(color: Theme.of(context).primaryColor),
               ),
             ),

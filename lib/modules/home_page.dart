@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage>
             // if (index == 1) //message
             //   InboxBloc.instance
             //       .getList20InboxGroup(AuthBloc.instance.userModel.id);
-            if (index == 2) {
+            if (index == 1) {
               UserBloc.instance.seenAllNoti();
             }
           },

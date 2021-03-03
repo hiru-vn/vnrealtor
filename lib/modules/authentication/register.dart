@@ -334,7 +334,7 @@ class _OtpDialogState extends State<OtpDialog> {
                                     AuthStatus.successOtp)
                               return Padding(
                                 padding: const EdgeInsets.only(top: 15),
-                                child: kLoadingSpinner,
+                                child: kLoadingBubbleSpinner,
                               );
                             return Padding(
                               padding: const EdgeInsets.only(top: 15),

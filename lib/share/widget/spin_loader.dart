@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-// Center kLoadingSpinner = Center(
-//   child: SizedBox(
-//     height: 50,
-//     width: 50,
-//     child: SpinKitCircle(
-//       color: Colors.greenAccent,
-//       size: 50.0,
-//     ),
-//   ),
-// );
+Center kLoadingBubbleSpinner = Center(
+  child: SizedBox(
+    height: 50,
+    width: 50,
+    child: SpinKitCircle(
+      color: Colors.greenAccent,
+      size: 50.0,
+    ),
+  ),
+);
 
 Center kLoadingSpinner = Center(
   child: SizedBox(

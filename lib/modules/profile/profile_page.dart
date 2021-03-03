@@ -212,7 +212,8 @@ class _ProfileCardState extends State<ProfileCard> {
                         ),
                         child: Center(
                           child: CircleAvatar(
-                            radius: 37.5,backgroundColor: Colors.white,
+                            radius: 37.5,
+                            backgroundColor: Colors.white,
                             backgroundImage: widget.user.avatar != null
                                 ? NetworkImage(widget.user.avatar)
                                 : AssetImage('assets/image/default_avatar.png'),
@@ -238,28 +239,30 @@ class _ProfileCardState extends State<ProfileCard> {
                                 SizedBox(
                                   width: 5,
                                 ),
-                                Text(
-                                  widget.user.name ?? '',
-                                  style: ptBigTitle(),
-                                ),
-                                SizedBox(width: 8),
-                                if (AuthBloc.instance.userModel?.role ==
-                                    'AGENT')
-                                  CustomTooltip(
-                                    message: 'Tài khoản xác thực',
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.blue[600],
+                                ...[
+                                  Text(
+                                    widget.user.name ?? '',
+                                    style: ptBigTitle(),
+                                  ),
+                                  SizedBox(width: 8),
+                                  if (AuthBloc.instance.userModel?.role ==
+                                      'AGENT')
+                                    CustomTooltip(
+                                      message: 'Tài khoản xác thực',
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.blue[600],
+                                        ),
+                                        padding: EdgeInsets.all(1.3),
+                                        child: Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                          size: 11,
+                                        ),
                                       ),
-                                      padding: EdgeInsets.all(1.3),
-                                      child: Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                        size: 11,
-                                      ),
-                                    ),
-                                  )
+                                    )
+                                ]
                               ],
                             ),
                             SizedBox(

@@ -71,30 +71,43 @@ class _LoginPageState extends State<LoginPage> {
                     )
                   : null,
             ),
-            Container(
-              height: MediaQuery.of(context).viewInsets.bottom == 0
-                  ? deviceHeight(context) / 3
-                  : 0,
-              color: ptPrimaryColor(context),
-              child: Stack(
-                children: [
-                  Center(
-                      child: SizedBox(
-                          width: deviceWidth(context) / 5,
-                          child: Image.asset('assets/image/icon_white.png'))),
-                  Positioned(
-                    bottom:
-                        deviceHeight(context) / 6 - deviceWidth(context) / 5,
-                    width: deviceWidth(context),
-                    child: Center(
-                      child: Text(
-                        'Chào mừng bạn đến với DATCAO',
-                        style: ptTitle().copyWith(color: Colors.white),
+            Stack(
+              children: [
+                Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Image.asset(
+                      'assets/image/bg_login.png',
+                      fit: BoxFit.fitWidth,
+                    )),
+                Container(
+                  height: MediaQuery.of(context).viewInsets.bottom == 0
+                      ? deviceHeight(context) / 3
+                      : 0,
+                  //color: ptPrimaryColor(context),
+                  child: Stack(
+                    children: [
+                      Center(
+                          child: SizedBox(
+                              width: deviceWidth(context) / 5,
+                              child:
+                                  Image.asset('assets/image/icon_white.png'))),
+                      Positioned(
+                        bottom: deviceHeight(context) / 6 -
+                            deviceWidth(context) / 5,
+                        width: deviceWidth(context),
+                        child: Center(
+                          child: Text(
+                            'Chào mừng bạn đến với DATCAO',
+                            style: ptTitle().copyWith(color: Colors.white),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             SpacingBox(h: 2.5),
             Container(
