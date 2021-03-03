@@ -6,7 +6,6 @@ import 'package:datcao/modules/setting/about_page.dart';
 import 'package:datcao/modules/setting/point_page.dart';
 import 'package:datcao/modules/setting/policy_page.dart';
 import 'package:datcao/modules/setting/saved_post_page.dart';
-import 'package:datcao/modules/setting/setting_notify_page.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:package_info/package_info.dart';
@@ -146,191 +145,189 @@ class _SettingPageState extends State<SettingPage> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border:
+                            Border.all(width: 1.3, color: ptDarkColor(context)),
+                      ),
+                      child: Center(
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: Colors.white,
+                          backgroundImage: AuthBloc.instance.userModel.avatar !=
+                                  null
+                              ? NetworkImage(AuthBloc.instance.userModel.avatar)
+                              : AssetImage('assets/image/default_avatar.png'),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              _authBloc.userModel?.name ?? '',
+                              style: ptTitle()
+                                  .copyWith(fontWeight: FontWeight.w900),
+                            ),
+                            SizedBox(width: 8),
+                            if (_authBloc.userModel?.role == 'AGENT')
+                              CustomTooltip(
+                                message: 'Tài khoản xác thực',
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.blue[600],
+                                  ),
+                                  padding: EdgeInsets.all(1.3),
+                                  child: Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                    size: 11,
+                                  ),
+                                ),
+                              )
+                          ],
+                        ),
+                        SizedBox(height: 3),
+                        GestureDetector(
+                          onTap: () {
+                            UpdateProfilePage.navigate()
+                                .then((value) => setState(() {}));
+                          },
+                          child: Text(
+                            AuthBloc.instance.userModel.role == 'AGENT'
+                                ? 'Cập nhật thông tin'
+                                : 'Cập nhật thông tin',
+                            style: ptSmall()
+                                .copyWith(color: ptPrimaryColor(context)),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
               if (AuthBloc.instance.userModel.role != 'COMPANY' ||
                   !AuthBloc.instance.userModel.isVerify)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 54,
-                        height: 54,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              width: 1.3, color: ptDarkColor(context)),
-                        ),
-                        child: Center(
-                          child: CircleAvatar(
-                            radius: 25,
-                            backgroundColor: Colors.white,
-                            backgroundImage: AuthBloc
-                                        .instance.userModel.avatar !=
-                                    null
-                                ? NetworkImage(
-                                    AuthBloc.instance.userModel.avatar)
-                                : AssetImage('assets/image/default_avatar.png'),
-                          ),
-                        ),
+                  child: GestureDetector(
+                    onTap: () {
+                      if (_authBloc.userModel.role == 'COMPANY') {
+                        VerifyCompany.navigate();
+                        return;
+                      }
+                      VertifyAccountPage1.navigate();
+                    },
+                    child: Card(
+                      elevation: 0,
+                      color: ptSecondaryColor(context),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
                       ),
-                      SizedBox(width: 20),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                _authBloc.userModel?.name ?? '',
-                                style: ptTitle()
-                                    .copyWith(fontWeight: FontWeight.w900),
-                              ),
-                              SizedBox(width: 8),
-                              if (_authBloc.userModel?.role == 'AGENT')
-                                CustomTooltip(
-                                  message: 'Tài khoản xác thực',
+                      child: Padding(
+                        padding: const EdgeInsets.all(1),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              child: Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _authBloc.userModel.role != 'AGENT'
+                                        ? Colors.transparent
+                                        : ptSecondaryColor(context)),
+                                child: Center(
                                   child: Container(
+                                    height: 41,
+                                    width: 41,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Colors.blue[600],
+                                      color: ptDarkColor(context),
                                     ),
-                                    padding: EdgeInsets.all(1.3),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 11,
-                                    ),
-                                  ),
-                                )
-                            ],
-                          ),
-                          SizedBox(height: 3),
-                          GestureDetector(
-                            onTap: () {
-                              UpdateProfilePage.navigate()
-                                  .then((value) => setState(() {}));
-                            },
-                            child: Text(
-                              AuthBloc.instance.userModel.role == 'AGENT'
-                                  ? 'Cập nhật thông tin'
-                                  : 'Cập nhật thông tin',
-                              style: ptSmall()
-                                  .copyWith(color: ptPrimaryColor(context)),
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    if (_authBloc.userModel.role == 'COMPANY') {
-                      VerifyCompany.navigate();
-                      return;
-                    }
-                    VertifyAccountPage1.navigate();
-                  },
-                  child: Card(
-                    elevation: 0,
-                    color: ptSecondaryColor(context),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(1),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            child: Container(
-                              height: 45,
-                              width: 45,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _authBloc.userModel.role != 'AGENT'
-                                      ? Colors.transparent
-                                      : ptSecondaryColor(context)),
-                              child: Center(
-                                child: Container(
-                                  height: 41,
-                                  width: 41,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: ptDarkColor(context),
-                                  ),
-                                  child: _authBloc.userModel.role == 'AGENT'
-                                      ? Center(
-                                          child: Container(
-                                            height: 38,
-                                            width: 38,
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color:
-                                                    ptSecondaryColor(context)),
-                                            child: Center(
-                                              child: Icon(
-                                                Icons.verified_user,
-                                                color: ptDarkColor(context),
-                                                size: 27,
+                                    child: _authBloc.userModel.role == 'AGENT'
+                                        ? Center(
+                                            child: Container(
+                                              height: 38,
+                                              width: 38,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: ptSecondaryColor(
+                                                      context)),
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.verified_user,
+                                                  color: ptDarkColor(context),
+                                                  size: 27,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        )
-                                      : Image.asset(
-                                          'assets/image/no_agency.png'),
+                                          )
+                                        : Image.asset(
+                                            'assets/image/no_agency.png'),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10)
-                                      .copyWith(bottom: 5, left: 3),
-                                  child: Text(
-                                    (() {
-                                      if (_authBloc.userModel.role == 'AGENT')
-                                        return 'Bạn đã là nhà môi giới';
-                                      else if (_authBloc.userModel.role ==
-                                          'USER')
-                                        return 'Xác thực nhà môi giới';
-                                      else if (_authBloc.userModel.role ==
-                                          'COMPANY')
-                                        return 'Xác thực tài khoản doanh nghiệp';
-                                      return 'Xác thực nhà môi giới';
-                                    }()),
-                                    maxLines: null,
-                                    style: ptBody().copyWith(
-                                      fontWeight: FontWeight.w900,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10)
+                                        .copyWith(bottom: 5, left: 3),
+                                    child: Text(
+                                      (() {
+                                        if (_authBloc.userModel.role == 'AGENT')
+                                          return 'Bạn đã là nhà môi giới';
+                                        else if (_authBloc.userModel.role ==
+                                            'EDITOR')
+                                          return 'Xác thực nhà môi giới';
+                                        else if (_authBloc.userModel.role ==
+                                            'COMPANY')
+                                          return 'Xác thực tài khoản doanh nghiệp';
+                                        return '';
+                                      }()),
+                                      maxLines: null,
+                                      style: ptBody().copyWith(
+                                        fontWeight: FontWeight.w900,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10)
-                                      .copyWith(top: 0, left: 3),
-                                  child: Text(
-                                    _authBloc.userModel.role != 'AGENT'
-                                        ? 'Để đăng bài bds, bạn sẽ cần cung cấp thêm 1 số thông tin.'
-                                        : 'Cập nhật lại thông tin nhà môi giới của bạn tại đây',
-                                    maxLines: 2,
-                                    style: ptSmall(),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10)
+                                        .copyWith(top: 0, left: 3),
+                                    child: Text(
+                                      _authBloc.userModel.role != 'AGENT'
+                                          ? 'Để đăng bài bds, bạn sẽ cần cung cấp thêm 1 số thông tin.'
+                                          : 'Cập nhật lại thông tin nhà môi giới của bạn tại đây',
+                                      maxLines: 2,
+                                      style: ptSmall(),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
               StaggeredGridView.count(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
