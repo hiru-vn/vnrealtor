@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/authentication/login.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -138,6 +140,10 @@ class _DetailImagePostState extends State<DetailImagePost> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
+                        if (AuthBloc.instance.userModel == null) {
+                          LoginPage.navigatePush();
+                          return;
+                        }
                         _isLike = !_isLike;
                         if (_isLike) {
                           widget.post.like++;
@@ -186,7 +192,12 @@ class _DetailImagePostState extends State<DetailImagePost> {
                             width: 5,
                           ),
                           GestureDetector(
-                            onTap: () {
+                            onTap: () async {
+                              if (AuthBloc.instance.userModel == null) {
+                                await navigatorKey.currentState.maybePop();
+                                LoginPage.navigatePush();
+                                return;
+                              }
                               showComment(widget.post, context);
                             },
                             child: Text(

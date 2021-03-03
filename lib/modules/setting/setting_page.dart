@@ -149,26 +149,17 @@ class _SettingPageState extends State<SettingPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Container(
-                      width: 54,
-                      height: 54,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border:
-                            Border.all(width: 1.3, color: ptDarkColor(context)),
-                      ),
-                      child: Center(
-                        child: CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.white,
-                          backgroundImage: AuthBloc.instance.userModel.avatar !=
-                                  null
-                              ? NetworkImage(AuthBloc.instance.userModel.avatar)
-                              : AssetImage('assets/image/default_avatar.png'),
-                        ),
+                    Center(
+                      child: CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Colors.white,
+                        backgroundImage: AuthBloc.instance.userModel.avatar !=
+                                null
+                            ? NetworkImage(AuthBloc.instance.userModel.avatar)
+                            : AssetImage('assets/image/default_avatar.png'),
                       ),
                     ),
-                    SizedBox(width: 20),
+                    SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,

@@ -116,53 +116,56 @@ class StorySkeleton extends StatelessWidget {
     return SkeletonLoader(
       builder: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15),
-        child: Row(
-          children: <Widget>[
-            Container(
-              height: 154,
-              width: 119,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: <Widget>[
+              Container(
+                height: 154,
+                width: 119,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
               ),
-            ),
-            SizedBox(width: 15),
-            Container(
-              height: 154,
-              width: 119,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
+              SizedBox(width: 15),
+              Container(
+                height: 154,
+                width: 119,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
               ),
-            ),
-            SizedBox(width: 15),
-            Container(
-              height: 154,
-              width: 119,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
+              SizedBox(width: 15),
+              Container(
+                height: 154,
+                width: 119,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
               ),
-            ),
-            SizedBox(width: 15),
-            Container(
-              height: 154,
-              width: 119,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
+              SizedBox(width: 15),
+              Container(
+                height: 154,
+                width: 119,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
               ),
-            ),
-            SizedBox(width: 15),
-            Container(
-              height: 154,
-              width: 119,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
+              SizedBox(width: 15),
+              Container(
+                height: 154,
+                width: 119,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       items: 1,

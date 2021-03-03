@@ -17,7 +17,7 @@ class ProfileOtherPage extends StatefulWidget {
 
   const ProfileOtherPage(this.user);
   static Future navigate(UserModel user) {
-    if (user.id == AuthBloc.instance.userModel.id) {
+    if (user.id == AuthBloc.instance.userModel?.id) {
       return navigatorKey.currentState.push(pageBuilder(ProfilePage()));
     }
     return navigatorKey.currentState.push(pageBuilder(ProfileOtherPage(user)));
@@ -195,7 +195,8 @@ class _ProfileCardState extends State<ProfileCard> {
                         ),
                         child: Center(
                           child: CircleAvatar(
-                            radius: 37.5,backgroundColor: Colors.white,
+                            radius: 37.5,
+                            backgroundColor: Colors.white,
                             backgroundImage: widget.user.avatar != null
                                 ? NetworkImage(widget.user.avatar)
                                 : AssetImage('assets/image/default_avatar.png'),
@@ -379,102 +380,109 @@ class _ProfileCardState extends State<ProfileCard> {
                     ],
                   ),
                   SizedBox(height: 15),
-                  Row(children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () async {
-                          BaseResponse res;
-                          if (_authBloc.userModel.followingIds
-                              .contains(widget.user.id)) {
-                            widget.user.followerIds
-                                .remove(_authBloc.userModel.id);
-                            _authBloc.userModel.followingIds
-                                .remove(widget.user.id);
-                            setState(() {});
-                            res = await _userBloc.unfollowUser(widget.user.id);
-                            if (res.isSuccess) {
-                            } else {
-                              showToast(res.errMessage, context);
-                              widget.user.followerIds
-                                  .add(_authBloc.userModel.id);
-                              _authBloc.userModel.followingIds
-                                  .add(widget.user.id);
-                              setState(() {});
-                            }
-                          } else {
-                            _authBloc.userModel.followingIds
-                                .add(widget.user.id);
-                            widget.user.followerIds.add(_authBloc.userModel.id);
-                            setState(() {});
-                            res = await _userBloc.followUser(widget.user.id);
-                            if (res.isSuccess) {
-                            } else {
-                              showToast(res.errMessage, context);
-                              _authBloc.userModel.followingIds
-                                  .remove(widget.user.id);
-                              widget.user.followerIds
-                                  .remove(_authBloc.userModel.id);
-                              setState(() {});
-                            }
-                          }
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              color: ptPrimaryColor(context),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              _authBloc.userModel.followingIds
-                                      .contains(widget.user.id)
-                                  ? 'Bỏ theo dõi'
-                                  : 'Theo dõi',
-                              style: ptTitle(),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (_authBloc.userModel.followingIds
-                        .contains(widget.user.id))
-                      SizedBox(
-                        width: 12,
-                      ),
-                    if (_authBloc.userModel.followingIds
-                        .contains(widget.user.id))
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () async {
-                            showSimpleLoadingDialog(context);
-                            await InboxBloc.instance.navigateToChatWith(
-                                widget.user.name,
-                                widget.user.avatar,
-                                DateTime.now(),
-                                widget.user.avatar, [
-                              AuthBloc.instance.userModel.id,
-                              widget.user.id,
-                            ]);
-                            navigatorKey.currentState.maybePop();
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                border:
-                                    Border.all(color: ptPrimaryColor(context))),
-                            child: Center(
-                              child: Text(
-                                'Nhắn tin',
-                                style: ptTitle(),
+                  (_authBloc.userModel != null)
+                      ? Row(children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                BaseResponse res;
+                                if (_authBloc.userModel.followingIds
+                                    .contains(widget.user.id)) {
+                                  widget.user.followerIds
+                                      .remove(_authBloc.userModel.id);
+                                  _authBloc.userModel.followingIds
+                                      .remove(widget.user.id);
+                                  setState(() {});
+                                  res = await _userBloc
+                                      .unfollowUser(widget.user.id);
+                                  if (res.isSuccess) {
+                                  } else {
+                                    showToast(res.errMessage, context);
+                                    widget.user.followerIds
+                                        .add(_authBloc.userModel.id);
+                                    _authBloc.userModel.followingIds
+                                        .add(widget.user.id);
+                                    setState(() {});
+                                  }
+                                } else {
+                                  _authBloc.userModel.followingIds
+                                      .add(widget.user.id);
+                                  widget.user.followerIds
+                                      .add(_authBloc.userModel.id);
+                                  setState(() {});
+                                  res = await _userBloc
+                                      .followUser(widget.user.id);
+                                  if (res.isSuccess) {
+                                  } else {
+                                    showToast(res.errMessage, context);
+                                    _authBloc.userModel.followingIds
+                                        .remove(widget.user.id);
+                                    widget.user.followerIds
+                                        .remove(_authBloc.userModel.id);
+                                    setState(() {});
+                                  }
+                                }
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: ptPrimaryColor(context),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    _authBloc.userModel.followingIds
+                                            .contains(widget.user.id)
+                                        ? 'Bỏ theo dõi'
+                                        : 'Theo dõi',
+                                    style: ptTitle(),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      )
-                  ]),
+                          if (_authBloc.userModel != null &&
+                              _authBloc.userModel.followingIds
+                                  .contains(widget.user.id))
+                            SizedBox(
+                              width: 12,
+                            ),
+                          if (_authBloc.userModel != null &&
+                              _authBloc.userModel.followingIds
+                                  .contains(widget.user.id))
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () async {
+                                  showSimpleLoadingDialog(context);
+                                  await InboxBloc.instance.navigateToChatWith(
+                                      widget.user.name,
+                                      widget.user.avatar,
+                                      DateTime.now(),
+                                      widget.user.avatar, [
+                                    AuthBloc.instance.userModel.id,
+                                    widget.user.id,
+                                  ]);
+                                  navigatorKey.currentState.maybePop();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                          color: ptPrimaryColor(context))),
+                                  child: Center(
+                                    child: Text(
+                                      'Nhắn tin',
+                                      style: ptTitle(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                        ])
+                      : SizedBox.shrink(),
                   SizedBox(height: 10),
                 ]),
           )),

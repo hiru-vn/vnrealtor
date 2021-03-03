@@ -24,7 +24,7 @@ $postFragment
       {GraphqlFilter filter, String timestamp, String timeSort}) async {
     final res = await PostSrv().query('getNewsFeedByGuest', '', fragment: '''
     data {
-${postFragment.replaceFirst('isUserLike', '')}
+${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '')}
 }
     ''');
     return res['getNewsFeedByGuest'];

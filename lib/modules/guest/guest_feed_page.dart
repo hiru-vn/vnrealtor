@@ -1,10 +1,10 @@
+import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/share/widget/load_more.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
-import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/share/import.dart';
 
@@ -23,6 +23,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
   PostBloc _postBloc;
   ScrollController _controller = ScrollController();
   List<PostModel> posts;
+  List<PostModel> stories;
   bool isReload = true;
 
   @override
@@ -35,6 +36,16 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
+      _postBloc.getNewFeedGuest().then((res) => setState(() {
+            if (res.isSuccess) {
+              posts = res.data;
+              isReload = false;
+            } else {
+              showToast(res.errMessage, context);
+              posts = [];
+              isReload = false;
+            }
+          }));
       _postBloc.getNewFeedGuest().then((res) => setState(() {
             if (res.isSuccess) {
               posts = res.data;
@@ -102,26 +113,23 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                       ? MediaQuery.of(context).padding.top + kToolbarHeight + 10
                       : 0,
                 ),
-                AbsorbPointer(
-                  child: CreatePostCard(
-                    postBloc: _postBloc,
-                    pageController: _postBloc.pageController,
-                  ),
+                CreatePostCardGuest(
+                  postBloc: _postBloc,
+                  pageController: _postBloc.pageController,
+                  stories: stories,
                 ),
-                if (posts == null) PostSkeleton(),
-                ListView.builder(
-                  padding: EdgeInsets.all(0),
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: _postBloc.post.length,
-                  itemBuilder: (context, index) {
-                    final item = _postBloc.post[index];
-                    return PostWidget(item);
-                  },
-                ),
-                if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
-                  PostSkeleton(
-                    count: 2,
+                if (posts == null)
+                  PostSkeleton()
+                else
+                  ListView.builder(
+                    padding: EdgeInsets.all(0),
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      final item = posts[index];
+                      return PostWidget(item);
+                    },
                   ),
                 SizedBox(
                   height: 70,
@@ -135,11 +143,13 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
   }
 }
 
-class CreatePostCard extends StatelessWidget {
+class CreatePostCardGuest extends StatelessWidget {
   final PostBloc postBloc;
   final PageController pageController;
+  final List<PostModel> stories;
 
-  const CreatePostCard({Key key, this.postBloc, this.pageController})
+  const CreatePostCardGuest(
+      {Key key, this.postBloc, this.pageController, this.stories})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -158,6 +168,10 @@ class CreatePostCard extends StatelessWidget {
               ),
               child: GestureDetector(
                 onTap: () {
+                  if (AuthBloc.instance.userModel == null) {
+                    LoginPage.navigatePush();
+                    return;
+                  }
                   pageController.animateToPage(1,
                       duration: Duration(milliseconds: 300),
                       curve: Curves.decelerate);
@@ -177,6 +191,10 @@ class CreatePostCard extends StatelessWidget {
                         Spacer(),
                         GestureDetector(
                           onTap: () {
+                            if (AuthBloc.instance.userModel == null) {
+                              LoginPage.navigatePush();
+                              return;
+                            }
                             pageController.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
@@ -195,6 +213,10 @@ class CreatePostCard extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
+                            if (AuthBloc.instance.userModel == null) {
+                              LoginPage.navigatePush();
+                              return;
+                            }
                             pageController.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
@@ -214,7 +236,9 @@ class CreatePostCard extends StatelessWidget {
                 ),
               ),
             ),
-            if ((postBloc.stories?.length ?? 0) > 0 || postBloc.isLoadStory)
+            if ((postBloc.stories?.length ?? 0) > 0 ||
+                postBloc.isLoadStory ||
+                AuthBloc.instance.userModel == null)
               Divider(
                 height: 22,
               ),
@@ -244,20 +268,20 @@ class CreatePostCard extends StatelessWidget {
             // SizedBox(
             //   height: 10,
             // ),
-            postBloc.isLoadStory
+            stories == null
                 ? StorySkeleton()
-                : postBloc.stories.length == 0
+                : stories.length == 0
                     ? SizedBox.shrink()
                     : SizedBox(
                         height: 170,
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(horizontal: 20),
-                            itemCount: postBloc.stories.length,
+                            itemCount: stories.length,
                             separatorBuilder: (context, index) =>
                                 SizedBox(width: 15),
                             itemBuilder: (context, index) {
-                              return _buildStoryWidget(postBloc.stories[index]);
+                              return _buildStoryWidget(stories[index]);
                             }),
                       ),
           ],

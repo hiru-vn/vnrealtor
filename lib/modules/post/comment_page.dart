@@ -153,65 +153,66 @@ class _CommentPageState extends State<CommentPage> {
                         ),
                       )
                     : Expanded(child: ListSkeleton()),
-                Container(
-                  width: deviceWidth(context),
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  color: Colors.white70,
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 21,
-                        backgroundColor: Colors.white,
-                        backgroundImage: AuthBloc.instance.userModel.avatar !=
-                                null
-                            ? NetworkImage(AuthBloc.instance.userModel.avatar)
-                            : AssetImage('assets/image/default_avatar.png'),
-                      ),
-                      SizedBox(
-                        width: 7,
-                      ),
-                      Expanded(
-                        child: TextField(
-                          controller: _commentC,
-                          maxLines: null,
-                          // maxLength: 200,
-                          onSubmitted: _comment,
-                          decoration: InputDecoration(
-                            suffixIcon: GestureDetector(
-                                onTap: () {
-                                  _comment(_commentC.text);
-                                },
-                                child: Icon(Icons.send)),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 6),
-                            isDense: true,
-                            hintText: 'Viết bình luận.',
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.transparent,
+                if (AuthBloc.instance.userModel != null)
+                  Container(
+                    width: deviceWidth(context),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    color: Colors.white70,
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 21,
+                          backgroundColor: Colors.white,
+                          backgroundImage: AuthBloc.instance.userModel.avatar !=
+                                  null
+                              ? NetworkImage(AuthBloc.instance.userModel.avatar)
+                              : AssetImage('assets/image/default_avatar.png'),
+                        ),
+                        SizedBox(
+                          width: 7,
+                        ),
+                        Expanded(
+                          child: TextField(
+                            controller: _commentC,
+                            maxLines: null,
+                            // maxLength: 200,
+                            onSubmitted: _comment,
+                            decoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    _comment(_commentC.text);
+                                  },
+                                  child: Icon(Icons.send)),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 6),
+                              isDense: true,
+                              hintText: 'Viết bình luận.',
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                ),
+                                borderRadius: BorderRadius.circular(25),
                               ),
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.transparent,
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                ),
+                                borderRadius: BorderRadius.circular(25),
                               ),
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.transparent,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                ),
+                                borderRadius: BorderRadius.circular(25),
                               ),
-                              borderRadius: BorderRadius.circular(25),
+                              fillColor: ptSecondaryColor(context),
+                              filled: true,
                             ),
-                            fillColor: ptSecondaryColor(context),
-                            filled: true,
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
           );

@@ -1,4 +1,5 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
@@ -34,7 +35,9 @@ class _PostWidgetState extends State<PostWidget> {
   @override
   void initState() {
     _isLike = widget.post.isUserLike;
-    _isSave = AuthBloc.instance.userModel.savedPostIds.contains(widget.post.id);
+    _isSave =
+        AuthBloc.instance.userModel?.savedPostIds?.contains(widget.post.id) ??
+            false;
 
     super.initState();
   }
@@ -74,7 +77,8 @@ class _PostWidgetState extends State<PostWidget> {
                       ProfileOtherPage.navigate(widget.post?.user);
                     },
                     child: CircleAvatar(
-                      radius: 22,backgroundColor: Colors.white,
+                      radius: 22,
+                      backgroundColor: Colors.white,
                       backgroundImage: widget.post?.user?.avatar != null
                           ? NetworkImage(widget.post?.user?.avatar)
                           : AssetImage('assets/image/default_avatar.png'),
@@ -132,15 +136,16 @@ class _PostWidgetState extends State<PostWidget> {
                     ],
                   ),
                   Spacer(),
-                  Center(
-                    child: IconButton(
-                      key: moreBtnKey,
-                      icon: Icon(Icons.more_vert),
-                      onPressed: () {
-                        menu.show(widgetKey: moreBtnKey);
-                      },
-                    ),
-                  )
+                  if (AuthBloc.instance.userModel != null)
+                    Center(
+                      child: IconButton(
+                        key: moreBtnKey,
+                        icon: Icon(Icons.more_vert),
+                        onPressed: () {
+                          menu.show(widgetKey: moreBtnKey);
+                        },
+                      ),
+                    )
                 ],
               ),
             ),
@@ -280,6 +285,10 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
                 GestureDetector(
                   onTap: () {
+                    if (AuthBloc.instance.userModel == null) {
+                      LoginPage.navigatePush();
+                      return;
+                    }
                     _isLike = !_isLike;
                     if (_isLike) {
                       widget.post.like++;
@@ -318,6 +327,10 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
                 GestureDetector(
                   onTap: () {
+                    // if (AuthBloc.instance.userModel == null) {
+                    //   LoginPage.navigatePush();
+                    //   return;
+                    // }
                     if (widget.commentCallBack != null)
                       widget.commentCallBack();
                     else
@@ -372,49 +385,50 @@ class _PostWidgetState extends State<PostWidget> {
                       ]),
                 ),
                 Spacer(),
-                GestureDetector(
-                  onTap: () async {
-                    if (_isSave) {
-                      showToast('Bài viết đã được lưu', context,
-                          isSuccess: true);
-                      return;
-                    }
-                    setState(() {
-                      _isSave = true;
-                    });
-                    final res = await _postBloc.savePost(widget.post);
-                    if (res.isSuccess) {
-                    } else {
+                if (AuthBloc.instance.userModel != null)
+                  GestureDetector(
+                    onTap: () async {
+                      if (_isSave) {
+                        showToast('Bài viết đã được lưu', context,
+                            isSuccess: true);
+                        return;
+                      }
                       setState(() {
-                        _isSave = false;
-                        _postBloc.myPosts.remove(widget.post);
+                        _isSave = true;
                       });
-                      showToast(res.errMessage, context);
-                    }
-                  },
-                  child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        !_isSave
-                            ? Icon(
-                                MdiIcons.bookmarkOutline,
-                                color: ptPrimaryColor(context),
-                                size: 24,
-                              )
-                            : Icon(
-                                MdiIcons.bookmark,
-                                color: ptPrimaryColor(context),
-                                size: 24,
-                              ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Lưu',
-                            style: ptTiny()
-                                .copyWith(color: ptPrimaryColor(context))),
-                      ]),
-                ),
+                      final res = await _postBloc.savePost(widget.post);
+                      if (res.isSuccess) {
+                      } else {
+                        setState(() {
+                          _isSave = false;
+                          _postBloc.myPosts.remove(widget.post);
+                        });
+                        showToast(res.errMessage, context);
+                      }
+                    },
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          !_isSave
+                              ? Icon(
+                                  MdiIcons.bookmarkOutline,
+                                  color: ptPrimaryColor(context),
+                                  size: 24,
+                                )
+                              : Icon(
+                                  MdiIcons.bookmark,
+                                  color: ptPrimaryColor(context),
+                                  size: 24,
+                                ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text('Lưu',
+                              style: ptTiny()
+                                  .copyWith(color: ptPrimaryColor(context))),
+                        ]),
+                  ),
                 SizedBox(
                   width: 20,
                 ),
@@ -446,9 +460,10 @@ class _PostWidgetState extends State<PostWidget> {
   }
 
   initMenu() {
+    if (AuthBloc.instance.userModel == null) return;
     menu = PopupMenu(
         items: [
-          if (widget.post.userId != AuthBloc.instance.userModel.id) ...[
+          if (widget.post.userId != AuthBloc.instance.userModel?.id) ...[
             MenuItem(
                 title: 'Liên hệ',
                 image: Icon(
