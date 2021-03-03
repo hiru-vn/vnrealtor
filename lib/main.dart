@@ -13,6 +13,7 @@ import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:datcao/utils/app_internalization.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
+import 'package:flutter/services.dart';
 
 final _sentry = SentryClient(
     dsn:
@@ -23,7 +24,11 @@ void main() async {
   await Firebase.initializeApp();
 
   runZonedGuarded(
-    () => runApp(MyApp()),
+    () => SystemChrome.setPreferredOrientations(
+            [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+        .then((_) {
+      runApp(MyApp());
+    }),
     (error, stackTrace) async {
       await _sentry.captureException(
         exception: error,

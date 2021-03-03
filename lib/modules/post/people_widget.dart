@@ -1,6 +1,7 @@
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/custom_tooltip.dart';
 
 class PeopleWidget extends StatelessWidget {
   final UserModel user;
@@ -39,16 +40,19 @@ class PeopleWidget extends StatelessWidget {
                         width: 6,
                       ),
                       if (user?.role == 'AGENT') ...[
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blue[600],
-                          ),
-                          padding: EdgeInsets.all(1.3),
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 11,
+                        CustomTooltip(
+                          message: 'Tài khoản xác thực',
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.blue[600],
+                            ),
+                            padding: EdgeInsets.all(1.3),
+                            child: Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 11,
+                            ),
                           ),
                         ),
                         SizedBox(

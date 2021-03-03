@@ -8,6 +8,7 @@ import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/profile/follow_page.dart';
 import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -226,16 +227,19 @@ class _ProfileCardState extends State<ProfileCard> {
                                 ),
                                 SizedBox(width: 8),
                                 if (widget.user.role == 'AGENT')
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.blue[600],
-                                    ),
-                                    padding: EdgeInsets.all(1.3),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 11,
+                                  CustomTooltip(
+                                    message: 'Tài khoản xác thực',
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.blue[600],
+                                      ),
+                                      padding: EdgeInsets.all(1.3),
+                                      child: Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 11,
+                                      ),
                                     ),
                                   )
                               ],
@@ -382,6 +386,8 @@ class _ProfileCardState extends State<ProfileCard> {
                           BaseResponse res;
                           if (_authBloc.userModel.followingIds
                               .contains(widget.user.id)) {
+                            widget.user.followerIds
+                                .remove(_authBloc.userModel.id);
                             _authBloc.userModel.followingIds
                                 .remove(widget.user.id);
                             setState(() {});
@@ -389,6 +395,8 @@ class _ProfileCardState extends State<ProfileCard> {
                             if (res.isSuccess) {
                             } else {
                               showToast(res.errMessage, context);
+                              widget.user.followerIds
+                                  .add(_authBloc.userModel.id);
                               _authBloc.userModel.followingIds
                                   .add(widget.user.id);
                               setState(() {});
@@ -396,6 +404,7 @@ class _ProfileCardState extends State<ProfileCard> {
                           } else {
                             _authBloc.userModel.followingIds
                                 .add(widget.user.id);
+                            widget.user.followerIds.add(_authBloc.userModel.id);
                             setState(() {});
                             res = await _userBloc.followUser(widget.user.id);
                             if (res.isSuccess) {
@@ -403,6 +412,8 @@ class _ProfileCardState extends State<ProfileCard> {
                               showToast(res.errMessage, context);
                               _authBloc.userModel.followingIds
                                   .remove(widget.user.id);
+                              widget.user.followerIds
+                                  .remove(_authBloc.userModel.id);
                               setState(() {});
                             }
                           }

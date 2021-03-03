@@ -32,6 +32,7 @@ class _CommentPageState extends State<CommentPage> {
   TextEditingController _commentC = TextEditingController();
   PostBloc _postBloc;
   String sort = '{createdAt: 1}';
+  ScrollController _controller;
 
   @override
   void initState() {
@@ -88,6 +89,12 @@ class _CommentPageState extends State<CommentPage> {
         setState(() {
           comments = res.data;
         });
+      Future.delayed(
+        Duration(
+          milliseconds: 50,
+        ),
+        () => _controller.jumpTo(_controller.position.maxScrollExtent),
+      );
     } else {
       showToast('Có lỗi khi lấy dữ liệu', context);
     }
@@ -96,113 +103,118 @@ class _CommentPageState extends State<CommentPage> {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 1,
-      builder: (context, controller) => Scaffold(
-        appBar: AppBar1(
-          title: 'Bình luận',
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: DropdownButton(
-                  value: sort,
-                  style: ptBody().copyWith(color: Colors.black87),
-                  items: [
-                    DropdownMenuItem(
-                      child: Text('Mới nhất'),
-                      value: '{createdAt: -1}',
-                    ),
-                    DropdownMenuItem(
-                      child: Text('Cũ nhất'),
-                      value: '{createdAt: 1}',
-                    ),
-                  ],
-                  underline: SizedBox.shrink(),
-                  onChanged: (val) {
-                    setState(() {
-                      sort = val;
-                    });
-                    _getComments(filter: GraphqlFilter(limit: 20, order: val));
-                  }),
-            )
-          ],
-        ),
-        body: Column(
-          children: [
-            comments != null
-                ? Expanded(
-                    child: ListView.separated(
-                      controller: controller,
-                      padding: EdgeInsets.zero,
-                      itemCount: comments.length,
-                      itemBuilder: (context, index) {
-                        final comment = comments[index];
-                        return new CommentWidget(comment: comment);
-                      },
-                      separatorBuilder: (context, index) => SizedBox.shrink(),
-                    ),
-                  )
-                : Expanded(child: ListSkeleton()),
-            Container(
-              width: deviceWidth(context),
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              color: Colors.white70,
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 21,
-                    backgroundImage: AuthBloc.instance.userModel.avatar != null
-                        ? NetworkImage(AuthBloc.instance.userModel.avatar)
-                        : AssetImage('assets/image/default_avatar.png'),
-                  ),
-                  SizedBox(
-                    width: 7,
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: _commentC,
-                      maxLines: null,
-                      // maxLength: 200,
-                      onSubmitted: _comment,
-                      decoration: InputDecoration(
-                        suffixIcon: GestureDetector(
-                            onTap: () {
-                              _comment(_commentC.text);
-                            },
-                            child: Icon(Icons.send)),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 6),
-                        isDense: true,
-                        hintText: 'Viết bình luận.',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
-                          ),
-                          borderRadius: BorderRadius.circular(25),
+        initialChildSize: 1,
+        builder: (context, controller) {
+          _controller = controller;
+          return Scaffold(
+            appBar: AppBar1(
+              title: 'Bình luận',
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton(
+                      value: sort,
+                      style: ptBody().copyWith(color: Colors.black87),
+                      items: [
+                        DropdownMenuItem(
+                          child: Text('Mới nhất'),
+                          value: '{createdAt: -1}',
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
-                          ),
-                          borderRadius: BorderRadius.circular(25),
+                        DropdownMenuItem(
+                          child: Text('Cũ nhất'),
+                          value: '{createdAt: 1}',
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
-                          ),
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        fillColor: ptSecondaryColor(context),
-                        filled: true,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                      ],
+                      underline: SizedBox.shrink(),
+                      onChanged: (val) {
+                        setState(() {
+                          sort = val;
+                        });
+                        _getComments(
+                            filter: GraphqlFilter(limit: 20, order: val));
+                      }),
+                )
+              ],
             ),
-          ],
-        ),
-      ),
-    );
+            body: Column(
+              children: [
+                comments != null
+                    ? Expanded(
+                        child: ListView.separated(
+                          controller: controller,
+                          padding: EdgeInsets.zero,
+                          itemCount: comments.length,
+                          itemBuilder: (context, index) {
+                            final comment = comments[index];
+                            return new CommentWidget(comment: comment);
+                          },
+                          separatorBuilder: (context, index) =>
+                              SizedBox.shrink(),
+                        ),
+                      )
+                    : Expanded(child: ListSkeleton()),
+                Container(
+                  width: deviceWidth(context),
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  color: Colors.white70,
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 21,
+                        backgroundImage: AuthBloc.instance.userModel.avatar !=
+                                null
+                            ? NetworkImage(AuthBloc.instance.userModel.avatar)
+                            : AssetImage('assets/image/default_avatar.png'),
+                      ),
+                      SizedBox(
+                        width: 7,
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: _commentC,
+                          maxLines: null,
+                          // maxLength: 200,
+                          onSubmitted: _comment,
+                          decoration: InputDecoration(
+                            suffixIcon: GestureDetector(
+                                onTap: () {
+                                  _comment(_commentC.text);
+                                },
+                                child: Icon(Icons.send)),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 6),
+                            isDense: true,
+                            hintText: 'Viết bình luận.',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.transparent,
+                              ),
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.transparent,
+                              ),
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.transparent,
+                              ),
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            fillColor: ptSecondaryColor(context),
+                            filled: true,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
 
@@ -282,8 +294,7 @@ class _CommentWidgetState extends State<CommentWidget> {
           Row(
             children: [
               Text(
-                Formart.timeAgo(
-                    DateTime.tryParse(widget.comment.updatedAt)),
+                Formart.timeAgo(DateTime.tryParse(widget.comment.updatedAt)),
                 style: ptTiny(),
               ),
               // SizedBox(

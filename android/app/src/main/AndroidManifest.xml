@@ -21,7 +21,9 @@
         android:label="Datcao"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/launcher_icon">
-        
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/launcher_icon" />
         <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyBlfwTbMaibFui5RlXhRMpxB-WNNrOv2iw"/>
         <activity

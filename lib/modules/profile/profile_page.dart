@@ -6,6 +6,7 @@ import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/profile/follow_page.dart';
 import 'package:datcao/modules/profile/update_profile_page.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -244,16 +245,19 @@ class _ProfileCardState extends State<ProfileCard> {
                                 SizedBox(width: 8),
                                 if (AuthBloc.instance.userModel?.role ==
                                     'AGENT')
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.blue[600],
-                                    ),
-                                    padding: EdgeInsets.all(1.3),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 11,
+                                  CustomTooltip(
+                                    message: 'Tài khoản xác thực',
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.blue[600],
+                                      ),
+                                      padding: EdgeInsets.all(1.3),
+                                      child: Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 11,
+                                      ),
                                     ),
                                   )
                               ],

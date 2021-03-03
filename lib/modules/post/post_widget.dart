@@ -10,6 +10,7 @@ import 'package:datcao/modules/post/update_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:readmore/readmore.dart';
 import 'package:popup_menu/popup_menu.dart';
 
@@ -93,16 +94,19 @@ class _PostWidgetState extends State<PostWidget> {
                           ),
                           SizedBox(width: 8),
                           if (widget.post?.user?.role == 'AGENT')
-                            Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.blue[600],
-                              ),
-                              padding: EdgeInsets.all(1.3),
-                              child: Icon(
-                                Icons.check,
-                                color: Colors.white,
-                                size: 11,
+                            CustomTooltip(
+                              message: 'Tài khoản xác thực',
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.blue[600],
+                                ),
+                                padding: EdgeInsets.all(1.3),
+                                child: Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 11,
+                                ),
                               ),
                             )
                         ],
