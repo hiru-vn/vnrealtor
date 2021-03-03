@@ -144,7 +144,8 @@ class _PostDetailState extends State<PostDetail> {
               child: Row(
                 children: [
                   CircleAvatar(
-                    radius: 21,backgroundColor: Colors.white,
+                    radius: 21,
+                    backgroundColor: Colors.white,
                     backgroundImage: AuthBloc.instance.userModel.avatar != null
                         ? NetworkImage(AuthBloc.instance.userModel.avatar)
                         : AssetImage('assets/image/default_avatar.png'),

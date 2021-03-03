@@ -347,7 +347,7 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Padding(
         padding:
-            const EdgeInsets.only(left: 20, top: 12, bottom: 10, right: 12),
+            const EdgeInsets.only(left: 15, top: 12, bottom: 10, right: 12),
         child: Row(
           children: [
             Image.asset('assets/image/logo_full.png'),

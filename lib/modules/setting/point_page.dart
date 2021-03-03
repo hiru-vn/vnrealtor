@@ -1,3 +1,4 @@
+import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/share/import.dart';
 
 class PointPage extends StatefulWidget {
@@ -43,7 +44,7 @@ class _PointPageState extends State<PointPage>
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              '257',
+                              AuthBloc.instance.userModel.reputationScore.toString(),
                               style: ptHeadLine().copyWith(
                                   color: Colors.red,
                                   fontWeight: FontWeight.w900),

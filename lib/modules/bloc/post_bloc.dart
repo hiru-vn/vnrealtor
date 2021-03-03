@@ -48,6 +48,20 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getNewFeedGuest() async {
+    try {
+      final res = await PostRepo().getNewFeedGuest();
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      isReloadFeed = false;
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> loadMoreNewFeed() async {
     try {
       if (isEndFeed) return BaseResponse.success(<PostModel>[]);

@@ -4,6 +4,7 @@ import 'package:datcao/modules/authentication/introduce.dart';
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/guest/guest_feed_page.dart';
 import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/share/import.dart';
@@ -30,14 +31,16 @@ class _SplashPageState extends State<SplashPage> {
         () async {
           final firstTime =
               (await SPref.instance.getBool('first_time')) ?? true;
-          if (firstTime) {
+          if (!firstTime) {
             IntroducePage.navigate();
             SPref.instance.setBool('first_time', false);
             return;
           }
           final isLog = await _authBloc.checkToken();
           if (!isLog) {
-            LoginPage.navigate();
+            //LoginPage.navigate();
+            GuestFeedPage.navigate();
+            
           } else {
             final res = await _authBloc.getUserInfo();
             if (res.isSuccess) {

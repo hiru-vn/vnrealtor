@@ -161,6 +161,7 @@ class _CommentPageState extends State<CommentPage> {
                     children: [
                       CircleAvatar(
                         radius: 21,
+                        backgroundColor: Colors.white,
                         backgroundImage: AuthBloc.instance.userModel.avatar !=
                                 null
                             ? NetworkImage(AuthBloc.instance.userModel.avatar)

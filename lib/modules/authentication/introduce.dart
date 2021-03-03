@@ -67,11 +67,13 @@ class IntroSlide extends StatelessWidget {
           width: deviceWidth(context),
           height: deviceHeight(context) / 3 * 2,
           decoration: BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.fitWidth,
-                  colorFilter:
-                      ColorFilter.mode(Colors.black38, BlendMode.darken),
-                  image: AssetImage('assets/image/bg_intro.jpg'))),
+              // image: DecorationImage(
+              //     fit: BoxFit.fitWidth,
+              //     colorFilter:
+              //         ColorFilter.mode(Colors.black38, BlendMode.darken),
+              //     // image: AssetImage('assets/image/bg_intro.jpg')
+              //     )),
+              ),
           child: Center(
             child: SizedBox(
                 width: deviceWidth(context) / 2.3,

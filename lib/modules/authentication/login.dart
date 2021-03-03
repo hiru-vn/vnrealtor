@@ -7,8 +7,13 @@ import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/share/import.dart';
 
 class LoginPage extends StatefulWidget {
-  static Future navigate() {
+  static Future navigate() async {
+    navigatorKey.currentState.popUntil((route) => route.isFirst);
     return navigatorKey.currentState.pushReplacement(pageBuilder(LoginPage()));
+  }
+
+  static Future navigatePush() {
+    return navigatorKey.currentState.push(pageBuilder(LoginPage()));
   }
 
   @override
