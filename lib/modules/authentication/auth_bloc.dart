@@ -122,6 +122,8 @@ class AuthBloc extends ChangeNotifier {
       userModel = UserModel.fromJson(loginRes['user']);
       InboxBloc.instance
           .createUser(userModel.id, userModel.name, userModel.avatar);
+      UserBloc.instance.init();
+      PostBloc.instance.init();
       return BaseResponse.success(loginRes);
     } catch (e) {
       return BaseResponse.fail(e?.toString());
@@ -139,7 +141,8 @@ class AuthBloc extends ChangeNotifier {
       final auth = await FirebaseAuth.instance.signInWithCredential(phoneAuth);
       if (auth == null) return BaseResponse.fail('Không tìm thấy tài khoản');
       final fbToken = await auth.user.getIdToken();
-      final loginRes = await _userRepo.registerCompany(name, ownerName, email, password, phone, fbToken);
+      final loginRes = await _userRepo.registerCompany(
+          name, ownerName, email, password, phone, fbToken);
       await SPref.instance.set('token', loginRes['token']);
       await SPref.instance.set('id', loginRes['user']["id"]);
       userModel = UserModel.fromJson(loginRes['user']);
@@ -250,19 +253,14 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
-  Future submitOtpRegisterCompany(
-      String name,
-      String ownerName,
-      String email,
-      String password,
-      String phone,
-      String otp) async {
+  Future submitOtpRegisterCompany(String name, String ownerName, String email,
+      String password, String phone, String otp) async {
     try {
       authCredential = PhoneAuthProvider.credential(
           verificationId: smsVerifyCode, smsCode: otp);
       authStatusSink.add(AuthResponse.successOtp());
-      final res = await registerCompanyWithPhoneAuth(authCredential, name,
-          ownerName, email, password, phone);
+      final res = await registerCompanyWithPhoneAuth(
+          authCredential, name, ownerName, email, password, phone);
       if (res.isSuccess) {
         authStatusSink.add(AuthResponse.success());
       } else {

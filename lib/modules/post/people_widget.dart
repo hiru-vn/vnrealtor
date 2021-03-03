@@ -20,7 +20,7 @@ class PeopleWidget extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: Row(children: [
               CircleAvatar(
-                radius: 22,
+                radius: 22,backgroundColor: Colors.white,
                 backgroundImage: user.avatar != null
                     ? NetworkImage(user.avatar)
                     : AssetImage('assets/image/default_avatar.png'),

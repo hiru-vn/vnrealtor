@@ -29,9 +29,10 @@ class _SplashPageState extends State<SplashPage> {
         Duration(milliseconds: 1000),
         () async {
           final firstTime =
-              (await SPref.instance.getBool('first_time')) ?? false;
+              (await SPref.instance.getBool('first_time')) ?? true;
           if (firstTime) {
             IntroducePage.navigate();
+            SPref.instance.setBool('first_time', false);
             return;
           }
           final isLog = await _authBloc.checkToken();
@@ -67,13 +68,11 @@ class _SplashPageState extends State<SplashPage> {
             bottom: -150,
             child: Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(
-                    width: deviceWidth(context),
-                    child: splash)),
+                child: Container(width: deviceWidth(context), child: splash)),
           ),
           Center(
             child: Padding(
-              padding: EdgeInsets.only(bottom: deviceHeight(context)/6),
+              padding: EdgeInsets.only(bottom: deviceHeight(context) / 6),
               child: SizedBox(
                 width: deviceWidth(context) / 2.5,
                 child: ShowUp(

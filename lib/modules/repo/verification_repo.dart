@@ -25,4 +25,27 @@ class VerificationRepo {
     final res = await VerificateSrv().add(data);
     return res;
   }
+
+  Future createCompanyVerification(
+    String name,
+    String taxCode,
+    String address,
+    String email,
+    String comPhone,
+    String website,
+  ) async {
+    String data = '''
+    data : {
+      name: "$name"
+      taxCode: "${taxCode ?? ''}"
+    	address: "${address ?? ''}"
+      email: "${email ?? ''}"
+      comPhone: "${comPhone ?? ''}"
+      website: "${website ?? ''}"
+      }
+    ''';
+    final res = await VerificateSrv()
+        .mutate('createCompanyVerification', data, fragment: ' id ');
+    return res;
+  }
 }

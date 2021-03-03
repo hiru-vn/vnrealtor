@@ -1,6 +1,7 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/profile/update_profile_page.dart';
 import 'package:datcao/modules/profile/verify_account_page1.dart';
+import 'package:datcao/modules/profile/verify_company.dart';
 import 'package:datcao/modules/setting/about_page.dart';
 import 'package:datcao/modules/setting/point_page.dart';
 import 'package:datcao/modules/setting/policy_page.dart';
@@ -145,81 +146,91 @@ class _SettingPageState extends State<SettingPage> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 54,
-                      height: 54,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border:
-                            Border.all(width: 1.3, color: ptDarkColor(context)),
-                      ),
-                      child: Center(
-                        child: CircleAvatar(
-                          radius: 25,
-                          backgroundImage: AuthBloc.instance.userModel.avatar !=
-                                  null
-                              ? NetworkImage(AuthBloc.instance.userModel.avatar)
-                              : AssetImage('assets/image/default_avatar.png'),
+              if (AuthBloc.instance.userModel.role != 'COMPANY' ||
+                  !AuthBloc.instance.userModel.isVerify)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 54,
+                        height: 54,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              width: 1.3, color: ptDarkColor(context)),
                         ),
-                      ),
-                    ),
-                    SizedBox(width: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              _authBloc.userModel?.name ?? '',
-                              style: ptTitle()
-                                  .copyWith(fontWeight: FontWeight.w900),
-                            ),
-                            SizedBox(width: 8),
-                            if (_authBloc.userModel?.role == 'AGENT')
-                              CustomTooltip(
-                                message: 'Tài khoản xác thực',
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.blue[600],
-                                  ),
-                                  padding: EdgeInsets.all(1.3),
-                                  child: Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 11,
-                                  ),
-                                ),
-                              )
-                          ],
-                        ),
-                        SizedBox(height: 3),
-                        GestureDetector(
-                          onTap: () {
-                            UpdateProfilePage.navigate();
-                          },
-                          child: Text(
-                            AuthBloc.instance.userModel.role == 'AGENT'
-                                ? 'Cập nhật thông tin'
-                                : 'Cập nhật thông tin',
-                            style: ptSmall()
-                                .copyWith(color: ptPrimaryColor(context)),
+                        child: Center(
+                          child: CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Colors.white,
+                            backgroundImage: AuthBloc
+                                        .instance.userModel.avatar !=
+                                    null
+                                ? NetworkImage(
+                                    AuthBloc.instance.userModel.avatar)
+                                : AssetImage('assets/image/default_avatar.png'),
                           ),
                         ),
-                      ],
-                    )
-                  ],
+                      ),
+                      SizedBox(width: 20),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                _authBloc.userModel?.name ?? '',
+                                style: ptTitle()
+                                    .copyWith(fontWeight: FontWeight.w900),
+                              ),
+                              SizedBox(width: 8),
+                              if (_authBloc.userModel?.role == 'AGENT')
+                                CustomTooltip(
+                                  message: 'Tài khoản xác thực',
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.blue[600],
+                                    ),
+                                    padding: EdgeInsets.all(1.3),
+                                    child: Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 11,
+                                    ),
+                                  ),
+                                )
+                            ],
+                          ),
+                          SizedBox(height: 3),
+                          GestureDetector(
+                            onTap: () {
+                              UpdateProfilePage.navigate()
+                                  .then((value) => setState(() {}));
+                            },
+                            child: Text(
+                              AuthBloc.instance.userModel.role == 'AGENT'
+                                  ? 'Cập nhật thông tin'
+                                  : 'Cập nhật thông tin',
+                              style: ptSmall()
+                                  .copyWith(color: ptPrimaryColor(context)),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
+                    if (_authBloc.userModel.role == 'COMPANY') {
+                      VerifyCompany.navigate();
+                      return;
+                    }
                     VertifyAccountPage1.navigate();
                   },
                   child: Card(
@@ -283,9 +294,17 @@ class _SettingPageState extends State<SettingPage> {
                                   padding: const EdgeInsets.all(10)
                                       .copyWith(bottom: 5, left: 3),
                                   child: Text(
-                                    _authBloc.userModel.role != 'AGENT'
-                                        ? 'Xác thực nhà môi giới'
-                                        : 'Bạn đã là nhà môi giới',
+                                    (() {
+                                      if (_authBloc.userModel.role == 'AGENT')
+                                        return 'Bạn đã là nhà môi giới';
+                                      else if (_authBloc.userModel.role ==
+                                          'USER')
+                                        return 'Xác thực nhà môi giới';
+                                      else if (_authBloc.userModel.role ==
+                                          'COMPANY')
+                                        return 'Xác thực tài khoản doanh nghiệp';
+                                      return 'Xác thực nhà môi giới';
+                                    }()),
                                     maxLines: null,
                                     style: ptBody().copyWith(
                                       fontWeight: FontWeight.w900,

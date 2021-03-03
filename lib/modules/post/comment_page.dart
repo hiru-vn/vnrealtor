@@ -264,6 +264,7 @@ class _CommentWidgetState extends State<CommentWidget> {
           onTap: () {},
           child: CircleAvatar(
             radius: 18,
+            backgroundColor: Colors.white,
             backgroundImage: widget.comment.user.avatar != null
                 ? NetworkImage(widget.comment.user.avatar)
                 : AssetImage('assets/image/default_avatar.png'),

@@ -5,7 +5,6 @@ import 'package:datcao/modules/authentication/register.dart';
 import 'package:datcao/modules/authentication/reset_password_dialog.dart';
 import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/share/import.dart';
-import 'package:datcao/share/widget/appbar.dart';
 
 class LoginPage extends StatefulWidget {
   static Future navigate() {

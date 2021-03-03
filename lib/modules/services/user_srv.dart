@@ -21,10 +21,12 @@ totalPost
 notiCount
 description
 facebookUrl
+isVerify
 settings {
 likeNoti
 shareNoti
 commentNoti
+
 }
   ''');
 }

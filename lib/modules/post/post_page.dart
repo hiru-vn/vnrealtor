@@ -260,13 +260,13 @@ class CreatePostCard extends StatelessWidget {
           PostDetail.navigate(postModel);
         },
         child: Material(
-          elevation: 4,
-          borderRadius: BorderRadius.circular(10),
+          elevation: 0,
+          borderRadius: BorderRadius.circular(6),
           child: Container(
             height: 154,
             width: 119,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(6),
                 image: DecorationImage(
                     fit: BoxFit.cover,
                     image: NetworkImage(postModel.mediaPosts[0].url))),
@@ -284,7 +284,7 @@ class CreatePostCard extends StatelessWidget {
                       ),
                       child: Center(
                         child: CircleAvatar(
-                          radius: 13,
+                          radius: 13,backgroundColor: Colors.white,
                           backgroundImage: postModel.user.avatar != null
                               ? NetworkImage(postModel.user.avatar)
                               : AssetImage('assets/image/default_avatar.png'),

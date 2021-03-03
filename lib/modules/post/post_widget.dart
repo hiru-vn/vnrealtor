@@ -74,7 +74,7 @@ class _PostWidgetState extends State<PostWidget> {
                       ProfileOtherPage.navigate(widget.post?.user);
                     },
                     child: CircleAvatar(
-                      radius: 22,
+                      radius: 22,backgroundColor: Colors.white,
                       backgroundImage: widget.post?.user?.avatar != null
                           ? NetworkImage(widget.post?.user?.avatar)
                           : AssetImage('assets/image/default_avatar.png'),

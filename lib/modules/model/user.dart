@@ -20,6 +20,7 @@ class UserModel {
   String description;
   String facebookUrl;
   SettingModel setting;
+  bool isVerify;
 
   UserModel(
       {this.id,
@@ -40,7 +41,8 @@ class UserModel {
       this.savedPostIds,
       this.description,
       this.facebookUrl,
-      this.setting});
+      this.setting,
+      this.isVerify});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -65,7 +67,9 @@ class UserModel {
     notiCount = json['notiCount'];
     description = json['description'];
     facebookUrl = json['facebookUrl'];
-    if (json['settings']!=null) setting = SettingModel.fromJson(json['settings']);
+    isVerify = json['isVerify'] ?? false;
+    if (json['settings'] != null)
+      setting = SettingModel.fromJson(json['settings']);
   }
 
   Map<String, dynamic> toJson() {
@@ -86,6 +90,7 @@ class UserModel {
     data['notiCount'] = this.notiCount;
     data['description'] = this.description;
     data['facebookUrl'] = this.facebookUrl;
+    data['isVerify'] = this.isVerify;
 
     return data;
   }

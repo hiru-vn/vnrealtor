@@ -114,8 +114,9 @@ class _VertifyAccountPage2State extends State<VertifyAccountPage2> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Material(
-            elevation: 4,
-            borderRadius: BorderRadius.circular(10),
+            // elevation: 4,
+            // borderRadius: BorderRadius.circular(10),
+            color: ptSecondaryColor(context),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
               child: TextFormField(

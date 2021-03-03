@@ -232,6 +232,7 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                   tileColor: ptBackgroundColor(context),
                   leading: CircleAvatar(
                     radius: 22,
+                    backgroundColor: Colors.white,
                     backgroundImage: item.user1.avatar != null
                         ? NetworkImage(item.user1.avatar)
                         : AssetImage('assets/image/default_avatar.png'),

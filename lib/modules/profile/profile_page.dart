@@ -212,7 +212,7 @@ class _ProfileCardState extends State<ProfileCard> {
                         ),
                         child: Center(
                           child: CircleAvatar(
-                            radius: 37.5,
+                            radius: 37.5,backgroundColor: Colors.white,
                             backgroundImage: widget.user.avatar != null
                                 ? NetworkImage(widget.user.avatar)
                                 : AssetImage('assets/image/default_avatar.png'),

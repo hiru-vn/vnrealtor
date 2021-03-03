@@ -120,8 +120,9 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Material(
-            elevation: 4,
-            borderRadius: BorderRadius.circular(10),
+            // elevation: 4,
+            // borderRadius: BorderRadius.circular(10),
+            color: ptSecondaryColor(context),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
               child: TextFormField(
@@ -144,8 +145,9 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Material(
-          elevation: 4,
-          borderRadius: BorderRadius.circular(10),
+          // elevation: 4,
+          // borderRadius: BorderRadius.circular(10),
+          color: ptSecondaryColor(context),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25)
                 .copyWith(right: 10),

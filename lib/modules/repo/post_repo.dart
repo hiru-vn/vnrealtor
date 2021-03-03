@@ -259,6 +259,7 @@ user {
   friendIds
   facebookUrl
   description
+  isVerify
 }
 mediaPosts {
 id

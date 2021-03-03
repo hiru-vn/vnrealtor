@@ -16,6 +16,10 @@ class VerificationBloc extends ChangeNotifier {
   String website;
   String socialNetwork;
 
+  String taxCode;
+  String phoneCom;
+  String email;
+
   Future<BaseResponse> createVerification() async {
     try {
       final res = await VerificationRepo().createVerification(
@@ -28,6 +32,18 @@ class VerificationBloc extends ChangeNotifier {
           phone,
           website,
           socialNetwork);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> createCompanyVerification() async {
+    try {
+      final res = await VerificationRepo().createCompanyVerification(
+          name, taxCode, currentAddress, email, phoneCom, website);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e?.toString());

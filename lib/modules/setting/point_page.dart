@@ -77,53 +77,54 @@ class _PointPageState extends State<PointPage>
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: Align(
-                alignment: Alignment.center,
-                child: TabBar(
-                    indicatorSize: TabBarIndicatorSize.label,
-                    indicatorWeight: 3,
-                    indicatorColor: ptPrimaryColor(context),
-                    indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
-                    controller: _tabController,
-                    isScrollable: true,
-                    labelColor: Colors.black87,
-                    unselectedLabelStyle:
-                        TextStyle(fontSize: 15, color: Colors.black54),
-                    labelStyle: TextStyle(
-                        fontSize: 15,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold),
-                    tabs: [
-                      SizedBox(
-                        height: 40,
-                        width: deviceWidth(context) / 2 - 45,
-                        child: Tab(
-                          text: 'Thông tin tích điểm',
-                        ),
-                      ),
-                      SizedBox(
-                        height: 40,
-                        width: deviceWidth(context) / 2 - 45,
-                        child: Tab(text: 'Lịch sử tích điểm'),
-                      ),
-                    ]),
-              ),
-            ),
+            // SliverToBoxAdapter(
+            //   child: Align(
+            //     alignment: Alignment.center,
+            //     child: TabBar(
+            //         indicatorSize: TabBarIndicatorSize.label,
+            //         indicatorWeight: 3,
+            //         indicatorColor: ptPrimaryColor(context),
+            //         indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
+            //         controller: _tabController,
+            //         isScrollable: true,
+            //         labelColor: Colors.black87,
+            //         unselectedLabelStyle:
+            //             TextStyle(fontSize: 15, color: Colors.black54),
+            //         labelStyle: TextStyle(
+            //             fontSize: 15,
+            //             color: Colors.black87,
+            //             fontWeight: FontWeight.bold),
+            //         tabs: [
+            //           SizedBox(
+            //             height: 40,
+            //             width: deviceWidth(context) / 2 - 45,
+            //             child: Tab(
+            //               text: 'Thông tin tích điểm',
+            //             ),
+            //           ),
+            //           SizedBox(
+            //             height: 40,
+            //             width: deviceWidth(context) / 2 - 45,
+            //             child: Tab(text: 'Lịch sử tích điểm'),
+            //           ),
+            //         ]),
+            //   ),
+            // ),
           ];
         },
         body: Container(
-          padding: EdgeInsets.only(top: 30),
-          child: TabBarView(
-            controller: _tabController,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              PointInfoWidget(),
-              ListView(
-                children: [],
-              ),
-            ],
-          ),
+          // padding: EdgeInsets.only(top: 30),
+          child: PointInfoWidget(),
+          // TabBarView(
+          //   controller: _tabController,
+          //   physics: NeverScrollableScrollPhysics(),
+          //   children: [
+          //     PointInfoWidget(),
+          //     ListView(
+          //       children: [],
+          //     ),
+          //   ],
+          // ),
         ),
       ),
     );
