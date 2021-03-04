@@ -170,6 +170,36 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getAllCommentByPostIdGuest(String postId,
+      {GraphqlFilter filter}) async {
+    try {
+      final res = await PostRepo()
+          .getAllCommentByPostIdGuest(postId: postId, filter: filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getAllCommentByMediaPostIdGuest(String mediaPostId,
+      {GraphqlFilter filter}) async {
+    try {
+      final res = await PostRepo()
+          .getAllCommentByMediaPostIdGuest(mediaPostId: mediaPostId, filter: filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> getListMediaPostComment(String postMediaId,
       {GraphqlFilter filter}) async {
     try {

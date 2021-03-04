@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/modules/setting/policy_page.dart';
 import 'package:datcao/share/import.dart';
@@ -65,10 +66,17 @@ class _RegisterPageState extends State<RegisterPage> {
     _authBloc.authStatusSink.add(AuthResponse.unAuthed());
   }
 
-  _submit() {
+  _submit() async {
     if (!_formKey.currentState.validate()) return;
-    _authBloc.requestOtpRegister(
-        _nameC.text, _emailC.text, _passC.text, _phoneC.text);
+    final res =
+        await UserBloc.instance.checkValidUser(_emailC.text, _phoneC.text);
+    if (res.isSuccess) {
+      _authBloc.requestOtpRegister(
+          _nameC.text, _emailC.text, _passC.text, _phoneC.text);
+    } else {
+      showToast(res.errMessage, context);
+    }
+
     // HomePage.navigate();
   }
 

@@ -381,6 +381,10 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
+                        if (AuthBloc.instance.userModel == null) {
+                          LoginPage.navigatePush();
+                          return;
+                        }
                         _isLike = !_isLike;
                         if (_isLike) {
                           widget.post.like++;

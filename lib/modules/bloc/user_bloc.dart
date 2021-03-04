@@ -55,6 +55,18 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> checkValidUser(String email, String phone) async {
+    try {
+      final res = await UserRepo().checkValidUser(email, phone);
+
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
+
   Future<BaseResponse> getListUserIn(List<String> ids) async {
     try {
       final res = await UserRepo().getListUserIn(ids);

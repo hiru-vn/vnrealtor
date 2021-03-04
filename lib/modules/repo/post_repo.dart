@@ -24,7 +24,7 @@ $postFragment
       {GraphqlFilter filter, String timestamp, String timeSort}) async {
     final res = await PostSrv().query('getNewsFeedByGuest', '', fragment: '''
     data {
-${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '')}
+${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + ' _id'}
 }
     ''');
     return res['getNewsFeedByGuest'];
@@ -180,14 +180,16 @@ $postFragment
 
   Future getAllCommentByPostIdGuest(
       {String postId, GraphqlFilter filter}) async {
-    final res = await CommentSrv().getList(
-        limit: filter?.limit,
-        offset: filter?.offset,
-        search: filter?.search,
-        page: filter?.page,
-        order: filter?.order,
-        filter: "{postId: \"$postId\"}");
-    return res;
+    final res = await CommentSrv()
+        .query('getCommentByGuest', ' q : { filter: {postId: \"$postId\"} } ');
+    return res['getCommentByGuest'];
+  }
+
+  Future getAllCommentByMediaPostIdGuest(
+      {String mediaPostId, GraphqlFilter filter}) async {
+    final res = await CommentSrv()
+        .query('getCommentByGuest', ' q : { filter: {mediaPostId: \"$mediaPostId\"} } ');
+    return res['getCommentByGuest'];
   }
 
   Future getAllCommentByMediaPostId(

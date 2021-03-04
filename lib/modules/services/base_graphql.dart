@@ -218,7 +218,7 @@ class BaseService {
   query(String name, String data, {String fragment}) async {
     String queryNode;
     if (fragment == null)
-      queryNode = 'query { $name($data) }';
+      queryNode = 'query { $name($data) { data { $_fragmentDefault } } }';
     else
       queryNode = 'query { $name($data) { $fragment } }';
     print('$queryNode');

@@ -88,7 +88,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
       body: LoadMoreScrollView(
         scrollController: _controller,
         onLoadMore: () {
-          showToast('Xin hãy đăng nhập để tiếp tục xem', context,
+          showToast('Vui lòng đăng nhập để tiếp tục xem', context,
               isSuccess: true);
         },
         list: RefreshIndicator(

@@ -1,3 +1,4 @@
+import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
@@ -77,12 +78,22 @@ class _CommentPageState extends State<CommentPage> {
 
   Future _getComments({GraphqlFilter filter}) async {
     BaseResponse res;
-    if (isPost)
-      res =
-          await _postBloc.getAllCommentByPostId(widget.post.id, filter: filter);
-    if (isMediaPost)
-      res = await _postBloc.getListMediaPostComment(widget.mediaPost.id,
-          filter: filter);
+    if (AuthBloc.instance.userModel == null) {
+      
+      if (isPost)
+        res = await _postBloc.getAllCommentByPostIdGuest(widget.post.id,
+            filter: filter);
+      if (isMediaPost)
+        res = await _postBloc.getAllCommentByMediaPostIdGuest(widget.mediaPost.id,
+            filter: filter);
+    } else {
+      if (isPost)
+        res = await _postBloc.getAllCommentByPostId(widget.post.id,
+            filter: filter);
+      if (isMediaPost)
+        res = await _postBloc.getListMediaPostComment(widget.mediaPost.id,
+            filter: filter);
+    }
     if (res == null) return;
     if (res.isSuccess) {
       if (mounted)
@@ -235,8 +246,9 @@ class _CommentWidgetState extends State<CommentWidget> {
   @override
   void initState() {
     if (widget.comment.userLikeIds != null)
-      _isLike =
-          widget.comment.userLikeIds.contains(AuthBloc.instance.userModel.id);
+      _isLike = widget.comment.userLikeIds
+              ?.contains(AuthBloc.instance.userModel?.id ?? '') ??
+          false;
 
     super.initState();
   }
@@ -311,7 +323,12 @@ class _CommentWidgetState extends State<CommentWidget> {
               // ),
               Spacer(),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  if (AuthBloc.instance.userModel == null) {
+                    await navigatorKey.currentState.maybePop();
+                    LoginPage.navigatePush();
+                    return;
+                  }
                   setState(() {
                     _isLike = !_isLike;
                   });

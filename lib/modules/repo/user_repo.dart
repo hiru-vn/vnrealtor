@@ -114,6 +114,14 @@ Page: "$page"
     return res;
   }
 
+  Future checkValidUser(String email, String phone) async {
+    final res = await UserSrv().mutate('checkValidUser', '''
+email: "$email"
+phone: "$phone"
+    ''');
+    return res['checkValidUser'];
+  }
+
   Future resetPassWithPhone({String password, String idToken}) async {
     final res = await UserSrv().mutate(
         'resetPassword',

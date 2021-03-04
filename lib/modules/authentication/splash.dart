@@ -1,7 +1,6 @@
 import 'package:datcao/main.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/introduce.dart';
-import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/guest/guest_feed_page.dart';
@@ -31,7 +30,7 @@ class _SplashPageState extends State<SplashPage> {
         () async {
           final firstTime =
               (await SPref.instance.getBool('first_time')) ?? true;
-          if (!firstTime) {
+          if (firstTime) {
             IntroducePage.navigate();
             SPref.instance.setBool('first_time', false);
             return;

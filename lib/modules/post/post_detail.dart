@@ -1,4 +1,5 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/post.dart';
@@ -157,6 +158,12 @@ class _PostDetailState extends State<PostDetail> {
                     child: TextField(
                       controller: _commentC,
                       maxLines: null,
+                      onTap: () {
+                        if (AuthBloc.instance.userModel == null) {
+                          LoginPage.navigatePush();
+                          return;
+                        }
+                      },
                       // maxLength: 200,
                       onSubmitted: _comment,
                       decoration: InputDecoration(
