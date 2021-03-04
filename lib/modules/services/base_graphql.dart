@@ -215,13 +215,15 @@ class BaseService {
     return result.data;
   }
 
-  query(String name, String data, {String fragment}) async {
+  query(String name, String data, {String fragment, bool removeData = false}) async {
     String queryNode;
     if (fragment == null)
       queryNode = 'query { $name($data) { data { $_fragmentDefault } } }';
     else
       queryNode = 'query { $name($data) { $fragment } }';
     print('$queryNode');
+
+    if (removeData) queryNode.replaceAll('(', '').replaceAll(')', '');
 
     final MutationOptions options =
         MutationOptions(documentNode: gql(queryNode));
@@ -257,8 +259,8 @@ class BaseService {
 
 class GraphQL {
   static final HttpLink _httpLink = HttpLink(
-      // uri: 'https://vnrealtor.herokuapp.com/graphql',
-      uri: 'https://vnrealtor-sq73uv5o7a-as.a.run.app/graphql'
+      uri: 'https://vnrealtor.herokuapp.com/graphql',
+      // uri: 'https://vnrealtor-sq73uv5o7a-as.a.run.app/graphql'
       // uri: 'https://datcao-be-hv2wn47voq-as.a.run.app/graphql'
       );
 

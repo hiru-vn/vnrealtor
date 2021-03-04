@@ -41,12 +41,13 @@ ${postFragment.replaceFirst('id', '')}
   }
 
   Future getStoryForGuest() async {
-    final res = await PostSrv().query('getStoryForGuest', '', fragment: '''
+    final res = await PostSrv().query('getStoryForGuest', '',
+        fragment: '''
     data {
-id: _id
-${postFragment.replaceFirst('id', '')}
+${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + ' _id'}
 }
-    ''');
+    ''',
+        removeData: true);
     return res['getStoryForGuest'];
   }
 
@@ -75,6 +76,12 @@ $postFragment
   }
 
   Future getPostByUserId(String userId) async {
+    final res = await PostSrv().getList(
+        limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}');
+    return res;
+  }
+
+  Future getPostByUserIdGuest(String userId) async {
     final res = await PostSrv().getList(
         limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}');
     return res;

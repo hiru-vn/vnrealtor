@@ -57,8 +57,9 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   Future _getComments(String postId, {GraphqlFilter filter}) async {
-    BaseResponse res =
-        await _postBloc.getAllCommentByPostId(postId, filter: filter);
+    BaseResponse res = AuthBloc.instance.userModel != null
+        ? await _postBloc.getAllCommentByPostId(postId, filter: filter)
+        : await _postBloc.getAllCommentByPostIdGuest(postId, filter: filter);
     if (res == null) return;
     if (res.isSuccess) {
       if (mounted)
@@ -136,73 +137,75 @@ class _PostDetailState extends State<PostDetail> {
               ),
             ),
           ),
-          Positioned(
-            bottom: 0,
-            child: Container(
-              width: deviceWidth(context),
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              color: Colors.white70,
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 21,
-                    backgroundColor: Colors.white,
-                    backgroundImage: AuthBloc.instance.userModel.avatar != null
-                        ? NetworkImage(AuthBloc.instance.userModel.avatar)
-                        : AssetImage('assets/image/default_avatar.png'),
-                  ),
-                  SizedBox(
-                    width: 7,
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: _commentC,
-                      maxLines: null,
-                      onTap: () {
-                        if (AuthBloc.instance.userModel == null) {
-                          LoginPage.navigatePush();
-                          return;
-                        }
-                      },
-                      // maxLength: 200,
-                      onSubmitted: _comment,
-                      decoration: InputDecoration(
-                        suffixIcon: GestureDetector(
-                            onTap: () {
-                              _comment(_commentC.text);
-                            },
-                            child: Icon(Icons.send)),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 6),
-                        isDense: true,
-                        hintText: 'Viết bình luận.',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
+          if (AuthBloc.instance.userModel != null)
+            Positioned(
+              bottom: 0,
+              child: Container(
+                width: deviceWidth(context),
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                color: Colors.white70,
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 21,
+                      backgroundColor: Colors.white,
+                      backgroundImage: AuthBloc.instance.userModel?.avatar !=
+                              null
+                          ? NetworkImage(AuthBloc.instance.userModel?.avatar)
+                          : AssetImage('assets/image/default_avatar.png'),
+                    ),
+                    SizedBox(
+                      width: 7,
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: _commentC,
+                        maxLines: null,
+                        onTap: () {
+                          if (AuthBloc.instance.userModel == null) {
+                            LoginPage.navigatePush();
+                            return;
+                          }
+                        },
+                        // maxLength: 200,
+                        onSubmitted: _comment,
+                        decoration: InputDecoration(
+                          suffixIcon: GestureDetector(
+                              onTap: () {
+                                _comment(_commentC.text);
+                              },
+                              child: Icon(Icons.send)),
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                          isDense: true,
+                          hintText: 'Viết bình luận.',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.transparent,
+                            ),
+                            borderRadius: BorderRadius.circular(25),
                           ),
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.transparent,
+                            ),
+                            borderRadius: BorderRadius.circular(25),
                           ),
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.transparent,
+                            ),
+                            borderRadius: BorderRadius.circular(25),
                           ),
-                          borderRadius: BorderRadius.circular(25),
+                          fillColor: ptSecondaryColor(context),
+                          filled: true,
                         ),
-                        fillColor: ptSecondaryColor(context),
-                        filled: true,
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
