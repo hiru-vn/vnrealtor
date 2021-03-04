@@ -21,11 +21,13 @@ class PostBloc extends ChangeNotifier {
   List<PostModel> myPosts;
   List<PostModel> stories = [];
   List<PostModel> savePosts = [];
+  List<Map> hasTags = [];
 
   Future init() async {
     getNewFeed(filter: GraphqlFilter(limit: 15, order: "{updatedAt: -1}"));
     getStoryFollowing();
     getListPost(AuthBloc.instance.userModel.savedPostIds);
+    getAllHashTagTP();
   }
 
   Future<BaseResponse> getNewFeed({GraphqlFilter filter}) async {
@@ -167,6 +169,19 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+    Future<BaseResponse> getUserPostGuest(String id) async {
+    try {
+      final res = await PostRepo().getPostByUserIdGuest(id);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> getAllCommentByPostId(String postId,
       {GraphqlFilter filter}) async {
     try {
@@ -194,6 +209,18 @@ class PostBloc extends ChangeNotifier {
       return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getAllHashTagTP() async {
+    try {
+      final res = await PostRepo().getAllHashTagTP();
+      hasTags = res as List;
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      // notifyListeners();
     }
   }
 

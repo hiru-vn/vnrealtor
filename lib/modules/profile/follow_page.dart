@@ -111,9 +111,13 @@ class _FollowPageState extends State<FollowPage>
   }
 
   _buildListUser(List<UserModel> users) {
-    if (users == null) return ListSkeleton();
-    else return Column(
-      children: users.map((e) => PeopleWidget(e)).toList(),
-    );
+    if (users == null)
+      return ListSkeleton();
+    else
+      return SingleChildScrollView(
+        child: Column(
+          children: users.map((e) => PeopleWidget(e)).toList(),
+        ),
+      );
   }
 }

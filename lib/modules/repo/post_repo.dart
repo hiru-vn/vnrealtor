@@ -81,11 +81,14 @@ $postFragment
     return res;
   }
 
-  Future getPostByUserIdGuest(String userId) async {
+    Future getPostByUserIdGuest(String userId) async {
     final res = await PostSrv().getList(
-        limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}');
+        limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}', fragment: '''
+        ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '')}
+        ''');
     return res;
   }
+
 
   Future createComment(
       {String postId, String mediaPostId, String content}) async {
@@ -264,6 +267,11 @@ $postFragment
         'postId: "$postId"  type: "$type"  content: "$content"',
         fragment: 'id');
     return res;
+  }
+
+  Future getAllHashTagTP() async {
+    final res = await ReportSrv().queryEnum('getAllHashTagTP');
+    return res['getAllHashTagTP'];
   }
 
   String postFragment = '''

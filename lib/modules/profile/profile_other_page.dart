@@ -41,7 +41,9 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
   }
 
   Future _loadPost() async {
-    final res = await _postBloc.getUserPost(widget.user.id);
+    final res = AuthBloc.instance.userModel != null
+        ? await _postBloc.getUserPost(widget.user.id)
+        : await _postBloc.getUserPostGuest(widget.user.id);
     if (!res.isSuccess)
       showToast(res.errMessage, context);
     else {
@@ -269,6 +271,12 @@ class _ProfileCardState extends State<ProfileCard> {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
+                                      if (AuthBloc.instance.userModel == null) {
+                                        showToast('Vui lòng đăng nhập để xem',
+                                            context,
+                                            isSuccess: true);
+                                        return;
+                                      }
                                       FollowPage.navigate(widget.user);
                                     },
                                     child: Column(
@@ -291,6 +299,12 @@ class _ProfileCardState extends State<ProfileCard> {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
+                                      if (AuthBloc.instance.userModel == null) {
+                                        showToast('Vui lòng đăng nhập để xem',
+                                            context,
+                                            isSuccess: true);
+                                        return;
+                                      }
                                       FollowPage.navigate(widget.user);
                                     },
                                     child: Column(

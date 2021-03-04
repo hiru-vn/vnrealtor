@@ -125,13 +125,26 @@ Page: "$page"
   }
 
   Future getListUserIn(List<String> ids) async {
-    final res = await UserSrv().getList(
-        // limit: 20,
-        order: '{createdAt: 1}',
-        filter:
-            '{_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
-    return res;
+    final res = await UserSrv().query('getAllUserForClient',
+        'q:{order: {createdAt: 1} filter: {_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}}',
+        fragment: '''
+        data {
+    ${userFragment.replaceAll('_id', '')}
+    }
+    ''');
+    return res['getAllUserForClient'];
   }
+
+  //   Future getListUserInGuest(List<String> ids) async {
+  //   final res = await UserSrv().query('getAllUserForClient',
+  //       'q:{order: {createdAt: 1} filter: {_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}}',
+  //       fragment: '''
+  //       data {
+  //   $userFragment
+  //   }
+  //   ''');
+  //   return res['getAllUserForClient'];
+  // }
 
   Future checkValidUser(String email, String phone) async {
     final res = await UserSrv().mutate('checkValidUser', '''
