@@ -280,8 +280,9 @@ id
   }
 
   Future getFollowerIn7d(String userId) async {
-    final res = await UserSrv().query('getFollowerIn7d', 'userId: "$userId"',
-        fragment: 'data { $userFragment }');
+    final res = await UserSrv().query('getFollowerIn7d', 'Page: 1 limit: 40',
+        fragment:
+            'data { fromUser { ${userFragment.replaceAll('uid', '')} } }');
     return res['getFollowerIn7d'];
   }
 }

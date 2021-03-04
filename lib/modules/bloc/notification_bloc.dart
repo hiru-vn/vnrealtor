@@ -15,7 +15,6 @@ class NotificationBloc extends ChangeNotifier {
     try {
       if (notifications.length == 0) {
         isLoadNoti = true;
-        notifyListeners();
       }
       final res = await NotificationRepo().getListNotification(filter: filter);
       final List listRaw = res['data'];

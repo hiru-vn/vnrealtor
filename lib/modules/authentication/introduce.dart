@@ -1,4 +1,5 @@
 import 'package:datcao/modules/authentication/login.dart';
+import 'package:datcao/modules/guest/guest_feed_page.dart';
 import 'package:datcao/share/import.dart';
 
 class IntroducePage extends StatelessWidget {
@@ -41,7 +42,7 @@ class IntroducePage extends StatelessWidget {
               text:
                   'Nhanh chóng tìm thấy căn nhà mà bạn yêu thích theo địa điểm, giá cả, ngoại hình',
               nextTap: () {
-                LoginPage.navigate();
+                GuestFeedPage.navigate();
               },
             ),
           ],
