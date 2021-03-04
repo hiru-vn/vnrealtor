@@ -42,7 +42,7 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> getListUser({GraphqlFilter filter}) async {
     try {
-      final res = await UserRepo().getListUser(filter: filter);
+      final res = await UserRepo().getAllUserForClient(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => UserModel.fromJson(e)).toList();
       list.removeWhere(

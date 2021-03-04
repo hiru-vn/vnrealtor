@@ -79,6 +79,14 @@ Page: "$page"
     return res;
   }
 
+  Future getOneUserForClient({String id}) async {
+    final res =
+        await UserSrv().query('getOneUserForClient', 'id: "$id"', fragment: '''
+    $userFragment
+    ''');
+    return res['getOneUserForClient'];
+  }
+
   Future getListUser({GraphqlFilter filter}) async {
     final res = await UserSrv().getList(
         limit: filter?.limit,
@@ -87,6 +95,17 @@ Page: "$page"
         page: filter?.page,
         order: filter?.order);
     return res;
+  }
+
+  Future getAllUserForClient({GraphqlFilter filter}) async {
+    final res = await UserSrv().query('getAllUserForClient',
+        'q:{limit: ${filter.limit}, page: ${filter.page ?? 1}, offset: ${filter.offset}, filter: ${filter.filter}, search: "${filter.search}" , order: ${filter.order} }',
+        fragment: '''
+        data {
+    $userFragment
+    }
+    ''');
+    return res['getAllUserForClient'];
   }
 
   Future setUserlocation(

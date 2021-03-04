@@ -310,7 +310,7 @@ class AuthBloc extends ChangeNotifier {
   Future<BaseResponse> getUserInfo() async {
     try {
       final id = await SPref.instance.get('id');
-      final res = await _userRepo.getOneUser(id: id);
+      final res = await _userRepo.getOneUserForClient(id: id);
       userModel = UserModel.fromJson(res);
       return BaseResponse.success(res);
     } catch (e) {
