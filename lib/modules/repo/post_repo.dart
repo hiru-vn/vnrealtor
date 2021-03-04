@@ -30,7 +30,7 @@ ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + 
     return res['getNewsFeedByGuest'];
   }
 
-  Future getStoryFollowing({int page}) async {
+  Future getStoryFollowing() async {
     final res = await PostSrv().query('getStoryFollowing', '', fragment: '''
     data {
 id: _id
@@ -38,6 +38,16 @@ ${postFragment.replaceFirst('id', '')}
 }
     ''');
     return res['getStoryFollowing'];
+  }
+
+  Future getStoryForGuest() async {
+    final res = await PostSrv().query('getStoryForGuest', '', fragment: '''
+    data {
+id: _id
+${postFragment.replaceFirst('id', '')}
+}
+    ''');
+    return res['getStoryForGuest'];
   }
 
   Future searchPostByHashTag(String hashTags) async {
@@ -187,8 +197,8 @@ $postFragment
 
   Future getAllCommentByMediaPostIdGuest(
       {String mediaPostId, GraphqlFilter filter}) async {
-    final res = await CommentSrv()
-        .query('getCommentByGuest', ' q : { filter: {mediaPostId: \"$mediaPostId\"} } ');
+    final res = await CommentSrv().query('getCommentByGuest',
+        ' q : { filter: {mediaPostId: \"$mediaPostId\"} } ');
     return res['getCommentByGuest'];
   }
 

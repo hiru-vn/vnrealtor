@@ -24,7 +24,8 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
   ScrollController _controller = ScrollController();
   List<PostModel> posts;
   List<PostModel> stories;
-  bool isReload = true;
+  bool isReloadPost = true;
+  bool isReloadStory = true;
 
   @override
   void initState() {
@@ -39,21 +40,21 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
       _postBloc.getNewFeedGuest().then((res) => setState(() {
             if (res.isSuccess) {
               posts = res.data;
-              isReload = false;
+              isReloadPost = false;
             } else {
               showToast(res.errMessage, context);
               posts = [];
-              isReload = false;
+              isReloadPost = false;
             }
           }));
-      _postBloc.getNewFeedGuest().then((res) => setState(() {
+      _postBloc.getStoryForGuest().then((res) => setState(() {
             if (res.isSuccess) {
-              posts = res.data;
-              isReload = false;
+              stories = res.data;
+              isReloadStory = false;
             } else {
               showToast(res.errMessage, context);
               posts = [];
-              isReload = false;
+              isReloadStory = false;
             }
           }));
     }
@@ -236,8 +237,8 @@ class CreatePostCardGuest extends StatelessWidget {
                 ),
               ),
             ),
-            if ((postBloc.stories?.length ?? 0) > 0 ||
-                postBloc.isLoadStory ||
+            if (stories == null ||
+                (stories?.length ?? 0) > 0 ||
                 AuthBloc.instance.userModel == null)
               Divider(
                 height: 22,

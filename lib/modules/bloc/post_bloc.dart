@@ -36,6 +36,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().getNewFeed(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      if (list.length < filter.limit) isEndFeed = true;
       post = list;
       lastFetchFeedPage1 = DateTime.now();
       feedPage = 1;
@@ -74,7 +75,7 @@ class PostBloc extends ChangeNotifier {
           timestamp: lastFetchFeedPage1.toString());
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
-      if (list.length == 0) isEndFeed = true;
+      if (list.length < 15) isEndFeed = true;
       post.addAll(list);
       return BaseResponse.success(list);
     } catch (e) {
@@ -142,6 +143,17 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getStoryForGuest() async {
+    try {
+      final res = await PostRepo().getStoryForGuest();
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {}
+  }
+
   Future<BaseResponse> getUserPost(String id) async {
     try {
       final res = await PostRepo().getPostByUserId(id);
@@ -188,8 +200,8 @@ class PostBloc extends ChangeNotifier {
   Future<BaseResponse> getAllCommentByMediaPostIdGuest(String mediaPostId,
       {GraphqlFilter filter}) async {
     try {
-      final res = await PostRepo()
-          .getAllCommentByMediaPostIdGuest(mediaPostId: mediaPostId, filter: filter);
+      final res = await PostRepo().getAllCommentByMediaPostIdGuest(
+          mediaPostId: mediaPostId, filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
