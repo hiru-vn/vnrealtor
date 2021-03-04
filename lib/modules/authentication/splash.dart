@@ -50,7 +50,7 @@ class _SplashPageState extends State<SplashPage> {
               ]);
               HomePage.navigate();
             } else
-              IntroducePage.navigate();
+              GuestFeedPage.navigate();
           }
         },
       );
