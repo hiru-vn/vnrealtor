@@ -149,11 +149,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       Positioned(
                         bottom: 0,
                         height: 30,
-                        left: 15,
-                        right: 15,
+                        left: 10,
+                        right: 10,
                         child: Container(
                           height: 30,
-                          width: deviceWidth(context) - 30,
+                          width: deviceWidth(context) - 20,
                           child: ListView.separated(
                             // shrinkWrap: true,
                             separatorBuilder: (context, index) {
@@ -165,10 +165,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               return InkWell(
                                 borderRadius: BorderRadius.circular(15),
                                 onTap: () {
-                                  _contentC.text = _contentC.text +
-                                      ' ' +
-                                      _postBloc.hasTags[index]['value']
-                                          .toString();
+                                  setState(() {
+                                    _contentC.text = _contentC.text +
+                                        ' ' +
+                                        _postBloc.hasTags
+                                            .where((element) =>
+                                                _contentC.text
+                                                    .contains(element['key']) &&
+                                                !_contentC.text
+                                                    .contains(element['value']))
+                                            .toList()[index]['value']
+                                            .toString();
+                                    _contentC.selection =
+                                        TextSelection.fromPosition(TextPosition(
+                                            offset: _contentC.text.length));
+                                  });
                                 },
                                 child: Container(
                                   height: 30,
@@ -179,8 +190,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   child: Center(
                                     child: Text(
                                       _postBloc.hasTags
-                                          .where((element) => !_contentC.text
-                                              .contains(element['key']))
+                                          .where((element) =>
+                                              _contentC.text
+                                                  .contains(element['key']) &&
+                                              !_contentC.text
+                                                  .contains(element['value']))
                                           .toList()[index]['value']
                                           .toString(),
                                     ),
@@ -190,7 +204,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             },
                             itemCount: _postBloc.hasTags
                                 .where((element) =>
-                                    !_contentC.text.contains(element['key']))
+                                    _contentC.text.contains(element['key']) &&
+                                    !_contentC.text.contains(element['value']))
                                 .toList()
                                 .length,
                             scrollDirection: Axis.horizontal,
