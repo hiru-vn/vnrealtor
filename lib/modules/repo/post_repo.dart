@@ -81,14 +81,16 @@ $postFragment
     return res;
   }
 
-    Future getPostByUserIdGuest(String userId) async {
+  Future getPostByUserIdGuest(String userId) async {
     final res = await PostSrv().getList(
-        limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}', fragment: '''
+        limit: 20,
+        order: '{createdAt: -1}',
+        filter: '{userId: "$userId"}',
+        fragment: '''
         ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '')}
         ''');
     return res;
   }
-
 
   Future createComment(
       {String postId, String mediaPostId, String content}) async {
@@ -185,6 +187,14 @@ $postFragment
         id
         ''');
     return res['savePost'];
+  }
+
+  Future unsavePost(String postId) async {
+    final res =
+        await PostSrv().mutate('unsavePost', 'postId: "$postId"', fragment: '''
+        id
+        ''');
+    return res['unsavePost'];
   }
 
   Future getAllCommentByPostId({String postId, GraphqlFilter filter}) async {

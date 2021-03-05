@@ -31,7 +31,7 @@ class _SplashPageState extends State<SplashPage> {
           final firstTime =
               (await SPref.instance.getBool('first_time')) ?? true;
           if (firstTime) {
-            IntroducePage.navigate();
+            GuestFeedPage.navigate();
             SPref.instance.setBool('first_time', false);
             return;
           }
@@ -39,7 +39,6 @@ class _SplashPageState extends State<SplashPage> {
           if (!isLog) {
             //LoginPage.navigate();
             GuestFeedPage.navigate();
-            
           } else {
             final res = await _authBloc.getUserInfo();
             if (res.isSuccess) {

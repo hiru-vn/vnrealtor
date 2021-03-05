@@ -24,7 +24,7 @@ class PostBloc extends ChangeNotifier {
   List<dynamic> hasTags = [];
 
   Future init() async {
-    getNewFeed(filter: GraphqlFilter(limit: 15, order: "{updatedAt: -1}"));
+    getNewFeed(filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
     getStoryFollowing();
     getListPost(AuthBloc.instance.userModel.savedPostIds);
     getAllHashTagTP();
@@ -72,7 +72,7 @@ class PostBloc extends ChangeNotifier {
       notifyListeners();
       final res = await PostRepo().getNewFeed(
           filter: GraphqlFilter(
-              limit: 15, order: "{updatedAt: -1}", page: ++feedPage),
+              limit: 10, order: "{updatedAt: -1}", page: ++feedPage),
           timeSort: '-1',
           timestamp: lastFetchFeedPage1.toString());
       final List listRaw = res['data'];
@@ -407,6 +407,21 @@ class PostBloc extends ChangeNotifier {
       savePosts.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
       AuthBloc.instance.userModel.savedPostIds.add(post.id);
       final res = await PostRepo().savePost(post.id);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> unsavePost(PostModel post) async {
+    try {
+      savePosts.remove(post);
+      savePosts.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
+      AuthBloc.instance.userModel.savedPostIds.remove(post.id);
+      notifyListeners();
+      final res = await PostRepo().unsavePost(post.id);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.toString());

@@ -27,10 +27,10 @@ class _SavedPostPageState extends State<SavedPostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar1(
-          bgColor: Colors.white,
-          title: 'Kho lưu trữ',
-          automaticallyImplyLeading: true,
-        ),
+        bgColor: Colors.white,
+        title: 'Kho lưu trữ',
+        automaticallyImplyLeading: true,
+      ),
       body: _postBloc.savePosts == null
           ? kLoadingSpinner
           : (_postBloc.savePosts.length != 0
@@ -38,7 +38,7 @@ class _SavedPostPageState extends State<SavedPostPage> {
                   itemCount: _postBloc.savePosts.length,
                   itemBuilder: (context, index) {
                     final post = _postBloc.savePosts[index];
-                    return PostWidget(post);
+                    return PostSmallWidget(post);
                   },
                   separatorBuilder: (context, index) => SizedBox(height: 15),
                 )

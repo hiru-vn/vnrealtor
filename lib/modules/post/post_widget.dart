@@ -523,7 +523,7 @@ class _PostWidgetState extends State<PostWidget> {
             final res = await UpdatePostPage.navigate(widget.post);
             if (res == true) {
               await _postBloc.getNewFeed(
-                  filter: GraphqlFilter(limit: 15, order: "{updatedAt: -1}"));
+                  filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
               return;
             }
           }
@@ -711,8 +711,11 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
         ],
         onClickMenu: (val) async {
           if (val.menuTitle == 'Bỏ lưu') {
-            showAlertDialog(context, 'Đang cập nhật',
-                navigatorKey: navigatorKey);
+            final res = await _postBloc.unsavePost(widget.post);
+            if (res.isSuccess) {
+            } else {
+              showToast(res.errMessage, context);
+            }
           }
         },
         stateChanged: (val) {},
