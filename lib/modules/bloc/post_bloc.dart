@@ -21,7 +21,7 @@ class PostBloc extends ChangeNotifier {
   List<PostModel> myPosts;
   List<PostModel> stories = [];
   List<PostModel> savePosts = [];
-  List<Map> hasTags = [];
+  List<dynamic> hasTags = [];
 
   Future init() async {
     getNewFeed(filter: GraphqlFilter(limit: 15, order: "{updatedAt: -1}"));
@@ -169,7 +169,7 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-    Future<BaseResponse> getUserPostGuest(String id) async {
+  Future<BaseResponse> getUserPostGuest(String id) async {
     try {
       final res = await PostRepo().getPostByUserIdGuest(id);
       final List listRaw = res['data'];
@@ -215,7 +215,7 @@ class PostBloc extends ChangeNotifier {
   Future<BaseResponse> getAllHashTagTP() async {
     try {
       final res = await PostRepo().getAllHashTagTP();
-      hasTags = res as List;
+      hasTags = res as List<dynamic>;
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.toString());

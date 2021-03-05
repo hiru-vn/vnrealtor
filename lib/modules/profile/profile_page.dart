@@ -94,10 +94,10 @@ class _ProfilePageState extends State<ProfilePage>
                           itemCount: _postBloc.savePosts.length,
                           itemBuilder: (context, index) {
                             final post = _postBloc.savePosts[index];
-                            return PostWidget(post);
+                            return PostSmallWidget(post);
                           },
                           separatorBuilder: (context, index) =>
-                              SizedBox(height: 15),
+                              SizedBox(height: 0),
                         )
                       : EmptyWidget(
                           assetImg: 'assets/image/no_post.png',
