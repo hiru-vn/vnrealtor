@@ -319,6 +319,8 @@ user {
   facebookUrl
   description
   isVerify
+  followerIds 
+  followingIds
 }
 mediaPosts {
 id

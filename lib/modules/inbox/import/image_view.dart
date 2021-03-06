@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'spin_loader.dart';
 
@@ -35,8 +36,8 @@ class ImageViewNetwork extends StatelessWidget {
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: Image.network(
-          url,
+        child: Image(
+          image: CachedNetworkImageProvider(url),
           fit: BoxFit.cover,
           errorBuilder: imageNetworkErrorBuilder,
           loadingBuilder: cacheFilePath != null

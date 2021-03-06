@@ -265,6 +265,8 @@ class PostBloc extends ChangeNotifier {
     try {
       final res = await PostRepo().createPost(
           content, expirationDate, publicity, lat, long, images, videos);
+      post.insert(0, PostModel.fromJson(res));
+      myPosts.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());

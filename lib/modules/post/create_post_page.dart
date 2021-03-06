@@ -62,10 +62,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
         _videos);
     await navigatorKey.currentState.maybePop();
     if (res.isSuccess) {
-      _postBloc.post.insert(0, res.data);
       await widget.pageController.animateToPage(0,
           duration: Duration(milliseconds: 200), curve: Curves.decelerate);
       FocusScope.of(context).requestFocus(FocusNode());
+       _expirationDate = null;
+      _contentC.clear();
+      _videos = [];
+      _images = [];
+      _allVideoAndImage = [];
     } else {
       showToast(res.errMessage, context);
     }
