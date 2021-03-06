@@ -69,6 +69,7 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> getListUserIn(List<String> ids) async {
     try {
+      if (ids.length == 0) return BaseResponse.success(<UserModel>[]);
       final res = await UserRepo().getListUserIn(ids);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => UserModel.fromJson(e)).toList();

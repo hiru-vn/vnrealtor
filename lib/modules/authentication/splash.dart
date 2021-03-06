@@ -1,6 +1,5 @@
 import 'package:datcao/main.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
-import 'package:datcao/modules/authentication/introduce.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/guest/guest_feed_page.dart';

@@ -184,7 +184,9 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               left: 0,
               right: 0,
               bottom: 0,
-              child: Image.network(_verificationBloc.imageFront),
+              child: Image(
+                  image:
+                      CachedNetworkImageProvider(_verificationBloc.imageFront)),
             ),
           if (_verificationBloc.imageBehind != null && !isFront)
             Positioned(
@@ -192,7 +194,9 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               left: 0,
               right: 0,
               bottom: 0,
-              child: Image.network(_verificationBloc.imageBehind),
+              child: Image(
+                  image: CachedNetworkImageProvider(
+                      _verificationBloc.imageBehind)),
             ),
           Positioned(
             top: 15,

@@ -66,22 +66,22 @@ class Validator {
 
 class TextFieldValidator {
   static String notEmptyValidator(String string) {
-    if (string.trim().isEmpty) return 'Please fill in';
+    if (string.trim().isEmpty) return 'Vui lòng điền';
     return null;
   }
 
   static String emailValidator(String string) {
-    if (!Validator.isEmail(string)) return 'Email not valid';
+    if (!Validator.isEmail(string)) return 'Email không hợp lệ';
     return null;
   }
 
   static String phoneValidator(String string) {
-    if (!Validator.isPhone(string)) return 'Phone not valid';
+    if (!Validator.isPhone(string)) return 'Số điện thoại không hợp lệ';
     return null;
   }
 
   static String passValidator(String string) {
-    if (string.length < 6) return 'Need more than 6 character';
+    if (string.length < 6) return 'Cần bằng hoặc nhiều hơn 6 kí tự';
     return null;
   }
 }
