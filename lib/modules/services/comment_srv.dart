@@ -11,7 +11,7 @@ userLikeIds: [ID]
 content: String
 replyIds: [ID]
 user {
-  id 
+id 
   uid 
   name 
   email 
@@ -21,8 +21,13 @@ user {
   createdAt 
   updatedAt 
   avatar
-  description
+  totalPost
+  friendIds
   facebookUrl
+  description
+  isVerify
+  followerIds 
+  followingIds
 }
 createdAt: DateTime
 updatedAt: DateTime

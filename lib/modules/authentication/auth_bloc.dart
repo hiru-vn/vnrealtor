@@ -329,6 +329,7 @@ class AuthBloc extends ChangeNotifier {
   void logout() async {
     await SPref.instance.remove('token');
     await SPref.instance.remove('id');
+    AuthBloc.instance.userModel = null;
     print('User Sign Out');
     navigatorKey.currentState
         .pushAndRemoveUntil(pageBuilder(GuestFeedPage()), (route) => false);
