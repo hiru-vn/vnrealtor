@@ -49,8 +49,8 @@ class MediaPostWidget extends StatelessWidget {
 
   Widget _getWidget(FileType type) {
     if (type == FileType.image || type == FileType.gif)
-      return Image.network(
-        post.url,
+      return Image(
+        image: CachedNetworkImageProvider(post.url),
         fit: BoxFit.cover,
         errorBuilder: imageNetworkErrorBuilder,
         loadingBuilder: kLoadingBuilder,

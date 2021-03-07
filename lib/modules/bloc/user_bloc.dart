@@ -69,6 +69,7 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> getListUserIn(List<String> ids) async {
     try {
+      if (ids.length == 0) return BaseResponse.success(<UserModel>[]);
       final res = await UserRepo().getListUserIn(ids);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => UserModel.fromJson(e)).toList();
@@ -141,7 +142,8 @@ class UserBloc extends ChangeNotifier {
       final userId = await SPref.instance.get('id');
       final res = await UserRepo().getFollowerIn7d(userId);
       final List listRaw = res['data'];
-      final list = listRaw.map((e) => UserModel.fromJson(e)).toList();
+      final list =
+          listRaw.map((e) => UserModel.fromJson(e['fromUser'])).toList();
       list.removeWhere(
           (element) => element.id == AuthBloc.instance.userModel.id);
       followersIn7Days = list;

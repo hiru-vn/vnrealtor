@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:datcao/share/widget/spin_loader.dart';
 
+import '../import.dart';
+
 class ImageViewNetwork extends StatelessWidget {
   final String url;
   final String tag;
@@ -28,8 +30,8 @@ class ImageViewNetwork extends StatelessWidget {
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: Image.network(
-          url,
+        child: Image(
+          image: CachedNetworkImageProvider(url),
           fit: BoxFit.cover,
           errorBuilder: imageNetworkErrorBuilder,
           loadingBuilder: kLoadingBuilder,

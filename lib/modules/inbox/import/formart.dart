@@ -17,7 +17,7 @@ class Formart {
 
   static String timeAgo(DateTime time) {
     if (time == null) return null;
-    return timeago.format(time, locale: 'en_short');
+    return timeago.format(time, locale: 'vi');
   }
 
   static String timeByDay(DateTime time) {
@@ -28,8 +28,60 @@ class Formart {
         time.year == now.year) {
       DateFormat format = DateFormat("hh:mm a");
       return format.format(time);
+    } else
+      return timeAgo(time);
+  }
+
+  static String timeByDayVi(DateTime dateTime) {
+    final messages = Mms();
+
+    DateTime dateTimeNow = DateTime.now();
+    final elapsed = dateTimeNow.difference(dateTime).inMilliseconds;
+
+    if (elapsed == 0) {
+      return messages.empty();
     }
-    else return timeAgo(time);
+
+    String prefix, suffix;
+
+    prefix = messages.prefixAgo();
+    suffix = messages.suffixAgo();
+
+    final num seconds = elapsed / 1000;
+    final num minutes = seconds / 60;
+    final num hours = minutes / 60;
+    final num days = hours / 24;
+    final num months = days / 30;
+    final num years = days / 365;
+
+    String result;
+    if (seconds < 45) {
+      result = messages.lessThanOneMinute(seconds.round());
+    } else if (seconds < 90) {
+      result = messages.aboutAMinute(minutes.round());
+    } else if (minutes < 45) {
+      result = messages.minutes(minutes.round());
+    } else if (minutes < 90) {
+      result = messages.aboutAnHour(minutes.round());
+    } else if (hours < 24) {
+      result = messages.hours(hours.round());
+    } else if (hours < 48) {
+      result = messages.aDay(hours.round());
+    } else if (days < 30) {
+      result = messages.days(days.round());
+    } else if (days < 60) {
+      result = messages.aboutAMonth(days.round());
+    } else if (days < 365) {
+      result = messages.months(months.round());
+    } else if (years < 2) {
+      result = messages.aboutAYear(months.round());
+    } else {
+      result = messages.years(years.round());
+    }
+
+    return [prefix, result, suffix]
+        .where((str) => str != null && str.isNotEmpty)
+        .join(messages.wordSeparator());
   }
 
   static double toFixedDouble(double value, int digit) {
@@ -41,9 +93,9 @@ class Formart {
     return '${formatToDate(date)} ${formatToTime(date)}';
   }
 
-  static String formatToDate(DateTime date) {
+  static String formatToDate(DateTime date, {String seperateChar = '/'}) {
     if (date == null) return null;
-    return '${date.day}/${date.month}/${date.year}';
+    return '${date.day}$seperateChar${date.month}$seperateChar${date.year}';
   }
 
   static String formatToTime(DateTime time) {
@@ -59,6 +111,9 @@ class Formart {
   static String formatErrFirebaseLoginToString(String err) {
     String message = "";
     switch (err) {
+      case "missing-client-identifier":
+        message = "Thiếu mã SHA-1 trên thiết bị";
+        break;
       case "ERROR_ARGUMENT_ERROR":
         message = "Vui lòng nhập đầy đủ dữ liệu";
         break;
@@ -77,22 +132,34 @@ class Formart {
       case "ERROR_WRONG_PASSWORD":
         message = "Sai mật khẩu, vui lòng nhập lại";
         break;
-      case "ERROR_TOO_MANY_REQUESTS":
+      case "too-many-requests":
         message = "Quá giới hạn số lần đăng nhập, xin hãy thử lại sau vài phút";
         break;
       default:
         print(err);
         message = "Lỗi Đăng Nhập";
+        return err;
     }
     return message;
   }
+}
 
-  static bool isEmail(String em) {
-    String p =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-
-    RegExp regExp = new RegExp(p);
-
-    return regExp.hasMatch(em);
-  }
+class Mms {
+  String prefixAgo() => '';
+  String prefixFromNow() => 'in';
+  String suffixAgo() => 'trước';
+  String suffixFromNow() => '';
+  String lessThanOneMinute(int seconds) => 'vài giây';
+  String aboutAMinute(int minutes) => 'một phút';
+  String minutes(int minutes) => '$minutes phút';
+  String aboutAnHour(int minutes) => 'một giờ';
+  String hours(int hours) => '$hours giờ';
+  String aDay(int hours) => 'một ngày';
+  String days(int days) => '$days ngày';
+  String aboutAMonth(int days) => 'một tháng';
+  String months(int months) => '$months tháng';
+  String aboutAYear(int year) => 'một năm';
+  String years(int years) => '$years năm';
+  String wordSeparator() => ' ';
+  String empty() => 'Chưa có tin nhắn nào';
 }

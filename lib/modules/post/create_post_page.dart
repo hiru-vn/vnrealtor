@@ -62,10 +62,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
         _videos);
     await navigatorKey.currentState.maybePop();
     if (res.isSuccess) {
-      _postBloc.post.insert(0, res.data);
       await widget.pageController.animateToPage(0,
           duration: Duration(milliseconds: 200), curve: Curves.decelerate);
       FocusScope.of(context).requestFocus(FocusNode());
+       _expirationDate = null;
+      _contentC.clear();
+      _videos = [];
+      _images = [];
+      _allVideoAndImage = [];
     } else {
       showToast(res.errMessage, context);
     }
@@ -133,8 +137,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         child: HashTagTextField(
                           maxLength: 400,
                           maxLines: null,
-                          minLines: 6,
+                          minLines: 5,
                           controller: _contentC,
+                          onChanged: (value) => setState(() {}),
                           basicStyle:
                               ptBigBody().copyWith(color: Colors.black54),
                           decoration: InputDecoration(
@@ -145,6 +150,72 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           ),
                         ),
                       ),
+                      Positioned(
+                        bottom: 0,
+                        height: 30,
+                        left: 10,
+                        right: 10,
+                        child: Container(
+                          height: 30,
+                          width: deviceWidth(context) - 20,
+                          child: ListView.separated(
+                            // shrinkWrap: true,
+                            separatorBuilder: (context, index) {
+                              return SizedBox(
+                                width: 10,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                borderRadius: BorderRadius.circular(15),
+                                onTap: () {
+                                  setState(() {
+                                    _contentC.text = _contentC.text +
+                                        ' ' +
+                                        _postBloc.hasTags
+                                            .where((element) =>
+                                                _contentC.text
+                                                    .contains(element['key']) &&
+                                                !_contentC.text
+                                                    .contains(element['value']))
+                                            .toList()[index]['value']
+                                            .toString();
+                                    _contentC.selection =
+                                        TextSelection.fromPosition(TextPosition(
+                                            offset: _contentC.text.length));
+                                  });
+                                },
+                                child: Container(
+                                  height: 30,
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                      color: ptSecondaryColor(context),
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Center(
+                                    child: Text(
+                                      _postBloc.hasTags
+                                          .where((element) =>
+                                              _contentC.text
+                                                  .contains(element['key']) &&
+                                              !_contentC.text
+                                                  .contains(element['value']))
+                                          .toList()[index]['value']
+                                          .toString(),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            itemCount: _postBloc.hasTags
+                                .where((element) =>
+                                    _contentC.text.contains(element['key']) &&
+                                    !_contentC.text.contains(element['value']))
+                                .toList()
+                                .length,
+                            scrollDirection: Axis.horizontal,
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),

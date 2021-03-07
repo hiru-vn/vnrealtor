@@ -1,6 +1,6 @@
+import 'package:datcao/modules/guest/guest_feed_page.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
@@ -329,8 +329,9 @@ class AuthBloc extends ChangeNotifier {
   void logout() async {
     await SPref.instance.remove('token');
     await SPref.instance.remove('id');
+    AuthBloc.instance.userModel = null;
     print('User Sign Out');
     navigatorKey.currentState
-        .pushAndRemoveUntil(pageBuilder(LoginPage()), (route) => false);
+        .pushAndRemoveUntil(pageBuilder(GuestFeedPage()), (route) => false);
   }
 }

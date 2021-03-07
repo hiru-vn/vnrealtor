@@ -79,12 +79,12 @@ class _CommentPageState extends State<CommentPage> {
   Future _getComments({GraphqlFilter filter}) async {
     BaseResponse res;
     if (AuthBloc.instance.userModel == null) {
-      
       if (isPost)
         res = await _postBloc.getAllCommentByPostIdGuest(widget.post.id,
             filter: filter);
       if (isMediaPost)
-        res = await _postBloc.getAllCommentByMediaPostIdGuest(widget.mediaPost.id,
+        res = await _postBloc.getAllCommentByMediaPostIdGuest(
+            widget.mediaPost.id,
             filter: filter);
     } else {
       if (isPost)
@@ -309,7 +309,8 @@ class _CommentWidgetState extends State<CommentWidget> {
           Row(
             children: [
               Text(
-                Formart.timeAgo(DateTime.tryParse(widget.comment.updatedAt)),
+                Formart.timeByDayVi(
+                    DateTime.tryParse(widget.comment.updatedAt)),
                 style: ptTiny(),
               ),
               // SizedBox(

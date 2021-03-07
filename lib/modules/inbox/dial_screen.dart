@@ -233,8 +233,8 @@ class _DialUserPicState extends State<DialUserPic>
         ),
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(100)),
-          child: Image.network(
-            widget.image,
+          child: Image(
+            image: CachedNetworkImageProvider(widget.image),
             fit: BoxFit.cover,
           ),
         ),

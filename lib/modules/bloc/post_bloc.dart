@@ -21,10 +21,10 @@ class PostBloc extends ChangeNotifier {
   List<PostModel> myPosts;
   List<PostModel> stories = [];
   List<PostModel> savePosts = [];
-  List<Map> hasTags = [];
+  List<dynamic> hasTags = [];
 
   Future init() async {
-    getNewFeed(filter: GraphqlFilter(limit: 15, order: "{updatedAt: -1}"));
+    getNewFeed(filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
     getStoryFollowing();
     getListPost(AuthBloc.instance.userModel.savedPostIds);
     getAllHashTagTP();
@@ -72,7 +72,7 @@ class PostBloc extends ChangeNotifier {
       notifyListeners();
       final res = await PostRepo().getNewFeed(
           filter: GraphqlFilter(
-              limit: 15, order: "{updatedAt: -1}", page: ++feedPage),
+              limit: 10, order: "{updatedAt: -1}", page: ++feedPage),
           timeSort: '-1',
           timestamp: lastFetchFeedPage1.toString());
       final List listRaw = res['data'];
@@ -169,7 +169,7 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-    Future<BaseResponse> getUserPostGuest(String id) async {
+  Future<BaseResponse> getUserPostGuest(String id) async {
     try {
       final res = await PostRepo().getPostByUserIdGuest(id);
       final List listRaw = res['data'];
@@ -215,7 +215,7 @@ class PostBloc extends ChangeNotifier {
   Future<BaseResponse> getAllHashTagTP() async {
     try {
       final res = await PostRepo().getAllHashTagTP();
-      hasTags = res as List;
+      hasTags = res as List<dynamic>;
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.toString());
@@ -265,6 +265,8 @@ class PostBloc extends ChangeNotifier {
     try {
       final res = await PostRepo().createPost(
           content, expirationDate, publicity, lat, long, images, videos);
+      post.insert(0, PostModel.fromJson(res));
+      myPosts.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());
@@ -407,6 +409,21 @@ class PostBloc extends ChangeNotifier {
       savePosts.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
       AuthBloc.instance.userModel.savedPostIds.add(post.id);
       final res = await PostRepo().savePost(post.id);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> unsavePost(PostModel post) async {
+    try {
+      savePosts.remove(post);
+      savePosts.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
+      AuthBloc.instance.userModel.savedPostIds.remove(post.id);
+      notifyListeners();
+      final res = await PostRepo().unsavePost(post.id);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.toString());

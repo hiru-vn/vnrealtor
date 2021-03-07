@@ -74,14 +74,21 @@ class _ProfilePageState extends State<ProfilePage>
               _postBloc.myPosts == null
                   ? kLoadingSpinner
                   : (_postBloc.myPosts.length != 0
-                      ? ListView.separated(
-                          itemCount: _postBloc.myPosts.length,
-                          itemBuilder: (context, index) {
-                            final post = _postBloc.myPosts[index];
-                            return PostWidget(post);
+                      ? RefreshIndicator(
+                          onRefresh: () async {
+                            final res = await _postBloc.getMyPost();
+                            if (!res.isSuccess)
+                              showToast(res.errMessage, context);
                           },
-                          separatorBuilder: (context, index) =>
-                              SizedBox(height: 15),
+                          child: ListView.separated(
+                            itemCount: _postBloc.myPosts.length,
+                            itemBuilder: (context, index) {
+                              final post = _postBloc.myPosts[index];
+                              return PostWidget(post);
+                            },
+                            separatorBuilder: (context, index) =>
+                                SizedBox(height: 15),
+                          ),
                         )
                       : EmptyWidget(
                           assetImg: 'assets/image/no_post.png',
@@ -94,10 +101,10 @@ class _ProfilePageState extends State<ProfilePage>
                           itemCount: _postBloc.savePosts.length,
                           itemBuilder: (context, index) {
                             final post = _postBloc.savePosts[index];
-                            return PostWidget(post);
+                            return PostSmallWidget(post);
                           },
                           separatorBuilder: (context, index) =>
-                              SizedBox(height: 15),
+                              SizedBox(height: 0),
                         )
                       : EmptyWidget(
                           assetImg: 'assets/image/no_post.png',

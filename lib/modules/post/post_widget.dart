@@ -4,6 +4,7 @@ import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/media_post_widget.dart';
+import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/post/post_google_map.dart';
 import 'package:datcao/modules/post/report_post_page.dart';
 import 'package:datcao/modules/post/search_post_page.dart';
@@ -11,6 +12,7 @@ import 'package:datcao/modules/post/update_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/cache_network_image.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:readmore/readmore.dart';
 import 'package:popup_menu/popup_menu.dart';
@@ -522,8 +524,198 @@ class _PostWidgetState extends State<PostWidget> {
             final res = await UpdatePostPage.navigate(widget.post);
             if (res == true) {
               await _postBloc.getNewFeed(
-                  filter: GraphqlFilter(limit: 15, order: "{updatedAt: -1}"));
+                  filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
               return;
+            }
+          }
+        },
+        stateChanged: (val) {},
+        onDismiss: () {});
+  }
+
+  PopupMenu menu;
+}
+
+class PostSmallWidget extends StatefulWidget {
+  final Function commentCallBack;
+  final PostModel post;
+  PostSmallWidget(this.post, {this.commentCallBack});
+  @override
+  _PostSmallWidgetState createState() => _PostSmallWidgetState();
+}
+
+class _PostSmallWidgetState extends State<PostSmallWidget> {
+  final GlobalKey<State<StatefulWidget>> moreBtnKey =
+      GlobalKey<State<StatefulWidget>>();
+  PostBloc _postBloc;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_postBloc == null) {
+      _postBloc = Provider.of<PostBloc>(context);
+      initMenu();
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    PopupMenu.context = context;
+    Widget thumbNail;
+    if (widget.post.mediaPosts.any((element) => element.type == 'PICTURE')) {
+      final String url = widget.post.mediaPosts
+          .firstWhere((element) => element.type == 'PICTURE')
+          .url;
+      thumbNail = Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.black26)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: SizedBox(
+            width: deviceWidth(context) / 3.5,
+            height: deviceWidth(context) / 4.8,
+            child: Image(
+              image: CachedNetworkImageProvider(url),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
+    } else {
+      thumbNail = Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.black26)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: SizedBox(
+            width: deviceWidth(context) / 3.5,
+            height: deviceWidth(context) / 4.8,
+            child: Image.asset(
+              'assets/image/video_holder.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
+    }
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20, left: 25, right: 15),
+        child: Container(
+            width: deviceWidth(context),
+            color: Colors.white,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                    onTap: () {
+                      PostDetail.navigate(widget.post);
+                    },
+                    child: thumbNail),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: GestureDetector(
+                      onTap: () {
+                        PostDetail.navigate(widget.post);
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.post.content.trim()[0].toUpperCase() +
+                                widget.post.content
+                                    .trim()
+                                    .substring(1)
+                                    .replaceAll('\n', ' ')
+                                    .replaceAll('  ', ''),
+                            style: ptTitle(),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 3),
+                          Text(
+                            '${widget.post.mediaPosts.where((element) => element.type == 'VIDEO').length} Video • ${widget.post.mediaPosts.where((element) => element.type == 'PICTURE').length} Image',
+                            style: ptBody().copyWith(color: Colors.grey[600]),
+                          ),
+                          SizedBox(height: 3),
+                          Text.rich(
+                            TextSpan(children: [
+                              // TextSpan(text: 'Đăng bởi '),
+                              TextSpan(
+                                  text: '${widget.post.user.name}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black54)),
+                              TextSpan(
+                                  text:
+                                      ' • ${Formart.timeByDayVi(DateTime.tryParse(widget.post.updatedAt)).replaceAll(' trước', '')}'),
+                            ]),
+                            style: ptTiny().copyWith(color: Colors.grey[600]),
+                          ),
+                        ],
+                      )),
+                ),
+                Center(
+                  child: GestureDetector(
+                      key: moreBtnKey,
+                      onTap: () {
+                        menu.show(widgetKey: moreBtnKey);
+                      },
+                      child: SizedBox(width: 30, child: Icon(Icons.more_vert))),
+                )
+              ],
+            )),
+      ),
+    );
+  }
+
+  showComment(PostModel postModel) {
+    showModalBottomSheet(
+        useRootNavigator: true,
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (context) {
+          return SizedBox(
+              height: deviceHeight(context) - kToolbarHeight - 15,
+              child: CommentPage(
+                post: postModel,
+              ));
+        });
+  }
+
+  initMenu() {
+    if (AuthBloc.instance.userModel == null) return;
+    menu = PopupMenu(
+        items: [
+          MenuItem(
+              title: 'Bỏ lưu',
+              image: Icon(
+                Icons.remove_circle_outline,
+                color: Colors.white,
+              )),
+        ],
+        onClickMenu: (val) async {
+          if (val.menuTitle == 'Bỏ lưu') {
+            final res = await _postBloc.unsavePost(widget.post);
+            if (res.isSuccess) {
+            } else {
+              showToast(res.errMessage, context);
             }
           }
         },

@@ -175,7 +175,8 @@ class NotificationTab extends StatelessWidget {
                   style: ptBody(),
                 ),
                 subtitle: Text(
-                  Formart.timeAgo(DateTime.tryParse(list[index].createdAt)) ??
+                  Formart.timeByDayVi(
+                          DateTime.tryParse(list[index].createdAt)) ??
                       '',
                   style: ptTiny(),
                 ),
@@ -247,7 +248,7 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                         style: ptBody(),
                       ),
                       Text(
-                        Formart.timeAgo(
+                        Formart.timeByDayVi(
                                 DateTime.tryParse(item.updatedAt ?? '')) ??
                             '',
                         style: ptTiny().copyWith(color: Colors.black54),
@@ -360,7 +361,7 @@ class FollowTab extends StatelessWidget {
                   style: ptBody(),
                 ),
                 subtitle: Text(
-                  Formart.timeAgo(DateTime.tryParse(list[index].updatedAt)) ??
+                  Formart.timeByDayVi(DateTime.tryParse(list[index].updatedAt)) ??
                       '',
                   style: ptTiny(),
                 ),

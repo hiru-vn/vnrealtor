@@ -74,7 +74,7 @@ class _PostPageState extends State<PostPage> {
                   onRefresh: () async {
                     await _postBloc.getNewFeed(
                         filter:
-                            GraphqlFilter(limit: 15, order: "{updatedAt: -1}"));
+                            GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
                     return;
                   },
                   child: SingleChildScrollView(
@@ -284,7 +284,8 @@ class CreatePostCard extends StatelessWidget {
                       ),
                       child: Center(
                         child: CircleAvatar(
-                          radius: 13,backgroundColor: Colors.white,
+                          radius: 13,
+                          backgroundColor: Colors.white,
                           backgroundImage: postModel.user.avatar != null
                               ? NetworkImage(postModel.user.avatar)
                               : AssetImage('assets/image/default_avatar.png'),

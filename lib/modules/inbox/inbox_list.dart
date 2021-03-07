@@ -155,7 +155,7 @@ class _InboxListState extends State<InboxList>
                                 children: [
                                   SizedBox(height: 12),
                                   Text(
-                                    Formart.timeByDay(
+                                    Formart.timeByDayVi(
                                         DateTime.tryParse(group.time)),
                                     style: ptSmall().copyWith(
                                         fontWeight: _inboxBloc
