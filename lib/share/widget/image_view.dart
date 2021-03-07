@@ -19,7 +19,6 @@ class ImageViewNetwork extends StatelessWidget {
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
         Navigator.push(context, MaterialPageRoute(builder: (_) {
-
           return DetailImageScreen(
             url,
             tag: genTag,

@@ -261,15 +261,16 @@ class CreatePostCard extends StatelessWidget {
         },
         child: Material(
           elevation: 0,
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
             height: 154,
             width: 119,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(8),
                 image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: NetworkImage(postModel.mediaPosts[0].url))),
+                    image: CachedNetworkImageProvider(
+                        postModel.mediaPosts[0].url))),
             child: Column(children: [
               Padding(
                 padding: const EdgeInsets.all(5),
@@ -287,7 +288,8 @@ class CreatePostCard extends StatelessWidget {
                           radius: 13,
                           backgroundColor: Colors.white,
                           backgroundImage: postModel.user.avatar != null
-                              ? NetworkImage(postModel.user.avatar)
+                              ? CachedNetworkImageProvider(
+                                  postModel.user.avatar)
                               : AssetImage('assets/image/default_avatar.png'),
                         ),
                       ),
