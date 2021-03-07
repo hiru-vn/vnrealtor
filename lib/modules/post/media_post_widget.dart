@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
@@ -5,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/media_post.dart';
-import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/comment_page.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
@@ -13,36 +13,66 @@ import 'package:datcao/share/widget/spin_loader.dart';
 import 'package:datcao/utils/constants.dart';
 import 'package:datcao/utils/file_util.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:path_provider/path_provider.dart';
 
-class MediaPostWidget extends StatelessWidget {
+class MediaPostWidget extends StatefulWidget {
   final MediaPost post;
   final String tag;
   final double borderRadius;
   MediaPostWidget({@required this.post, this.tag, this.borderRadius = 0});
+
+  @override
+  _MediaPostWidgetState createState() => _MediaPostWidgetState();
+}
+
+class _MediaPostWidgetState extends State<MediaPostWidget> {
+  String thumbnailPath;
+  FileType type;
+
+  @override
+  void initState() {
+    type = FileUtil.getFbUrlFileType(widget.post.url);
+    if (type == FileType.video) _getThumbnail();
+    super.initState();
+  }
+
+  _getThumbnail() async {
+    thumbnailPath = await VideoThumbnail.thumbnailFile(
+      video: widget.post.url,
+      thumbnailPath: (await getTemporaryDirectory()).path,
+      imageFormat: ImageFormat.WEBP,
+      maxHeight:
+          0, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
+    );
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    String genTag = tag ?? post.url + Random().nextInt(10000000).toString();
-    final type = FileUtil.getFbUrlFileType(post.url);
+    String genTag =
+        widget.tag ?? widget.post.url + Random().nextInt(10000000).toString();
+
     return GestureDetector(
       onTap: () {
         if (type == FileType.image || type == FileType.gif)
           Navigator.push(context, MaterialPageRoute(builder: (_) {
             return DetailImagePost(
-              post,
+              widget.post,
               tag: genTag,
             );
           }));
         if (type == FileType.video)
           Navigator.push(context, MaterialPageRoute(builder: (_) {
             return DetailVideoPost(
-              post,
+              widget.post,
               tag: genTag,
             );
           }));
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: ClipRRect(
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(widget.borderRadius),
           child: _getWidget(type)),
     );
   }
@@ -50,17 +80,32 @@ class MediaPostWidget extends StatelessWidget {
   Widget _getWidget(FileType type) {
     if (type == FileType.image || type == FileType.gif)
       return Image(
-        image: CachedNetworkImageProvider(post.url),
+        image: CachedNetworkImageProvider(widget.post.url),
         fit: BoxFit.cover,
         errorBuilder: imageNetworkErrorBuilder,
         loadingBuilder: kLoadingBuilder,
       );
     else if (type == FileType.video)
-      return Image.asset(
-        'assets/image/video_holder.png',
-        fit: BoxFit.cover,
-        errorBuilder: imageNetworkErrorBuilder,
-      );
+      return thumbnailPath == null
+          ? Image.asset(
+              'assets/image/video_holder.png',
+              fit: BoxFit.cover,
+              errorBuilder: imageNetworkErrorBuilder,
+            )
+          : Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.file(
+                  File(thumbnailPath),
+                  fit: BoxFit.cover,
+                  errorBuilder: imageNetworkErrorBuilder,
+                ),
+                Center(
+                  child: Icon(Icons.play_circle_outline_rounded,
+                      size: 50, color: Colors.white),
+                ),
+              ],
+            );
     return SizedBox.shrink();
   }
 }
@@ -94,6 +139,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Container(
         child: Stack(fit: StackFit.expand, children: [
           Center(
@@ -125,7 +171,10 @@ class _DetailImagePostState extends State<DetailImagePost> {
                     borderRadius: BorderRadius.circular(20)),
                 width: 40,
                 height: 40,
-                child: Icon(Icons.close),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),

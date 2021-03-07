@@ -1,36 +1,83 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:path_provider/path_provider.dart';
 import 'spin_loader.dart';
 
-class VideoViewNetwork extends StatelessWidget {
+class VideoViewNetwork extends StatefulWidget {
   final String url;
   final String tag;
   final int w, h;
   VideoViewNetwork({@required this.url, this.tag, this.w, this.h});
+
+  @override
+  _VideoViewNetworkState createState() => _VideoViewNetworkState();
+}
+
+class _VideoViewNetworkState extends State<VideoViewNetwork> {
+  String thumbnailPath;
+  @override
+  void initState() {
+    _getThumbnail();
+    super.initState();
+  }
+
+  _getThumbnail() async {
+    thumbnailPath = await VideoThumbnail.thumbnailFile(
+      video: widget.url,
+      thumbnailPath: (await getTemporaryDirectory()).path,
+      imageFormat: ImageFormat.WEBP,
+      maxHeight:
+          0, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
+    );
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    String genTag = tag ?? url + Random().nextInt(10000000).toString();
+    String genTag =
+        widget.tag ?? widget.url + Random().nextInt(10000000).toString();
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
         Navigator.push(context, MaterialPageRoute(builder: (_) {
           return DetailVideoScreen(
-            url,
+            widget.url,
             tag: genTag,
-            scaleW: w,
-            scaleH: h,
+            scaleW: widget.w,
+            scaleH: widget.h,
           );
         }));
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: Image.asset(
-          'assets/image/video_holder.png',
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => SizedBox.shrink(),
-        ),
+        child: thumbnailPath == null
+            ? Image.asset(
+                'assets/image/video_holder.png',
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => SizedBox.shrink(),
+              )
+            : Stack(
+                children: [
+                  Image.file(
+                    File(thumbnailPath),
+                    fit: BoxFit.cover,
+                    errorBuilder: imageNetworkErrorBuilder,
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: Center(
+                      child: Icon(Icons.play_circle_outline_rounded,
+                          size: 50, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -102,13 +149,13 @@ class _DetailVideoScreenState extends State<DetailVideoScreen> {
             top: kToolbarHeight,
             right: 10,
             child: InkWell(
-              onTap: () async {
-                await Navigator.of(context).maybePop();
+              onTap: () {
+                Navigator.of(context).maybePop();
                 FocusScope.of(context).requestFocus(FocusNode());
               },
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.black45,
+                    color: Colors.white24,
                     borderRadius: BorderRadius.circular(20)),
                 width: 40,
                 height: 40,
