@@ -72,9 +72,12 @@ class _PostPageState extends State<PostPage> {
                 list: RefreshIndicator(
                   color: ptPrimaryColor(context),
                   onRefresh: () async {
-                    await _postBloc.getNewFeed(
-                        filter:
-                            GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
+                    await Future.wait([
+                      _postBloc.getNewFeed(
+                          filter: GraphqlFilter(
+                              limit: 10, order: "{updatedAt: -1}")),
+                      _postBloc.getStoryFollowing()
+                    ]);
                     return;
                   },
                   child: SingleChildScrollView(
