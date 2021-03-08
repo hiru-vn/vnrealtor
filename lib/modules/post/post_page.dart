@@ -97,9 +97,9 @@ class _PostPageState extends State<PostPage> {
                           padding: EdgeInsets.all(0),
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: _postBloc.post.length,
+                          itemCount: _postBloc.feed.length,
                           itemBuilder: (context, index) {
-                            final item = _postBloc.post[index];
+                            final item = _postBloc.feed[index];
                             return PostWidget(item);
                           },
                         ),

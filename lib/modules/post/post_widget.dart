@@ -29,17 +29,10 @@ class PostWidget extends StatefulWidget {
 class _PostWidgetState extends State<PostWidget> {
   final GlobalKey<State<StatefulWidget>> moreBtnKey =
       GlobalKey<State<StatefulWidget>>();
-  bool _isLike = false;
-  bool _isSave = false;
   PostBloc _postBloc;
 
   @override
   void initState() {
-    _isLike = widget.post.isUserLike;
-    _isSave =
-        AuthBloc.instance.userModel?.savedPostIds?.contains(widget.post.id) ??
-            false;
-
     super.initState();
   }
 
@@ -290,13 +283,11 @@ class _PostWidgetState extends State<PostWidget> {
                       LoginPage.navigatePush();
                       return;
                     }
-                    _isLike = !_isLike;
-                    if (_isLike) {
-                      widget.post.like++;
-                      _postBloc.likePost(widget.post.id);
+                    widget.post.isUserLike = !widget.post.isUserLike;
+                    if (widget.post.isUserLike) {
+                      _postBloc.likePost(widget.post);
                     } else {
-                      if (widget.post.like > 0) widget.post.like--;
-                      _postBloc.unlikePost(widget.post.id);
+                      _postBloc.unlikePost(widget.post);
                     }
                     setState(() {});
                   },
@@ -304,7 +295,7 @@ class _PostWidgetState extends State<PostWidget> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        !_isLike
+                        !widget.post.isUserLike
                             ? Icon(
                                 MdiIcons.heartOutline,
                                 size: 24,
@@ -389,19 +380,18 @@ class _PostWidgetState extends State<PostWidget> {
                 if (AuthBloc.instance.userModel != null)
                   GestureDetector(
                     onTap: () async {
-                      if (_isSave) {
+                      if (AuthBloc.instance.userModel?.savedPostIds
+                              ?.contains(widget.post.id) ??
+                          false) {
                         showToast('Bài viết đã được lưu', context,
                             isSuccess: true);
                         return;
                       }
-                      setState(() {
-                        _isSave = true;
-                      });
+
                       final res = await _postBloc.savePost(widget.post);
                       if (res.isSuccess) {
                       } else {
                         setState(() {
-                          _isSave = false;
                           _postBloc.myPosts.remove(widget.post);
                         });
                         showToast(res.errMessage, context);
@@ -411,7 +401,9 @@ class _PostWidgetState extends State<PostWidget> {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          !_isSave
+                          !(AuthBloc.instance.userModel?.savedPostIds
+                                      ?.contains(widget.post.id) ??
+                                  false)
                               ? Icon(
                                   MdiIcons.bookmarkOutline,
                                   color: ptPrimaryColor(context),
