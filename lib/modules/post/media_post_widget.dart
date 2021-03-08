@@ -556,11 +556,11 @@ class _DetailImagePostState extends State<DetailImagePost> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              if (AuthBloc.instance.userModel == null) {
-                                await navigatorKey.currentState.maybePop();
-                                LoginPage.navigatePush();
-                                return;
-                              }
+                              // if (AuthBloc.instance.userModel == null) {
+                              //   await navigatorKey.currentState.maybePop();
+                              //   LoginPage.navigatePush();
+                              //   return;
+                              // }
                               showComment(widget.post, context);
                             },
                             child: Text(
