@@ -517,7 +517,8 @@ class _InboxChatState extends State<InboxChat> {
                                         (res[0] as LatLng).latitude;
                                     _onFilePick((res[1] as File)?.path);
                                     onSend(ChatMessage(
-                                        text: 'Gửi 1 địa điểm',
+                                        text:
+                                            '${AuthBloc.instance.userModel.name} đã chia sẻ 1 địa điểm',
                                         user: _users.firstWhere((user) =>
                                             user.uid ==
                                             AuthBloc.instance.userModel.id),
