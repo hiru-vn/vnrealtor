@@ -40,6 +40,10 @@ class _VideoCallPageState extends State<VideoCallPage> {
     // clear users
     _users?.clear();
     // destroy sdk
+    _engine?.disableAudio();
+    _engine?.disableVideo();
+    _engine?.stopAudioRecording();
+    _engine?.stopAllEffects();
     _engine?.leaveChannel();
     _engine?.destroy();
     super.dispose();
@@ -291,11 +295,17 @@ class _VideoCallPageState extends State<VideoCallPage> {
   Widget build(BuildContext context) {
     if (_users.length < 1)
       return DialScreen(
-        names: widget.users
-            .where((element) => element.id != AuthBloc.instance.userModel.id)
-            .map((e) => e.name)
-            .toList(),
-      );
+          names: widget.users
+              .where((element) => element.id != AuthBloc.instance.userModel.id)
+              .map((e) => e.name)
+              .toList(),
+          disposeCallBack: () {
+            _users?.clear();
+            // destroy sdk
+
+            _engine?.leaveChannel();
+            _engine?.destroy();
+          });
     return Scaffold(
         backgroundColor: Colors.black,
         body: Center(

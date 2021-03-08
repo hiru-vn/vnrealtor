@@ -14,6 +14,7 @@ import 'package:datcao/utils/app_internalization.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_callkeep/flutter_callkeep.dart';
 
 final _sentry = SentryClient(
     dsn:
@@ -22,7 +23,8 @@ final _sentry = SentryClient(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  await CallKeep.setup();
+  
   runZonedGuarded(
     () => SystemChrome.setPreferredOrientations(
             [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])

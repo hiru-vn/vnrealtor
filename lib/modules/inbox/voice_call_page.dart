@@ -316,11 +316,17 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
   Widget build(BuildContext context) {
     if (_users.length < 2)
       return DialScreen(
-        names: widget.users
-            .where((element) => element.id != AuthBloc.instance.userModel.id)
-            .map((e) => e.name)
-            .toList(),
-      );
+          names: widget.users
+              .where((element) => element.id != AuthBloc.instance.userModel.id)
+              .map((e) => e.name)
+              .toList(),
+          disposeCallBack: () {
+            _users?.clear();
+            // destroy sdk
+
+            _engine?.leaveChannel();
+            _engine?.destroy();
+          });
     return Scaffold(
         backgroundColor: Colors.black,
         body: Center(

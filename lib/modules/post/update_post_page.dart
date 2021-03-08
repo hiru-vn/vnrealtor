@@ -86,8 +86,8 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
     await navigatorKey.currentState.maybePop();
     if (res.isSuccess) {
       final index =
-          _postBloc.post.indexWhere((element) => element.id == widget.post.id);
-      _postBloc.post[index] = res.data;
+          _postBloc.feed.indexWhere((element) => element.id == widget.post.id);
+      _postBloc.feed[index] = res.data;
       navigatorKey.currentState.maybePop(true);
     } else {
       showToast(res.errMessage, context);

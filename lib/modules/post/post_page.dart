@@ -72,9 +72,12 @@ class _PostPageState extends State<PostPage> {
                 list: RefreshIndicator(
                   color: ptPrimaryColor(context),
                   onRefresh: () async {
-                    await _postBloc.getNewFeed(
-                        filter:
-                            GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
+                    await Future.wait([
+                      _postBloc.getNewFeed(
+                          filter: GraphqlFilter(
+                              limit: 10, order: "{updatedAt: -1}")),
+                      _postBloc.getStoryFollowing()
+                    ]);
                     return;
                   },
                   child: SingleChildScrollView(
@@ -97,9 +100,9 @@ class _PostPageState extends State<PostPage> {
                           padding: EdgeInsets.all(0),
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: _postBloc.post.length,
+                          itemCount: _postBloc.feed.length,
                           itemBuilder: (context, index) {
-                            final item = _postBloc.post[index];
+                            final item = _postBloc.feed[index];
                             return PostWidget(item);
                           },
                         ),

@@ -210,15 +210,17 @@ $postFragment
 
   Future getAllCommentByPostIdGuest(
       {String postId, GraphqlFilter filter}) async {
-    final res = await CommentSrv()
-        .query('getCommentByGuest', ' q : { filter: {postId: \"$postId\"} } ');
+    final res = await CommentSrv().query(
+        'getCommentByGuest', ' q : { filter: {postId: \"$postId\"} } ',
+        fragment: 'data { ${CommentSrv().fragmentDefault} }');
     return res['getCommentByGuest'];
   }
 
   Future getAllCommentByMediaPostIdGuest(
       {String mediaPostId, GraphqlFilter filter}) async {
     final res = await CommentSrv().query('getCommentByGuest',
-        ' q : { filter: {mediaPostId: \"$mediaPostId\"} } ');
+        ' q : { filter: {mediaPostId: \"$mediaPostId\"} } ',
+        fragment: 'data { ${CommentSrv().fragmentDefault} }');
     return res['getCommentByGuest'];
   }
 

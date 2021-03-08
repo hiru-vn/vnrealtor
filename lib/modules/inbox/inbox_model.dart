@@ -1,13 +1,16 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class FbInboxUserModel {
   final String id;
   final String image;
   final String name;
-  final List<String> group;
+  final String phone;
+  final List<String> groups;
 
-  FbInboxUserModel(this.id, this.image, this.name, this.group);
+  FbInboxUserModel(this.id, this.image, this.name, this.phone, this.groups);
 
   factory FbInboxUserModel.fromJson(Map<String, dynamic> map) {
-    return FbInboxUserModel(map['id'], map['image'], map['name'],
+    return FbInboxUserModel(map['id'], map['image'], map['name'], map['phone'],
         map['groups'] == null ? [] : (map['groups'] as List).cast<String>());
   }
 }
@@ -47,18 +50,17 @@ class FbInboxMessageModel {
   final String text;
   final String uid; //userId
   final String filePath;
+  final LatLng location;
 
   FbInboxMessageModel(this.id, this.avatar, this.date, this.fullName, this.text,
-      this.uid, this.filePath);
+      this.uid, this.filePath,
+      {this.location});
 
   factory FbInboxMessageModel.fromJson(Map<String, dynamic> map, String id) {
-    return FbInboxMessageModel(
-        id,
-        map['avatar'],
-        map['date'],
-        map["fullName"],
-        map['text'],
-        map['uid'],
-        map['filePath'] == '' ? null : map['filePath']);
+    return FbInboxMessageModel(id, map['avatar'], map['date'], map["fullName"],
+        map['text'], map['uid'], map['filePath'] == '' ? null : map['filePath'],
+        location: map['lat'] == null || map['long'] == null
+            ? null
+            : LatLng(map['lat'], map['long']));
   }
 }
