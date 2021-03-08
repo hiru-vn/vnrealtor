@@ -173,18 +173,20 @@ class InboxBloc extends ChangeNotifier {
     return res;
   }
 
-  Future<void> createUser(String id, String name, String image) async {
+  Future<void> createUser(
+      String id, String name, String image, String phone) async {
     final snapShot = await firestore.collection(userCollection).doc(id).get();
     if (snapShot.exists) {
       await firestore
           .collection(userCollection)
           .doc(id)
-          .update({'name': name, 'id': id, 'image': image});
+          .update({'name': name, 'id': id, 'image': image, 'phone': phone});
     } else {
       await firestore.collection(userCollection).doc(id).set({
         'name': name,
         'id': id,
         'image': image,
+        'phone': phone,
       });
     }
     return;
@@ -193,7 +195,7 @@ class InboxBloc extends ChangeNotifier {
   Future<List<String>> get20UserGroupInboxList(String idUser) async {
     final snapShot =
         await firestore.collection(userCollection).doc(idUser).get();
-    return FbInboxUserModel.fromJson(snapShot.data()).group;
+    return FbInboxUserModel.fromJson(snapShot.data()).groups;
   }
 
   Future<List<FbInboxGroupModel>> getGroupInboxList(

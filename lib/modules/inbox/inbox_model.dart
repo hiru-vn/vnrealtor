@@ -4,12 +4,13 @@ class FbInboxUserModel {
   final String id;
   final String image;
   final String name;
-  final List<String> group;
+  final String phone;
+  final List<String> groups;
 
-  FbInboxUserModel(this.id, this.image, this.name, this.group);
+  FbInboxUserModel(this.id, this.image, this.name, this.phone, this.groups);
 
   factory FbInboxUserModel.fromJson(Map<String, dynamic> map) {
-    return FbInboxUserModel(map['id'], map['image'], map['name'],
+    return FbInboxUserModel(map['id'], map['image'], map['name'], map['phone'],
         map['groups'] == null ? [] : (map['groups'] as List).cast<String>());
   }
 }

@@ -120,8 +120,8 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('token', loginRes['token']);
       await SPref.instance.set('id', loginRes['user']["id"]);
       userModel = UserModel.fromJson(loginRes['user']);
-      InboxBloc.instance
-          .createUser(userModel.id, userModel.name, userModel.avatar);
+      InboxBloc.instance.createUser(
+          userModel.id, userModel.name, userModel.avatar, userModel.phone);
       UserBloc.instance.init();
       PostBloc.instance.init();
       return BaseResponse.success(loginRes);
@@ -146,8 +146,8 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('token', loginRes['token']);
       await SPref.instance.set('id', loginRes['user']["id"]);
       userModel = UserModel.fromJson(loginRes['user']);
-      InboxBloc.instance
-          .createUser(userModel.id, userModel.name, userModel.avatar);
+      InboxBloc.instance.createUser(
+          userModel.id, userModel.name, userModel.avatar, userModel.phone);
       return BaseResponse.success(loginRes);
     } catch (e) {
       return BaseResponse.fail(e?.toString());

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
+import 'package:datcao/utils/call_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:dash_chat/dash_chat.dart';
@@ -576,16 +577,24 @@ class _InboxChatState extends State<InboxChat> {
                 Icons.phone,
                 color: Colors.white,
               )),
-          MenuItem(
-              title: 'Video call',
-              image: Icon(
-                Icons.video_call,
-                color: Colors.white,
-              )),
+          // MenuItem(
+          //     title: 'Video call',
+          //     image: Icon(
+          //       Icons.video_call,
+          //       color: Colors.white,
+          //     )),
         ],
         onClickMenu: (val) {
           if (val.menuTitle == 'Voice call') {
-            VoiceCallPage.navigate(widget.group.id, _fbUsers);
+            // try {
+            //   CallKit.displayIncomingCall(context, _authBloc.userModel.id,
+            //           _authBloc.userModel.name, _authBloc.userModel.phone)
+            //       .then((value) => print('call has ended'));
+            // } catch (e) {}
+            launchCaller(_fbUsers
+                .firstWhere((element) => element.id != _authBloc.userModel.id)
+                .phone);
+            // VoiceCallPage.navigate(widget.group.id, _fbUsers);
           }
           if (val.menuTitle == 'Video call') {
             VideoCallPage.navigate(widget.group.id, _fbUsers);
