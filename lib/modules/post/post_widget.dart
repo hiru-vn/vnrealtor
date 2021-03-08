@@ -144,7 +144,7 @@ class _PostWidgetState extends State<PostWidget> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 5),
+              padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 8),
               child: ReadMoreText(
                 widget.post?.content?.trim() ?? '',
                 trimLength: 100,
@@ -181,25 +181,8 @@ class _PostWidgetState extends State<PostWidget> {
             if ((widget.post?.mediaPosts?.length ?? 0) > 0)
               Stack(
                 children: [
-                  Container(
-                    height: deviceWidth(context) / 2 - 5,
-                    width: deviceWidth(context),
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: widget.post?.mediaPosts?.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          width: deviceWidth(context) /
-                              (widget.post?.mediaPosts?.length == 1 ? 1 : 2),
-                          child: MediaPostWidget(
-                            post: widget.post?.mediaPosts[index],
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) => SizedBox(
-                        width: 0.8,
-                      ),
-                    ),
+                  GroupMediaPostWidget(
+                    posts: widget.post?.mediaPosts,
                   ),
                   if (widget.post.locationLat != null &&
                       widget.post.locationLong != null)

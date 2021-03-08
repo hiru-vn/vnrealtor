@@ -16,11 +16,317 @@ import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
 
+class GroupMediaPostWidget extends StatelessWidget {
+  final List<MediaPost> posts;
+
+  const GroupMediaPostWidget({Key key, this.posts}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final callBack = (int index) {
+      Navigator.push(context, MaterialPageRoute(builder: (_) {
+        return DetailListMediaPost(
+          posts: posts,
+          index: index,
+        );
+      }));
+    };
+    if (posts.length == 1) {
+      return SizedBox(
+        width: deviceWidth(context),
+        height: deviceWidth(context) / 1.75,
+        child: MediaPostWidget(
+          post: posts[0],
+          onTapPostCallBack: () => callBack(0),
+        ),
+      );
+    }
+    if (posts.length == 2) {
+      return Row(
+        children: [
+          SizedBox(
+            width: deviceWidth(context) / 2 - 1.5,
+            height: deviceWidth(context) / 2,
+            child: MediaPostWidget(
+              post: posts[0],
+              onTapPostCallBack: () => callBack(0),
+            ),
+          ),
+          SizedBox(
+            width: 3,
+          ),
+          SizedBox(
+            width: deviceWidth(context) / 2 - 1.5,
+            height: deviceWidth(context) / 2,
+            child: MediaPostWidget(
+              post: posts[1],
+              onTapPostCallBack: () => callBack(1),
+            ),
+          ),
+        ],
+      );
+    }
+    if (posts.length == 3) {
+      return Column(
+        children: [
+          SizedBox(
+            width: deviceWidth(context),
+            height: deviceWidth(context) / 2,
+            child: MediaPostWidget(
+              post: posts[0],
+              onTapPostCallBack: () => callBack(0),
+            ),
+          ),
+          SizedBox(
+            height: 3,
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: deviceWidth(context) / 2 - 1.5,
+                height: deviceWidth(context) / 2.5,
+                child: MediaPostWidget(
+                  post: posts[1],
+                  onTapPostCallBack: () => callBack(1),
+                ),
+              ),
+              SizedBox(
+                width: 3,
+              ),
+              SizedBox(
+                width: deviceWidth(context) / 2 - 1.5,
+                height: deviceWidth(context) / 2.5,
+                child: MediaPostWidget(
+                  post: posts[2],
+                  onTapPostCallBack: () => callBack(2),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+    if (posts.length == 4) {
+      return Column(
+        children: [
+          SizedBox(
+            width: deviceWidth(context),
+            height: deviceWidth(context) / 2,
+            child: MediaPostWidget(
+              post: posts[0],
+              onTapPostCallBack: () => callBack(0),
+            ),
+          ),
+          SizedBox(
+            height: 3,
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: deviceWidth(context) / 3 - 2,
+                height: deviceWidth(context) / 3,
+                child: MediaPostWidget(
+                  post: posts[1],
+                  onTapPostCallBack: () => callBack(1),
+                ),
+              ),
+              SizedBox(
+                width: 3,
+              ),
+              SizedBox(
+                width: deviceWidth(context) / 3 - 2,
+                height: deviceWidth(context) / 3,
+                child: MediaPostWidget(
+                  post: posts[2],
+                  onTapPostCallBack: () => callBack(2),
+                ),
+              ),
+              SizedBox(
+                width: 3,
+              ),
+              SizedBox(
+                width: deviceWidth(context) / 3 - 2,
+                height: deviceWidth(context) / 3,
+                child: MediaPostWidget(
+                  post: posts[3],
+                  onTapPostCallBack: () => callBack(3),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+    if (posts.length == 5) {
+      return Column(
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                width: deviceWidth(context) / 2 - 1.5,
+                height: deviceWidth(context) / 2,
+                child: MediaPostWidget(
+                  post: posts[0],
+                  onTapPostCallBack: () => callBack(0),
+                ),
+              ),
+              SizedBox(
+                width: 3,
+              ),
+              SizedBox(
+                width: deviceWidth(context) / 2 - 1.5,
+                height: deviceWidth(context) / 2,
+                child: MediaPostWidget(
+                  post: posts[1],
+                  onTapPostCallBack: () => callBack(1),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 3,
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: deviceWidth(context) / 3 - 2,
+                height: deviceWidth(context) / 3,
+                child: MediaPostWidget(
+                  post: posts[2],
+                  onTapPostCallBack: () => callBack(2),
+                ),
+              ),
+              SizedBox(
+                width: 3,
+              ),
+              SizedBox(
+                width: deviceWidth(context) / 3 - 2,
+                height: deviceWidth(context) / 3,
+                child: MediaPostWidget(
+                  post: posts[3],
+                  onTapPostCallBack: () => callBack(3),
+                ),
+              ),
+              SizedBox(
+                width: 3,
+              ),
+              SizedBox(
+                width: deviceWidth(context) / 3 - 2,
+                height: deviceWidth(context) / 3,
+                child: MediaPostWidget(
+                  post: posts[4],
+                  onTapPostCallBack: () => callBack(4),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+
+    if (posts.length > 5) {
+      return Column(
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                width: deviceWidth(context) / 2 - 1.5,
+                height: deviceWidth(context) / 2,
+                child: MediaPostWidget(
+                  post: posts[0],
+                  onTapPostCallBack: () => callBack(0),
+                ),
+              ),
+              SizedBox(
+                width: 3,
+              ),
+              SizedBox(
+                width: deviceWidth(context) / 2 - 1.5,
+                height: deviceWidth(context) / 2,
+                child: MediaPostWidget(
+                  post: posts[1],
+                  onTapPostCallBack: () => callBack(1),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 3,
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: deviceWidth(context) / 3 - 2,
+                height: deviceWidth(context) / 3,
+                child: MediaPostWidget(
+                  post: posts[2],
+                  onTapPostCallBack: () => callBack(2),
+                ),
+              ),
+              SizedBox(
+                width: 3,
+              ),
+              SizedBox(
+                width: deviceWidth(context) / 3 - 2,
+                height: deviceWidth(context) / 3,
+                child: MediaPostWidget(
+                  post: posts[3],
+                  onTapPostCallBack: () => callBack(3),
+                ),
+              ),
+              SizedBox(
+                width: 3,
+              ),
+              SizedBox(
+                width: deviceWidth(context) / 3 - 2,
+                height: deviceWidth(context) / 3,
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      width: deviceWidth(context) / 3 - 2,
+                      height: deviceWidth(context) / 3,
+                      child: MediaPostWidget(
+                        post: posts[4],
+                        onTapPostCallBack: () => callBack(4),
+                      ),
+                    ),
+                    IgnorePointer(
+                      child: Container(
+                        width: deviceWidth(context) / 3 - 2,
+                        height: deviceWidth(context) / 3,
+                        color: Colors.black45,
+                      ),
+                    ),
+                    IgnorePointer(
+                      child: Center(
+                        child: Text(
+                          '+' + (posts.length - 4).toString(),
+                          style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 40,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+    return SizedBox.shrink();
+  }
+}
+
 class MediaPostWidget extends StatefulWidget {
   final MediaPost post;
-  final String tag;
-  final double borderRadius;
-  MediaPostWidget({@required this.post, this.tag, this.borderRadius = 0});
+  final Function onTapPostCallBack;
+  MediaPostWidget({
+    @required this.post,
+    @required this.onTapPostCallBack,
+  });
 
   @override
   _MediaPostWidgetState createState() => _MediaPostWidgetState();
@@ -50,30 +356,25 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String genTag =
-        widget.tag ?? widget.post.url + Random().nextInt(10000000).toString();
-
     return GestureDetector(
       onTap: () {
-        if (type == FileType.image || type == FileType.gif)
-          Navigator.push(context, MaterialPageRoute(builder: (_) {
-            return DetailImagePost(
-              widget.post,
-              tag: genTag,
-            );
-          }));
-        if (type == FileType.video)
-          Navigator.push(context, MaterialPageRoute(builder: (_) {
-            return DetailVideoPost(
-              widget.post,
-              tag: genTag,
-            );
-          }));
+        // if (type == FileType.image || type == FileType.gif)
+        //   Navigator.push(context, MaterialPageRoute(builder: (_) {
+        //     return DetailImagePost(
+        //       widget.post,
+        //     );
+        //   }));
+        // if (type == FileType.video)
+        //   Navigator.push(context, MaterialPageRoute(builder: (_) {
+        //     return DetailVideoPost(
+        //       widget.post,
+        //     );
+        //   }));
+        widget.onTapPostCallBack();
+
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: ClipRRect(
-          borderRadius: BorderRadius.circular(widget.borderRadius),
-          child: _getWidget(type)),
+      child: _getWidget(type),
     );
   }
 
@@ -110,10 +411,29 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
   }
 }
 
+class DetailListMediaPost extends StatelessWidget {
+  final List<MediaPost> posts;
+  final int index;
+
+  const DetailListMediaPost({Key key, this.posts, this.index})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    PageController controller = PageController(initialPage: index);
+    return PageView(
+      controller: controller,
+      children: posts.map((e) {
+        if (e.type == 'VIDEO') return DetailVideoPost(e);
+        if (e.type == 'PICTURE') return DetailImagePost(e);
+        return SizedBox();
+      }).toList(),
+    );
+  }
+}
+
 class DetailImagePost extends StatefulWidget {
   final MediaPost post;
-  final String tag;
-  DetailImagePost(this.post, {this.tag});
+  DetailImagePost(this.post);
 
   @override
   _DetailImagePostState createState() => _DetailImagePostState();
@@ -145,18 +465,12 @@ class _DetailImagePostState extends State<DetailImagePost> {
           Center(
             child: PhotoView(
               backgroundDecoration: BoxDecoration(color: Colors.black87),
-              imageProvider: NetworkImage(
+              imageProvider: CachedNetworkImageProvider(
                 widget.post.url,
               ),
               errorBuilder: (_, __, ___) => SizedBox.shrink(),
-              loadingBuilder: (context, event) => PhotoView(
-                backgroundDecoration: BoxDecoration(color: Colors.black87),
-                imageProvider: NetworkImage(
-                  widget.post.url,
-                ),
-                loadingBuilder: (context, event) => Center(
-                  child: kLoadingSpinner,
-                ),
+              loadingBuilder: (context, event) => Center(
+                child: kLoadingSpinner,
               ),
             ),
           ),
@@ -331,9 +645,8 @@ class _DetailImagePostState extends State<DetailImagePost> {
 
 class DetailVideoPost extends StatefulWidget {
   final MediaPost post;
-  final String tag;
   final int scaleW, scaleH;
-  DetailVideoPost(this.post, {this.tag, this.scaleW, this.scaleH});
+  DetailVideoPost(this.post, {this.scaleW, this.scaleH});
 
   @override
   _DetailVideoPostState createState() => _DetailVideoPostState();
