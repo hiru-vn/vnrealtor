@@ -284,6 +284,7 @@ class _PostWidgetState extends State<PostWidget> {
                       return;
                     }
                     widget.post.isUserLike = !widget.post.isUserLike;
+
                     if (widget.post.isUserLike) {
                       _postBloc.likePost(widget.post);
                     } else {

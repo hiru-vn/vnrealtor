@@ -338,8 +338,10 @@ class PostBloc extends ChangeNotifier {
   Future<BaseResponse> likePost(PostModel postModel) async {
     try {
       int likeCount = postModel.like + 1;
+      postModel.like = likeCount;
 
       setLikePostLocal(postModel.id, likeCount, true);
+      notifyListeners();
       final res = await PostRepo().increaseLikePost(postId: postModel.id);
       return BaseResponse.success(res);
     } catch (e) {
@@ -377,8 +379,10 @@ class PostBloc extends ChangeNotifier {
     try {
       int likeCount = postModel.like - 1;
       if (likeCount < 0) likeCount = 0;
+      postModel.like = likeCount;
 
       setLikePostLocal(postModel.id, likeCount, false);
+      notifyListeners();
       final res = await PostRepo().decreaseLikePost(postId: postModel.id);
       return BaseResponse.success(res);
     } catch (e) {
