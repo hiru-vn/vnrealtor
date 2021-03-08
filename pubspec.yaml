@@ -74,7 +74,7 @@ dev_dependencies:
   cloud_firestore: ^0.16.0
   firebase_core: ^0.7.0
   firebase_storage: ^7.0.0
-  google_maps_flutter: ^1.1.1
+  google_maps_flutter: ^1.2.0
   geolocator: ^6.1.14
   firebase_messaging: ^8.0.0-dev.14
   package_info: ^0.4.3+4

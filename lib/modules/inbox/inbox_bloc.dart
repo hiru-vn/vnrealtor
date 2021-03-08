@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datcao/share/import.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_chat.dart';
 import 'inbox_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class InboxBloc extends ChangeNotifier {
   InboxBloc._privateConstructor();
@@ -50,7 +53,7 @@ class InboxBloc extends ChangeNotifier {
       });
     }
     final users = await getUsers(userIds);
-    if (users == null) { 
+    if (users == null) {
       showToastNoContext('Người này không nhận tin nhắn');
       return;
     }
@@ -101,7 +104,7 @@ class InboxBloc extends ChangeNotifier {
 
   Future<void> addMessage(String groupId, String text, DateTime time,
       String uid, String fullName, String avatar,
-      {String filePath}) async {
+      {String filePath, LatLng location}) async {
     print('upload: ' + filePath.toString());
     await getGroup(groupId).collection(messageCollection).add({
       'text': text,
@@ -110,7 +113,9 @@ class InboxBloc extends ChangeNotifier {
       'fullName': fullName,
       'avatar': avatar,
       'filePath':
-          filePath == null ? null : (filePath.isNotEmpty ? filePath : null)
+          filePath == null ? null : (filePath.isNotEmpty ? filePath : null),
+      'lat': location.latitude,
+      'long': location.longitude
     });
     final userIds = (await getGroup(groupId).get()).data()['userIds'] as List;
     NotificationBloc.instance.sendNotiMessage(
@@ -199,9 +204,24 @@ class InboxBloc extends ChangeNotifier {
     //       await firestore.collection(groupCollection).doc(id).get();
     //   list.add(FbInboxGroupModel.fromJson(snapShot.data(), id));
     // });
-    for (int i = 0; i < idGroups.length; i++) {
-      final item =
-          await firestore.collection(groupCollection).doc(idGroups[i]).get();
+
+    // for (int i = 0; i < idGroups.length; i++) {
+    //   final item =
+    //       await firestore.collection(groupCollection).doc(idGroups[i]).get();
+    //   final users =
+    //       await getUsers((item.data()['userIds'] as List).cast<String>());
+    //   if (users != null) {
+    //     list.add(FbInboxGroupModel.fromJson(item.data(), item.id, users));
+    //     list.sort((a, b) =>
+    //         DateTime.tryParse(b.time).compareTo(DateTime.tryParse(a.time)));
+    //     groupInboxList = list;
+    //     // notifyListeners();
+    //   }
+    // }
+
+    //final List<FbInboxGroupModel> listGroup =
+    await Future.wait(idGroups.map((e) async {
+      final item = await firestore.collection(groupCollection).doc(e).get();
       final users =
           await getUsers((item.data()['userIds'] as List).cast<String>());
       if (users != null) {
@@ -211,7 +231,7 @@ class InboxBloc extends ChangeNotifier {
         groupInboxList = list;
         // notifyListeners();
       }
-    }
+    }));
 
     return list;
   }

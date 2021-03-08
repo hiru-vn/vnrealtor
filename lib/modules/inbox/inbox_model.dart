@@ -1,3 +1,5 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class FbInboxUserModel {
   final String id;
   final String image;
@@ -47,18 +49,17 @@ class FbInboxMessageModel {
   final String text;
   final String uid; //userId
   final String filePath;
+  final LatLng location;
 
   FbInboxMessageModel(this.id, this.avatar, this.date, this.fullName, this.text,
-      this.uid, this.filePath);
+      this.uid, this.filePath,
+      {this.location});
 
   factory FbInboxMessageModel.fromJson(Map<String, dynamic> map, String id) {
-    return FbInboxMessageModel(
-        id,
-        map['avatar'],
-        map['date'],
-        map["fullName"],
-        map['text'],
-        map['uid'],
-        map['filePath'] == '' ? null : map['filePath']);
+    return FbInboxMessageModel(id, map['avatar'], map['date'], map["fullName"],
+        map['text'], map['uid'], map['filePath'] == '' ? null : map['filePath'],
+        location: map['lat'] == null || map['long'] == null
+            ? null
+            : LatLng(map['lat'], map['long']));
   }
 }

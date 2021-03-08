@@ -5,14 +5,14 @@ import 'package:datcao/modules/notification/notification_page.dart';
 import 'package:datcao/modules/post/post_page.dart';
 import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/modules/setting/setting_page.dart';
-import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:datcao/share/import.dart';
 
 import 'bottom_navigator.dart';
 
 class HomePage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.pushReplacement(pageBuilder(HomePage()));
+    return navigatorKey.currentState
+        .pushAndRemoveUntil(pageBuilder(HomePage()), (route) => false);
   }
 
   @override
@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
   List<Widget> _pages = <Widget>[];
-
+  
   @override
   void initState() {
     _pages.addAll([
@@ -60,8 +60,7 @@ class _HomePageState extends State<HomePage>
             BottomTabModel(
                 true, 'Thông báo', MdiIcons.bellOutline, MdiIcons.bell),
             BottomTabModel(false, 'Hồ sơ', Icons.person_outline, Icons.person),
-            BottomTabModel(
-                false, 'Menu', Icons.menu, Icons.menu_outlined)
+            BottomTabModel(false, 'Menu', Icons.menu, Icons.menu_outlined)
           ],
           onSelect: (index) {
             setState(() {
