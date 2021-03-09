@@ -57,7 +57,7 @@ class PostModel {
       this.ward});
 
   PostModel.fromJson(Map<String, dynamic> json) {
-    id = json['id']??json['_id'];
+    id = json['id'] ?? json['_id'];
     content = json['content'];
     rawContent = json['rawContent'];
     mediaPostIds =
@@ -82,7 +82,7 @@ class PostModel {
     expirationDate = json['expirationDate'];
     point = json['point'] ?? 0;
     publicity = json['publicity'];
-    user = UserModel.fromJson(json['user']);
+    user = json['user'] != null ? UserModel.fromJson(json['user']) : null;
     if (json['mediaPosts'] != null) {
       mediaPosts = new List<MediaPost>();
       json['mediaPosts'].forEach((v) {

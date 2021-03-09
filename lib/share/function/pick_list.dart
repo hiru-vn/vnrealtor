@@ -25,41 +25,37 @@ void pickList(BuildContext context,
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              clipBehavior: Clip.hardEdge,
-              child: ConstrainedBox(
-                constraints:
-                    BoxConstraints(maxHeight: deviceHeight(context) * 0.75),
-                child: SingleChildScrollView(
-                  child: SafeArea(
-                    child: Container(
-                      decoration:
-                          BoxDecoration(color: ptPrimaryColorLight(context)),
-                      width: deviceWidth(context) - 30,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(20).copyWith(bottom: 10),
-                            child: Text(title ?? 'Chọn', style: ptTitle()),
-                          ),
-                          ...options?.map(
-                            (e) => InkWell(
-                              onTap: () {
-                                navigatorKey.currentState.maybePop(e.value);
-                                onPicked(e.value);
-                              },
-                              child: OptionItem(
-                                text: e.display,
-                                color: ptPrimaryColorLight(context),
-                              ),
+            ConstrainedBox(
+              constraints:
+                  BoxConstraints(maxHeight: deviceHeight(context) * 0.75),
+              child: SingleChildScrollView(
+                child: SafeArea(
+                  child: Container(
+                    decoration:
+                        BoxDecoration(color: ptPrimaryColorLight(context)),
+                    width: deviceWidth(context) - 30,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(20).copyWith(bottom: 10),
+                          child: Text(title ?? 'Chọn', style: ptTitle()),
+                        ),
+                        ...options?.map(
+                          (e) => InkWell(
+                            onTap: () {
+                              navigatorKey.currentState.maybePop(e.value);
+                              onPicked(e.value);
+                            },
+                            child: OptionItem(
+                              text: e.display,
+                              color: ptPrimaryColorLight(context),
                             ),
                           ),
-                          SizedBox(height: 15),
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: 15),
+                      ],
                     ),
                   ),
                 ),

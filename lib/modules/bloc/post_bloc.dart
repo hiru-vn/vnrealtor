@@ -114,6 +114,21 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> searchPostWithLocation(
+      double long, double lat, double maxDistance) async {
+    try {
+      final res =
+          await PostRepo().searchPostWithLocation(long, lat, maxDistance);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> getMyPost() async {
     try {
       final id = await SPref.instance.get('id');
