@@ -152,8 +152,8 @@ class _PostWidgetState extends State<PostWidget> {
                 textAlign: TextAlign.start,
                 colorClickableText: Colors.pink,
                 trimMode: TrimMode.Length,
-                trimCollapsedText: 'Show more',
-                trimExpandedText: 'Show less',
+                trimCollapsedText: 'Xem thêm',
+                trimExpandedText: 'Rút gọn',
                 moreStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

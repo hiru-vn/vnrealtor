@@ -1,5 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/model/comment.dart';
+import 'package:datcao/modules/model/media_post.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/share/import.dart';
@@ -463,6 +464,7 @@ class PostBloc extends ChangeNotifier {
       savePosts.add(post);
       savePosts.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       AuthBloc.instance.userModel.savedPostIds.add(post.id);
+      notifyListeners();
       final res = await PostRepo().savePost(post.id);
       return BaseResponse.success(res);
     } catch (e) {
@@ -507,6 +509,19 @@ class PostBloc extends ChangeNotifier {
       if (res == null)
         return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
       return BaseResponse.success(PostModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getOneMediaPost(String id) async {
+    try {
+      final res = await PostRepo().getOneMediaPost(id);
+      if (res == null)
+        return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
+      return BaseResponse.success(MediaPost.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e.toString());
     } finally {

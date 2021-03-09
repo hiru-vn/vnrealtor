@@ -88,6 +88,7 @@ class AuthBloc extends ChangeNotifier {
       }
       final deviceId = await DeviceInfo.instance.getDeviceId();
       final deviceToken = await FcmService.instance.getDeviceToken();
+      // FirebaseAuth.instance.signInWithCustomToken(token);
       final res = await _userRepo.login(
           userName: name,
           password: password,

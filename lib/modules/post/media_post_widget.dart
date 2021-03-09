@@ -442,9 +442,14 @@ class DetailImagePost extends StatefulWidget {
 class _DetailImagePostState extends State<DetailImagePost> {
   bool _isLike = false;
   PostBloc _postBloc;
+  MediaPost _post;
 
   @override
   void initState() {
+    _post = widget.post;
+    if (AuthBloc.instance.userModel != null)
+      _isLike =
+          widget.post.userLikeIds.contains(AuthBloc.instance.userModel.id);
     super.initState();
   }
 
@@ -452,6 +457,16 @@ class _DetailImagePostState extends State<DetailImagePost> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
+      _postBloc.getOneMediaPost(widget.post.id).then((res) {
+        if (res.isSuccess)
+          setState(() {
+            _post = res.data;
+            _isLike =
+                _post.userLikeIds.contains(AuthBloc.instance.userModel.id);
+          });
+        else
+          showToast(res.errMessage, context);
+      });
     }
     super.didChangeDependencies();
   }
@@ -466,7 +481,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
             child: PhotoView(
               backgroundDecoration: BoxDecoration(color: Colors.black87),
               imageProvider: CachedNetworkImageProvider(
-                widget.post.url,
+                _post.url,
               ),
               errorBuilder: (_, __, ___) => SizedBox.shrink(),
               loadingBuilder: (context, event) => Center(
@@ -509,11 +524,11 @@ class _DetailImagePostState extends State<DetailImagePost> {
                         }
                         _isLike = !_isLike;
                         if (_isLike) {
-                          widget.post.like++;
-                          _postBloc.likeMediaPost(widget.post.id);
+                          _post.like++;
+                          _postBloc.likeMediaPost(_post.id);
                         } else {
-                          if (widget.post.like > 0) widget.post.like--;
-                          _postBloc.unlikeMediaPost(widget.post.id);
+                          if (_post.like > 0) _post.like--;
+                          _postBloc.unlikeMediaPost(_post.id);
                         }
                         setState(() {});
                       },
@@ -620,7 +635,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                     width: 5,
                   ),
                   Text(
-                    widget.post?.like?.toString() ?? '0',
+                    _post.like?.toString() ?? '0',
                     style: ptSmall().copyWith(color: Colors.white),
                   ),
                   Spacer(),
@@ -657,17 +672,32 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
   bool videoEnded = false;
   bool _isLike = false;
   PostBloc _postBloc;
+  MediaPost _post;
 
   @override
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
+      _postBloc.getOneMediaPost(widget.post.id).then((res) {
+        if (res.isSuccess)
+          setState(() {
+            _post = res.data;
+            _isLike =
+                _post.userLikeIds.contains(AuthBloc.instance.userModel.id);
+          });
+        else
+          showToast(res.errMessage, context);
+      });
     }
     super.didChangeDependencies();
   }
 
   @override
   void initState() {
+    _post = widget.post;
+    if (AuthBloc.instance.userModel != null)
+      _isLike =
+          widget.post.userLikeIds.contains(AuthBloc.instance.userModel.id);
     super.initState();
     _controller = VideoPlayerController.network(widget.post.url)
       ..initialize().then(
@@ -749,11 +779,11 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                         }
                         _isLike = !_isLike;
                         if (_isLike) {
-                          widget.post.like++;
-                          _postBloc.likeMediaPost(widget.post.id);
+                          _post.like++;
+                          _postBloc.likeMediaPost(_post.id);
                         } else {
-                          if (widget.post.like > 0) widget.post.like--;
-                          _postBloc.unlikeMediaPost(widget.post.id);
+                          if (_post.like > 0) _post.like--;
+                          _postBloc.unlikeMediaPost(_post.id);
                         }
                         setState(() {});
                       },
@@ -796,7 +826,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              showComment(widget.post, context);
+                              showComment(_post, context);
                             },
                             child: Text(
                               'Bình luận',
@@ -819,8 +849,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                             width: 5,
                           ),
                           GestureDetector(
-                            onTap: () =>
-                                shareTo(context, video: [widget.post.url]),
+                            onTap: () => shareTo(context, video: [_post.url]),
                             child: Text(
                               'Chia sẻ',
                               style: TextStyle(color: Colors.white),
@@ -832,6 +861,46 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
               ),
             ),
           ),
+          Positioned(
+            bottom: 60,
+            width: deviceWidth(context),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: ptPrimaryColor(context),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: Icon(
+                      MdiIcons.thumbUp,
+                      size: 11,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    _post.like?.toString() ?? '0',
+                    style: ptSmall().copyWith(color: Colors.white),
+                  ),
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      showComment(widget.post, context);
+                    },
+                    child: Text(
+                      '${widget.post?.commentIds?.length.toString() ?? '0'} bình luận',
+                      style: ptSmall().copyWith(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
         ]),
       ),
       // floatingActionButton: FloatingActionButton(
