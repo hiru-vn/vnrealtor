@@ -205,7 +205,8 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                   showToast('Chạm để chọn vị trí', context);
                   return;
                 }
-                final file = await FileUtil.writeToFile(pngBytes, 'map', 'png');
+                final file =
+                    await FileUtil.writeToFile(pngBytes, 'map', 'jpeg');
                 navigatorKey.currentState.maybePop([selectedPoint, file]);
               },
               child: Material(
