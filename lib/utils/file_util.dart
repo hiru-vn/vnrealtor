@@ -31,17 +31,15 @@ class FileUtil {
 
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
-    var filePath =
-        tempPath + '/thumbnail.jpeg'; 
+    var filePath = tempPath + '/thumbnail.jpeg';
     return File(filePath)..writeAsBytesSync(encodePng(thumbnail));
   }
 
   static Future<String> uploadFireStorage(File file, {String path}) async {
     if (file == null) return '';
     try {
-      Reference storageReference = FirebaseStorage.instance
-          .ref()
-          .child('${path ?? 'root'}/${Path.basename(file.path)}');
+      Reference storageReference = FirebaseStorage.instance.ref().child(
+          '${path ?? 'root'}/${Path.basename(file.path.replaceAll(RegExp('/[^.,a-zA-Z]/g'), ''))}');
       UploadTask uploadTask = storageReference.putFile(file);
       print('uploading...');
       await uploadTask.whenComplete(() {});
@@ -55,13 +53,19 @@ class FileUtil {
 
   static Future<bool> deleteFileFireStorage(String path) async {
     if (path == null) return false;
+    String filePath = path;
+    // filePath = filePath.replaceAll(new RegExp(r'%2F'), '/');
+
+    // filePath = filePath.replaceAll(new RegExp(r'(\?alt).*'), '');
     try {
-      Reference storageReference = FirebaseStorage.instance
-          .refFromURL(path);
-          
-      if (storageReference!=null) {
-       await storageReference.delete();
-       return true;
+      Reference storageReference =
+          FirebaseStorage.instance.refFromURL(filePath);
+
+      if (storageReference != null) {
+        print(filePath);
+        print(storageReference);
+        await storageReference.delete();
+        return true;
       }
       return false;
     } catch (e) {
