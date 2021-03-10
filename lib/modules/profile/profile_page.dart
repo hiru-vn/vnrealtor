@@ -400,7 +400,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                 );
                               return SizedBox.shrink();
                             }),
-                      SizedBox(width: 15),
+                      SizedBox(width: 12),
                       if (widget.user.email != null)
                         GestureDetector(
                           onTap: () {

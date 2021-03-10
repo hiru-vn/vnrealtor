@@ -18,26 +18,29 @@ TextStyle ptHeadLineSmall() => TextStyle(
 TextStyle ptBigTitle() => TextStyle(
     fontWeight: FontWeight.w600,
     fontSize: 17,
-    letterSpacing: 0.5,
+    letterSpacing: 0.2,
     color: HexColor('#05515e'));
 
 TextStyle ptTitle() => TextStyle(
-    fontSize: 14.5,
+    fontSize: 14.3,
     fontWeight: FontWeight.w600,
-    letterSpacing: 0.3,
+    letterSpacing: 0.1,
     color: HexColor('#05515e'));
 
 TextStyle ptButton() => GoogleFonts.nunito(
-    letterSpacing: 0.2, fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white);
+    letterSpacing: 0.1,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: Colors.white);
 
-TextStyle ptBigBody() =>
-    GoogleFonts.nunito(fontSize: 15.5, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
+TextStyle ptBigBody() => GoogleFonts.nunito(
+    fontSize: 15.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
 
-TextStyle ptBody() =>
-    GoogleFonts.nunito(fontSize: 13.5, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
+TextStyle ptBody() => GoogleFonts.nunito(
+    fontSize: 13.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
 
-TextStyle ptSmall() =>
-    GoogleFonts.nunito(fontSize: 12.5, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
+TextStyle ptSmall() => GoogleFonts.nunito(
+    fontSize: 12.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
 
-TextStyle ptTiny() =>
-    GoogleFonts.nunito(fontSize: 11.5, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
+TextStyle ptTiny() => GoogleFonts.nunito(
+    fontSize: 11.5, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
