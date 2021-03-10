@@ -356,6 +356,7 @@ description
 url
 locationLat
 locationLong
+halfUrl
 expirationDate
 publicity
 createdAt

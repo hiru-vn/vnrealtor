@@ -65,6 +65,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
       await widget.pageController.animateToPage(0,
           duration: Duration(milliseconds: 200), curve: Curves.decelerate);
       FocusScope.of(context).requestFocus(FocusNode());
+      //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
+      _images.map((e) => FileUtil.deleteFileFireStorage(e));
+
       _expirationDate = null;
       _contentC.clear();
       _videos = [];
@@ -77,6 +80,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   Future _upload(String filePath) async {
     try {
+      if (_allVideoAndImage.length >= 9) {
+        showToast('Chỉ được đăng tối đa 9 ảnh/video', context);
+        return;
+      }
       _allVideoAndImage.add(loadingGif);
       setState(() {});
       final res = await FileUtil.uploadFireStorage(File(filePath),
@@ -134,7 +141,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 5).copyWith(bottom: 0),
+                                horizontal: 15, vertical: 5)
+                            .copyWith(bottom: 0),
                         child: HashTagTextField(
                           maxLength: 400,
                           maxLines: null,

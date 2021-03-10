@@ -88,6 +88,9 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
       final index =
           _postBloc.feed.indexWhere((element) => element.id == widget.post.id);
       _postBloc.feed[index] = res.data;
+
+      //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
+
       navigatorKey.currentState.maybePop(true);
     } else {
       showToast(res.errMessage, context);
@@ -132,12 +135,13 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
           actions: [
             Center(
               child: FlatButton(
-                  color: ptPrimaryColor(context),
-                  onPressed: _updatePost,
-                  child: Text(
-                    'Cập nhật',
-                    style: ptTitle().copyWith(color: Colors.white),
-                  )),
+                color: ptPrimaryColor(context),
+                onPressed: _updatePost,
+                child: Text(
+                  'Cập nhật',
+                  style: ptTitle().copyWith(color: Colors.white),
+                ),
+              ),
             ),
             SizedBox(
               width: 12,
@@ -157,6 +161,9 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   _images.remove(file);
                   _videos.remove(file);
                   _allVideoAndImage.remove(file);
+                  setState(() {});
+
+                  // FileUtil.deleteFileFireStorage(file);
                 },
               ),
             ),

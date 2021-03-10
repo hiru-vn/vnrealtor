@@ -381,7 +381,8 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
   Widget _getWidget(FileType type) {
     if (type == FileType.image || type == FileType.gif)
       return Image(
-        image: CachedNetworkImageProvider(widget.post.url),
+        image:
+            CachedNetworkImageProvider(widget.post.halfUrl ?? widget.post.url),
         fit: BoxFit.cover,
         errorBuilder: imageNetworkErrorBuilder,
         loadingBuilder: kLoadingBuilder,
@@ -481,7 +482,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
             child: PhotoView(
               backgroundDecoration: BoxDecoration(color: Colors.black87),
               imageProvider: CachedNetworkImageProvider(
-                _post.url,
+                _post.halfUrl ?? _post.url,
               ),
               errorBuilder: (_, __, ___) => SizedBox.shrink(),
               loadingBuilder: (context, event) => Center(

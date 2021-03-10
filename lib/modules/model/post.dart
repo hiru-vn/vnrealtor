@@ -87,6 +87,8 @@ class PostModel {
     if (json['mediaPosts'] != null) {
       mediaPosts = new List<MediaPost>();
       json['mediaPosts'].forEach((v) {
+        if (v == null) 
+        return;
         mediaPosts.add(new MediaPost.fromJson(v));
       });
     }

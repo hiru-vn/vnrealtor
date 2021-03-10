@@ -77,7 +77,7 @@ class FileUtil {
       }
       return false;
     } catch (e) {
-      showToastNoContext(e.toString());
+      // showToastNoContext(e.toString());
       return false;
     }
   }

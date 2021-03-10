@@ -290,7 +290,6 @@ class CreatePostCardGuest extends StatelessWidget {
       ),
     );
   }
-  
 
   _buildStoryWidget(PostModel postModel) {
     return Center(
