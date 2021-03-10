@@ -65,7 +65,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
       await widget.pageController.animateToPage(0,
           duration: Duration(milliseconds: 200), curve: Curves.decelerate);
       FocusScope.of(context).requestFocus(FocusNode());
-       _expirationDate = null;
+      //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
+      _images.map((e) => FileUtil.deleteFileFireStorage(e));
+
+      _expirationDate = null;
       _contentC.clear();
       _videos = [];
       _images = [];
@@ -77,6 +80,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   Future _upload(String filePath) async {
     try {
+      if (_allVideoAndImage.length >= 9) {
+        showToast('Chỉ được đăng tối đa 9 ảnh/video', context);
+        return;
+      }
       _allVideoAndImage.add(loadingGif);
       setState(() {});
       final res = await FileUtil.uploadFireStorage(File(filePath),
@@ -118,26 +125,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   _images.remove(file);
                   _videos.remove(file);
                   _allVideoAndImage.remove(file);
+                  FileUtil.deleteFileFireStorage(file);
                 },
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(top: 8),
+              padding: const EdgeInsets.all(8.0).copyWith(top: 8, bottom: 3),
               child: Material(
                 borderRadius: BorderRadius.circular(10),
                 // elevation: 5,
                 color: Colors.white,
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: 200),
+                  constraints: BoxConstraints(minHeight: 170),
                   child: Stack(
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 5),
+                                horizontal: 15, vertical: 5)
+                            .copyWith(bottom: 0),
                         child: HashTagTextField(
                           maxLength: 400,
                           maxLines: null,
-                          minLines: 5,
+                          minLines: 4,
                           controller: _contentC,
                           onChanged: (value) => setState(() {}),
                           basicStyle:
@@ -396,6 +405,7 @@ class CreatePostPageAppBar extends StatelessWidget
                 controller.animateToPage(0,
                     duration: Duration(milliseconds: 300),
                     curve: Curves.decelerate);
+                FocusScope.of(context).requestFocus(FocusNode());
               },
             ),
             SizedBox(

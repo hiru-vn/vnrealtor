@@ -74,7 +74,7 @@ class _PostWidgetState extends State<PostWidget> {
                       radius: 22,
                       backgroundColor: Colors.white,
                       backgroundImage: widget.post?.user?.avatar != null
-                          ? NetworkImage(widget.post?.user?.avatar)
+                          ? CachedNetworkImageProvider(widget.post?.user?.avatar)
                           : AssetImage('assets/image/default_avatar.png'),
                     ),
                   ),
@@ -93,6 +93,8 @@ class _PostWidgetState extends State<PostWidget> {
                           SizedBox(width: 8),
                           if (widget.post?.user?.role == 'AGENT')
                             CustomTooltip(
+                                                        margin: EdgeInsets.only(top: 0),
+
                               message: 'Tài khoản xác thực',
                               child: Container(
                                 decoration: BoxDecoration(
@@ -624,7 +626,7 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                           ),
                           SizedBox(height: 3),
                           Text(
-                            '${widget.post.mediaPosts.where((element) => element.type == 'VIDEO').length} Video • ${widget.post.mediaPosts.where((element) => element.type == 'PICTURE').length} Image',
+                            '${widget.post.like} thích • ${widget.post.commentIds.length} bình luận',
                             style: ptBody().copyWith(color: Colors.grey[600]),
                           ),
                           SizedBox(height: 3),

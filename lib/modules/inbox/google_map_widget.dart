@@ -206,7 +206,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                   return;
                 }
                 final file =
-                    await FileUtil.writeToFile(pngBytes, 'map', 'jpeg');
+                    await FileUtil.writeToFile(pngBytes, 'map', 'jpeg', 360);
                 navigatorKey.currentState.maybePop([selectedPoint, file]);
               },
               child: Material(

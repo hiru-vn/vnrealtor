@@ -15,13 +15,13 @@ void showToast(String mes, BuildContext context, {bool isSuccess = false}) {
   );
 }
 
-Future showToastNoContext(String mes) async {
+Future showToastNoContext(String mes, {Color bgColor, Color textColor}) async {
   await ft.Fluttertoast.cancel();
   return ft.Fluttertoast.showToast(
       fontSize: 14,
       msg: mes,
       toastLength: ft.Toast.LENGTH_SHORT,
       gravity: ft.ToastGravity.TOP,
-      backgroundColor: Colors.white,
-      textColor: Colors.blue);
+      backgroundColor: bgColor?? Colors.white,
+      textColor: textColor??Colors.blue);
 }

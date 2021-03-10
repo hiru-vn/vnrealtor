@@ -1,4 +1,5 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/notification/notification_page.dart';
@@ -45,7 +46,7 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final bool flag = await showConfirmDialog(context, 'Close the app?',
+        final bool flag = await showConfirmDialog(context, 'Thoát ứng dụng?',
             confirmTap: () {}, navigatorKey: navigatorKey);
         return flag;
       },
@@ -66,12 +67,18 @@ class _HomePageState extends State<HomePage>
             BottomTabModel(false, 'Menu', Icons.menu, Icons.menu_outlined)
           ],
           onSelect: (index) {
+            if (index == 0 && _selectedIndex == 0) {
+              if (PostBloc.instance.feedScrollController != null) {
+                PostBloc.instance.feedScrollController.animateTo(0,
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.decelerate);
+              }
+            }
+
             setState(() {
               _selectedIndex = index;
             });
-            // if (index == 1) //message
-            //   InboxBloc.instance
-            //       .getList20InboxGroup(AuthBloc.instance.userModel.id);
+
             if (index == 1) {
               UserBloc.instance.seenAllNoti();
             }

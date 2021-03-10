@@ -28,6 +28,7 @@ class PostModel {
   String district;
   String ward;
   List<String> hashTag;
+  String halfImages;
 
   PostModel(
       {this.id,
@@ -54,7 +55,8 @@ class PostModel {
       this.province,
       this.hashTag,
       this.rawContent,
-      this.ward});
+      this.ward,
+      this.halfImages});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -69,7 +71,6 @@ class PostModel {
     userLikeIds =
         json['userLikeIds'] != null ? json['userLikeIds'].cast<String>() : [];
     share = json['share'];
-
     userShareIds =
         json['userShareIds'] != null ? json['userShareIds'].cast<String>() : [];
     hashTag = json['hashTag'] != null ? json['hashTag'].cast<String>() : [];
@@ -86,6 +87,8 @@ class PostModel {
     if (json['mediaPosts'] != null) {
       mediaPosts = new List<MediaPost>();
       json['mediaPosts'].forEach((v) {
+        if (v == null) 
+        return;
         mediaPosts.add(new MediaPost.fromJson(v));
       });
     }
@@ -96,6 +99,7 @@ class PostModel {
     district = json['district'];
     province = json['province'];
     ward = json['ward'];
+    halfImages = json['halfImages'];
   }
 
   Map<String, dynamic> toJson() {
@@ -122,6 +126,7 @@ class PostModel {
     data['updatedAt'] = this.updatedAt;
     data['isUserLike'] = this.isUserLike;
     data['isUserShare'] = this.isUserShare;
+    data['halfImages'] = this.halfImages;
     return data;
   }
 }

@@ -88,6 +88,9 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
       final index =
           _postBloc.feed.indexWhere((element) => element.id == widget.post.id);
       _postBloc.feed[index] = res.data;
+
+      //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
+
       navigatorKey.currentState.maybePop(true);
     } else {
       showToast(res.errMessage, context);
@@ -132,12 +135,13 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
           actions: [
             Center(
               child: FlatButton(
-                  color: ptPrimaryColor(context),
-                  onPressed: _updatePost,
-                  child: Text(
-                    'Cập nhật',
-                    style: ptTitle().copyWith(color: Colors.white),
-                  )),
+                color: ptPrimaryColor(context),
+                onPressed: _updatePost,
+                child: Text(
+                  'Cập nhật',
+                  style: ptTitle().copyWith(color: Colors.white),
+                ),
+              ),
             ),
             SizedBox(
               width: 12,
@@ -157,26 +161,30 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   _images.remove(file);
                   _videos.remove(file);
                   _allVideoAndImage.remove(file);
+                  setState(() {});
+
+                  // FileUtil.deleteFileFireStorage(file);
                 },
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(top: 8),
+              padding: const EdgeInsets.all(8.0).copyWith(top: 8, bottom: 3),
               child: Material(
                 borderRadius: BorderRadius.circular(10),
                 // elevation: 5,
                 color: Colors.white,
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: 200),
+                  constraints: BoxConstraints(minHeight: 170),
                   child: Stack(
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 5),
+                                horizontal: 15, vertical: 5)
+                            .copyWith(bottom: 0),
                         child: HashTagTextField(
                           maxLength: 400,
                           maxLines: null,
-                          minLines: 6,
+                          minLines: 4,
                           controller: _contentC,
                           basicStyle:
                               ptBigBody().copyWith(color: Colors.black54),
@@ -188,6 +196,72 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                           ),
                         ),
                       ),
+                      Positioned(
+                        bottom: 0,
+                        height: 30,
+                        left: 10,
+                        right: 10,
+                        child: Container(
+                          height: 30,
+                          width: deviceWidth(context) - 20,
+                          child: ListView.separated(
+                            // shrinkWrap: true,
+                            separatorBuilder: (context, index) {
+                              return SizedBox(
+                                width: 10,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                borderRadius: BorderRadius.circular(15),
+                                onTap: () {
+                                  setState(() {
+                                    _contentC.text = _contentC.text +
+                                        ' ' +
+                                        _postBloc.hasTags
+                                            .where((element) =>
+                                                _contentC.text
+                                                    .contains(element['key']) &&
+                                                !_contentC.text
+                                                    .contains(element['value']))
+                                            .toList()[index]['value']
+                                            .toString();
+                                    _contentC.selection =
+                                        TextSelection.fromPosition(TextPosition(
+                                            offset: _contentC.text.length));
+                                  });
+                                },
+                                child: Container(
+                                  height: 30,
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                      color: ptSecondaryColor(context),
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Center(
+                                    child: Text(
+                                      _postBloc.hasTags
+                                          .where((element) =>
+                                              _contentC.text
+                                                  .contains(element['key']) &&
+                                              !_contentC.text
+                                                  .contains(element['value']))
+                                          .toList()[index]['value']
+                                          .toString(),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            itemCount: _postBloc.hasTags
+                                .where((element) =>
+                                    _contentC.text.contains(element['key']) &&
+                                    !_contentC.text.contains(element['value']))
+                                .toList()
+                                .length,
+                            scrollDirection: Axis.horizontal,
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),

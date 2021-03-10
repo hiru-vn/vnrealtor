@@ -4,7 +4,6 @@ import 'package:datcao/modules/model/setting.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class UserBloc extends ChangeNotifier {
   UserBloc._privateConstructor() {

@@ -42,7 +42,7 @@ type
 like
 userLikeIds
 commentIds
-
+halfUrl
 description
 url
 locationLat
@@ -75,6 +75,7 @@ locationLong
 expirationDate
 publicity
 createdAt
+halfUrl
 updatedAt
   ''');
 }

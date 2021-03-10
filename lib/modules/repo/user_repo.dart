@@ -45,6 +45,11 @@ idToken: "$idToken"
     return res['registerCompany'];
   }
 
+  Future loginFirebase(String uid) async {
+    final res = await UserSrv().mutate('createTokenFirebase', 'uid: "$uid"');
+    return res['createTokenFirebase'];
+  }
+
   Future getListFollower({String userId, String limit, String page}) async {
     final res = await UserSrv().mutate(
         'getListFollower',

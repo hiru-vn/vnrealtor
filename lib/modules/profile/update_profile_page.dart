@@ -47,7 +47,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       setState(() {
         uploadingAvatar = true;
       });
-      final url = await FileUtil.uploadFireStorage(File(filePath));
+      final uint8 = (await File(filePath).readAsBytes());
+      final thumbnail = await FileUtil.resizeImage(uint8, 120);
+      final url = await FileUtil.uploadFireStorage(thumbnail);
       setState(() {
         _authBloc.userModel.avatar = url;
         uploadingAvatar = false;
@@ -98,7 +100,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     child: CircleAvatar(
                       radius: 50,
                       backgroundImage:
-                          NetworkImage(_authBloc.userModel.avatar ?? ''),
+                          CachedNetworkImageProvider(_authBloc.userModel.avatar ?? ''),
                       child: uploadingAvatar
                           ? kLoadingSpinner
                           : Align(

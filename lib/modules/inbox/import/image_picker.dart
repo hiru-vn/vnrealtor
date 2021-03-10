@@ -1,3 +1,4 @@
+import 'package:datcao/utils/file_util.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
@@ -45,9 +46,12 @@ void imagePicker(BuildContext context,
                             // close showModalBottomSheet
                             Navigator.of(context).pop();
                             ImagePicker.pickImage(source: ImageSource.camera)
-                                .then((value) {
+                                .then((value) async {
                               if (value == null) return;
-                              onCameraPick(value.path);
+                              final resizeImg = await FileUtil.resizeImage(
+                                  value.readAsBytesSync(), 1080);
+
+                              onCameraPick(resizeImg.path);
                             });
                           });
                     },

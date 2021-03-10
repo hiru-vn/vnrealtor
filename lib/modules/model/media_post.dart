@@ -13,6 +13,7 @@ class MediaPost {
   bool publicity;
   String createdAt;
   String updatedAt;
+  String halfUrl;
 
   MediaPost(
       {this.id,
@@ -28,7 +29,7 @@ class MediaPost {
       this.expirationDate,
       this.publicity,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt, this.halfUrl});
 
   MediaPost.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -49,6 +50,7 @@ class MediaPost {
     publicity = json['publicity'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    halfUrl = json['halfUrl'];
   }
 
   Map<String, dynamic> toJson() {
