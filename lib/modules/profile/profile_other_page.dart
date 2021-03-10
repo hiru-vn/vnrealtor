@@ -192,8 +192,8 @@ class _ProfileCardState extends State<ProfileCard> {
                         height: 84,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(
-                              width: 2.5, color: ptPrimaryColor(context)),
+                          // border: Border.all(
+                          //     width: 2.5, color: ptPrimaryColor(context)),
                         ),
                         child: Center(
                           child: CircleAvatar(
@@ -202,6 +202,7 @@ class _ProfileCardState extends State<ProfileCard> {
                             backgroundImage: widget.user.avatar != null
                                 ? CachedNetworkImageProvider(widget.user.avatar)
                                 : AssetImage('assets/image/default_avatar.png'),
+                            child: VerifiedIcon(widget.user.role, 14),
                           ),
                         ),
                       ),
@@ -231,8 +232,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                 SizedBox(width: 8),
                                 if (widget.user.role == 'AGENT')
                                   CustomTooltip(
-                                                              margin: EdgeInsets.only(top: 0),
-
+                                    margin: EdgeInsets.only(top: 0),
                                     message: 'Tài khoản xác thực',
                                     child: Container(
                                       decoration: BoxDecoration(

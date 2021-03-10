@@ -32,3 +32,4 @@ export 'package:datcao/modules/services/base_response.dart';
 export 'package:datcao/share/widget/loading_widget.dart';
 export 'package:datcao/share/widget/skeleton_loader.dart';
 export 'package:cached_network_image/cached_network_image.dart';
+export 'package:datcao/share/widget/verified_icon.dart';
