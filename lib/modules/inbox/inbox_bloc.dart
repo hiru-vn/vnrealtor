@@ -114,8 +114,8 @@ class InboxBloc extends ChangeNotifier {
       'avatar': avatar,
       'filePath':
           filePath == null ? null : (filePath.isNotEmpty ? filePath : null),
-      'lat': location.latitude,
-      'long': location.longitude
+      'lat': location?.latitude,
+      'long': location?.longitude
     });
     final userIds = (await getGroup(groupId).get()).data()['userIds'] as List;
     NotificationBloc.instance.sendNotiMessage(

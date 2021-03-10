@@ -69,7 +69,7 @@ void pickList(BuildContext context,
               child: ExpandBtn(
                 color: ptPrimaryColorLight(context),
                 textColor: Colors.black,
-                text: 'Cancel',
+                text: 'Hủy',
                 height: 50,
                 onPress: () => navigatorKey.currentState.maybePop(),
               ),

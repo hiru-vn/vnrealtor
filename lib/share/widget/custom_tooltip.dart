@@ -182,7 +182,7 @@ class CustomTooltip extends StatefulWidget {
 
 class _CustomTooltipState extends State<CustomTooltip> with SingleTickerProviderStateMixin {
   static const double _defaultCustomTooltipHeight = 32.0;
-  static const double _defaultVerticalOffset = 24.0;
+  static const double _defaultVerticalOffset = 12.0;
   static const bool _defaultPreferBelow = true;
   static const EdgeInsetsGeometry _defaultPadding =
       EdgeInsets.symmetric(horizontal: 16.0);

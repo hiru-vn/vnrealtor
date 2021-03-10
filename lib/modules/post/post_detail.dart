@@ -151,7 +151,7 @@ class _PostDetailState extends State<PostDetail> {
                       backgroundColor: Colors.white,
                       backgroundImage: AuthBloc.instance.userModel?.avatar !=
                               null
-                          ? NetworkImage(AuthBloc.instance.userModel?.avatar)
+                          ? CachedNetworkImageProvider(AuthBloc.instance.userModel?.avatar)
                           : AssetImage('assets/image/default_avatar.png'),
                     ),
                     SizedBox(

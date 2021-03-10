@@ -91,6 +91,11 @@ ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').re
     return res;
   }
 
+  Future getOneMediaPost(String id) async {
+    final res = await MediaPostSrv().getItem(id);
+    return res;
+  }
+
   Future getPostByUserId(String userId) async {
     final res = await PostSrv().getList(
         limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}');
@@ -351,6 +356,7 @@ description
 url
 locationLat
 locationLong
+halfUrl
 expirationDate
 publicity
 createdAt

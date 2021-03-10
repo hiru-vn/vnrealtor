@@ -214,16 +214,17 @@ class _ProfileCardState extends State<ProfileCard> {
                         height: 84,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(
-                              width: 2.5, color: ptPrimaryColor(context)),
+                          // border: Border.all(
+                          //     width: 2.5, color: ptPrimaryColor(context)),
                         ),
                         child: Center(
                           child: CircleAvatar(
                             radius: 37.5,
                             backgroundColor: Colors.white,
                             backgroundImage: widget.user.avatar != null
-                                ? NetworkImage(widget.user.avatar)
+                                ? CachedNetworkImageProvider(widget.user.avatar)
                                 : AssetImage('assets/image/default_avatar.png'),
+                            child: VerifiedIcon(widget.user.role, 14),
                           ),
                         ),
                       ),
@@ -255,6 +256,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                   if (AuthBloc.instance.userModel?.role ==
                                       'AGENT')
                                     CustomTooltip(
+                                      margin: EdgeInsets.only(top: 0),
                                       message: 'Tài khoản xác thực',
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -300,7 +302,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
-                                      FollowPage.navigate(widget.user);
+                                      FollowPage.navigate(widget.user, 0);
                                     },
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
@@ -328,7 +330,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
-                                      FollowPage.navigate(widget.user);
+                                      FollowPage.navigate(widget.user, 1);
                                     },
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:datcao/modules/setting/connectivity.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry/sentry.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
@@ -16,6 +17,8 @@ import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_callkeep/flutter_callkeep.dart';
 
+import 'share/widget/empty_widget.dart';
+
 final _sentry = SentryClient(
     dsn:
         "https://ab7fbe46a1634b98b918535d535962ea@o396604.ingest.sentry.io/5596357");
@@ -23,8 +26,9 @@ final _sentry = SentryClient(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await CallKeep.setup();
-  
+  // CallKeep.setup();
+  ConnectionStatusSingleton.getInstance().initialize();
+
   runZonedGuarded(
     () => SystemChrome.setPreferredOrientations(
             [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
@@ -45,10 +49,42 @@ Image splash = Image.asset(
   fit: BoxFit.fitWidth,
 );
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  StreamSubscription _connectionChangeStream;
+
+  bool isOffline = false;
+
+  @override
+  initState() {
+    super.initState();
+    precacheImage(splash.image, context);
+
+    ConnectionStatusSingleton connectionStatus =
+        ConnectionStatusSingleton.getInstance();
+    isOffline = !connectionStatus.hasConnection;
+    _connectionChangeStream =
+        connectionStatus.connectionChange.listen(connectionChanged);
+  }
+
+  void connectionChanged(dynamic hasConnection) {
+    setState(() {
+      isOffline = !hasConnection;
+    });
+  }
+
+  @override
+  void dispose() {
+    _connectionChangeStream.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    precacheImage(splash.image, context);
     return LayoutBuilder(builder: (context, constraints) {
       return OrientationBuilder(builder: (context, orientation) {
         Responsive.init(constraints, orientation);
@@ -82,22 +118,46 @@ class MyApp extends StatelessWidget {
                     create: (context) => VerificationBloc.instance,
                   ),
                 ],
-                child: MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  localizationsDelegates: [
-                    const AppInternalizationlegate(),
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: [
-                    Locale('en', 'US'),
-                    Locale('vi', 'VN'),
-                  ],
-                  theme: ThemeProvider.of(context),
-                  navigatorKey: navigatorKey,
-                  home: SplashPage(),
-                ),
+                child: isOffline
+                    ? MaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        localizationsDelegates: [
+                          const AppInternalizationlegate(),
+                          GlobalMaterialLocalizations.delegate,
+                          GlobalWidgetsLocalizations.delegate,
+                          GlobalCupertinoLocalizations.delegate,
+                        ],
+                        supportedLocales: [
+                          Locale('en', 'US'),
+                          Locale('vi', 'VN'),
+                        ],
+                        theme: ThemeProvider.of(context),
+                        home: Material(
+                          child: Center(
+                              child: EmptyWidget(
+                            assetImg: 'assets/image/no_internet.png',
+                            title: 'Không có kết nối mạng',
+                            content:
+                                'Ứng dụng đang chờ thiết bị kết nối mạng để hoạt động trở lại',
+                          )),
+                        ),
+                      )
+                    : MaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        localizationsDelegates: [
+                          const AppInternalizationlegate(),
+                          GlobalMaterialLocalizations.delegate,
+                          GlobalWidgetsLocalizations.delegate,
+                          GlobalCupertinoLocalizations.delegate,
+                        ],
+                        supportedLocales: [
+                          Locale('en', 'US'),
+                          Locale('vi', 'VN'),
+                        ],
+                        theme: ThemeProvider.of(context),
+                        navigatorKey: navigatorKey,
+                        home: SplashPage(),
+                      ),
               );
             }),
           ),

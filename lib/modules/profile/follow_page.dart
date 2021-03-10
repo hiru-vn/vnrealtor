@@ -5,11 +5,13 @@ import 'package:datcao/share/import.dart';
 
 class FollowPage extends StatefulWidget {
   final UserModel user;
+  final int page;
 
-  const FollowPage({Key key, this.user}) : super(key: key);
+  const FollowPage({Key key, this.user, this.page}) : super(key: key);
 
-  static Future navigate(UserModel user) {
-    return navigatorKey.currentState.push(pageBuilder(FollowPage(user: user)));
+  static Future navigate(UserModel user, int page) {
+    return navigatorKey.currentState
+        .push(pageBuilder(FollowPage(user: user, page: page)));
   }
 
   @override
@@ -25,7 +27,8 @@ class _FollowPageState extends State<FollowPage>
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController =
+        TabController(length: 2, vsync: this, initialIndex: widget.page);
 
     super.initState();
   }

@@ -153,10 +153,11 @@ class _SettingPageState extends State<SettingPage> {
                       child: CircleAvatar(
                         radius: 25,
                         backgroundColor: Colors.white,
-                        backgroundImage: AuthBloc.instance.userModel.avatar !=
-                                null
-                            ? NetworkImage(AuthBloc.instance.userModel.avatar)
-                            : AssetImage('assets/image/default_avatar.png'),
+                        backgroundImage:
+                            AuthBloc.instance.userModel.avatar != null
+                                ? CachedNetworkImageProvider(
+                                    AuthBloc.instance.userModel.avatar)
+                                : AssetImage('assets/image/default_avatar.png'),
                       ),
                     ),
                     SizedBox(width: 16),
@@ -174,6 +175,7 @@ class _SettingPageState extends State<SettingPage> {
                             SizedBox(width: 8),
                             if (_authBloc.userModel?.role == 'AGENT')
                               CustomTooltip(
+                                margin: EdgeInsets.only(top: 0),
                                 message: 'Tài khoản xác thực',
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -209,8 +211,10 @@ class _SettingPageState extends State<SettingPage> {
                   ],
                 ),
               ),
-              if (AuthBloc.instance.userModel.role != 'COMPANY' ||
-                  !AuthBloc.instance.userModel.isVerify)
+              if ((AuthBloc.instance.userModel.role != 'COMPANY' ||
+                      !AuthBloc.instance.userModel.isVerify) &&
+                  ['AGENT', 'COMPANY', 'EDITOR']
+                      .contains(AuthBloc.instance.userModel.role))
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(

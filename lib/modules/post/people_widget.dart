@@ -20,9 +20,10 @@ class PeopleWidget extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: Row(children: [
               CircleAvatar(
-                radius: 22,backgroundColor: Colors.white,
+                radius: 22,
+                backgroundColor: Colors.white,
                 backgroundImage: user.avatar != null
-                    ? NetworkImage(user.avatar)
+                    ? CachedNetworkImageProvider(user.avatar)
                     : AssetImage('assets/image/default_avatar.png'),
               ),
               SizedBox(width: 13),
@@ -41,6 +42,7 @@ class PeopleWidget extends StatelessWidget {
                       ),
                       if (user?.role == 'AGENT') ...[
                         CustomTooltip(
+                          margin: EdgeInsets.only(top: 0),
                           message: 'Tài khoản xác thực',
                           child: Container(
                             decoration: BoxDecoration(
