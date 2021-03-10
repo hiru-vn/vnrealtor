@@ -144,6 +144,7 @@ class NotificationTab extends StatelessWidget {
               return;
             },
             child: ListView.separated(
+              controller: notificationBloc.notiScrollController,
               separatorBuilder: (context, index) => Divider(
                 height: 1,
               ),
@@ -223,6 +224,7 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
               return;
             },
             child: ListView.builder(
+              controller: NotificationBloc.instance.notiScrollController,
               itemCount: _userBloc.friendRequestFromOtherUsers.length,
               itemBuilder: (context, index) {
                 final item = _userBloc.friendRequestFromOtherUsers[index];
@@ -361,7 +363,8 @@ class FollowTab extends StatelessWidget {
                   style: ptBody(),
                 ),
                 subtitle: Text(
-                  Formart.timeByDayVi(DateTime.tryParse(list[index].updatedAt)) ??
+                  Formart.timeByDayVi(
+                          DateTime.tryParse(list[index].updatedAt)) ??
                       '',
                   style: ptTiny(),
                 ),

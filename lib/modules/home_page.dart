@@ -1,4 +1,5 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
@@ -69,7 +70,22 @@ class _HomePageState extends State<HomePage>
           onSelect: (index) {
             if (index == 0 && _selectedIndex == 0) {
               if (PostBloc.instance.feedScrollController != null) {
+                PostBloc.instance.getNewFeed();
                 PostBloc.instance.feedScrollController.animateTo(0,
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.decelerate);
+              }
+            }
+            if (index == 1 && _selectedIndex == 1) {
+              if (UserBloc.instance.profileScrollController != null) {
+                NotificationBloc.instance.notiScrollController.animateTo(0,
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.decelerate);
+              }
+            }
+            if (index == 2 && _selectedIndex == 2) {
+              if (UserBloc.instance.profileScrollController != null) {
+                UserBloc.instance.profileScrollController.animateTo(0,
                     duration: Duration(milliseconds: 300),
                     curve: Curves.decelerate);
               }

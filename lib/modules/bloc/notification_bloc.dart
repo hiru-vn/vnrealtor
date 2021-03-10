@@ -6,6 +6,8 @@ class NotificationBloc extends ChangeNotifier {
   NotificationBloc._privateConstructor();
   static final NotificationBloc instance =
       NotificationBloc._privateConstructor();
+  
+  ScrollController notiScrollController = ScrollController();
 
   bool isLoadNoti = true;
   List<NotificationModel> notifications = [];

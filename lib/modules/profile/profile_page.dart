@@ -55,6 +55,7 @@ class _ProfilePageState extends State<ProfilePage>
       backgroundColor: ptBackgroundColor(context),
       appBar: ProfilePageAppBar(),
       body: NestedScrollView(
+        controller: _userBloc.profileScrollController,
         headerSliverBuilder: (context, value) {
           return [
             SliverToBoxAdapter(
@@ -80,6 +81,7 @@ class _ProfilePageState extends State<ProfilePage>
                               showToast(res.errMessage, context);
                           },
                           child: ListView.separated(
+                            // controller: _userBloc.profileScrollController,
                             itemCount: _postBloc.myPosts.length,
                             itemBuilder: (context, index) {
                               final post = _postBloc.myPosts[index];
@@ -97,6 +99,7 @@ class _ProfilePageState extends State<ProfilePage>
                   ? kLoadingSpinner
                   : (_postBloc.savePosts.length != 0
                       ? ListView.separated(
+                          // controller: _userBloc.profileScrollController,
                           itemCount: _postBloc.savePosts.length,
                           itemBuilder: (context, index) {
                             final post = _postBloc.savePosts[index];

@@ -11,6 +11,7 @@ class UserBloc extends ChangeNotifier {
   }
   static final UserBloc instance = UserBloc._privateConstructor();
 
+  ScrollController profileScrollController = ScrollController();
   List<FriendshipModel> friendRequestFromOtherUsers = [];
   List<UserModel> followersIn7Days = [];
 
