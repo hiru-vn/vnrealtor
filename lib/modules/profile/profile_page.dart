@@ -255,6 +255,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                   if (AuthBloc.instance.userModel?.role ==
                                       'AGENT')
                                     CustomTooltip(
+                                                                margin: EdgeInsets.only(top: 0),
+
                                       message: 'Tài khoản xác thực',
                                       child: Container(
                                         decoration: BoxDecoration(

@@ -176,7 +176,8 @@ class _CommentPageState extends State<CommentPage> {
                           backgroundColor: Colors.white,
                           backgroundImage: AuthBloc.instance.userModel.avatar !=
                                   null
-                              ? CachedNetworkImageProvider(AuthBloc.instance.userModel.avatar)
+                              ? CachedNetworkImageProvider(
+                                  AuthBloc.instance.userModel.avatar)
                               : AssetImage('assets/image/default_avatar.png'),
                         ),
                         SizedBox(
@@ -371,14 +372,18 @@ class _CommentWidgetState extends State<CommentWidget> {
     menu = PopupMenu(
         items: [
           MenuItem(
-              title: 'Xóa bài',
+              title: 'Xóa',
               image: Icon(
                 Icons.delete,
                 color: Colors.white,
               )),
         ],
         onClickMenu: (val) async {
-          if (val.menuTitle == 'Xóa bài') {
+          final confirm = await showConfirmDialog(
+              context, 'Xác nhận xóa bình luận này?',
+              confirmTap: () {}, navigatorKey: navigatorKey);
+          if (!confirm) return;
+          if (val.menuTitle == 'Xóa') {
             final res = await _postBloc.deleteComment(widget.comment.id);
             if (res.isSuccess) {
             } else {

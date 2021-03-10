@@ -88,7 +88,6 @@ class AuthBloc extends ChangeNotifier {
       }
       final deviceId = await DeviceInfo.instance.getDeviceId();
       final deviceToken = await FcmService.instance.getDeviceToken();
-      // FirebaseAuth.instance.signInWithCustomToken(token);
       final res = await _userRepo.login(
           userName: name,
           password: password,
@@ -96,6 +95,7 @@ class AuthBloc extends ChangeNotifier {
           deviceToken: deviceToken);
       await SPref.instance.set('token', res['token']);
       await SPref.instance.set('id', res['user']["id"]);
+      FirebaseAuth.instance.signInWithCustomToken(res['token']);
       userModel = UserModel.fromJson(res['user']);
       UserBloc.instance.init();
       PostBloc.instance.init();
@@ -121,6 +121,8 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('token', loginRes['token']);
       await SPref.instance.set('id', loginRes['user']["id"]);
       userModel = UserModel.fromJson(loginRes['user']);
+      FirebaseAuth.instance.signInWithCustomToken(loginRes['token']);
+
       InboxBloc.instance.createUser(
           userModel.id, userModel.name, userModel.avatar, userModel.phone);
       UserBloc.instance.init();
@@ -310,6 +312,8 @@ class AuthBloc extends ChangeNotifier {
 
   Future<BaseResponse> getUserInfo() async {
     try {
+      final token = await SPref.instance.get('token');
+      FirebaseAuth.instance.signInWithCustomToken(token);
       final id = await SPref.instance.get('id');
       final res = await _userRepo.getOneUserForClient(id: id);
       userModel = UserModel.fromJson(res);
@@ -331,6 +335,7 @@ class AuthBloc extends ChangeNotifier {
     await SPref.instance.remove('token');
     await SPref.instance.remove('id');
     AuthBloc.instance.userModel = null;
+    FirebaseAuth.instance.signOut();
     print('User Sign Out');
     navigatorKey.currentState
         .pushAndRemoveUntil(pageBuilder(GuestFeedPage()), (route) => false);

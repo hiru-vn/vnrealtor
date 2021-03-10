@@ -30,6 +30,7 @@ class _PostPageState extends State<PostPage> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
+      _postBloc.feedScrollController = _controller;
     }
     super.didChangeDependencies();
   }
@@ -41,7 +42,7 @@ class _PostPageState extends State<PostPage> {
   }
 
   void appBarControll() {
-    if (_controller.position.userScrollDirection == ScrollDirection.forward) {
+    if (_controller.position.userScrollDirection == ScrollDirection.forward || _controller.offset == 0) {
       if (!showAppBar)
         setState(() {
           showAppBar = !showAppBar;

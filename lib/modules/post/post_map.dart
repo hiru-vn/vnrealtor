@@ -21,7 +21,7 @@ class PostMapState extends State<PostMap> {
   PostBloc _postBloc;
   LatLng _lastMapPosition;
   LatLng _currentMapPosition; // center of map
-  double distance = 15; //km
+  double distance = 30; //km
   List<PostModel> posts = [];
   Set<Marker> selectedMarkers = <Marker>{};
   InfoWidgetRoute _infoWidgetRoute;

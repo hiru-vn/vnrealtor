@@ -93,6 +93,8 @@ class _PostWidgetState extends State<PostWidget> {
                           SizedBox(width: 8),
                           if (widget.post?.user?.role == 'AGENT')
                             CustomTooltip(
+                                                        margin: EdgeInsets.only(top: 0),
+
                               message: 'Tài khoản xác thực',
                               child: Container(
                                 decoration: BoxDecoration(

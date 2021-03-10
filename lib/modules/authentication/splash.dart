@@ -6,6 +6,7 @@ import 'package:datcao/modules/guest/guest_feed_page.dart';
 import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/share/import.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SplashPage extends StatefulWidget {
   static Future navigate() {
@@ -41,6 +42,7 @@ class _SplashPageState extends State<SplashPage> {
           } else {
             final res = await _authBloc.getUserInfo();
             if (res.isSuccess) {
+              
               await Future.wait([
                 FcmService.instance.init(),
                 PostBloc.instance.init(),
