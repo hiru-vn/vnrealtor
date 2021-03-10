@@ -53,7 +53,7 @@ class DetailImageScreen extends StatelessWidget {
         child: Stack(fit: StackFit.expand, children: [
           Center(
             child: PhotoView(
-              backgroundDecoration: BoxDecoration(color: Colors.black87),
+              backgroundDecoration: BoxDecoration(color: Colors.black),
               imageProvider: CachedNetworkImageProvider(
                 url,
               ),
@@ -83,7 +83,7 @@ class DetailImageScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20)),
                 width: 40,
                 height: 40,
-                child: Icon(Icons.close),
+                child: Icon(Icons.close, color: Colors.white,),
               ),
             ),
           ),

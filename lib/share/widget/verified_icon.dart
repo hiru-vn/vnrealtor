@@ -39,7 +39,7 @@ class VerifiedIcon extends StatelessWidget {
               height: size + 6,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: ptSecondaryColor(context),
+                color: ptPrimaryColor(context)
               ),
               padding: EdgeInsets.all(3),
               child: SizedBox(

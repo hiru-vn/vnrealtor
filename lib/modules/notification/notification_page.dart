@@ -168,7 +168,7 @@ class NotificationTab extends StatelessWidget {
                   backgroundImage:
                       (list[index].image == null || list[index].image == '')
                           ? AssetImage('assets/image/icon_white.png')
-                          : NetworkImage(list[index].image),
+                          : CachedNetworkImageProvider(list[index].image),
                 ),
                 title: Text(
                   list[index].body,
@@ -235,7 +235,7 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                     radius: 22,
                     backgroundColor: Colors.white,
                     backgroundImage: item.user1.avatar != null
-                        ? NetworkImage(item.user1.avatar)
+                        ? CachedNetworkImageProvider(item.user1.avatar)
                         : AssetImage('assets/image/default_avatar.png'),
                   ),
                   title: Column(
