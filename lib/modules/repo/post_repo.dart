@@ -70,8 +70,29 @@ $postFragment
     return res;
   }
 
+  Future searchPostWithLocation(
+      double long, double lat, double maxDistance) async {
+    final res = await PostSrv().query('searchPostByPoint', '''
+      data: {
+        maxDistance: ${maxDistance * 1000}
+        lng: $long
+        lat: $lat
+        limit: 100
+        page: 1
+      }
+      ''', fragment: '''data { 
+${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').replaceFirst('id', '_id')}
+          }''');
+    return res['searchPostByPoint'];
+  }
+
   Future getOnePost(String id) async {
     final res = await PostSrv().getItem(id);
+    return res;
+  }
+
+  Future getOneMediaPost(String id) async {
+    final res = await MediaPostSrv().getItem(id);
     return res;
   }
 
@@ -210,15 +231,17 @@ $postFragment
 
   Future getAllCommentByPostIdGuest(
       {String postId, GraphqlFilter filter}) async {
-    final res = await CommentSrv()
-        .query('getCommentByGuest', ' q : { filter: {postId: \"$postId\"} } ');
+    final res = await CommentSrv().query(
+        'getCommentByGuest', ' q : { filter: {postId: \"$postId\"} } ',
+        fragment: 'data { ${CommentSrv().fragmentDefault} }');
     return res['getCommentByGuest'];
   }
 
   Future getAllCommentByMediaPostIdGuest(
       {String mediaPostId, GraphqlFilter filter}) async {
     final res = await CommentSrv().query('getCommentByGuest',
-        ' q : { filter: {mediaPostId: \"$mediaPostId\"} } ');
+        ' q : { filter: {mediaPostId: \"$mediaPostId\"} } ',
+        fragment: 'data { ${CommentSrv().fragmentDefault} }');
     return res['getCommentByGuest'];
   }
 

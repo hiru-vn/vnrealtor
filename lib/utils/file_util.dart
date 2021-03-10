@@ -1,6 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:path/path.dart' as Path;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image/image.dart';
+import 'package:path_provider/path_provider.dart';
 
 enum FileType { document, image, video, gif }
 
@@ -19,7 +22,20 @@ class FileUtil {
     return null;
   }
 
-  static Future<String> uploadFireStorage(File file, { String path}) async {
+  static Future<File> resizeImage(Uint8List data, int resizeWidth) async {
+    Image image = decodeImage(data);
+
+    // Resize the image to a 240? thumbnail (maintaining the aspect ratio).
+    Image thumbnail = copyResize(image, width: 360);
+
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    var filePath =
+        tempPath + '/thumbnail.jpeg'; 
+    return File(filePath)..writeAsBytesSync(encodePng(thumbnail));
+  }
+
+  static Future<String> uploadFireStorage(File file, {String path}) async {
     if (file == null) return '';
     try {
       Reference storageReference = FirebaseStorage.instance

@@ -24,8 +24,9 @@ class _PolicyPageState extends State<PolicyPage> {
         fit: StackFit.expand,
         children: [
           WebView(
-            initialUrl:
-                'https://sites.google.com/view/rebix-app-vnrealtor/trang-ch%E1%BB%A7',
+            javascriptMode: JavascriptMode.unrestricted,
+            initialUrl: 'https://datcao.com/policy/user',
+            // 'https://sites.google.com/view/rebix-app-vnrealtor/trang-ch%E1%BB%A7',
             onPageStarted: (str) {},
             onPageFinished: (str) {
               setState(() {

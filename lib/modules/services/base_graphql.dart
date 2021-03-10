@@ -9,6 +9,8 @@ class BaseService {
   String _name;
   String _fragmentDefault;
 
+  get fragmentDefault => _fragmentDefault;
+
   BaseService({String module, String fragment}) {
     print(module);
     _module = module;
@@ -219,12 +221,10 @@ class BaseService {
       {String fragment, bool removeData = false}) async {
     String queryNode;
     if (fragment == null)
-      queryNode = 'query { $name($data) { data { $_fragmentDefault } } }';
+      queryNode = 'query { $name($data) }';
     else
       queryNode = 'query { $name($data) { $fragment } }';
     print('$queryNode');
-
-    if (removeData) queryNode.replaceAll('(', '').replaceAll(')', '');
 
     final MutationOptions options =
         MutationOptions(documentNode: gql(queryNode));

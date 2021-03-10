@@ -5,98 +5,86 @@ import 'package:datcao/themes/color.dart';
 
 class DialScreen extends StatelessWidget {
   final List<String> names;
+  final Function disposeCallBack;
 
-  const DialScreen({Key key, this.names}) : super(key: key);
+  const DialScreen({Key key, this.names, this.disposeCallBack})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ptDarkColor(context),
-      body: Body(names: names),
-    );
-  }
-}
-
-class Body extends StatefulWidget {
-  final List<String> names;
-
-  const Body({Key key, this.names}) : super(key: key);
-  @override
-  _BodyState createState() => _BodyState();
-}
-
-class _BodyState extends State<Body> {
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            SpacingBox(h: 3),
-            Text(
-              widget?.names?.join(", ")??'Calling...',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline4
-                  .copyWith(color: Colors.white),
-            ),
-            SpacingBox(h: 0.3),
-            Text(
-              "Calling…",
-              style: TextStyle(color: Colors.white60),
-            ),
-            SpacingBox(h: 3),
-            DialUserPic(
-              image:
-                  'https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png',
-            ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                DialButton(
-                  icon: Icons.volume_up,
-                  text: "Audio",
-                  press: () {},
-                ),
-                DialButton(
-                  icon: Icons.mic,
-                  text: "Microphone",
-                  press: () {},
-                ),
-                DialButton(
-                  icon: MdiIcons.camera,
-                  text: "Video",
-                  press: () {},
-                ),
-                // DialButton(
-                //   iconSrc: "assets/icons/Icon Message.svg",
-                //   text: "Message",
-                //   press: () {},
-                // ),
-                // DialButton(
-                //   iconSrc: "assets/icons/Icon User.svg",
-                //   text: "Add contact",
-                //   press: () {},
-                // ),
-                // DialButton(
-                //   iconSrc: "assets/icons/Icon Voicemail.svg",
-                //   text: "Voice mail",
-                //   press: () {},
-                // ),
-              ],
-            ),
-            SpacingBox(h: 3),
-            RoundedButton(
-              iconSrc: Icons.call_end,
-              press: () {
-                navigatorKey.currentState.maybePop();
-              },
-              color: Colors.red[700],
-              iconColor: Colors.white,
-            ),
-            SpacingBox(h: 3),
-          ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              SpacingBox(h: 3),
+              Text(
+                names?.join(", ") ?? 'Calling...',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline4
+                    .copyWith(color: Colors.white),
+              ),
+              SpacingBox(h: 0.3),
+              Text(
+                "Calling…",
+                style: TextStyle(color: Colors.white60),
+              ),
+              SpacingBox(h: 3),
+              DialUserPic(
+                image:
+                    'https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png',
+              ),
+              Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  DialButton(
+                    icon: Icons.volume_up,
+                    text: "Audio",
+                    press: () {},
+                  ),
+                  DialButton(
+                    icon: Icons.mic,
+                    text: "Microphone",
+                    press: () {},
+                  ),
+                  DialButton(
+                    icon: MdiIcons.camera,
+                    text: "Video",
+                    press: () {},
+                  ),
+                  // DialButton(
+                  //   iconSrc: "assets/icons/Icon Message.svg",
+                  //   text: "Message",
+                  //   press: () {},
+                  // ),
+                  // DialButton(
+                  //   iconSrc: "assets/icons/Icon User.svg",
+                  //   text: "Add contact",
+                  //   press: () {},
+                  // ),
+                  // DialButton(
+                  //   iconSrc: "assets/icons/Icon Voicemail.svg",
+                  //   text: "Voice mail",
+                  //   press: () {},
+                  // ),
+                ],
+              ),
+              SpacingBox(h: 3),
+              RoundedButton(
+                iconSrc: Icons.call_end,
+                press: () {
+                  disposeCallBack();
+                  navigatorKey.currentState.maybePop();
+                },
+                color: Colors.red[700],
+                iconColor: Colors.white,
+              ),
+              SpacingBox(h: 3),
+            ],
+          ),
         ),
       ),
     );
@@ -210,6 +198,12 @@ class _DialUserPicState extends State<DialUserPic>
         duration: const Duration(milliseconds: 700), vsync: this);
     _animationController.repeat(reverse: true);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override

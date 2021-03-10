@@ -32,8 +32,11 @@ class _HomePageState extends State<HomePage>
       ProfilePage(),
       SettingPage(),
     ]);
-    InboxBloc.instance.createUser(AuthBloc.instance.userModel.id,
-        AuthBloc.instance.userModel.name, AuthBloc.instance.userModel.avatar);
+    InboxBloc.instance.createUser(
+        AuthBloc.instance.userModel.id,
+        AuthBloc.instance.userModel.name,
+        AuthBloc.instance.userModel.avatar,
+        AuthBloc.instance.userModel.phone);
 
     super.initState();
   }
@@ -60,8 +63,7 @@ class _HomePageState extends State<HomePage>
             BottomTabModel(
                 true, 'Thông báo', MdiIcons.bellOutline, MdiIcons.bell),
             BottomTabModel(false, 'Hồ sơ', Icons.person_outline, Icons.person),
-            BottomTabModel(
-                false, 'Menu', Icons.menu, Icons.menu_outlined)
+            BottomTabModel(false, 'Menu', Icons.menu, Icons.menu_outlined)
           ],
           onSelect: (index) {
             setState(() {

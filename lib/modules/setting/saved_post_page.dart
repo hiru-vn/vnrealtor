@@ -35,12 +35,13 @@ class _SavedPostPageState extends State<SavedPostPage> {
           ? kLoadingSpinner
           : (_postBloc.savePosts.length != 0
               ? ListView.separated(
+                  padding: EdgeInsets.only(bottom: 20),
                   itemCount: _postBloc.savePosts.length,
                   itemBuilder: (context, index) {
                     final post = _postBloc.savePosts[index];
                     return PostSmallWidget(post);
                   },
-                  separatorBuilder: (context, index) => SizedBox(height: 15),
+                  separatorBuilder: (context, index) => SizedBox(height: 0),
                 )
               : EmptyWidget(
                   assetImg: 'assets/image/no_post.png',

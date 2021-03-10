@@ -152,6 +152,7 @@ class _InboxListState extends State<InboxList>
                                         : 13.5),
                               ),
                               trailing: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   SizedBox(height: 12),
                                   Text(
@@ -172,8 +173,8 @@ class _InboxListState extends State<InboxList>
                                                 .groupInboxList[index].reader
                                                 .contains(
                                                     _authBloc.userModel.id)
-                                            ? 12
-                                            : 13),
+                                            ? 11.5
+                                            : 12),
                                   ),
                                 ],
                               ),

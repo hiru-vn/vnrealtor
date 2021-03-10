@@ -1,12 +1,16 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
+import 'package:datcao/modules/inbox/import/file_util.dart';
 import 'package:datcao/navigator.dart';
 import 'package:datcao/share/function/show_toast.dart';
+import 'package:datcao/share/import.dart';
 import 'package:datcao/utils/spref.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
-import 'package:share/share.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 Future showGoogleMap(BuildContext context, {double height}) {
   if (height == null)
@@ -16,11 +20,13 @@ Future showGoogleMap(BuildContext context, {double height}) {
       useRootNavigator: true,
       builder: (context) {
         return SizedBox(
-            width: MediaQuery.of(context).size.width,
             height: height,
+            width: deviceWidth(context),
             child: GoogleMapWidget());
       });
 }
+
+GlobalKey mapKey = GlobalKey();
 
 class GoogleMapWidget extends StatefulWidget {
   @override
@@ -35,6 +41,16 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   );
   Marker selectedMarker;
   LatLng selectedPoint;
+  Uint8List pngBytes;
+
+  Future<Uint8List> _getSnapShot() async {
+    final imageBytes = await (await _controller?.future).takeSnapshot();
+    setState(() {
+      pngBytes = imageBytes;
+    });
+
+    return pngBytes;
+  }
 
   void _selectMarker(LatLng point) {
     setState(() {
@@ -47,6 +63,9 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
         ),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       );
+    });
+    Future.delayed(Duration(milliseconds: 100), () {
+      _getSnapShot();
     });
   }
 
@@ -181,14 +200,23 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
             bottom: 15,
             left: 12,
             child: InkWell(
-              onTap: () => navigatorKey.currentState.maybePop(selectedPoint),
+              onTap: () async {
+                if (selectedPoint == null) {
+                  showToast('Chạm để chọn vị trí', context);
+                  return;
+                }
+                final file =
+                    await FileUtil.writeToFile(pngBytes, 'map', 'jpeg');
+                navigatorKey.currentState.maybePop([selectedPoint, file]);
+              },
               child: Material(
                 borderRadius: BorderRadius.circular(20),
                 elevation: 4,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20)),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   height: 40,
                   padding: EdgeInsets.all(10),
                   child: Row(

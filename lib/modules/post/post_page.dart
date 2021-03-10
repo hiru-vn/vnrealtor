@@ -72,9 +72,12 @@ class _PostPageState extends State<PostPage> {
                 list: RefreshIndicator(
                   color: ptPrimaryColor(context),
                   onRefresh: () async {
-                    await _postBloc.getNewFeed(
-                        filter:
-                            GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
+                    await Future.wait([
+                      _postBloc.getNewFeed(
+                          filter: GraphqlFilter(
+                              limit: 10, order: "{updatedAt: -1}")),
+                      _postBloc.getStoryFollowing()
+                    ]);
                     return;
                   },
                   child: SingleChildScrollView(
@@ -97,9 +100,9 @@ class _PostPageState extends State<PostPage> {
                           padding: EdgeInsets.all(0),
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: _postBloc.post.length,
+                          itemCount: _postBloc.feed.length,
                           itemBuilder: (context, index) {
-                            final item = _postBloc.post[index];
+                            final item = _postBloc.feed[index];
                             return PostWidget(item);
                           },
                         ),
@@ -261,15 +264,16 @@ class CreatePostCard extends StatelessWidget {
         },
         child: Material(
           elevation: 0,
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
             height: 154,
             width: 119,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(8),
                 image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(postModel.mediaPosts[0].url))),
+                    image: CachedNetworkImageProvider(
+                        postModel.mediaPosts[0].url))),
             child: Column(children: [
               Padding(
                 padding: const EdgeInsets.all(5),
@@ -287,7 +291,8 @@ class CreatePostCard extends StatelessWidget {
                           radius: 13,
                           backgroundColor: Colors.white,
                           backgroundImage: postModel.user.avatar != null
-                              ? CachedNetworkImageProvider(postModel.user.avatar)
+                              ? CachedNetworkImageProvider(
+                                  postModel.user.avatar)
                               : AssetImage('assets/image/default_avatar.png'),
                         ),
                       ),

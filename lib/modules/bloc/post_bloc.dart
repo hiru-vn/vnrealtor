@@ -1,5 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/model/comment.dart';
+import 'package:datcao/modules/model/media_post.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/share/import.dart';
@@ -17,7 +18,7 @@ class PostBloc extends ChangeNotifier {
   DateTime lastFetchFeedPage1;
   int feedPage = 1;
 
-  List<PostModel> post = [];
+  List<PostModel> feed = [];
   List<PostModel> myPosts;
   List<PostModel> stories = [];
   List<PostModel> savePosts = [];
@@ -39,7 +40,7 @@ class PostBloc extends ChangeNotifier {
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       if (list.length < filter.limit) isEndFeed = true;
-      post = list;
+      feed = list;
       lastFetchFeedPage1 = DateTime.now();
       feedPage = 1;
       return BaseResponse.success(list);
@@ -78,7 +79,7 @@ class PostBloc extends ChangeNotifier {
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       if (list.length < 15) isEndFeed = true;
-      post.addAll(list);
+      feed.addAll(list);
       return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e.toString());
@@ -104,6 +105,21 @@ class PostBloc extends ChangeNotifier {
   Future<BaseResponse> searchPostWithFilter({GraphqlFilter filter}) async {
     try {
       final res = await PostRepo().getNewFeed(filter: filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> searchPostWithLocation(
+      double long, double lat, double maxDistance) async {
+    try {
+      final res =
+          await PostRepo().searchPostWithLocation(long, lat, maxDistance);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
@@ -265,7 +281,7 @@ class PostBloc extends ChangeNotifier {
     try {
       final res = await PostRepo().createPost(
           content, expirationDate, publicity, lat, long, images, videos);
-      post.insert(0, PostModel.fromJson(res));
+      feed.insert(0, PostModel.fromJson(res));
       myPosts.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
@@ -312,7 +328,7 @@ class PostBloc extends ChangeNotifier {
 
   Future<BaseResponse> deletePost(String postId) async {
     try {
-      post.removeWhere((item) => item.id == postId);
+      feed.removeWhere((item) => item.id == postId);
       myPosts.removeWhere((item) => item.id == postId);
       notifyListeners();
       final res = await PostRepo().deletePost(postId);
@@ -335,9 +351,14 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> likePost(String postId) async {
+  Future<BaseResponse> likePost(PostModel postModel) async {
     try {
-      final res = await PostRepo().increaseLikePost(postId: postId);
+      int likeCount = postModel.like + 1;
+      postModel.like = likeCount;
+
+      setLikePostLocal(postModel.id, likeCount, true);
+      notifyListeners();
+      final res = await PostRepo().increaseLikePost(postId: postModel.id);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.toString());
@@ -350,6 +371,7 @@ class PostBloc extends ChangeNotifier {
     try {
       final res =
           await PostRepo().increaseLikeMediaPost(postMediaId: postMediaId);
+
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.toString());
@@ -369,15 +391,49 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> unlikePost(String postId) async {
+  Future<BaseResponse> unlikePost(PostModel postModel) async {
     try {
-      final res = await PostRepo().decreaseLikePost(postId: postId);
+      int likeCount = postModel.like - 1;
+      if (likeCount < 0) likeCount = 0;
+      postModel.like = likeCount;
+
+      setLikePostLocal(postModel.id, likeCount, false);
+      notifyListeners();
+      final res = await PostRepo().decreaseLikePost(postId: postModel.id);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
+  }
+
+  void setLikePostLocal(String postId, int likeCounter, bool isUserLike) {
+    PostModel post;
+    post =
+        feed.firstWhere((element) => element.id == postId, orElse: () => null);
+    if (post != null)
+      post
+        ..like = likeCounter
+        ..isUserLike = isUserLike;
+    post = myPosts.firstWhere((element) => element.id == postId,
+        orElse: () => null);
+    if (post != null)
+      post
+        ..like = likeCounter
+        ..isUserLike = isUserLike;
+    post = stories.firstWhere((element) => element.id == postId,
+        orElse: () => null);
+    if (post != null)
+      post
+        ..like = likeCounter
+        ..isUserLike = isUserLike;
+    post = savePosts.firstWhere((element) => element.id == postId,
+        orElse: () => null);
+    if (post != null)
+      post
+        ..like = likeCounter
+        ..isUserLike = isUserLike;
   }
 
   Future<BaseResponse> unlikeMediaPost(String postMediaId) async {
@@ -406,8 +462,9 @@ class PostBloc extends ChangeNotifier {
   Future<BaseResponse> savePost(PostModel post) async {
     try {
       savePosts.add(post);
-      savePosts.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
+      savePosts.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       AuthBloc.instance.userModel.savedPostIds.add(post.id);
+      notifyListeners();
       final res = await PostRepo().savePost(post.id);
       return BaseResponse.success(res);
     } catch (e) {
@@ -420,7 +477,7 @@ class PostBloc extends ChangeNotifier {
   Future<BaseResponse> unsavePost(PostModel post) async {
     try {
       savePosts.remove(post);
-      savePosts.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
+      savePosts.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       AuthBloc.instance.userModel.savedPostIds.remove(post.id);
       notifyListeners();
       final res = await PostRepo().unsavePost(post.id);
@@ -452,6 +509,19 @@ class PostBloc extends ChangeNotifier {
       if (res == null)
         return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
       return BaseResponse.success(PostModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getOneMediaPost(String id) async {
+    try {
+      final res = await PostRepo().getOneMediaPost(id);
+      if (res == null)
+        return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
+      return BaseResponse.success(MediaPost.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e.toString());
     } finally {

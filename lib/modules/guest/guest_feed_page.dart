@@ -307,7 +307,8 @@ class CreatePostCardGuest extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6),
                 image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(postModel.mediaPosts[0].url))),
+                    image: CachedNetworkImageProvider(
+                        postModel.halfImages ?? postModel.mediaPosts[0].url))),
             child: Column(children: [
               Padding(
                 padding: const EdgeInsets.all(5),
@@ -325,7 +326,8 @@ class CreatePostCardGuest extends StatelessWidget {
                           radius: 13,
                           backgroundColor: Colors.white,
                           backgroundImage: postModel.user.avatar != null
-                              ? CachedNetworkImageProvider(postModel.user.avatar)
+                              ? CachedNetworkImageProvider(
+                                  postModel.user.avatar)
                               : AssetImage('assets/image/default_avatar.png'),
                         ),
                       ),

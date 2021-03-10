@@ -76,8 +76,5 @@ expirationDate
 publicity
 createdAt
 updatedAt
-}
-createdAt
-updatedAt
   ''');
 }

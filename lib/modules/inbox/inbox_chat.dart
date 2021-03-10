@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:datcao/modules/inbox/import/launch_url.dart';
+import 'package:datcao/utils/call_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:dash_chat/dash_chat.dart';
@@ -9,9 +11,7 @@ import 'package:datcao/utils/file_util.dart';
 import 'package:popup_menu/popup_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:datcao/navigator.dart';
-import 'package:share/share.dart';
 import 'google_map_widget.dart';
-import 'import/animated_search_bar.dart';
 import 'import/app_bar.dart';
 import 'import/color.dart';
 import 'import/font.dart';
@@ -23,6 +23,7 @@ import 'inbox_bloc.dart';
 import 'inbox_model.dart';
 import 'video_call_page.dart';
 import 'voice_call_page.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class InboxChat extends StatefulWidget {
   final FbInboxGroupModel group;
@@ -42,6 +43,7 @@ class _InboxChatState extends State<InboxChat> {
   final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
   final List<ChatUser> _users = [];
   final List<FbInboxUserModel> _fbUsers = [];
+  final TextEditingController _chatC = TextEditingController();
 
   File _file;
   InboxBloc _inboxBloc;
@@ -107,7 +109,11 @@ class _InboxChatState extends State<InboxChat> {
           text: element.text,
           id: element.id,
           image: element.filePath,
-          createdAt: DateTime.tryParse(element.date));
+          createdAt: DateTime.tryParse(element.date),
+          customProperties: <String, dynamic>{
+            'long': element.location?.longitude,
+            'lat': element.location?.latitude,
+          });
     }).toList());
     print(messages[1].video);
     setState(() {});
@@ -137,7 +143,11 @@ class _InboxChatState extends State<InboxChat> {
           text: element.text,
           id: element.id,
           image: element.filePath,
-          createdAt: DateTime.tryParse(element.date));
+          createdAt: DateTime.tryParse(element.date),
+          customProperties: <String, dynamic>{
+            'long': element.location?.longitude,
+            'lat': element.location?.latitude,
+          });
     }).toList());
 
     // now update stream with new last message id
@@ -178,11 +188,16 @@ class _InboxChatState extends State<InboxChat> {
         0,
         fbMessages.map((element) {
           return ChatMessage(
-              user: _users.firstWhere((user) => user.uid == element.uid),
-              text: element.text,
-              id: element.id,
-              image: element.filePath,
-              createdAt: DateTime.tryParse(element.date));
+            user: _users.firstWhere((user) => user.uid == element.uid),
+            text: element.text,
+            id: element.id,
+            image: element.filePath,
+            customProperties: <String, dynamic>{
+              'long': element.location?.longitude,
+              'lat': element.location?.latitude,
+            },
+            createdAt: DateTime.tryParse(element.date),
+          );
         }).toList());
     setState(() {});
   }
@@ -190,7 +205,8 @@ class _InboxChatState extends State<InboxChat> {
   void onSend(ChatMessage message) {
     if (_file != null) {
       // add a loading gif
-      message.customProperties = <String, dynamic>{};
+      if (message.customProperties == null)
+        message.customProperties = <String, dynamic>{};
       if (FileUtil.getFbUrlFileType(_file.path) == FileType.video) {
         message.image = 'assets/image/loading_video.gif';
         message.customProperties['cache_file_path'] = _file.path;
@@ -233,7 +249,9 @@ class _InboxChatState extends State<InboxChat> {
               _authBloc.userModel.id,
               _authBloc.userModel.name,
               _authBloc.userModel.avatar,
-              filePath: fileUrl);
+              filePath: fileUrl,
+              location: LatLng(message.customProperties['lat'],
+                  message.customProperties['long']));
         });
         setState(() {
           _file = null;
@@ -327,24 +345,56 @@ class _InboxChatState extends State<InboxChat> {
               child: VideoViewNetwork(url: url),
             );
           }
-          if (FileUtil.getFbUrlFileType(url) == FileType.image)
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ImageViewNetwork(
-                url: url,
-                borderRadius: 10,
-                cacheFilePath: messages.customProperties != null
-                    ? messages.customProperties['cache_file_path']
-                    : null,
-              ),
-            );
+          if (FileUtil.getFbUrlFileType(url) == FileType.image) {
+            if (messages.customProperties != null &&
+                messages.customProperties['long'] != null) {
+              final location = LatLng(messages.customProperties['lat'],
+                  messages.customProperties['long']);
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    navigateToGoogleMap(location.latitude, location.longitude);
+                  },
+                  child: AbsorbPointer(
+                    child: ImageViewNetwork(
+                      url: url,
+                      borderRadius: 10,
+                      cacheFilePath: messages.customProperties != null
+                          ? messages.customProperties['cache_file_path']
+                          : null,
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ImageViewNetwork(
+                  url: url,
+                  borderRadius: 10,
+                  cacheFilePath: messages.customProperties != null
+                      ? messages.customProperties['cache_file_path']
+                      : null,
+                ),
+              );
+            }
+          }
 
           return SizedBox.shrink();
         },
         scrollController: scrollController,
+        textController: _chatC,
         key: _chatViewKey,
         inverted: false,
         onSend: onSend,
+        // sendButtonBuilder: (onSend) {
+        //   return IconButton(
+        //       onPressed: () {
+        //         onSend();
+        //       },
+        //       icon: Icon(Icons.send));
+        // },
         sendOnEnter: true,
         textInputAction: TextInputAction.send,
         user: _users.firstWhere((user) => user.uid == _authBloc.userModel.id),
@@ -366,7 +416,7 @@ class _InboxChatState extends State<InboxChat> {
         },
         inputToolbarPadding: EdgeInsets.all(4),
         inputDecoration: InputDecoration.collapsed(hintText: "Send message.."),
-        dateFormat: DateFormat('yyyy-MMM-dd'),
+        dateFormat: DateFormat('d/M/yyyy'),
         timeFormat: DateFormat('HH:mm'),
         messages: messages,
         showUserAvatar: false,
@@ -453,12 +503,28 @@ class _InboxChatState extends State<InboxChat> {
                                 name: 'Gắn vị trí',
                                 onTap: () async {
                                   await navigatorKey.currentState.maybePop();
-                                  final res = await showGoogleMap(context,
-                                      height:
-                                          MediaQuery.of(context).size.height -
-                                              kToolbarHeight -
-                                              500);
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
+                                  final res = await showGoogleMap(context);
+
                                   print(res);
+
+                                  // res[0] is long lat, res[1] is image file
+                                  if (res[0] != null && res[1] != null) {
+                                    Map<String, dynamic> customProperties = {};
+                                    customProperties['long'] =
+                                        (res[0] as LatLng).longitude;
+                                    customProperties['lat'] =
+                                        (res[0] as LatLng).latitude;
+                                    _onFilePick((res[1] as File)?.path);
+                                    onSend(ChatMessage(
+                                        text:
+                                            '${AuthBloc.instance.userModel.name} đã chia sẻ 1 địa điểm',
+                                        user: _users.firstWhere((user) =>
+                                            user.uid ==
+                                            AuthBloc.instance.userModel.id),
+                                        customProperties: customProperties));
+                                  }
                                 },
                               ),
                               SizedBox(
@@ -470,6 +536,8 @@ class _InboxChatState extends State<InboxChat> {
                                 name: 'Mới người khac',
                                 onTap: () async {
                                   await navigatorKey.currentState.maybePop();
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
                                 },
                               ),
                             ],
@@ -509,16 +577,24 @@ class _InboxChatState extends State<InboxChat> {
                 Icons.phone,
                 color: Colors.white,
               )),
-          MenuItem(
-              title: 'Video call',
-              image: Icon(
-                Icons.video_call,
-                color: Colors.white,
-              )),
+          // MenuItem(
+          //     title: 'Video call',
+          //     image: Icon(
+          //       Icons.video_call,
+          //       color: Colors.white,
+          //     )),
         ],
         onClickMenu: (val) {
           if (val.menuTitle == 'Voice call') {
-            VoiceCallPage.navigate(widget.group.id, _fbUsers);
+            // try {
+            //   CallKit.displayIncomingCall(context, _authBloc.userModel.id,
+            //           _authBloc.userModel.name, _authBloc.userModel.phone)
+            //       .then((value) => print('call has ended'));
+            // } catch (e) {}
+            launchCaller(_fbUsers
+                .firstWhere((element) => element.id != _authBloc.userModel.id)
+                .phone);
+            // VoiceCallPage.navigate(widget.group.id, _fbUsers);
           }
           if (val.menuTitle == 'Video call') {
             VideoCallPage.navigate(widget.group.id, _fbUsers);

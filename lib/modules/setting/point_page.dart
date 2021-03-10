@@ -44,7 +44,8 @@ class _PointPageState extends State<PointPage>
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              AuthBloc.instance.userModel.reputationScore.toString(),
+                              AuthBloc.instance.userModel.reputationScore
+                                  .toString(),
                               style: ptHeadLine().copyWith(
                                   color: Colors.red,
                                   fontWeight: FontWeight.w900),
@@ -160,14 +161,23 @@ class _PointInfoWidgetState extends State<PointInfoWidget>
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
             child: Column(
               children: [
-                Image.asset('assets/image/milestone.png'),
-                SizedBox(
-                  height: 5,
+                Row(
+                  children: [
+                    SizedBox(width: 50),
+                    Image.asset('assets/image/milestone.png'),
+                  ],
                 ),
                 Row(
                   children: [
                     Image.asset('assets/image/coin_iron.png'),
                     SizedBox(width: 5),
+                    Expanded(
+                      child: Container(
+                        height: 5,
+                        width: double.infinity,
+                        color: Colors.lightBlue,
+                      ),
+                    ),
                     Expanded(
                       child: Container(
                         height: 5,
@@ -179,7 +189,7 @@ class _PointInfoWidgetState extends State<PointInfoWidget>
                       child: Container(
                           height: 5,
                           width: double.infinity,
-                          color: Colors.orange),
+                          color: Colors.orangeAccent),
                     ),
                     SizedBox(width: 5),
                     Image.asset('assets/image/coin_gold.png')
@@ -189,7 +199,7 @@ class _PointInfoWidgetState extends State<PointInfoWidget>
                   height: 6,
                 ),
                 Text(
-                  "Cấp độ hiện tại của bạn: Vàng",
+                  "Cấp độ hiện tại của bạn: Chuẩn",
                   style:
                       ptTitle().copyWith(color: Colors.black.withOpacity(0.7)),
                 )

@@ -129,8 +129,6 @@ class _ImageRowPickerState extends State<ImageRowPicker>
       },
     );
   }
-
-  String loadingImage = 'https://www.bis.org/img/uploading.gif';
 }
 
 class ImageButtonPicker extends StatefulWidget {
@@ -161,7 +159,7 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InkWell(
+        GestureDetector(
           onTap: () => imagePicker(context, onCameraPick: (str) {
             if (widget.onAddImg != null) widget.onAddImg(str);
           }, onImagePick: (str) {
@@ -169,27 +167,23 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
           }, onVideoPick: (str) {
             if (widget.onAddImg != null) widget.onAddImg(str);
           }),
-          child: Material(
-            borderRadius: BorderRadius.circular(20),
-            // elevation: 4,
-            child: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(MdiIcons.camera),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text(
-                    'Thêm hình ảnh/ video',
-                    style: ptTitle(),
-                  ),
-                ],
-              ),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(MdiIcons.camera),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  'Thêm hình ảnh/ video',
+                  style: ptTitle(),
+                ),
+              ],
             ),
           ),
         ),
@@ -221,13 +215,19 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
                             width: 95,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: FileUtil.getFbUrlFileType(
-                                          widget.listImg[index]) ==
-                                      FileType.video
-                                  ? VideoViewNetwork(
-                                      url: widget.listImg[index], w: 95, h: 95)
-                                  : ImageViewNetwork(
-                                      url: widget.listImg[index], w: 95, h: 95),
+                              child: widget.listImg[index].startsWith('assets/')
+                                  ? Center(child: Image.asset(loadingGif))
+                                  : (FileUtil.getFbUrlFileType(
+                                              widget.listImg[index]) ==
+                                          FileType.video
+                                      ? VideoViewNetwork(
+                                          url: widget.listImg[index],
+                                          w: 95,
+                                          h: 95)
+                                      : ImageViewNetwork(
+                                          url: widget.listImg[index],
+                                          w: 95,
+                                          h: 95)),
                             ),
                           ),
                         ),
@@ -278,6 +278,4 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
       ],
     );
   }
-
-  String loadingImage = 'https://www.bis.org/img/uploading.gif';
 }

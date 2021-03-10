@@ -12,7 +12,6 @@ import 'package:datcao/modules/post/update_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
-import 'package:datcao/share/widget/cache_network_image.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:readmore/readmore.dart';
 import 'package:popup_menu/popup_menu.dart';
@@ -30,17 +29,10 @@ class PostWidget extends StatefulWidget {
 class _PostWidgetState extends State<PostWidget> {
   final GlobalKey<State<StatefulWidget>> moreBtnKey =
       GlobalKey<State<StatefulWidget>>();
-  bool _isLike = false;
-  bool _isSave = false;
   PostBloc _postBloc;
 
   @override
   void initState() {
-    _isLike = widget.post.isUserLike;
-    _isSave =
-        AuthBloc.instance.userModel?.savedPostIds?.contains(widget.post.id) ??
-            false;
-
     super.initState();
   }
 
@@ -152,7 +144,7 @@ class _PostWidgetState extends State<PostWidget> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 5),
+              padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 8),
               child: ReadMoreText(
                 widget.post?.content?.trim() ?? '',
                 trimLength: 100,
@@ -160,8 +152,8 @@ class _PostWidgetState extends State<PostWidget> {
                 textAlign: TextAlign.start,
                 colorClickableText: Colors.pink,
                 trimMode: TrimMode.Length,
-                trimCollapsedText: 'Show more',
-                trimExpandedText: 'Show less',
+                trimCollapsedText: 'Xem thêm',
+                trimExpandedText: 'Rút gọn',
                 moreStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -189,25 +181,8 @@ class _PostWidgetState extends State<PostWidget> {
             if ((widget.post?.mediaPosts?.length ?? 0) > 0)
               Stack(
                 children: [
-                  Container(
-                    height: deviceWidth(context) / 2 - 5,
-                    width: deviceWidth(context),
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: widget.post?.mediaPosts?.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          width: deviceWidth(context) /
-                              (widget.post?.mediaPosts?.length == 1 ? 1 : 2),
-                          child: MediaPostWidget(
-                            post: widget.post?.mediaPosts[index],
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) => SizedBox(
-                        width: 0.8,
-                      ),
-                    ),
+                  GroupMediaPostWidget(
+                    posts: widget.post?.mediaPosts,
                   ),
                   if (widget.post.locationLat != null &&
                       widget.post.locationLong != null)
@@ -291,13 +266,12 @@ class _PostWidgetState extends State<PostWidget> {
                       LoginPage.navigatePush();
                       return;
                     }
-                    _isLike = !_isLike;
-                    if (_isLike) {
-                      widget.post.like++;
-                      _postBloc.likePost(widget.post.id);
+                    widget.post.isUserLike = !widget.post.isUserLike;
+
+                    if (widget.post.isUserLike) {
+                      _postBloc.likePost(widget.post);
                     } else {
-                      if (widget.post.like > 0) widget.post.like--;
-                      _postBloc.unlikePost(widget.post.id);
+                      _postBloc.unlikePost(widget.post);
                     }
                     setState(() {});
                   },
@@ -305,7 +279,7 @@ class _PostWidgetState extends State<PostWidget> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        !_isLike
+                        !widget.post.isUserLike
                             ? Icon(
                                 MdiIcons.heartOutline,
                                 size: 24,
@@ -390,19 +364,18 @@ class _PostWidgetState extends State<PostWidget> {
                 if (AuthBloc.instance.userModel != null)
                   GestureDetector(
                     onTap: () async {
-                      if (_isSave) {
+                      if (AuthBloc.instance.userModel?.savedPostIds
+                              ?.contains(widget.post.id) ??
+                          false) {
                         showToast('Bài viết đã được lưu', context,
                             isSuccess: true);
                         return;
                       }
-                      setState(() {
-                        _isSave = true;
-                      });
+
                       final res = await _postBloc.savePost(widget.post);
                       if (res.isSuccess) {
                       } else {
                         setState(() {
-                          _isSave = false;
                           _postBloc.myPosts.remove(widget.post);
                         });
                         showToast(res.errMessage, context);
@@ -412,7 +385,9 @@ class _PostWidgetState extends State<PostWidget> {
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          !_isSave
+                          !(AuthBloc.instance.userModel?.savedPostIds
+                                      ?.contains(widget.post.id) ??
+                                  false)
                               ? Icon(
                                   MdiIcons.bookmarkOutline,
                                   color: ptPrimaryColor(context),
