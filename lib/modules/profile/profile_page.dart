@@ -4,7 +4,6 @@ import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/profile/follow_page.dart';
-import 'package:datcao/modules/profile/update_profile_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
@@ -221,7 +220,7 @@ class _ProfileCardState extends State<ProfileCard> {
                           child: CircleAvatar(
                             radius: 37.5,
                             backgroundColor: Colors.white,
-                            backgroundImage: widget.user.avatar != null
+                            backgroundImage: widget.user?.avatar != null
                                 ? CachedNetworkImageProvider(widget.user.avatar)
                                 : AssetImage('assets/image/default_avatar.png'),
                             child: VerifiedIcon(widget.user.role, 14),

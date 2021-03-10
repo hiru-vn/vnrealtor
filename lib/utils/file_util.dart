@@ -46,6 +46,9 @@ class FileUtil {
       return '';
     }
     try {
+      if (getFbUrlFileType(Path.basename(file.path)) == FileType.image) {
+        file = await resizeImage(file.readAsBytesSync(), 720);
+      }
       Reference storageReference = FirebaseStorage.instance.ref().child(
           '${path ?? 'root'}/${Path.basename(file.path).replaceAll(new RegExp(r'(\?alt).*'), '')}');
       UploadTask uploadTask = storageReference.putFile(file);

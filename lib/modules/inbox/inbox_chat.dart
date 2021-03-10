@@ -250,8 +250,10 @@ class _InboxChatState extends State<InboxChat> {
               _authBloc.userModel.name,
               _authBloc.userModel.avatar,
               filePath: fileUrl,
-              location: LatLng(message.customProperties['lat'],
-                  message.customProperties['long']));
+              location: message.customProperties['lat'] != null
+                  ? LatLng(message.customProperties['lat'],
+                      message.customProperties['long'])
+                  : null);
         });
         setState(() {
           _file = null;
@@ -510,7 +512,9 @@ class _InboxChatState extends State<InboxChat> {
                                   print(res);
 
                                   // res[0] is long lat, res[1] is image file
-                                  if (res[0] != null && res[1] != null) {
+                                  if (res != null &&
+                                      res[0] != null &&
+                                      res[1] != null) {
                                     Map<String, dynamic> customProperties = {};
                                     customProperties['long'] =
                                         (res[0] as LatLng).longitude;

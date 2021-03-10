@@ -81,6 +81,19 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
           zoom: 15);
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(_curPos));
+      selectedPoint = LatLng(value.latitude, value.longitude);
+      selectedMarker = Marker(
+        markerId: MarkerId(LatLng(value.latitude, value.longitude).toString()),
+        position: LatLng(value.latitude, value.longitude),
+        infoWindow: InfoWindow(
+          title: 'Ví trí của tôi',
+        ),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      );
+      Future.delayed(Duration(milliseconds: 100), () {
+        _getSnapShot();
+      });
+      setState(() {});
     });
   }
 

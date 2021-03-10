@@ -10,6 +10,7 @@ import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
+import 'package:datcao/share/widget/verified_icon.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileOtherPage extends StatefulWidget {
