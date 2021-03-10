@@ -98,6 +98,49 @@ class _PostPageState extends State<PostPage> {
                           pageController: _postBloc.pageController,
                         ),
                         if (_postBloc.isReloadFeed) PostSkeleton(),
+                        if (_postBloc.hasTags != null &&
+                            _postBloc.hasTags.length > 0)
+                          Container(
+                            width: deviceWidth(context),
+                            height: 30,
+                            margin: EdgeInsets.only(top: 15, bottom: 5),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: ListView.separated(
+                              // shrinkWrap: true,
+                              separatorBuilder: (context, index) {
+                                return SizedBox(
+                                  width: 10,
+                                );
+                              },
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  borderRadius: BorderRadius.circular(15),
+                                  onTap: () {
+                                    SearchPostPage.navigate(
+                                        hashTag: _postBloc.hasTags[index]
+                                            ['value']);
+                                  },
+                                  child: Container(
+                                    height: 30,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                        color: ptSecondaryColor(context),
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: Center(
+                                      child: Text(
+                                        _postBloc.hasTags[index]['value']
+                                            .toString(),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              itemCount: _postBloc.hasTags.length,
+                              scrollDirection: Axis.horizontal,
+                            ),
+                          ),
                         ListView.builder(
                           padding: EdgeInsets.all(0),
                           shrinkWrap: true,
