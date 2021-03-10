@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:datcao/share/function/show_toast.dart';
 import 'package:path/path.dart' as Path;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image/image.dart';
@@ -49,6 +50,23 @@ class FileUtil {
       return fileURL;
     } catch (e) {
       throw Exception("Upload file thất bại. Xin kiểm tra lại internet");
+    }
+  }
+
+  static Future<bool> deleteFileFireStorage(String path) async {
+    if (path == null) return false;
+    try {
+      Reference storageReference = FirebaseStorage.instance
+          .refFromURL(path);
+          
+      if (storageReference!=null) {
+       await storageReference.delete();
+       return true;
+      }
+      return false;
+    } catch (e) {
+      showToastNoContext(e.toString());
+      return false;
     }
   }
 }

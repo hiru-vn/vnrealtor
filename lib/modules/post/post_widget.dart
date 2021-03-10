@@ -624,7 +624,7 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                           ),
                           SizedBox(height: 3),
                           Text(
-                            '${widget.post.mediaPosts.where((element) => element.type == 'VIDEO').length} Video • ${widget.post.mediaPosts.where((element) => element.type == 'PICTURE').length} Image',
+                            '${widget.post.like} thích • ${widget.post.commentIds.length} bình luận',
                             style: ptBody().copyWith(color: Colors.grey[600]),
                           ),
                           SizedBox(height: 3),

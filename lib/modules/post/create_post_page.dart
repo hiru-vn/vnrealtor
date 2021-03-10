@@ -65,7 +65,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       await widget.pageController.animateToPage(0,
           duration: Duration(milliseconds: 200), curve: Curves.decelerate);
       FocusScope.of(context).requestFocus(FocusNode());
-       _expirationDate = null;
+      _expirationDate = null;
       _contentC.clear();
       _videos = [];
       _images = [];
@@ -118,6 +118,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   _images.remove(file);
                   _videos.remove(file);
                   _allVideoAndImage.remove(file);
+                  FileUtil.deleteFileFireStorage(file);
                 },
               ),
             ),
