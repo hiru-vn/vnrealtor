@@ -123,22 +123,22 @@ class _CreatePostPageState extends State<CreatePostPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(top: 8),
+              padding: const EdgeInsets.all(8.0).copyWith(top: 8, bottom: 3),
               child: Material(
                 borderRadius: BorderRadius.circular(10),
                 // elevation: 5,
                 color: Colors.white,
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: 200),
+                  constraints: BoxConstraints(minHeight: 170),
                   child: Stack(
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 5),
+                            horizontal: 15, vertical: 5).copyWith(bottom: 0),
                         child: HashTagTextField(
                           maxLength: 400,
                           maxLines: null,
-                          minLines: 5,
+                          minLines: 4,
                           controller: _contentC,
                           onChanged: (value) => setState(() {}),
                           basicStyle:
@@ -397,6 +397,7 @@ class CreatePostPageAppBar extends StatelessWidget
                 controller.animateToPage(0,
                     duration: Duration(milliseconds: 300),
                     curve: Curves.decelerate);
+                FocusScope.of(context).requestFocus(FocusNode());
               },
             ),
             SizedBox(

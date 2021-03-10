@@ -42,7 +42,8 @@ class _PostPageState extends State<PostPage> {
   }
 
   void appBarControll() {
-    if (_controller.position.userScrollDirection == ScrollDirection.forward || _controller.offset == 0) {
+    if (_controller.position.userScrollDirection == ScrollDirection.forward ||
+        _controller.offset == 0) {
       if (!showAppBar)
         setState(() {
           showAppBar = !showAppBar;
@@ -361,7 +362,8 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
             Spacer(),
             GestureDetector(
               onTap: () {
-                SearchPostPage.navigate();
+                SearchPostPage.navigate().then((value) =>
+                    FocusScope.of(context).requestFocus(FocusNode()));
               },
               child: SizedBox(
                 width: 42,
