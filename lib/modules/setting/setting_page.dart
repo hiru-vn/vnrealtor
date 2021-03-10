@@ -155,7 +155,7 @@ class _SettingPageState extends State<SettingPage> {
                         backgroundColor: Colors.white,
                         backgroundImage: AuthBloc.instance.userModel.avatar !=
                                 null
-                            ? NetworkImage(AuthBloc.instance.userModel.avatar)
+                            ? CachedNetworkImageProvider(AuthBloc.instance.userModel.avatar)
                             : AssetImage('assets/image/default_avatar.png'),
                       ),
                     ),
@@ -209,8 +209,10 @@ class _SettingPageState extends State<SettingPage> {
                   ],
                 ),
               ),
-              if (AuthBloc.instance.userModel.role != 'COMPANY' ||
-                  !AuthBloc.instance.userModel.isVerify)
+              if ((AuthBloc.instance.userModel.role != 'COMPANY' ||
+                      !AuthBloc.instance.userModel.isVerify) &&
+                  ['AGENT', 'COMPANY', 'EDITOR']
+                      .contains(AuthBloc.instance.userModel.role))
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(

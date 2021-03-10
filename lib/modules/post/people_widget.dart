@@ -22,7 +22,7 @@ class PeopleWidget extends StatelessWidget {
               CircleAvatar(
                 radius: 22,backgroundColor: Colors.white,
                 backgroundImage: user.avatar != null
-                    ? NetworkImage(user.avatar)
+                    ? CachedNetworkImageProvider(user.avatar)
                     : AssetImage('assets/image/default_avatar.png'),
               ),
               SizedBox(width: 13),

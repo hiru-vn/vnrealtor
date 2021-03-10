@@ -98,7 +98,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     child: CircleAvatar(
                       radius: 50,
                       backgroundImage:
-                          NetworkImage(_authBloc.userModel.avatar ?? ''),
+                          CachedNetworkImageProvider(_authBloc.userModel.avatar ?? ''),
                       child: uploadingAvatar
                           ? kLoadingSpinner
                           : Align(

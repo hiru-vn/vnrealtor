@@ -222,7 +222,7 @@ class _ProfileCardState extends State<ProfileCard> {
                             radius: 37.5,
                             backgroundColor: Colors.white,
                             backgroundImage: widget.user.avatar != null
-                                ? NetworkImage(widget.user.avatar)
+                                ? CachedNetworkImageProvider(widget.user.avatar)
                                 : AssetImage('assets/image/default_avatar.png'),
                           ),
                         ),
@@ -300,7 +300,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
-                                      FollowPage.navigate(widget.user);
+                                      FollowPage.navigate(widget.user, 0);
                                     },
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
@@ -328,7 +328,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
-                                      FollowPage.navigate(widget.user);
+                                      FollowPage.navigate(widget.user, 1);
                                     },
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,

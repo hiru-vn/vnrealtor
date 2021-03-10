@@ -99,13 +99,13 @@ class _DetailImagePostState extends State<DetailImagePost> {
           Center(
             child: PhotoView(
               backgroundDecoration: BoxDecoration(color: Colors.black87),
-              imageProvider: NetworkImage(
+              imageProvider: CachedNetworkImageProvider(
                 widget.post.url,
               ),
               errorBuilder: (_, __, ___) => SizedBox.shrink(),
               loadingBuilder: (context, event) => PhotoView(
                 backgroundDecoration: BoxDecoration(color: Colors.black87),
-                imageProvider: NetworkImage(
+                imageProvider: CachedNetworkImageProvider(
                   widget.post.url,
                 ),
                 loadingBuilder: (context, event) => Center(

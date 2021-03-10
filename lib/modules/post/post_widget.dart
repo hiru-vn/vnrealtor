@@ -82,7 +82,7 @@ class _PostWidgetState extends State<PostWidget> {
                       radius: 22,
                       backgroundColor: Colors.white,
                       backgroundImage: widget.post?.user?.avatar != null
-                          ? NetworkImage(widget.post?.user?.avatar)
+                          ? CachedNetworkImageProvider(widget.post?.user?.avatar)
                           : AssetImage('assets/image/default_avatar.png'),
                     ),
                   ),

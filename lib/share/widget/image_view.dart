@@ -55,7 +55,7 @@ class DetailImageScreen extends StatelessWidget {
           Center(
             child: PhotoView(
               backgroundDecoration: BoxDecoration(color: Colors.black87),
-              imageProvider: NetworkImage(
+              imageProvider: CachedNetworkImageProvider(
                 url,
               ),
               errorBuilder: (_, __, ___) => SizedBox.shrink(),

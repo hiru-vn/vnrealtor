@@ -176,7 +176,7 @@ class _CommentPageState extends State<CommentPage> {
                           backgroundColor: Colors.white,
                           backgroundImage: AuthBloc.instance.userModel.avatar !=
                                   null
-                              ? NetworkImage(AuthBloc.instance.userModel.avatar)
+                              ? CachedNetworkImageProvider(AuthBloc.instance.userModel.avatar)
                               : AssetImage('assets/image/default_avatar.png'),
                         ),
                         SizedBox(
@@ -280,7 +280,7 @@ class _CommentWidgetState extends State<CommentWidget> {
             radius: 18,
             backgroundColor: Colors.white,
             backgroundImage: widget.comment.user.avatar != null
-                ? NetworkImage(widget.comment.user.avatar)
+                ? CachedNetworkImageProvider(widget.comment.user.avatar)
                 : AssetImage('assets/image/default_avatar.png'),
           ),
         ),
