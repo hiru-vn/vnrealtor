@@ -227,7 +227,7 @@ class _ProfileCardState extends State<ProfileCard> {
                             backgroundImage: widget.user?.avatar != null
                                 ? CachedNetworkImageProvider(widget.user.avatar)
                                 : AssetImage('assets/image/default_avatar.png'),
-                            child: VerifiedIcon(widget.user.role, 14),
+                            child: VerifiedIcon(widget.user?.role, 14),
                           ),
                         ),
                       ),
