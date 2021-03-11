@@ -142,7 +142,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
       width: deviceWidth(context),
       height: deviceHeight(context),
       child: Scaffold(
-        appBar: CreatePostPageAppBar(widget.pageController, _createPost),
+        appBar: CreatePostPageAppBar(widget.pageController, _createPost,
+            _allVideoAndImage.contains(loadingGif)),
         body: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -422,8 +423,9 @@ class CreatePostPageAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   final PageController controller;
   final Function createPost;
+  final bool enableBtn;
   Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
-  CreatePostPageAppBar(this.controller, this.createPost);
+  CreatePostPageAppBar(this.controller, this.createPost, this.enableBtn);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -447,7 +449,7 @@ class CreatePostPageAppBar extends StatelessWidget
             Spacer(),
             FlatButton(
                 color: ptPrimaryColor(context),
-                onPressed: createPost,
+                onPressed: enableBtn ? null : createPost,
                 child: Text(
                   'Đăng',
                   style: ptTitle().copyWith(color: Colors.white),

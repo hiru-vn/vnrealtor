@@ -167,7 +167,8 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
             Center(
               child: FlatButton(
                 color: ptPrimaryColor(context),
-                onPressed: _updatePost,
+                onPressed:
+                    _allVideoAndImage.contains(loadingGif) ? null : _updatePost,
                 child: Text(
                   'Cập nhật',
                   style: ptTitle().copyWith(color: Colors.white),
