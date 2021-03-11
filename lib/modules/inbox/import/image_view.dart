@@ -9,22 +9,26 @@ import 'spin_loader.dart';
 class ImageViewNetwork extends StatelessWidget {
   final String url;
   final String cacheFilePath;
+  final String tag;
   final int w, h;
   final double borderRadius;
   ImageViewNetwork(
       {@required this.url,
+      this.tag,
       this.w,
       this.h,
       this.borderRadius = 0,
       this.cacheFilePath});
   @override
   Widget build(BuildContext context) {
+    String genTag = tag ?? url + Random().nextInt(10000000).toString();
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
         Navigator.push(context, MaterialPageRoute(builder: (_) {
           return DetailImageScreen(
             url,
+            tag: genTag,
             scaleW: w,
             scaleH: h,
           );
@@ -32,19 +36,14 @@ class ImageViewNetwork extends StatelessWidget {
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: url == null
-            ? Image.file(
-                File(cacheFilePath),
-                fit: BoxFit.cover,
-              )
-            : Image(
-                image: CachedNetworkImageProvider(url),
-                fit: BoxFit.cover,
-                errorBuilder: imageNetworkErrorBuilder,
-                loadingBuilder: cacheFilePath != null
-                    ? (_, __, ___) => Image.file(File(cacheFilePath))
-                    : kLoadingBuilder,
-              ),
+        child: Image(
+          image: CachedNetworkImageProvider(url),
+          fit: BoxFit.cover,
+          errorBuilder: imageNetworkErrorBuilder,
+          loadingBuilder: cacheFilePath != null
+              ? (_, __, ___) => Image.file(File(cacheFilePath))
+              : kLoadingBuilder,
+        ),
       ),
     );
   }

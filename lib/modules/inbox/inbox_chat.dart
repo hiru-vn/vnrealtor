@@ -24,7 +24,6 @@ import 'inbox_model.dart';
 import 'video_call_page.dart';
 import 'voice_call_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import './import/media_group.dart';
 
 class InboxChat extends StatefulWidget {
   final FbInboxGroupModel group;
@@ -46,7 +45,7 @@ class _InboxChatState extends State<InboxChat> {
   final List<FbInboxUserModel> _fbUsers = [];
   final TextEditingController _chatC = TextEditingController();
 
-  List<File> _files = [];
+  File _file;
   InboxBloc _inboxBloc;
   AuthBloc _authBloc;
   ScrollController scrollController = ScrollController();
@@ -109,16 +108,14 @@ class _InboxChatState extends State<InboxChat> {
           user: _users.firstWhere((user) => user.uid == element.uid),
           text: element.text,
           id: element.id,
-          image:
-              'assets/image/loading.gif', // temp image, widget need temp string to build image builder
+          image: element.filePath,
           createdAt: DateTime.tryParse(element.date),
           customProperties: <String, dynamic>{
             'long': element.location?.longitude,
             'lat': element.location?.latitude,
-            'files': element.filePaths ?? [],
           });
     }).toList());
-    print(messages);
+    print(messages[1].video);
     setState(() {});
     Future.delayed(Duration(milliseconds: 50), () => jumpToEnd());
 
@@ -145,14 +142,11 @@ class _InboxChatState extends State<InboxChat> {
           user: _users.firstWhere((user) => user.uid == element.uid),
           text: element.text,
           id: element.id,
+          image: element.filePath,
           createdAt: DateTime.tryParse(element.date),
-          image:
-              'assets/image/loading.gif', // temp image, widget need temp string to build image builder
-
           customProperties: <String, dynamic>{
             'long': element.location?.longitude,
             'lat': element.location?.latitude,
-            'files': element.filePaths ?? [],
           });
     }).toList());
 
@@ -197,12 +191,10 @@ class _InboxChatState extends State<InboxChat> {
             user: _users.firstWhere((user) => user.uid == element.uid),
             text: element.text,
             id: element.id,
-            image:
-                'assets/image/loading.gif', // temp image, widget need temp string to build image builder
+            image: element.filePath,
             customProperties: <String, dynamic>{
               'long': element.location?.longitude,
               'lat': element.location?.latitude,
-              'files': element.filePaths ?? [],
             },
             createdAt: DateTime.tryParse(element.date),
           );
@@ -211,23 +203,18 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   void onSend(ChatMessage message) {
-    if (_files.length > 0) {
+    if (_file != null) {
       // add a loading gif
       if (message.customProperties == null)
         message.customProperties = <String, dynamic>{};
-      _files.forEach((element) {
-        if (message.customProperties['cache_file_paths'] == null) {
-          message.customProperties['cache_file_paths'] = <String>[];
-        }
-        if (FileUtil.getFilePathType(element.path) == FileType.video) {
-          message.image = 'assets/image/loading.gif'; // temp
-          message.customProperties['cache_file_paths'].add(element.path);
-        }
-        if (FileUtil.getFilePathType(element.path) == FileType.image) {
-          message.image = 'assets/image/loading.gif'; // temp
-          message.customProperties['cache_file_paths'].add(element.path);
-        }
-      });
+      if (FileUtil.getFbUrlFileType(_file.path) == FileType.video) {
+        message.image = 'assets/image/loading_video.gif';
+        message.customProperties['cache_file_path'] = _file.path;
+      }
+      if (FileUtil.getFbUrlFileType(_file.path) == FileType.image) {
+        message.image = 'assets/image/loading.gif';
+        message.customProperties['cache_file_path'] = _file.path;
+      }
     }
     setState(() {
       messages.add(message);
@@ -238,41 +225,40 @@ class _InboxChatState extends State<InboxChat> {
 
     _updateGroupPageText(widget.group.id, _authBloc.userModel.name, text,
         message.createdAt, message.user.avatar);
-
-    if (_files.length == 0) {
-      _inboxBloc.addMessage(
-          widget.group.id,
-          text,
-          message.createdAt,
-          _authBloc.userModel.id,
-          _authBloc.userModel.name,
-          _authBloc.userModel.avatar);
-    } else {
-      setState(() {
-        _files = [];
-      });
-      Future.wait(_files.map((e) => FileUtil.uploadFireStorage(e,
-              path:
-                  'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}')))
-          .then((value) {
-        setState(() {
-          messages
-              .firstWhere((m) => m.id == message.id)
-              ?.customProperties['files'] = value;
-        });
+    if (text.length > 0) {
+      if (_file == null) {
         _inboxBloc.addMessage(
             widget.group.id,
             text,
             message.createdAt,
             _authBloc.userModel.id,
             _authBloc.userModel.name,
-            _authBloc.userModel.avatar,
-            filePaths: value,
-            location: message.customProperties['lat'] != null
-                ? LatLng(message.customProperties['lat'],
-                    message.customProperties['long'])
-                : null);
-      });
+            _authBloc.userModel.avatar);
+      } else {
+        FileUtil.uploadFireStorage(_file,
+                path:
+                    'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}')
+            .then((fileUrl) {
+          setState(() {
+            messages.firstWhere((m) => m.id == message.id)?.image = fileUrl;
+          });
+          _inboxBloc.addMessage(
+              widget.group.id,
+              text,
+              message.createdAt,
+              _authBloc.userModel.id,
+              _authBloc.userModel.name,
+              _authBloc.userModel.avatar,
+              filePath: fileUrl,
+              location: message.customProperties['lat'] != null
+                  ? LatLng(message.customProperties['lat'],
+                      message.customProperties['long'])
+                  : null);
+        });
+        setState(() {
+          _file = null;
+        });
+      }
     }
   }
 
@@ -305,17 +291,7 @@ class _InboxChatState extends State<InboxChat> {
   void _onFilePick(String path) {
     if (path != null) {
       setState(() {
-        _files.add(File(path));
-      });
-    } else {
-      // User canceled the picker
-    }
-  }
-
-  void _onMultiFilePick(List<String> paths) {
-    if (paths != null) {
-      setState(() {
-        _files.addAll(paths.map((e) => File(e)).toList());
+        _file = File(path);
       });
     } else {
       // User canceled the picker
@@ -351,56 +327,62 @@ class _InboxChatState extends State<InboxChat> {
       backgroundColor: Colors.grey[50],
       body: DashChat(
         messageImageBuilder: (url, [messages]) {
-          if (messages.customProperties == null) return SizedBox.shrink();
-
-          if (messages.customProperties['long'] != null) {
-            final location = LatLng(messages.customProperties['lat'],
-                messages.customProperties['long']);
-            if (!(messages.customProperties['files'] != null &&
-                    messages.customProperties['files'].length > 0) &&
-                !(messages.customProperties['cache_file_paths'] != null &&
-                    messages.customProperties['cache_file_paths'].length > 0))
-              return SizedBox.shrink();
+          if (url == 'assets/image/loading.gif') {
+            if (messages.customProperties == null) return Image.asset(url);
+            final mes = messages.customProperties['cache_file_path'];
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {
-                  launchMaps(location.latitude, location.longitude);
-                },
-                child: AbsorbPointer(
-                  child: ImageViewNetwork(
-                    url: (messages.customProperties['files'] != null &&
-                            messages.customProperties['files'].length > 0)
-                        ? messages.customProperties['files'][0]
-                        : null,
-                    borderRadius: 10,
-                    cacheFilePath:
-                        (messages.customProperties['cache_file_paths'] !=
-                                    null &&
-                                messages.customProperties['cache_file_paths']
-                                        .length >
-                                    0)
-                            ? messages.customProperties['cache_file_paths'][0]
-                            : null,
+              child: Image.file(File(mes)),
+            );
+          }
+          if (FileUtil.getFbUrlFileType(url) == FileType.gif) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(url),
+            );
+          }
+          if (FileUtil.getFbUrlFileType(url) == FileType.video) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: VideoViewNetwork(url: url),
+            );
+          }
+          if (FileUtil.getFbUrlFileType(url) == FileType.image) {
+            if (messages.customProperties != null &&
+                messages.customProperties['long'] != null) {
+              final location = LatLng(messages.customProperties['lat'],
+                  messages.customProperties['long']);
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    launchMaps(location.latitude, location.longitude);
+                  },
+                  child: AbsorbPointer(
+                    child: ImageViewNetwork(
+                      url: url,
+                      borderRadius: 10,
+                      cacheFilePath: messages.customProperties != null
+                          ? messages.customProperties['cache_file_path']
+                          : null,
+                    ),
                   ),
                 ),
-              ),
-            );
+              );
+            } else {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ImageViewNetwork(
+                  url: url,
+                  borderRadius: 10,
+                  cacheFilePath: messages.customProperties != null
+                      ? messages.customProperties['cache_file_path']
+                      : null,
+                ),
+              );
+            }
           }
 
-          final files = messages.customProperties['files'];
-          if (files != null && files.length > 0) {
-            return MediaGroupWidgetNetwork(
-              urls: files,
-            );
-          }
-
-          final cachePaths = messages.customProperties['cache_file_paths'];
-          if (cachePaths != null && cachePaths.length > 0) {
-            return MediaGroupWidgetCache(
-              paths: cachePaths,
-            );
-          }
           return SizedBox.shrink();
         },
         scrollController: scrollController,
@@ -408,6 +390,13 @@ class _InboxChatState extends State<InboxChat> {
         key: _chatViewKey,
         inverted: false,
         onSend: onSend,
+        // sendButtonBuilder: (onSend) {
+        //   return IconButton(
+        //       onPressed: () {
+        //         onSend();
+        //       },
+        //       icon: Icon(Icons.send));
+        // },
         sendOnEnter: true,
         textInputAction: TextInputAction.send,
         user: _users.firstWhere((user) => user.uid == _authBloc.userModel.id),
@@ -464,39 +453,31 @@ class _InboxChatState extends State<InboxChat> {
           else
             return SizedBox.shrink();
         },
-        inputFooterBuilder: () => (_files != null || _files.length == 0)
+        inputFooterBuilder: () => _file != null
             ? Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 3),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: _files
-                      .map(
-                        (file) => Row(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(bottom: 8),
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  color: Colors.green[50],
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.file_present),
-                                  Text(
-                                    path.basename(file.path),
-                                    style: ptBody().copyWith(
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(bottom: 8),
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          color: Colors.green[50],
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.file_present),
+                          Text(
+                            path.basename(_file.path),
+                            style: ptBody().copyWith(
+                              color: Colors.black54,
                             ),
-                          ],
-                        ),
-                      )
-                      .toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               )
             : SizedBox.shrink(),
@@ -582,7 +563,7 @@ class _InboxChatState extends State<InboxChat> {
             onPressed: () async {
               imagePicker(context,
                   onCameraPick: _onFilePick,
-                  onMultiImagePick: _onMultiFilePick,
+                  onImagePick: _onFilePick,
                   onVideoPick: _onFilePick);
             },
           ),

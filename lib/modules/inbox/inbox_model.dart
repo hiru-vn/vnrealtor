@@ -49,25 +49,16 @@ class FbInboxMessageModel {
   final String fullName;
   final String text;
   final String uid; //userId
-  final List<String> filePaths;
+  final String filePath;
   final LatLng location;
 
   FbInboxMessageModel(this.id, this.avatar, this.date, this.fullName, this.text,
-      this.uid, this.filePaths,
+      this.uid, this.filePath,
       {this.location});
 
   factory FbInboxMessageModel.fromJson(Map<String, dynamic> map, String id) {
-    if (map['text'] == 'gfdgfd') {
-      print(map['filePaths']);
-    }
-    return FbInboxMessageModel(
-        id,
-        map['avatar'],
-        map['date'],
-        map["fullName"],
-        map['text'],
-        map['uid'],
-        map['filePaths'] == null ? [] : map['filePaths'].cast<String>(),
+    return FbInboxMessageModel(id, map['avatar'], map['date'], map["fullName"],
+        map['text'], map['uid'], map['filePath'] == '' ? null : map['filePath'],
         location: map['lat'] == null || map['long'] == null
             ? null
             : LatLng(map['lat'], map['long']));
