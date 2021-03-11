@@ -26,13 +26,13 @@ class VerifiedIcon extends StatelessWidget {
       child: CustomTooltip(
         message: message,
         child: Container(
-          width: size + 11,
-          height: size + 11,
+          width: size + 10,
+          height: size + 10,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.white,
           ),
-          padding: EdgeInsets.all(2.5),
+          padding: EdgeInsets.all(2),
           child: Center(
             child: Container(
               width: size + 6,

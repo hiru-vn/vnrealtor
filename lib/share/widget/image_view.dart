@@ -83,7 +83,10 @@ class DetailImageScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20)),
                 width: 40,
                 height: 40,
-                child: Icon(Icons.close, color: Colors.white,),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),

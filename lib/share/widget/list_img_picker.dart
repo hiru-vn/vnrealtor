@@ -17,12 +17,14 @@ class ImageRowPicker extends StatefulWidget {
   final Function(List<String>) onUpdateListImg;
   final Function reloadParent;
   final Function(String) onAddImg;
+  final Function(List<String>) onAddMultiImg;
   final Function(String) onRemoveImg;
   ImageRowPicker(this.listImg,
       {this.onUpdateListImg,
       this.canRemove = true,
       this.reloadParent,
       this.onAddImg,
+      this.onAddMultiImg,
       this.onRemoveImg});
   @override
   _ImageRowPickerState createState() => _ImageRowPickerState();
@@ -137,12 +139,15 @@ class ImageButtonPicker extends StatefulWidget {
   final Function(List<String>) onUpdateListImg;
   final Function reloadParent;
   final Function(String) onAddImg;
+  final Function(List<String>) onAddMultiImg;
+
   final Function(String) onRemoveImg;
   ImageButtonPicker(this.listImg,
       {this.onUpdateListImg,
       this.canRemove = true,
       this.reloadParent,
       this.onAddImg,
+      this.onAddMultiImg,
       this.onRemoveImg});
   @override
   _ImageButtonPickerState createState() => _ImageButtonPickerState();
@@ -166,7 +171,12 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
             if (widget.onAddImg != null) widget.onAddImg(str);
           }, onVideoPick: (str) {
             if (widget.onAddImg != null) widget.onAddImg(str);
-          }),
+          },
+              onMultiImagePick: (widget.onAddMultiImg != null)
+                  ? (list) {
+                      widget.onAddMultiImg(list);
+                    }
+                  : null),
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -188,7 +198,7 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
           ),
         ),
         SizedBox(
-          height: 15,
+          height: 5,
         ),
         if (widget.listImg.length != 0)
           SizedBox(

@@ -71,11 +71,13 @@ class _PostWidgetState extends State<PostWidget> {
                       ProfileOtherPage.navigate(widget.post?.user);
                     },
                     child: CircleAvatar(
-                      radius: 22,
+                      radius: 23,
                       backgroundColor: Colors.white,
                       backgroundImage: widget.post?.user?.avatar != null
-                          ? CachedNetworkImageProvider(widget.post?.user?.avatar)
+                          ? CachedNetworkImageProvider(
+                              widget.post?.user?.avatar)
                           : AssetImage('assets/image/default_avatar.png'),
+                      child: VerifiedIcon(widget.post?.user?.role, 10),
                     ),
                   ),
                   SizedBox(width: 10),
@@ -91,33 +93,38 @@ class _PostWidgetState extends State<PostWidget> {
                             style: ptTitle(),
                           ),
                           SizedBox(width: 8),
-                          if (widget.post?.user?.role == 'AGENT')
-                            CustomTooltip(
-                                                        margin: EdgeInsets.only(top: 0),
-
-                              message: 'Tài khoản xác thực',
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.blue[600],
-                                ),
-                                padding: EdgeInsets.all(1.3),
-                                child: Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  size: 11,
-                                ),
-                              ),
-                            )
+                          // if (widget.post?.user?.role == 'AGENT')
+                          //   CustomTooltip(
+                          //     margin: EdgeInsets.only(top: 0),
+                          //     message: 'Tài khoản xác thực',
+                          //     child: Container(
+                          //       decoration: BoxDecoration(
+                          //         shape: BoxShape.circle,
+                          //         color: Colors.blue[600],
+                          //       ),
+                          //       padding: EdgeInsets.all(1.3),
+                          //       child: Icon(
+                          //         Icons.check,
+                          //         color: Colors.white,
+                          //         size: 11,
+                          //       ),
+                          //     ),
+                          //   )
                         ],
                       ),
                       SizedBox(height: 3),
                       Row(
                         children: [
                           Text(
-                            Formart.formatToDate(DateTime.tryParse(
-                                    widget.post?.createdAt)) ??
-                                '',
+                            DateTime.tryParse(widget.post?.createdAt)
+                                        .add(Duration(days: 1))
+                                        .compareTo(DateTime.now()) <
+                                    0
+                                ? (Formart.formatToDateTime(DateTime.tryParse(
+                                        widget.post?.createdAt)) ??
+                                    '')
+                                : Formart.timeByDayVi(
+                                    DateTime.tryParse(widget.post?.createdAt)),
                             style: ptSmall().copyWith(color: Colors.black54),
                           ),
                           SizedBox(width: 8),
