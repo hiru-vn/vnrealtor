@@ -70,7 +70,8 @@ class _HomePageState extends State<HomePage>
           onSelect: (index) {
             if (index == 0 && _selectedIndex == 0) {
               if (PostBloc.instance.feedScrollController != null) {
-                PostBloc.instance.getNewFeed();
+                PostBloc.instance.getNewFeed(
+                    filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
                 PostBloc.instance.feedScrollController.animateTo(0,
                     duration: Duration(milliseconds: 300),
                     curve: Curves.decelerate);

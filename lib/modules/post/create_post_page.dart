@@ -88,7 +88,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       setState(() {});
       final res = await FileUtil.uploadFireStorage(File(filePath),
           path:
-              'posts/user_${AuthBloc.instance.userModel.id}/${Formart.formatToDate(DateTime.now(), seperateChar: '-')}');
+              'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
       if (FileUtil.getFbUrlFileType(res) == FileType.image ||
           FileUtil.getFbUrlFileType(res) == FileType.gif) {
         _images.add(res);
@@ -116,7 +116,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       final res = await Future.wait(filePaths.map((e) => FileUtil.uploadFireStorage(
           File(e),
           path:
-              'posts/user_${AuthBloc.instance.userModel.id}/${Formart.formatToDate(DateTime.now(), seperateChar: '-')}/$e')));
+              'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
       res.forEach((element) {
         if (FileUtil.getFbUrlFileType(element) == FileType.image ||
             FileUtil.getFbUrlFileType(element) == FileType.gif) {

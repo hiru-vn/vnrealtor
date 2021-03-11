@@ -54,7 +54,7 @@ class _PostWidgetState extends State<PostWidget> {
   Widget build(BuildContext context) {
     PopupMenu.context = context;
     return Padding(
-      padding: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.only(top: 8),
       child: Container(
         width: deviceWidth(context),
         color: Colors.white,
@@ -63,7 +63,7 @@ class _PostWidgetState extends State<PostWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.all(15),
+              padding: EdgeInsets.all(12).copyWith(bottom: 8),
               child: Row(
                 children: [
                   GestureDetector(
@@ -86,7 +86,7 @@ class _PostWidgetState extends State<PostWidget> {
                       child: VerifiedIcon(widget.post?.user?.role, 10),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 8),
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,26 +99,26 @@ class _PostWidgetState extends State<PostWidget> {
                             style: ptTitle(),
                           ),
                           SizedBox(width: 8),
-                          // if (widget.post?.user?.role == 'AGENT')
-                          //   CustomTooltip(
-                          //     margin: EdgeInsets.only(top: 0),
-                          //     message: 'Tài khoản xác thực',
-                          //     child: Container(
-                          //       decoration: BoxDecoration(
-                          //         shape: BoxShape.circle,
-                          //         color: Colors.blue[600],
-                          //       ),
-                          //       padding: EdgeInsets.all(1.3),
-                          //       child: Icon(
-                          //         Icons.check,
-                          //         color: Colors.white,
-                          //         size: 11,
-                          //       ),
-                          //     ),
-                          //   )
+                          if (widget.post?.user?.role == 'AGENT')
+                            CustomTooltip(
+                              margin: EdgeInsets.only(top: 0),
+                              message: 'Tài khoản xác thực',
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.blue[600],
+                                ),
+                                padding: EdgeInsets.all(1.3),
+                                child: Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 11,
+                                ),
+                              ),
+                            )
                         ],
                       ),
-                      SizedBox(height: 3),
+                      SizedBox(height: 1),
                       Row(
                         children: [
                           Text(
@@ -159,7 +159,7 @@ class _PostWidgetState extends State<PostWidget> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 8),
+              padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 5),
               child: ReadMoreText(
                 widget.post?.content?.trim() ?? '',
                 trimLength: 100,
@@ -428,7 +428,7 @@ class _PostWidgetState extends State<PostWidget> {
             ),
 
             SizedBox(
-              height: 10,
+              height: 8,
             ),
           ],
         ),

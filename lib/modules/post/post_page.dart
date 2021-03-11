@@ -49,7 +49,7 @@ class _PostPageState extends State<PostPage> {
           showAppBar = !showAppBar;
         });
     } else {
-      if (showAppBar) if (_controller.offset > kToolbarHeight + 10)
+      if (showAppBar) if (_controller.offset > kToolbarHeight)
         setState(() {
           showAppBar = !showAppBar;
         });
@@ -89,8 +89,7 @@ class _PostPageState extends State<PostPage> {
                         SizedBox(
                           height: (!showAppBar)
                               ? MediaQuery.of(context).padding.top +
-                                  kToolbarHeight +
-                                  10
+                                  kToolbarHeight
                               : 0,
                         ),
                         CreatePostCard(
@@ -103,7 +102,7 @@ class _PostPageState extends State<PostPage> {
                           Container(
                             width: deviceWidth(context),
                             height: 30,
-                            margin: EdgeInsets.only(top: 15, bottom: 5),
+                            margin: EdgeInsets.only(top: 8),
                             padding: EdgeInsets.symmetric(horizontal: 20),
                             child: ListView.separated(
                               // shrinkWrap: true,
@@ -182,7 +181,7 @@ class CreatePostCard extends StatelessWidget {
       //elevation: 5,
       child: Container(
         width: deviceWidth(context),
-        padding: EdgeInsets.symmetric(vertical: 15),
+        padding: EdgeInsets.symmetric(vertical: 8),
         color: Colors.white,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -201,8 +200,8 @@ class CreatePostCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(0),
                   //elevation: 5,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 17, vertical: 11),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
                     child: Row(
                       children: [
                         Text(
@@ -251,7 +250,7 @@ class CreatePostCard extends StatelessWidget {
             ),
             if ((postBloc.stories?.length ?? 0) > 0 || postBloc.isLoadStory)
               Divider(
-                height: 22,
+                height: 10,
               ),
             // Padding(
             //   padding: const EdgeInsets.symmetric(
@@ -284,7 +283,7 @@ class CreatePostCard extends StatelessWidget {
                 : postBloc.stories.length == 0
                     ? SizedBox.shrink()
                     : SizedBox(
-                        height: 170,
+                        height: 160,
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -325,8 +324,8 @@ class CreatePostCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      width: 26,
-                      height: 26,
+                      width: 25,
+                      height: 25,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(width: 1.5, color: Colors.white),
@@ -343,7 +342,7 @@ class CreatePostCard extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      width: 5,
+                      width: 3,
                     ),
                     Expanded(
                       child: Text(
@@ -351,7 +350,7 @@ class CreatePostCard extends StatelessWidget {
                         overflow: TextOverflow.fade,
                         style: ptTiny().copyWith(
                           color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
@@ -390,7 +389,7 @@ class CreatePostCard extends StatelessWidget {
 }
 
 class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
   PostPageAppBar();
   @override
   Widget build(BuildContext context) {

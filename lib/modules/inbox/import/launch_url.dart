@@ -17,6 +17,22 @@ navigateToGoogleMap(double lat, double lng) async {
   }
 }
 
+launchMaps(double lat, double lng) async {
+  String googleUrl =
+    'comgooglemaps://?center=$lat,$lng';
+  String appleUrl =
+    'https://maps.apple.com/?sll=$lat,$lng';
+  if (await canLaunch("comgooglemaps://")) {
+    print('launching com googleUrl');
+    await launch(googleUrl);
+  } else if (await canLaunch(appleUrl)) {
+    print('launching apple url');
+    await launch(appleUrl);
+  } else {
+    throw 'Could not launch url';
+  }
+}
+
 launchCaller(String number) async {
   String url = "tel:$number";
   if (await canLaunch(url)) {

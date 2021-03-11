@@ -356,7 +356,7 @@ class _InboxChatState extends State<InboxChat> {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    navigateToGoogleMap(location.latitude, location.longitude);
+                    launchMaps(location.latitude, location.longitude);
                   },
                   child: AbsorbPointer(
                     child: ImageViewNetwork(

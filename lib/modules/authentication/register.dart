@@ -103,7 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Form(
           key: _formKey,
           child: Column(children: [
-            SpacingBox(h: 1.5),
+            SpacingBox(h: 1),
             Center(
                 child: widget.isCompany
                     ? SizedBox(
@@ -112,7 +112,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     : SizedBox(
                         width: deviceWidth(context) / 2,
                         child: Image.asset('assets/image/logo_full.png'))),
-            SpacingBox(h: 3),
+            SpacingBox(h: 2),
             if (!widget.isCompany)
               ..._buildUserForm()
             else
@@ -144,7 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             SizedBox(
-              height: Responsive.heightMultiplier * 15,
+              height: Responsive.heightMultiplier * 12,
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -166,21 +166,21 @@ class _RegisterPageState extends State<RegisterPage> {
       _buildFormField(context, 'Tên công ty', _nameC,
           validator: TextFieldValidator.notEmptyValidator,
           icon: MdiIcons.officeBuilding),
-      SpacingBox(h: 2),
+      SpacingBox(h: 1.2),
       _buildFormField(context, 'Tên quản trị', _ownerName,
           validator: TextFieldValidator.notEmptyValidator, icon: Icons.person),
-      SpacingBox(h: 2),
+      SpacingBox(h: 1.2),
       _buildFormField(context, 'Email quản trị', _emailC,
           validator: TextFieldValidator.emailValidator, icon: Icons.mail),
-      SpacingBox(h: 2),
+      SpacingBox(h: 1.2),
       _buildFormField(context, 'Số điện thoại', _phoneC,
           validator: TextFieldValidator.phoneValidator, icon: Icons.phone),
-      SpacingBox(h: 2),
+      SpacingBox(h: 1.2),
       _buildFormField(context, 'Mật khẩu', _passC,
           validator: TextFieldValidator.passValidator,
           obscureText: true,
           icon: Icons.lock),
-      SpacingBox(h: 2),
+      SpacingBox(h: 1.2),
       _buildFormField(context, 'Nhập lại mật khẩu', _repassC, validator: (str) {
         if (str != _passC.text) return 'Mật khẩu không trùng khớp';
       }, obscureText: true, icon: Icons.lock),
@@ -191,18 +191,18 @@ class _RegisterPageState extends State<RegisterPage> {
     return [
       _buildFormField(context, 'Tên người dùng', _nameC,
           validator: TextFieldValidator.notEmptyValidator, icon: Icons.person),
-      SpacingBox(h: 2),
+      SpacingBox(h: 1.2),
       _buildFormField(context, 'Email', _emailC,
           validator: TextFieldValidator.emailValidator, icon: Icons.mail),
-      SpacingBox(h: 2),
+      SpacingBox(h: 1.2),
       _buildFormField(context, 'Số điện thoại', _phoneC,
           validator: TextFieldValidator.phoneValidator, icon: Icons.phone),
-      SpacingBox(h: 2),
+      SpacingBox(h: 1.2),
       _buildFormField(context, 'Mật khẩu', _passC,
           validator: TextFieldValidator.passValidator,
           obscureText: true,
           icon: Icons.lock),
-      SpacingBox(h: 2),
+      SpacingBox(h: 1.2),
       _buildFormField(context, 'Nhập lại mật khẩu', _repassC, validator: (str) {
         if (str != _passC.text) return 'Mật khẩu không trùng khớp';
       }, obscureText: true, icon: Icons.lock),
