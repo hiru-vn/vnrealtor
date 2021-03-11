@@ -1,7 +1,11 @@
-import 'package:datcao/utils/file_util.dart';
+import 'dart:io';
+
+import 'package:datcao/share/function/show_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 // variable to hold image to be displayed
 
@@ -9,6 +13,7 @@ void imagePicker(BuildContext context,
     {Function(String path) onCameraPick,
     Function(String path) onImagePick,
     Function(String path) onVideoPick,
+    Function(List<String>) onMultiImagePick,
     String title}) {
   showModalBottomSheet(
       backgroundColor: Colors.transparent,
@@ -24,18 +29,20 @@ void imagePicker(BuildContext context,
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title ?? 'Chọn ảnh và video từ điện thoại',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Color(0xff696969)),
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                Divider(height: 1, color: Colors.grey),
-                SizedBox(
-                  height: 16,
-                ),
+                // Text(
+                //   title ??
+                //       'Chọn ảnh ${onVideoPick != null ? 'và video ' : ''}từ điện thoại',
+                //   style: TextStyle(
+                //       fontWeight: FontWeight.bold, color: Color(0xff696969)),
+                // ),
+                // SizedBox(
+                //   height: 12,
+                // ),
+                // if (onVideoPick != null) Divider(height: 1, color: Colors.grey),
+                // if (onVideoPick != null)
+                //   SizedBox(
+                //     height: 16,
+                //   ),
                 if (onCameraPick != null) ...[
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
@@ -45,13 +52,10 @@ void imagePicker(BuildContext context,
                           onGranted: () {
                             // close showModalBottomSheet
                             Navigator.of(context).pop();
-                            ImagePicker.pickImage(source: ImageSource.camera)
-                                .then((value) async {
+                            ImagePicker.pickVideo(source: ImageSource.camera)
+                                .then((value) {
                               if (value == null) return;
-                              final resizeImg = await FileUtil.resizeImage(
-                                  value.readAsBytesSync(), 1080);
-
-                              onCameraPick(resizeImg.path);
+                              onCameraPick(value.path);
                             });
                           });
                     },
@@ -60,15 +64,69 @@ void imagePicker(BuildContext context,
                       children: [
                         Icon(
                           Icons.add_a_photo,
-                          color: Color(0xff696969),
                         ),
                         SizedBox(
                           width: 13,
                         ),
                         Text(
-                          'Camera',
+                          'Chụp ảnh từ camera',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+                if (onMultiImagePick != null) ...[
+                  SizedBox(
+                    height: 16,
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      onCustomPersionRequest(
+                          permission: Permission.photos,
+                          onGranted: () async {
+                            // close showModalBottomSheet
+                            Navigator.of(context).pop();
+                            try {
+                              final assets = await MultiImagePicker.pickImages(
+                                maxImages: 9,
+                                enableCamera: false,
+                                cupertinoOptions:
+                                    CupertinoOptions(takePhotoIcon: "chat"),
+                                materialOptions: MaterialOptions(
+                                  actionBarColor: '#05515e',
+                                  statusBarColor: '#05515e',
+                                  textOnNothingSelected: 'Huỷ chọn',
+                                  actionBarTitle: "Chọn 1 hoặc nhiều ảnh",
+                                  allViewTitle: "Tất cả hình ảnh",
+                                  useDetailsView: false,
+                                  selectCircleStrokeColor: "#000000",
+                                ),
+                              );
+                              final List<String> images = await Future.wait(
+                                  assets.map(
+                                      (e) => getImageFilePathFromAssets(e)));
+                              onMultiImagePick(images);
+                            } on Exception catch (e) {
+                              showToast(e.toString(), context);
+                            }
+                          });
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.collections,
+                        ),
+                        SizedBox(
+                          width: 13,
+                        ),
+                        Text(
+                          'Kho hình ảnh',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
@@ -99,15 +157,14 @@ void imagePicker(BuildContext context,
                       children: [
                         Icon(
                           Icons.image,
-                          color: Color(0xff696969),
                         ),
                         SizedBox(
                           width: 13,
                         ),
                         Text(
-                          'Images',
+                          'Hình ảnh',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
+                              fontSize: 14, fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
@@ -138,15 +195,14 @@ void imagePicker(BuildContext context,
                       children: [
                         Icon(
                           Icons.video_collection,
-                          color: Color(0xff696969),
                         ),
                         SizedBox(
                           width: 13,
                         ),
                         Text(
-                          'Videos',
+                          'Kho video',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
+                              fontSize: 14, fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
@@ -161,7 +217,7 @@ void imagePicker(BuildContext context,
             padding: EdgeInsets.all(15),
           ),
         );
-      });
+      }).then((value) => FocusScope.of(context).requestFocus(FocusNode()));
 }
 
 onCustomPersionRequest(
@@ -188,4 +244,16 @@ onCustomPersionRequest(
       onGranted();
     }
   });
+}
+
+Future<String> getImageFilePathFromAssets(Asset asset) async {
+  final byteData = await asset.getByteData();
+
+  final tempFile =
+      File("${(await getTemporaryDirectory()).path}/${asset.name}");
+  final file = await tempFile.writeAsBytes(
+    byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+  );
+
+  return file.path;
 }

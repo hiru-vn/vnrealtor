@@ -90,7 +90,8 @@ class UserBloc extends ChangeNotifier {
     } catch (e) {
       return BaseResponse.fail(e.toString());
     } finally {
-      // notifyListeners();
+      notifyListeners();
+      AuthBloc.instance.notifyListeners();
     }
   }
 

@@ -73,10 +73,16 @@ class _PostWidgetState extends State<PostWidget> {
                     child: CircleAvatar(
                       radius: 23,
                       backgroundColor: Colors.white,
-                      backgroundImage: widget.post?.user?.avatar != null
-                          ? CachedNetworkImageProvider(
-                              widget.post?.user?.avatar)
-                          : AssetImage('assets/image/default_avatar.png'),
+                      backgroundImage: widget.post?.user?.id ==
+                              AuthBloc.instance?.userModel?.id
+                          ? (AuthBloc.instance.userModel.avatar != null
+                              ? CachedNetworkImageProvider(
+                                  AuthBloc.instance.userModel.avatar)
+                              : AssetImage('assets/image/default_avatar.png'))
+                          : (widget.post?.user?.avatar != null
+                              ? CachedNetworkImageProvider(
+                                  widget.post?.user?.avatar)
+                              : AssetImage('assets/image/default_avatar.png')),
                       child: VerifiedIcon(widget.post?.user?.role, 10),
                     ),
                   ),

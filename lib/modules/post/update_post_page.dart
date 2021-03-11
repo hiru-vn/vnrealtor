@@ -121,6 +121,37 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
     }
   }
 
+  Future _uploadMultiImage(List<String> filePaths) async {
+    try {
+      if (_allVideoAndImage.length >= 9) {
+        showToast('Chỉ được đăng tối đa 9 ảnh/video', context);
+        return;
+      }
+      _allVideoAndImage.addAll(filePaths.map((e) => loadingGif));
+      setState(() {});
+      final res = await Future.wait(filePaths.map((e) => FileUtil.uploadFireStorage(
+          File(e),
+          path:
+              'posts/user_${AuthBloc.instance.userModel.id}/${Formart.formatToDate(DateTime.now(), seperateChar: '-')}/$e')));
+      res.forEach((element) {
+        if (FileUtil.getFbUrlFileType(element) == FileType.image ||
+            FileUtil.getFbUrlFileType(element) == FileType.gif) {
+          _images.add(element);
+          _allVideoAndImage.add(element);
+        }
+        if (FileUtil.getFbUrlFileType(element) == FileType.video) {
+          _videos.add(element);
+          _allVideoAndImage.add(element);
+        }
+      });
+
+      _allVideoAndImage.removeWhere((e) => e == loadingGif);
+      setState(() {});
+    } catch (e) {
+      showToast(e.toString(), context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -157,6 +188,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                 _allVideoAndImage,
                 onUpdateListImg: (listImg) {},
                 onAddImg: _upload,
+                onAddMultiImg: _uploadMultiImage,
                 onRemoveImg: (file) {
                   _images.remove(file);
                   _videos.remove(file);

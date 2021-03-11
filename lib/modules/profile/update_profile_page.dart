@@ -154,7 +154,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                         Icons.email_outlined,
                       ),
                       _buildFormField(context, 'Số điện thoại', _phoneC,
-                          Icons.phone_rounded),
+                          Icons.phone_rounded,
+                          readOnly: true),
                       _buildFormField(
                           context, 'Facebook', _facebookC, Icons.web_outlined),
                       _buildFormField(context, 'Giới thiệu ngắn', _descriptionC,
@@ -224,7 +225,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
 
   _buildFormField(BuildContext context, String text,
           TextEditingController controller, IconData icon,
-          {int maxLine}) =>
+          {int maxLine, bool readOnly = false}) =>
       // Padding(
       //   padding: const EdgeInsets.symmetric(horizontal: 10),
       //   child: Container(
@@ -267,6 +268,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               flex: 3,
               child: new TextField(
                 maxLines: null,
+                readOnly: readOnly,
                 controller: controller,
                 textAlign: TextAlign.end,
                 style: ptTitle().copyWith(fontWeight: FontWeight.w400),
