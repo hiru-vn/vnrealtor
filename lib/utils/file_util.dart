@@ -24,6 +24,21 @@ class FileUtil {
     return null;
   }
 
+  static FileType getFilePathType(String path) {
+    if (path == null) return null;
+    path = Path.basename(path);
+
+    if (path.contains('.png') ||
+        path.contains('.jpg') ||
+        path.contains('.img') ||
+        path.contains('.jpeg') ||
+        path.contains('.webp')) return FileType.image;
+    if (path.contains('.mp4') || path.contains('.wmv')) return FileType.video;
+    if (path.contains('.doc')) return FileType.document;
+    if (path.contains('.gif')) return FileType.gif;
+    return null;
+  }
+
   static Future<File> resizeImage(Uint8List data, int resizeWidth) async {
     img.Image image = img.decodeImage(data);
 
