@@ -121,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage>
 }
 
 class ProfilePageAppBar extends StatelessWidget implements PreferredSizeWidget {
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
   ProfilePageAppBar();
   @override
   Widget build(BuildContext context) {

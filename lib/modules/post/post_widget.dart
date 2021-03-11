@@ -478,7 +478,7 @@ class _PostWidgetState extends State<PostWidget> {
             MenuItem(
                 title: 'Sửa bài',
                 image: Icon(
-                  Icons.delete,
+                  Icons.edit,
                   color: Colors.white,
                 )),
           ]

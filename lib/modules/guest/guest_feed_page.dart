@@ -182,7 +182,7 @@ class CreatePostCardGuest extends StatelessWidget {
                   //elevation: 5,
                   child: Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     child: Row(
                       children: [
                         Text(
@@ -274,7 +274,7 @@ class CreatePostCardGuest extends StatelessWidget {
                 : stories.length == 0
                     ? SizedBox.shrink()
                     : SizedBox(
-                        height: 160,
+                        height: 150,
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(horizontal: 12),
@@ -301,8 +301,8 @@ class CreatePostCardGuest extends StatelessWidget {
           elevation: 0,
           borderRadius: BorderRadius.circular(6),
           child: Container(
-            height: 154,
-            width: 119,
+            height: 144,
+            width: 109,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
                 image: DecorationImage(
@@ -311,7 +311,7 @@ class CreatePostCardGuest extends StatelessWidget {
                         postModel.halfImages ?? postModel.mediaPosts[0].url))),
             child: Column(children: [
               Padding(
-                padding: const EdgeInsets.all(5),
+                padding: const EdgeInsets.all(4),
                 child: Row(
                   children: [
                     Container(
