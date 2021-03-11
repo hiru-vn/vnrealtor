@@ -104,16 +104,15 @@ class InboxBloc extends ChangeNotifier {
 
   Future<void> addMessage(String groupId, String text, DateTime time,
       String uid, String fullName, String avatar,
-      {String filePath, LatLng location}) async {
-    print('upload: ' + filePath.toString());
+      {List<String> filePaths, LatLng location}) async {
+    print('upload: ' + filePaths.toString());
     await getGroup(groupId).collection(messageCollection).add({
       'text': text,
       'date': time.toIso8601String(),
       'uid': uid,
       'fullName': fullName,
       'avatar': avatar,
-      'filePath':
-          filePath == null ? null : (filePath.isNotEmpty ? filePath : null),
+      'filePaths': filePaths == null ? [] : filePaths,
       'lat': location?.latitude,
       'long': location?.longitude
     });

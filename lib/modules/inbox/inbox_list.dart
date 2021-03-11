@@ -11,7 +11,6 @@ import 'import/font.dart';
 import 'import/formart.dart';
 import 'import/page_builder.dart';
 import 'import/skeleton.dart';
-import 'import/spin_loader.dart';
 import 'inbox_bloc.dart';
 import 'inbox_chat.dart';
 
