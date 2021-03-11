@@ -75,7 +75,6 @@ class _ProfilePageState extends State<ProfilePage>
                   ? kLoadingSpinner
                   : (_postBloc.myPosts.length != 0
                       ? RefreshIndicator(
-                          color: ptPrimaryColor(context),
                           onRefresh: () async {
                             final res = await _postBloc.getMyPost();
                             if (!res.isSuccess)
