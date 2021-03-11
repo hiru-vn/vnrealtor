@@ -218,7 +218,7 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
   @override
   Widget build(BuildContext context) {
     return _userBloc.friendRequestFromOtherUsers.length != 0
-        ? RefreshIndicator(
+        ? RefreshIndicator(color: ptPrimaryColor(context),
             onRefresh: () async {
               await _userBloc.getFriendRequestFromOtherUsers();
               return;
