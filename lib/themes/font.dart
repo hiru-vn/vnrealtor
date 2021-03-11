@@ -22,14 +22,11 @@ TextStyle ptBigTitle() => TextStyle(
     color: HexColor('#05515e'));
 
 TextStyle ptTitle() => TextStyle(
-    fontSize: 14.3,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0.1,
-    color: HexColor('#05515e'));
+    fontSize: 14.3, fontWeight: FontWeight.w600, color: HexColor('#05515e'));
 
 TextStyle ptButton() => GoogleFonts.nunito(
     letterSpacing: 0.1,
-    fontSize: 16,
+    fontSize: 15.5,
     fontWeight: FontWeight.w600,
     color: Colors.white);
 

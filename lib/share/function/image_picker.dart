@@ -29,20 +29,20 @@ void imagePicker(BuildContext context,
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title ??
-                      'Chọn ảnh ${onVideoPick != null ? 'và video ' : ''}từ điện thoại',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Color(0xff696969)),
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                if (onVideoPick != null) Divider(height: 1, color: Colors.grey),
-                if (onVideoPick != null)
-                  SizedBox(
-                    height: 16,
-                  ),
+                // Text(
+                //   title ??
+                //       'Chọn ảnh ${onVideoPick != null ? 'và video ' : ''}từ điện thoại',
+                //   style: TextStyle(
+                //       fontWeight: FontWeight.bold, color: Color(0xff696969)),
+                // ),
+                // SizedBox(
+                //   height: 12,
+                // ),
+                // if (onVideoPick != null) Divider(height: 1, color: Colors.grey),
+                // if (onVideoPick != null)
+                //   SizedBox(
+                //     height: 16,
+                //   ),
                 if (onCameraPick != null) ...[
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
@@ -64,15 +64,14 @@ void imagePicker(BuildContext context,
                       children: [
                         Icon(
                           Icons.add_a_photo,
-                          color: Color(0xff696969),
                         ),
                         SizedBox(
                           width: 13,
                         ),
                         Text(
-                          'Camera',
+                          'Chụp ảnh từ camera',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
+                              fontSize: 14, fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
@@ -120,15 +119,14 @@ void imagePicker(BuildContext context,
                       children: [
                         Icon(
                           Icons.collections,
-                          color: Color(0xff696969),
                         ),
                         SizedBox(
                           width: 13,
                         ),
                         Text(
-                          'Images',
+                          'Kho hình ảnh',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
+                              fontSize: 14, fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
@@ -159,15 +157,14 @@ void imagePicker(BuildContext context,
                       children: [
                         Icon(
                           Icons.image,
-                          color: Color(0xff696969),
                         ),
                         SizedBox(
                           width: 13,
                         ),
                         Text(
-                          'Image',
+                          'Hình ảnh',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
+                              fontSize: 14, fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
@@ -198,15 +195,14 @@ void imagePicker(BuildContext context,
                       children: [
                         Icon(
                           Icons.video_collection,
-                          color: Color(0xff696969),
                         ),
                         SizedBox(
                           width: 13,
                         ),
                         Text(
-                          'Videos',
+                          'Kho video',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
+                              fontSize: 14, fontWeight: FontWeight.bold),
                         )
                       ],
                     ),

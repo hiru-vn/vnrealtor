@@ -167,9 +167,11 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
         GestureDetector(
           onTap: () => imagePicker(context, onCameraPick: (str) {
             if (widget.onAddImg != null) widget.onAddImg(str);
-          }, onImagePick: (str) {
-            if (widget.onAddImg != null) widget.onAddImg(str);
-          }, onVideoPick: (str) {
+          },
+              // , onImagePick: (str) {
+              //   if (widget.onAddImg != null) widget.onAddImg(str);
+              // },
+              onVideoPick: (str) {
             if (widget.onAddImg != null) widget.onAddImg(str);
           },
               onMultiImagePick: (widget.onAddMultiImg != null)
