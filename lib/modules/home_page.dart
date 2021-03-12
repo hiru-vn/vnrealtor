@@ -34,11 +34,7 @@ class _HomePageState extends State<HomePage>
       ProfilePage(),
       SettingPage(),
     ]);
-    InboxBloc.instance.createUser(
-        AuthBloc.instance.userModel.id,
-        AuthBloc.instance.userModel.name,
-        AuthBloc.instance.userModel.avatar,
-        AuthBloc.instance.userModel.phone);
+    
 
     super.initState();
   }

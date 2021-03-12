@@ -28,7 +28,8 @@ class PostModel {
   String district;
   String ward;
   List<String> hashTag;
-  String halfImages;
+  List<String> halfImages;
+  List<String> storyImages;
 
   PostModel(
       {this.id,
@@ -45,6 +46,7 @@ class PostModel {
       this.expirationDate,
       this.point,
       this.publicity,
+      this.storyImages,
       this.user,
       this.mediaPosts,
       this.createdAt,
@@ -87,8 +89,7 @@ class PostModel {
     if (json['mediaPosts'] != null) {
       mediaPosts = new List<MediaPost>();
       json['mediaPosts'].forEach((v) {
-        if (v == null) 
-        return;
+        if (v == null) return;
         mediaPosts.add(new MediaPost.fromJson(v));
       });
     }
@@ -99,7 +100,10 @@ class PostModel {
     district = json['district'];
     province = json['province'];
     ward = json['ward'];
-    halfImages = json['halfImages'];
+    halfImages =
+        json['halfImages'] != null ? json['halfImages'].cast<String>() : [];
+    storyImages =
+        json['storyImages'] != null ? json['storyImages'].cast<String>() : [];
   }
 
   Map<String, dynamic> toJson() {

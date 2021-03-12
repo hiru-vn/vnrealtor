@@ -70,6 +70,13 @@ $postFragment
     return res;
   }
 
+  Future getSavedPost() async {
+    final res = await PostSrv().query('getSavedPost', '', fragment: '''
+      data { $postFragment }
+      ''');
+    return res['getSavedPost'];
+  }
+
   Future searchPostWithLocation(
       double long, double lat, double maxDistance) async {
     final res = await PostSrv().query('searchPostByPoint', '''
@@ -98,7 +105,9 @@ ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').re
 
   Future getPostByUserId(String userId) async {
     final res = await PostSrv().getList(
-        limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId"}');
+        limit: 20,
+        order: '{createdAt: -1}',
+        filter: '{userId: "$userId"  flag: false }');
     return res;
   }
 
@@ -320,6 +329,7 @@ userShareIds
 locationLat
 locationLong
 province
+storyImages
 district
 ward
 hashTag
