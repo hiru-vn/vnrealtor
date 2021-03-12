@@ -108,7 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: widget.isCompany
                     ? SizedBox(
                         width: deviceWidth(context) / 4,
-                        child: Image.asset('assets/image/company.png'))
+                        child: Image.asset('assets/image/company_icon.png'))
                     : SizedBox(
                         width: deviceWidth(context) / 2,
                         child: Image.asset('assets/image/logo_full.png'))),

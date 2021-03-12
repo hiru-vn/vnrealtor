@@ -24,8 +24,9 @@ class _AboutPageState extends State<AboutPage> {
         fit: StackFit.expand,
         children: [
           WebView(
-            initialUrl:
-                'https://sites.google.com/view/rebixappvnrealtorabout/trang-ch%E1%BB%A7',
+            javascriptMode: JavascriptMode.unrestricted,
+            initialUrl: 'https://datcao.com',
+            // 'https://sites.google.com/view/rebixappvnrealtorabout/trang-ch%E1%BB%A7',
             onPageStarted: (str) {},
             onPageFinished: (str) {
               setState(() {
