@@ -71,6 +71,7 @@ commentIds
 description
 url
 locationLat
+storyImages
 locationLong
 expirationDate
 publicity

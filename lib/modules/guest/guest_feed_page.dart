@@ -308,7 +308,8 @@ class CreatePostCardGuest extends StatelessWidget {
                 image: DecorationImage(
                     fit: BoxFit.cover,
                     image: CachedNetworkImageProvider(
-                        postModel.halfImages ?? postModel.mediaPosts[0].url))),
+                        postModel.storyImages[0] ??
+                            postModel.mediaPosts[0].url))),
             child: Column(children: [
               Padding(
                 padding: const EdgeInsets.all(4),
