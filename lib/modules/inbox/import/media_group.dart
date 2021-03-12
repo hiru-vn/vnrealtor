@@ -23,8 +23,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
           Expanded(
             child: SizedBox(
               height: (MediaQuery.of(context).size.width * 0.7) / 2,
-              child: MediaWidgetNetwork(
-                file: paths[0],
+              child: MediaWidgetCache(
+                path: paths[0],
               ),
             ),
           ),
@@ -35,8 +35,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
             child: SizedBox(
               width: (MediaQuery.of(context).size.width * 0.7) / 2 - 1.5,
               height: (MediaQuery.of(context).size.width * 0.7) / 2,
-              child: MediaWidgetNetwork(
-                file: paths[1],
+              child: MediaWidgetCache(
+                path: paths[1],
               ),
             ),
           ),
@@ -49,8 +49,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             height: (MediaQuery.of(context).size.width * 0.7) / 2,
-            child: MediaWidgetNetwork(
-              file: paths[0],
+            child: MediaWidgetCache(
+              path: paths[0],
             ),
           ),
           SizedBox(
@@ -61,8 +61,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 2.5,
-                  child: MediaWidgetNetwork(
-                    file: paths[1],
+                  child: MediaWidgetCache(
+                    path: paths[1],
                   ),
                 ),
               ),
@@ -72,8 +72,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 2.5,
-                  child: MediaWidgetNetwork(
-                    file: paths[2],
+                  child: MediaWidgetCache(
+                    path: paths[2],
                   ),
                 ),
               ),
@@ -88,8 +88,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             height: (MediaQuery.of(context).size.width * 0.7) / 2,
-            child: MediaWidgetNetwork(
-              file: paths[0],
+            child: MediaWidgetCache(
+              path: paths[0],
             ),
           ),
           SizedBox(
@@ -100,8 +100,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
-                  child: MediaWidgetNetwork(
-                    file: paths[1],
+                  child: MediaWidgetCache(
+                    path: paths[1],
                   ),
                 ),
               ),
@@ -111,8 +111,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
-                  child: MediaWidgetNetwork(
-                    file: paths[2],
+                  child: MediaWidgetCache(
+                    path: paths[2],
                   ),
                 ),
               ),
@@ -122,8 +122,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               SizedBox(
                 width: (MediaQuery.of(context).size.width * 0.7) / 3 - 2,
                 height: (MediaQuery.of(context).size.width * 0.7) / 3,
-                child: MediaWidgetNetwork(
-                  file: paths[3],
+                child: MediaWidgetCache(
+                  path: paths[3],
                 ),
               ),
             ],
@@ -139,8 +139,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 2,
-                  child: MediaWidgetNetwork(
-                    file: paths[0],
+                  child: MediaWidgetCache(
+                    path: paths[0],
                   ),
                 ),
               ),
@@ -150,8 +150,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 2,
-                  child: MediaWidgetNetwork(
-                    file: paths[1],
+                  child: MediaWidgetCache(
+                    path: paths[1],
                   ),
                 ),
               ),
@@ -165,8 +165,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
-                  child: MediaWidgetNetwork(
-                    file: paths[2],
+                  child: MediaWidgetCache(
+                    path: paths[2],
                   ),
                 ),
               ),
@@ -176,8 +176,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
-                  child: MediaWidgetNetwork(
-                    file: paths[3],
+                  child: MediaWidgetCache(
+                    path: paths[3],
                   ),
                 ),
               ),
@@ -187,8 +187,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
-                  child: MediaWidgetNetwork(
-                    file: paths[4],
+                  child: MediaWidgetCache(
+                    path: paths[4],
                   ),
                 ),
               ),
@@ -206,8 +206,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 2,
-                  child: MediaWidgetNetwork(
-                    file: paths[0],
+                  child: MediaWidgetCache(
+                    path: paths[0],
                   ),
                 ),
               ),
@@ -217,8 +217,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 2,
-                  child: MediaWidgetNetwork(
-                    file: paths[1],
+                  child: MediaWidgetCache(
+                    path: paths[1],
                   ),
                 ),
               ),
@@ -232,8 +232,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
-                  child: MediaWidgetNetwork(
-                    file: paths[2],
+                  child: MediaWidgetCache(
+                    path: paths[2],
                   ),
                 ),
               ),
@@ -243,8 +243,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
-                  child: MediaWidgetNetwork(
-                    file: paths[3],
+                  child: MediaWidgetCache(
+                    path: paths[3],
                   ),
                 ),
               ),
@@ -260,8 +260,8 @@ class MediaGroupWidgetCache extends StatelessWidget {
                         width:
                             (MediaQuery.of(context).size.width * 0.7) / 3 - 2,
                         height: (MediaQuery.of(context).size.width * 0.7) / 3,
-                        child: MediaWidgetNetwork(
-                          file: paths[4],
+                        child: MediaWidgetCache(
+                          path: paths[4],
                         ),
                       ),
                       IgnorePointer(

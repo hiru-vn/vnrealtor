@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
+import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/utils/call_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
@@ -121,6 +122,7 @@ class _InboxChatState extends State<InboxChat> {
     print(messages);
     setState(() {});
     Future.delayed(Duration(milliseconds: 50), () => jumpToEnd());
+    Future.delayed(Duration(milliseconds: 300), () => jumpToEnd());
 
     // init stream with last messageId
     _incomingMessageStream = await _inboxBloc.getStreamIncomingMessages(
@@ -248,9 +250,6 @@ class _InboxChatState extends State<InboxChat> {
           _authBloc.userModel.name,
           _authBloc.userModel.avatar);
     } else {
-      setState(() {
-        _files = [];
-      });
       Future.wait(_files.map((e) => FileUtil.uploadFireStorage(e,
               path:
                   'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}')))
@@ -273,6 +272,11 @@ class _InboxChatState extends State<InboxChat> {
                     message.customProperties['long'])
                 : null);
       });
+      Future.delayed(
+          Duration(milliseconds: 100),
+          () => setState(() {
+                _files = [];
+              }));
     }
   }
 
@@ -302,7 +306,13 @@ class _InboxChatState extends State<InboxChat> {
       );
   }
 
-  void _onFilePick(String path) {
+  void _onFilePick(String path) async {
+    if ((await File(path).length()) > 20000000) {
+      showToast(
+          'File có kích thước quá lớn, vui lòng upload file có dung lương < 20MB',
+          context);
+      return;
+    }
     if (path != null) {
       setState(() {
         _files.add(File(path));
@@ -356,10 +366,10 @@ class _InboxChatState extends State<InboxChat> {
           if (messages.customProperties['long'] != null) {
             final location = LatLng(messages.customProperties['lat'],
                 messages.customProperties['long']);
-            if (!(messages.customProperties['files'] != null &&
-                    messages.customProperties['files'].length > 0) &&
-                !(messages.customProperties['cache_file_paths'] != null &&
-                    messages.customProperties['cache_file_paths'].length > 0))
+            if ((messages.customProperties['files'] == null ||
+                    messages.customProperties['files'].length == 0) &&
+                (messages.customProperties['cache_file_paths'] == null ||
+                    messages.customProperties['cache_file_paths'].length == 0))
               return SizedBox.shrink();
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -514,9 +524,9 @@ class _InboxChatState extends State<InboxChat> {
                         Container(
                           decoration: BoxDecoration(
                               color: ptPrimaryColorLight(context)),
-                          width: MediaQuery.of(context).size.width - 30,
+                          width: MediaQuery.of(context).size.width,
                           padding: EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 10),
+                              vertical: 20, horizontal: 25),
                           child: Row(
                             children: [
                               ActionItem(
@@ -558,6 +568,7 @@ class _InboxChatState extends State<InboxChat> {
                                 img: 'assets/image/invite_chat.jpg',
                                 name: 'Mới người khac',
                                 onTap: () async {
+                                  showToast('Tính năng này chưa có', context);
                                   await navigatorKey.currentState.maybePop();
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
