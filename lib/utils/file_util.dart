@@ -12,7 +12,7 @@ enum FileType { document, image, video, gif }
 class FileUtil {
   static FileType getFbUrlFileType(String path) {
     if (path == null) return null;
-
+  
     if (path.contains('.png') ||
         path.contains('.jpg') ||
         path.contains('.img') ||
