@@ -940,7 +940,7 @@ showComment(MediaPost postModel, BuildContext context) {
       isScrollControlled: true,
       builder: (context) {
         return SizedBox(
-            height: deviceHeight(context) - kToolbarHeight - 15,
+            height: deviceHeight(context) - kToolbarHeight,
             child: CommentPage(
               mediaPost: postModel,
             ));
