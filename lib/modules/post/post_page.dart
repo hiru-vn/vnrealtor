@@ -103,9 +103,10 @@ class _PostPageState extends State<PostPage> {
                             width: deviceWidth(context),
                             height: 30,
                             margin: EdgeInsets.only(top: 8),
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            // padding: EdgeInsets.symmetric(horizontal: 20),
                             child: ListView.separated(
                               // shrinkWrap: true,
+                              padding: EdgeInsets.only(left: 15),
                               separatorBuilder: (context, index) {
                                 return SizedBox(
                                   width: 10,
@@ -188,7 +189,7 @@ class CreatePostCard extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: 20,
+                horizontal: 15,
               ),
               child: GestureDetector(
                 onTap: () {
@@ -286,7 +287,7 @@ class CreatePostCard extends StatelessWidget {
                         height: 150,
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            padding: EdgeInsets.symmetric(horizontal: 15),
                             itemCount: postBloc.stories.length,
                             separatorBuilder: (context, index) =>
                                 SizedBox(width: 8),

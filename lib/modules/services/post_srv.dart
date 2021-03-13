@@ -18,6 +18,7 @@ publicity
 isUserLike
 isUserShare
 hashTag
+storyImages
 user {
   id 
   uid 
@@ -71,7 +72,6 @@ commentIds
 description
 url
 locationLat
-storyImages
 locationLong
 expirationDate
 publicity
