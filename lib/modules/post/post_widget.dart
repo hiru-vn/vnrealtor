@@ -297,16 +297,16 @@ class _PostWidgetState extends State<PostWidget> {
                         !widget.post.isUserLike
                             ? Icon(
                                 MdiIcons.heartOutline,
-                                size: 24,
+                                size: 22,
                                 color: ptPrimaryColor(context),
                               )
                             : Icon(
                                 MdiIcons.heart,
-                                size: 23,
+                                size: 22,
                                 color: Colors.red,
                               ),
                         SizedBox(
-                          height: 5,
+                          height: 3,
                         ),
                         Text('${widget.post.like} lượt thích',
                             style: ptTiny()
@@ -314,7 +314,7 @@ class _PostWidgetState extends State<PostWidget> {
                       ]),
                 ),
                 SizedBox(
-                  width: 15,
+                  width: 10,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -334,10 +334,10 @@ class _PostWidgetState extends State<PostWidget> {
                         Icon(
                           MdiIcons.chatOutline,
                           color: ptPrimaryColor(context),
-                          size: 24,
+                          size: 22,
                         ),
                         SizedBox(
-                          height: 5,
+                          height: 3,
                         ),
                         Text('${widget.post.commentIds.length} bình luận',
                             style: ptTiny()
@@ -345,7 +345,7 @@ class _PostWidgetState extends State<PostWidget> {
                       ]),
                 ),
                 SizedBox(
-                  width: 15,
+                  width: 10,
                 ),
                 GestureDetector(
                   onTap: () => shareTo(context,
@@ -365,10 +365,10 @@ class _PostWidgetState extends State<PostWidget> {
                         Icon(
                           MdiIcons.shareOutline,
                           color: ptPrimaryColor(context),
-                          size: 24,
+                          size: 22,
                         ),
                         SizedBox(
-                          height: 5,
+                          height: 3,
                         ),
                         Text('${widget.post.share} chia sẻ',
                             style: ptTiny()
@@ -406,15 +406,15 @@ class _PostWidgetState extends State<PostWidget> {
                               ? Icon(
                                   MdiIcons.bookmarkOutline,
                                   color: ptPrimaryColor(context),
-                                  size: 24,
+                                  size: 22,
                                 )
                               : Icon(
                                   MdiIcons.bookmark,
                                   color: ptPrimaryColor(context),
-                                  size: 24,
+                                  size: 22,
                                 ),
                           SizedBox(
-                            height: 5,
+                            height: 3,
                           ),
                           Text('Lưu',
                               style: ptTiny()
@@ -478,7 +478,7 @@ class _PostWidgetState extends State<PostWidget> {
             MenuItem(
                 title: 'Sửa bài',
                 image: Icon(
-                  Icons.delete,
+                  Icons.edit,
                   color: Colors.white,
                 )),
           ]

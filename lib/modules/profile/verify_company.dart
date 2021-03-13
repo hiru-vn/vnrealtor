@@ -51,7 +51,7 @@ class _VerifyCompanyState extends State<VerifyCompany> {
             SpacingBox(h: 3),
             SizedBox(
               width: 90,
-              child: Image.asset('assets/image/company.png'),
+              child: Image.asset('assets/image/company_icon.png'),
             ),
             // SpacingBox(h: 3),
             // Text(

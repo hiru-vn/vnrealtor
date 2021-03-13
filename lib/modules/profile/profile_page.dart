@@ -75,6 +75,7 @@ class _ProfilePageState extends State<ProfilePage>
                   ? kLoadingSpinner
                   : (_postBloc.myPosts.length != 0
                       ? RefreshIndicator(
+                          color: ptPrimaryColor(context),
                           onRefresh: () async {
                             final res = await _postBloc.getMyPost();
                             if (!res.isSuccess)
@@ -121,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage>
 }
 
 class ProfilePageAppBar extends StatelessWidget implements PreferredSizeWidget {
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
   ProfilePageAppBar();
   @override
   Widget build(BuildContext context) {
@@ -226,7 +227,7 @@ class _ProfileCardState extends State<ProfileCard> {
                             backgroundImage: widget.user?.avatar != null
                                 ? CachedNetworkImageProvider(widget.user.avatar)
                                 : AssetImage('assets/image/default_avatar.png'),
-                            child: VerifiedIcon(widget.user.role, 14),
+                            child: VerifiedIcon(widget.user?.role, 14),
                           ),
                         ),
                       ),

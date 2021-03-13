@@ -84,7 +84,6 @@ class _ReportPostPageState extends State<ReportPostPage> {
                 icon: Icon(MdiIcons.close),
                 onPressed: () {
                   navigatorKey.currentState.maybePop();
-                  
                 },
               ),
             ],
@@ -135,10 +134,11 @@ class _ReportPostPageState extends State<ReportPostPage> {
                       ),
                       SizedBox(height: 10),
                       Container(
-                        padding: EdgeInsets.all(10),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                         decoration: BoxDecoration(
                           color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(3),
                         ),
                         child: TextField(
                           maxLength: 300,
@@ -166,7 +166,7 @@ class _ReportPostPageState extends State<ReportPostPage> {
                       text: 'Gửi đi',
                       onPress: _type != null ? _report : () {},
                       color: _type != null
-                          ? ptPrimaryColor(context).withOpacity(0.65)
+                          ? ptPrimaryColor(context).withOpacity(0.9)
                           : Colors.grey[400]),
                 ),
               ],

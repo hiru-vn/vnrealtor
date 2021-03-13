@@ -26,9 +26,11 @@ class PostBloc extends ChangeNotifier {
   List<dynamic> hasTags = [];
 
   Future init() async {
-    getNewFeed(filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
+    getNewFeed(
+        filter: GraphqlFilter(
+            limit: 10, order: "{updatedAt: -1}"));
     getStoryFollowing();
-    getListPost(AuthBloc.instance.userModel.savedPostIds);
+    getSavedPost();
     getAllHashTagTP();
   }
 
@@ -493,6 +495,19 @@ class PostBloc extends ChangeNotifier {
   Future<BaseResponse> getListPost(List<String> ids) async {
     try {
       final res = await PostRepo().getPostList(ids);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getSavedPost() async {
+    try {
+      final res = await PostRepo().getSavedPost();
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       savePosts = list;

@@ -59,7 +59,7 @@ class FileUtil {
       final fileURL = await storageReference.getDownloadURL();
       return fileURL;
     } catch (e) {
-      throw Exception("Upload file thất bại. Xin kiểm tra lại internet");
+      throw Exception("Upload file thất bại. Xin vui lòng thử lại");
     }
   }
 
