@@ -26,8 +26,8 @@
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/launcher_icon">
         <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/logo_fcm" />
+            android:name="com.google.firebase.messaging.ic_notification"
+            android:resource="@mipmap/ic_notification" />
         <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyBlfwTbMaibFui5RlXhRMpxB-WNNrOv2iw"/>
         <activity
