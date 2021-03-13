@@ -362,14 +362,16 @@ class _ProfileCardState extends State<ProfileCard> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 15),
+                  (_authBloc.userModel.description == null || _authBloc.userModel.description.trim().isEmpty)
+                      ? SizedBox(height: 3)
+                      : SizedBox(height: 12),
                   // Text(
                   //   widget.user.role.toLowerCase() == 'agency'
                   //       ? 'Nhà môi giới'
                   //       : 'Người dùng cơ bản',
                   //   style: ptSmall().copyWith(color: Colors.blue),
                   // ),
-                  if (_authBloc.userModel.description != null)
+                  if (_authBloc.userModel.description != null && _authBloc.userModel.description.trim().isNotEmpty)
                     Text(_authBloc.userModel.description),
                   SizedBox(height: 5),
                   Row(
