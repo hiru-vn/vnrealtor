@@ -679,16 +679,18 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
-      _postBloc.getOneMediaPost(widget.post.id).then((res) {
-        if (res.isSuccess)
-          setState(() {
-            _post = res.data;
-            _isLike =
-                _post.userLikeIds.contains(AuthBloc.instance.userModel.id);
-          });
-        else
-          showToast(res.errMessage, context);
-      });
+      if (AuthBloc.instance.userModel != null) {
+        _postBloc.getOneMediaPost(widget.post.id).then((res) {
+          if (res.isSuccess)
+            setState(() {
+              _post = res.data;
+              _isLike =
+                  _post.userLikeIds.contains(AuthBloc.instance.userModel.id);
+            });
+          else
+            showToast(res.errMessage, context);
+        });
+      }
     }
     super.didChangeDependencies();
   }

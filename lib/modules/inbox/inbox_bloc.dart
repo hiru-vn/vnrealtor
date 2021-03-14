@@ -194,6 +194,7 @@ class InboxBloc extends ChangeNotifier {
   Future<List<String>> get20UserGroupInboxList(String idUser) async {
     final snapShot =
         await firestore.collection(userCollection).doc(idUser).get();
+    if (!snapShot.exists) return <String>[];
     return FbInboxUserModel.fromJson(snapShot.data()).groups;
   }
 

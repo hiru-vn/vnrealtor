@@ -162,7 +162,8 @@ class _PostWidgetState extends State<PostWidget> {
               padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 5),
               child: ReadMoreText(
                 widget.post?.content?.trim() ?? '',
-                trimLength: 100,
+                trimLines: 5,
+                trimLength: 1000,
                 style: ptBody().copyWith(color: Colors.black87),
                 textAlign: TextAlign.start,
                 colorClickableText: Colors.pink,
