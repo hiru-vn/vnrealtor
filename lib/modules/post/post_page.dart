@@ -370,14 +370,19 @@ class CreatePostCard extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.location_pin, size: 16),
-                      SizedBox(width: 1),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 95),
-                        child: Text(
-                          postModel.district,
-                          style: ptTiny(),
-                        ),
+                      Icon(Icons.location_pin, size: 14.5),
+                      Row(
+                        children: [
+                          ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 84),
+                            child: Text(
+                              postModel.district,
+                              style: ptTiny().copyWith(fontSize: 11),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
