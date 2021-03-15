@@ -137,7 +137,6 @@ class AuthBloc extends ChangeNotifier {
       userModel = UserModel.fromJson(loginRes['user']);
       loginFirebase(userModel);
 
-     
       UserBloc.instance.init();
       PostBloc.instance.init();
       return BaseResponse.success(loginRes);
