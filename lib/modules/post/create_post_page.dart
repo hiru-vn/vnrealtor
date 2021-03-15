@@ -99,9 +99,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
         _allVideoAndImage.add(res);
       }
       _allVideoAndImage.remove(loadingGif);
-      setState(() {});
     } catch (e) {
+      _allVideoAndImage.remove(loadingGif);
       showToast(e.toString(), context);
+    } finally {
+      setState(() {});
     }
   }
 
