@@ -292,7 +292,7 @@ class CreatePostCard extends StatelessWidget {
                             separatorBuilder: (context, index) =>
                                 SizedBox(width: 8),
                             itemBuilder: (context, index) {
-                              return _buildStoryWidget(postBloc.stories[index]);
+                              return buildStoryWidget(postBloc.stories[index]);
                             }),
                       ),
           ],
@@ -301,7 +301,7 @@ class CreatePostCard extends StatelessWidget {
     );
   }
 
-  _buildStoryWidget(PostModel postModel) {
+  buildStoryWidget(PostModel postModel) {
     return Center(
       child: GestureDetector(
         onTap: () {
