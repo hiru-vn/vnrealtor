@@ -163,6 +163,9 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('id', loginRes['user']["id"]);
       userModel = UserModel.fromJson(loginRes['user']);
       loginFirebase(userModel);
+
+      UserBloc.instance.init();
+      PostBloc.instance.init();
       
       return BaseResponse.success(loginRes);
     } catch (e) {
