@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
+import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/utils/call_kit.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +47,7 @@ class _InboxChatState extends State<InboxChat> {
   final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
   final List<ChatUser> _users = [];
   final List<FbInboxUserModel> _fbUsers = [];
+  List<UserModel> _severUsers = [];
   final TextEditingController _chatC = TextEditingController();
 
   List<File> _files = [];
@@ -98,7 +101,25 @@ class _InboxChatState extends State<InboxChat> {
       user.avatar = fbUser.image;
       user.name = fbUser.name;
     }
-    setState(() {});
+    loadUsersFromSever();
+  }
+
+  Future loadUsersFromSever() async {
+    final res = await UserBloc.instance
+        .getListUserIn(widget.group.users.map((e) => e.id).toList());
+    if (res.isSuccess) {
+      _severUsers.clear();
+      _severUsers.addAll(res.data);
+      _users.forEach((i) {
+        _severUsers.forEach((j) {
+          if (i.uid == j.id) {
+            i.avatar = j.avatar;
+            i.name = j.name;
+          }
+        });
+      });
+    }
+    if (mounted) setState(() {});
   }
 
   Future<void> loadFirst20Message() async {
@@ -119,10 +140,8 @@ class _InboxChatState extends State<InboxChat> {
             'files': element.filePaths ?? [],
           });
     }).toList());
-    print(messages);
-    setState(() {});
-    Future.delayed(Duration(milliseconds: 50), () => jumpToEnd());
-    Future.delayed(Duration(milliseconds: 300), () => jumpToEnd());
+    Future.delayed(Duration(milliseconds: 100), () => jumpToEnd());
+    Future.delayed(Duration(milliseconds: 500), () => jumpToEnd());
 
     // init stream with last messageId
     _incomingMessageStream = await _inboxBloc.getStreamIncomingMessages(
@@ -177,19 +196,22 @@ class _InboxChatState extends State<InboxChat> {
   Future<void> loadNext20Message() async {
     if (reachEndList) return; // none to fetch
     // get list first 20 message by group id
-    setState(() {
-      onLoadMore = true;
-    });
+    if (mounted)
+      setState(() {
+        onLoadMore = true;
+      });
     final fbMessages = await _inboxBloc.get20Messages(widget.group.id,
         lastMessageId: messages[0].id);
-    setState(() {
-      onLoadMore = false;
-    });
+    if (mounted)
+      setState(() {
+        onLoadMore = false;
+      });
     if (fbMessages.length < 20) {
       // if return messages is smaller than 20 then it must have get everything
-      setState(() {
-        reachEndList = true;
-      });
+      if (mounted)
+        setState(() {
+          reachEndList = true;
+        });
       if (fbMessages.length == 0) return; //if zero do not insert or setState
     }
     messages.insertAll(
@@ -209,7 +231,7 @@ class _InboxChatState extends State<InboxChat> {
             createdAt: DateTime.tryParse(element.date),
           );
         }).toList());
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   void onSend(ChatMessage message) {
@@ -231,9 +253,10 @@ class _InboxChatState extends State<InboxChat> {
         }
       });
     }
-    setState(() {
-      messages.add(message);
-    });
+    if (mounted)
+      setState(() {
+        messages.add(message);
+      });
     scrollToEnd();
 
     String text = message.text;
@@ -254,11 +277,12 @@ class _InboxChatState extends State<InboxChat> {
               path:
                   'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}')))
           .then((value) {
-        setState(() {
-          messages
-              .firstWhere((m) => m.id == message.id)
-              ?.customProperties['files'] = value;
-        });
+        if (mounted)
+          setState(() {
+            messages
+                .firstWhere((m) => m.id == message.id)
+                ?.customProperties['files'] = value;
+          });
         _inboxBloc.addMessage(
             widget.group.id,
             text,
@@ -314,9 +338,10 @@ class _InboxChatState extends State<InboxChat> {
       return;
     }
     if (path != null) {
-      setState(() {
-        _files.add(File(path));
-      });
+      if (mounted)
+        setState(() {
+          _files.add(File(path));
+        });
     } else {
       // User canceled the picker
     }
@@ -324,9 +349,10 @@ class _InboxChatState extends State<InboxChat> {
 
   void _onMultiFilePick(List<String> paths) {
     if (paths != null) {
-      setState(() {
-        _files.addAll(paths.map((e) => File(e)).toList());
-      });
+      if (mounted)
+        setState(() {
+          _files.addAll(paths.map((e) => File(e)).toList());
+        });
     } else {
       // User canceled the picker
     }
