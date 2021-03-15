@@ -12,15 +12,16 @@ enum FileType { document, image, video, gif }
 class FileUtil {
   static FileType getFbUrlFileType(String path) {
     if (path == null) return null;
-  
-    if (path.contains('.png') ||
-        path.contains('.jpg') ||
-        path.contains('.img') ||
-        path.contains('.jpeg') ||
-        path.contains('.webp')) return FileType.image;
-    if (path.contains('.mp4') || path.contains('.wmv')) return FileType.video;
-    if (path.contains('.doc')) return FileType.document;
-    if (path.contains('.gif')) return FileType.gif;
+
+    if (path.toLowerCase().contains('.png') ||
+        path.toLowerCase().contains('.jpg') ||
+        path.toLowerCase().contains('.img') ||
+        path.toLowerCase().contains('.jpeg') ||
+        path.toLowerCase().contains('.webp')) return FileType.image;
+    if (path.toLowerCase().contains('.mp4') || path.contains('.wmv'))
+      return FileType.video;
+    if (path.toLowerCase().contains('.doc')) return FileType.document;
+    if (path.toLowerCase().contains('.gif')) return FileType.gif;
     return null;
   }
 
@@ -53,7 +54,7 @@ class FileUtil {
 
   static Future<String> uploadFireStorage(File file, {String path}) async {
     if (file == null) return '';
-    if ((await file.length()) > 20000000) {
+    if ((await file.length()) > 20 * 1024 * 1024) {
       showToastNoContext(
           'File có kích thước quá lớn, vui lòng upload file có dung lương < 20MB',
           bgColor: Colors.orange,
