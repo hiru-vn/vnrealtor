@@ -103,9 +103,10 @@ class _PostPageState extends State<PostPage> {
                             width: deviceWidth(context),
                             height: 30,
                             margin: EdgeInsets.only(top: 8),
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            // padding: EdgeInsets.symmetric(horizontal: 20),
                             child: ListView.separated(
                               // shrinkWrap: true,
+                              padding: EdgeInsets.only(left: 15),
                               separatorBuilder: (context, index) {
                                 return SizedBox(
                                   width: 10,
@@ -188,7 +189,7 @@ class CreatePostCard extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: 20,
+                horizontal: 15,
               ),
               child: GestureDetector(
                 onTap: () {
@@ -286,12 +287,12 @@ class CreatePostCard extends StatelessWidget {
                         height: 150,
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            padding: EdgeInsets.symmetric(horizontal: 15),
                             itemCount: postBloc.stories.length,
                             separatorBuilder: (context, index) =>
                                 SizedBox(width: 8),
                             itemBuilder: (context, index) {
-                              return _buildStoryWidget(postBloc.stories[index]);
+                              return buildStoryWidget(postBloc.stories[index]);
                             }),
                       ),
           ],
@@ -300,7 +301,7 @@ class CreatePostCard extends StatelessWidget {
     );
   }
 
-  _buildStoryWidget(PostModel postModel) {
+  buildStoryWidget(PostModel postModel) {
     return Center(
       child: GestureDetector(
         onTap: () {
@@ -369,14 +370,19 @@ class CreatePostCard extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.location_pin, size: 16),
-                      SizedBox(width: 1),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 95),
-                        child: Text(
-                          postModel.district,
-                          style: ptTiny(),
-                        ),
+                      Icon(Icons.location_pin, size: 14.5),
+                      Row(
+                        children: [
+                          ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 84),
+                            child: Text(
+                              postModel.district,
+                              style: ptTiny().copyWith(fontSize: 11),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

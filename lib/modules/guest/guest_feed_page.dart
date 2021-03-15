@@ -165,7 +165,7 @@ class CreatePostCardGuest extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: 20,
+                horizontal: 15,
               ),
               child: GestureDetector(
                 onTap: () {
@@ -277,7 +277,7 @@ class CreatePostCardGuest extends StatelessWidget {
                         height: 150,
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            padding: EdgeInsets.symmetric(horizontal: 15),
                             itemCount: stories.length,
                             separatorBuilder: (context, index) =>
                                 SizedBox(width: 8),

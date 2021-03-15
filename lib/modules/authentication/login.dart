@@ -127,6 +127,9 @@ class _LoginPageState extends State<LoginPage> {
               margin: const EdgeInsets.all(18),
               child: Column(
                 children: [
+                  SizedBox(
+                    height: 5,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 23),
                     child: Material(
@@ -144,7 +147,9 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         )),
                   ),
-                  SpacingBox(h: 2.5),
+                  SizedBox(
+                    height: 12,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 23),
                     child: Material(
@@ -177,7 +182,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  SpacingBox(h: 3),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 23),

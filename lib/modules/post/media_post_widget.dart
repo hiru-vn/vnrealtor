@@ -679,16 +679,18 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
-      _postBloc.getOneMediaPost(widget.post.id).then((res) {
-        if (res.isSuccess)
-          setState(() {
-            _post = res.data;
-            _isLike =
-                _post.userLikeIds.contains(AuthBloc.instance.userModel.id);
-          });
-        else
-          showToast(res.errMessage, context);
-      });
+      if (AuthBloc.instance.userModel != null) {
+        _postBloc.getOneMediaPost(widget.post.id).then((res) {
+          if (res.isSuccess)
+            setState(() {
+              _post = res.data;
+              _isLike =
+                  _post.userLikeIds.contains(AuthBloc.instance.userModel.id);
+            });
+          else
+            showToast(res.errMessage, context);
+        });
+      }
     }
     super.didChangeDependencies();
   }
@@ -938,7 +940,7 @@ showComment(MediaPost postModel, BuildContext context) {
       isScrollControlled: true,
       builder: (context) {
         return SizedBox(
-            height: deviceHeight(context) - kToolbarHeight - 15,
+            height: deviceHeight(context) - kToolbarHeight,
             child: CommentPage(
               mediaPost: postModel,
             ));
