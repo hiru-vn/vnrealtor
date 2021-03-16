@@ -48,7 +48,7 @@ class PostBloc extends ChangeNotifier {
       feedPage = 1;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       isReloadFeed = false;
       notifyListeners();
@@ -62,7 +62,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       isReloadFeed = false;
       notifyListeners();
@@ -85,21 +85,21 @@ class PostBloc extends ChangeNotifier {
       feed.addAll(list);
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       isLoadMoreFeed = false;
       notifyListeners();
     }
   }
 
-  Future searchPostByHashTag(String hashTags) async {
+  Future<BaseResponse> searchPostByHashTag(String hashTags) async {
     try {
       final res = await PostRepo().searchPostByHashTag(hashTags);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -112,7 +112,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -127,7 +127,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -142,7 +142,7 @@ class PostBloc extends ChangeNotifier {
       myPosts = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -157,7 +157,7 @@ class PostBloc extends ChangeNotifier {
       stories = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       isLoadStory = false;
       notifyListeners();
@@ -171,7 +171,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {}
   }
 
@@ -182,7 +182,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -195,7 +195,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -210,7 +210,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -225,7 +225,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -237,7 +237,7 @@ class PostBloc extends ChangeNotifier {
       hasTags = res as List<dynamic>;
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       // notifyListeners();
     }
@@ -252,7 +252,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -267,7 +267,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => CommentModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -337,7 +337,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().deletePost(postId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       // notifyListeners();
     }
@@ -348,7 +348,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().deleteComment(postId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       // notifyListeners();
     }
@@ -364,7 +364,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().increaseLikePost(postId: postModel.id);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -377,7 +377,7 @@ class PostBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -388,7 +388,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().increaseLikeCmt(cmtId: commentId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -405,7 +405,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().decreaseLikePost(postId: postModel.id);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -445,7 +445,7 @@ class PostBloc extends ChangeNotifier {
           await PostRepo().decreaseLikeMediaPost(postMediaId: postMediaId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -456,7 +456,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().decreaseLikeCmt(cmtId: commentId);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -471,7 +471,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().savePost(post.id);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -486,7 +486,7 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().unsavePost(post.id);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -499,7 +499,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -513,7 +513,7 @@ class PostBloc extends ChangeNotifier {
       savePosts = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -526,7 +526,7 @@ class PostBloc extends ChangeNotifier {
         return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -539,7 +539,7 @@ class PostBloc extends ChangeNotifier {
         return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
       return BaseResponse.success(MediaPost.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
@@ -554,7 +554,7 @@ class PostBloc extends ChangeNotifier {
         return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       notifyListeners();
     }
