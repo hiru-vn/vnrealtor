@@ -3,6 +3,7 @@ import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/post/post_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
+import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/share/widget/load_more.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -120,6 +121,45 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                   pageController: _postBloc.pageController,
                   stories: stories,
                 ),
+                if (_postBloc.hasTags != null && _postBloc.hasTags.length > 0)
+                  Container(
+                    width: deviceWidth(context),
+                    height: 30,
+                    margin: EdgeInsets.only(top: 8),
+                    // padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: ListView.separated(
+                      // shrinkWrap: true,
+                      padding: EdgeInsets.only(left: 15),
+                      separatorBuilder: (context, index) {
+                        return SizedBox(
+                          width: 10,
+                        );
+                      },
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(15),
+                          onTap: () {
+                            SearchPostPage.navigate(
+                                hashTag: _postBloc.hasTags[index]['value']);
+                          },
+                          child: Container(
+                            height: 30,
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                                color: ptSecondaryColor(context),
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Center(
+                              child: Text(
+                                _postBloc.hasTags[index]['value'].toString(),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: _postBloc.hasTags.length,
+                      scrollDirection: Axis.horizontal,
+                    ),
+                  ),
                 if (posts == null)
                   PostSkeleton()
                 else
@@ -244,6 +284,7 @@ class CreatePostCardGuest extends StatelessWidget {
               Divider(
                 height: 10,
               ),
+
             // Padding(
             //   padding: const EdgeInsets.symmetric(
             //     horizontal: 20,

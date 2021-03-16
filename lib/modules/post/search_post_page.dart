@@ -82,7 +82,8 @@ class _SearchPostPageState extends State<SearchPostPage>
         users = res.data;
       });
     } else {
-      showToast('Có lỗi xảy ra trong quá trình tìm kiếm', context);
+      // showToast('Có lỗi xảy ra trong quá trình tìm kiếm', context);
+      showToast(res.errMessage, context);
       setState(() {
         users = [];
       });
@@ -97,7 +98,8 @@ class _SearchPostPageState extends State<SearchPostPage>
         posts = res.data;
       });
     } else {
-      showToast('Có lỗi xảy ra trong quá trình tìm kiếm', context);
+      // showToast('Có lỗi xảy ra trong quá trình tìm kiếm', context);
+      showToast(res.errMessage, context);
       setState(() {
         posts = [];
       });
@@ -111,7 +113,8 @@ class _SearchPostPageState extends State<SearchPostPage>
         posts = res.data;
       });
     } else {
-      showToast('Có lỗi xảy ra trong quá trình tìm kiếm', context);
+      // showToast('Có lỗi xảy ra trong quá trình tìm kiếm', context);
+      showToast(res.errMessage, context);
       setState(() {
         posts = [];
       });
