@@ -281,8 +281,8 @@ class BaseService {
 }
 
 class GraphQL {
-  // static String uri = '://vnrealtor.herokuapp.com/graphql';
-  static String uri = '://vnrealtor-sq73uv5o7a-as.a.run.app/graphql';
+  static String uri = '://vnrealtor.herokuapp.com/graphql';
+  // static String uri = '://vnrealtor-sq73uv5o7a-as.a.run.app/graphql';
   // static String uri = '://datcao-be-hv2wn47voq-as.a.run.app/graphql';
 
   static final WebSocketLink _webSocketLink = WebSocketLink(
