@@ -92,7 +92,6 @@ class _InboxListState extends State<InboxList>
                   },
                   child: _inboxBloc.groupInboxList.length != 0
                       ? ListView.separated(
-                          shrinkWrap: true,
                           itemCount: _inboxBloc.groupInboxList.length,
                           itemBuilder: (context, index) {
                             final group = _inboxBloc.groupInboxList[index];
@@ -112,7 +111,7 @@ class _InboxListState extends State<InboxList>
                                       ? Colors.white
                                       : ptBackgroundColor(context),
                               leading: CircleAvatar(
-                                radius: 22,
+                                radius: 21,
                                 backgroundColor: Colors.white,
                                 backgroundImage: group.image != null
                                     ? NetworkImage(group.image)
@@ -128,8 +127,8 @@ class _InboxListState extends State<InboxList>
                                         : Colors.black87,
                                     fontSize: group.reader
                                             .contains(_authBloc.userModel.id)
-                                        ? 15
-                                        : 16),
+                                        ? 14
+                                        : 15),
                               ),
                               subtitle: Text(
                                 // (group.lastUser ==  _authBloc.userModel.name? 'Bạn: ':'Tin nhắn mới: ')+
@@ -148,8 +147,8 @@ class _InboxListState extends State<InboxList>
                                         : Colors.black87,
                                     fontSize: group.reader
                                             .contains(_authBloc.userModel.id)
-                                        ? 12
-                                        : 13.5),
+                                        ? 11.7
+                                        : 12.5),
                               ),
                               trailing: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,

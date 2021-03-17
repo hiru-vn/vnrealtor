@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/utils/call_kit.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class _InboxChatState extends State<InboxChat> {
   List<UserModel> _severUsers = [];
   final TextEditingController _chatC = TextEditingController();
 
-  List<File> _files = [];
+  List<String> _files = [];
   InboxBloc _inboxBloc;
   AuthBloc _authBloc;
   ScrollController scrollController = ScrollController();
@@ -235,36 +236,38 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   void onSend(ChatMessage message) {
+    List<String> _tempFiles = [];
+    _tempFiles.addAll(_files);
     if (_files.length > 0) {
       // add a loading gif
       if (message.customProperties == null)
         message.customProperties = <String, dynamic>{};
-      _files.forEach((element) {
+      _files.forEach((path) {
         if (message.customProperties['cache_file_paths'] == null) {
           message.customProperties['cache_file_paths'] = <String>[];
         }
-        if (FileUtil.getFilePathType(element.path) == FileType.video) {
+        if (FileUtil.getFilePathType(path) == FileType.video) {
           message.image = 'assets/image/loading.gif'; // temp
-          message.customProperties['cache_file_paths'].add(element.path);
+          message.customProperties['cache_file_paths'].add(path);
         }
-        if (FileUtil.getFilePathType(element.path) == FileType.image) {
+        if (FileUtil.getFilePathType(path) == FileType.image) {
           message.image = 'assets/image/loading.gif'; // temp
-          message.customProperties['cache_file_paths'].add(element.path);
+          message.customProperties['cache_file_paths'].add(path);
         }
       });
     }
-    if (mounted)
-      setState(() {
-        messages.add(message);
-      });
-    scrollToEnd();
+    // setState(() {
+    _files.clear();
+    messages.add(message);
+    // });
+    Future.delayed(Duration(seconds: 100), () => scrollToEnd());
 
     String text = message.text;
 
     _updateGroupPageText(widget.group.id, _authBloc.userModel.name, text,
         message.createdAt, message.user.avatar);
 
-    if (_files.length == 0) {
+    if (_tempFiles.length == 0) {
       _inboxBloc.addMessage(
           widget.group.id,
           text,
@@ -273,16 +276,19 @@ class _InboxChatState extends State<InboxChat> {
           _authBloc.userModel.name,
           _authBloc.userModel.avatar);
     } else {
-      Future.wait(_files.map((e) => FileUtil.uploadFireStorage(e,
+      Future.wait(
+        _tempFiles.map(
+          (e) => FileUtil.uploadFireStorage(File(e),
               path:
-                  'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}')))
-          .then((value) {
-        if (mounted)
-          setState(() {
-            messages
-                .firstWhere((m) => m.id == message.id)
-                ?.customProperties['files'] = value;
-          });
+                  'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}', resizeWidth: 480,)
+        ),
+      ).then((value) {
+        // if (mounted)
+        //   setState(() {
+        //     messages
+        //         .firstWhere((m) => m.id == message.id)
+        //         ?.customProperties['files'] = value;
+        //   });
         _inboxBloc.addMessage(
             widget.group.id,
             text,
@@ -296,11 +302,6 @@ class _InboxChatState extends State<InboxChat> {
                     message.customProperties['long'])
                 : null);
       });
-      Future.delayed(
-          Duration(milliseconds: 100),
-          () => setState(() {
-                _files = [];
-              }));
     }
   }
 
@@ -330,17 +331,17 @@ class _InboxChatState extends State<InboxChat> {
       );
   }
 
-  void _onFilePick(String path) async {
-    if ((await File(path).length()) > 20000000) {
-      showToast(
-          'File có kích thước quá lớn, vui lòng upload file có dung lương < 20MB',
-          context);
-      return;
-    }
+  Future _onFilePick(String path) async {
+    // if ((await File(path).length()) > 20000000) {
+    //   showToast(
+    //       'File có kích thước quá lớn, vui lòng upload file có dung lương < 20MB',
+    //       context);
+    //   return;
+    // }
     if (path != null) {
       if (mounted)
         setState(() {
-          _files.add(File(path));
+          _files.add(path);
         });
     } else {
       // User canceled the picker
@@ -351,7 +352,7 @@ class _InboxChatState extends State<InboxChat> {
     if (paths != null) {
       if (mounted)
         setState(() {
-          _files.addAll(paths.map((e) => File(e)).toList());
+          _files.addAll(paths);
         });
     } else {
       // User canceled the picker
@@ -521,7 +522,7 @@ class _InboxChatState extends State<InboxChat> {
                                 children: [
                                   Icon(Icons.file_present),
                                   Text(
-                                    path.basename(file.path),
+                                    path.basename(file),
                                     style: ptBody().copyWith(
                                       color: Colors.black54,
                                     ),
@@ -559,6 +560,17 @@ class _InboxChatState extends State<InboxChat> {
                                 img: 'assets/image/location.png',
                                 name: 'Gắn vị trí',
                                 onTap: () async {
+                                  if (_files.length > 0) {
+                                    final confirm = await showConfirmDialog(
+                                        context,
+                                        'Xác nhận xóa các file đính kèm?',
+                                        confirmTap: () {},
+                                        navigatorKey: navigatorKey);
+                                    if (!confirm) return;
+                                    setState(() {
+                                      _files.clear();
+                                    });
+                                  }
                                   await navigatorKey.currentState.maybePop();
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
@@ -575,7 +587,7 @@ class _InboxChatState extends State<InboxChat> {
                                         (res[0] as LatLng).longitude;
                                     customProperties['lat'] =
                                         (res[0] as LatLng).latitude;
-                                    _onFilePick((res[1] as File)?.path);
+                                    await _onFilePick((res[1] as File)?.path);
                                     onSend(ChatMessage(
                                         text:
                                             '${AuthBloc.instance.userModel.name} đã chia sẻ 1 địa điểm',
@@ -632,7 +644,7 @@ class _InboxChatState extends State<InboxChat> {
     menu = PopupMenu(
         items: [
           MenuItem(
-              title: 'Voice call',
+              title: 'Gọi điện',
               image: Icon(
                 Icons.phone,
                 color: Colors.white,
@@ -645,7 +657,7 @@ class _InboxChatState extends State<InboxChat> {
           //     )),
         ],
         onClickMenu: (val) {
-          if (val.menuTitle == 'Voice call') {
+          if (val.menuTitle == 'Gọi điện') {
             // try {
             //   CallKit.displayIncomingCall(context, _authBloc.userModel.id,
             //           _authBloc.userModel.name, _authBloc.userModel.phone)
