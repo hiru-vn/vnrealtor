@@ -6,6 +6,8 @@ import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/comment_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/share/import.dart';
+import 'package:graphql/client.dart';
+import 'dart:async';
 
 class PostDetail extends StatefulWidget {
   final PostModel postModel;
@@ -28,6 +30,7 @@ class _PostDetailState extends State<PostDetail> {
   TextEditingController _commentC = TextEditingController();
   PostBloc _postBloc;
   PostModel _post;
+  StreamSubscription<FetchResult> _streamSubcription;
 
   @override
   void didChangeDependencies() {
@@ -40,8 +43,29 @@ class _PostDetailState extends State<PostDetail> {
         _getPost();
         _getComments(widget.postId, filter: GraphqlFilter(limit: 20));
       }
+
+      //setup socket
+      _postBloc.subscriptionCommentByPostId(widget.postModel.id);
+
+      Future.delayed(Duration(seconds: 2), () {
+        _streamSubcription = _postBloc.commentSubcription.listen((event) {
+          print(event.data);
+          CommentModel socketComment =
+              CommentModel.fromJson(event.data['newComment']);
+          if (socketComment.userId != AuthBloc.instance.userModel?.id)
+            setState(() {
+              comments.add(socketComment);
+            });
+        });
+      });
     }
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _streamSubcription?.cancel();
   }
 
   Future _getPost() async {
@@ -149,10 +173,11 @@ class _PostDetailState extends State<PostDetail> {
                     CircleAvatar(
                       radius: 21,
                       backgroundColor: Colors.white,
-                      backgroundImage: AuthBloc.instance.userModel?.avatar !=
-                              null
-                          ? CachedNetworkImageProvider(AuthBloc.instance.userModel?.avatar)
-                          : AssetImage('assets/image/default_avatar.png'),
+                      backgroundImage:
+                          AuthBloc.instance.userModel?.avatar != null
+                              ? CachedNetworkImageProvider(
+                                  AuthBloc.instance.userModel?.avatar)
+                              : AssetImage('assets/image/default_avatar.png'),
                     ),
                     SizedBox(
                       width: 7,

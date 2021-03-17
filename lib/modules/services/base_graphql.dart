@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:datcao/config.dart';
 import 'package:graphql/client.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/share/import.dart';
@@ -256,14 +257,47 @@ class BaseService {
     GraphQL.instance.client.cache.reset();
     return result.data;
   }
+
+  Stream<FetchResult> subscription(String name, String data,
+      {String fragment}) {
+    String subscriptionNode;
+    if (fragment == null)
+      subscriptionNode = 'subscription { $name($data) { $_fragmentDefault } }';
+    else
+      subscriptionNode = 'subscription { $name($data) { $fragment } }';
+    print('subscription $subscriptionNode');
+
+    final Operation operation = Operation(documentNode: gql(subscriptionNode));
+
+    final Stream<FetchResult> result =
+        GraphQL.instance.socketClient.subscribe(operation);
+    // if (result.) {
+    //   print('name ${result.exception.toString()}');
+    //   throw (Exception(result.exception.graphqlErrors[0].message.toString()));
+    // }
+    // print(result.first);
+    // GraphQL.instance.client.cache.reset();
+    Future.delayed(Duration(seconds: 2), () => print(result));
+    return result;
+  }
 }
 
 class GraphQL {
+  static final WebSocketLink _webSocketLink = WebSocketLink(
+    url: Config.wsUri,
+    config: SocketClientConfig(
+      autoReconnect: true,
+      inactivityTimeout: Duration(seconds: 30),
+      initPayload: () async {
+        final token = await SPref.instance.get('token');
+        return {'x-token': token};
+      },
+    ),
+  );
+
   static final HttpLink _httpLink = HttpLink(
-      // uri: 'https://vnrealtor.herokuapp.com/graphql',
-      uri: 'https://vnrealtor-sq73uv5o7a-as.a.run.app/graphql'
-      // uri: 'https://datcao-be-hv2wn47voq-as.a.run.app/graphql'
-      );
+    uri: Config.httpUri,
+  );
 
   static final AuthLink _authLink = AuthLink(getToken: () async {
     final token = await SPref.instance.get('token');
@@ -271,14 +305,22 @@ class GraphQL {
   });
 
   static final Link _link = _authLink.concat(_httpLink);
+  static final Link _socketLink = _authLink.concat(_webSocketLink);
+
   static GraphQLClient _client = GraphQLClient(
     cache: InMemoryCache(),
     link: _link,
+  );
+
+  static GraphQLClient _socketClient = GraphQLClient(
+    cache: InMemoryCache(),
+    link: _socketLink,
   );
   GraphQL._internal();
   static final GraphQL instance = GraphQL._internal();
 
   GraphQLClient get client => _client;
+  GraphQLClient get socketClient => _socketClient;
 }
 
 //Set x-token to header

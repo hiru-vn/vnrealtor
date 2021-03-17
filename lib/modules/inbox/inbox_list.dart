@@ -56,9 +56,10 @@ class _InboxListState extends State<InboxList>
 
   reload() async {
     final res = await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
-    setState(() {
-      _inboxBloc.groupInboxList = res;
-    });
+    if (mounted)
+      setState(() {
+        _inboxBloc.groupInboxList = res;
+      });
   }
 
   @override

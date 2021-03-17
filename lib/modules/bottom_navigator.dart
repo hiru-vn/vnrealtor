@@ -1,6 +1,7 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/custom_bottom_navigation_bar.dart' as cbn;
 import 'package:flutter/widgets.dart';
 import 'package:flutter/rendering.dart';
 
@@ -127,13 +128,13 @@ class _BottomNavigatorState extends State<BottomNavigator> {
           ),
         )
         .toList();
-    return BottomNavigationBar(
+    return cbn.BottomNavigationBar(
       elevation: 0,
       backgroundColor: Colors.white,
       iconSize: 24,
       selectedItemColor: ptPrimaryColor(context),
       unselectedItemColor: ptPrimaryColor(context),
-      type: BottomNavigationBarType.fixed,
+      type: cbn.BottomNavigationBarType.fixed,
       items: bottomNavBarItems,
       currentIndex: widget.selectedIndex,
       onTap: widget.onSelect,
