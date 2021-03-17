@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:datcao/config.dart';
 import 'package:graphql/client.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/share/import.dart';
@@ -276,24 +277,26 @@ class BaseService {
     // }
     // print(result.first);
     // GraphQL.instance.client.cache.reset();
+    Future.delayed(Duration(seconds: 2), () => print(result));
     return result;
   }
 }
 
 class GraphQL {
-  // static String uri = '://vnrealtor.herokuapp.com/graphql';
-  static String uri = '://vnrealtor-sq73uv5o7a-as.a.run.app/graphql';
-  // static String uri = '://datcao-be-hv2wn47voq-as.a.run.app/graphql';
-
   static final WebSocketLink _webSocketLink = WebSocketLink(
-    url: 'ws' + uri,
+    url: Config.wsUri,
     config: SocketClientConfig(
       autoReconnect: true,
+      inactivityTimeout: Duration(seconds: 30),
+      initPayload: () async {
+        final token = await SPref.instance.get('token');
+        return {'x-token': token};
+      },
     ),
   );
 
   static final HttpLink _httpLink = HttpLink(
-    uri: 'https' + uri,
+    uri: Config.httpUri,
   );
 
   static final AuthLink _authLink = AuthLink(getToken: () async {
