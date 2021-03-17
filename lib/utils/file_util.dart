@@ -62,7 +62,7 @@ class FileUtil {
   }
 
   static Future<String> uploadFireStorage(File file,
-      {String path, bool isResize = true}) async {
+      {String path, bool isResize = true, int resizeWidth = 1080}) async {
     if (file == null) return '';
     if ((await file.length()) > 20 * 1024 * 1024) {
       showToastNoContext(
@@ -74,7 +74,7 @@ class FileUtil {
     try {
       if (isResize &&
           getFbUrlFileType(Path.basename(file.path)) == FileType.image) {
-        file = await resizeImageOverride(file, 1080);
+        file = await resizeImageOverride(file, resizeWidth);
       }
 
       Reference storageReference = FirebaseStorage.instance.ref().child(

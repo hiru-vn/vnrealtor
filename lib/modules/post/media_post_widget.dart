@@ -33,7 +33,7 @@ class GroupMediaPostWidget extends StatelessWidget {
     if (posts.length == 1) {
       return SizedBox(
         width: deviceWidth(context),
-        height: deviceWidth(context) / 1.75,
+        height: deviceWidth(context) / 1.25,
         child: MediaPostWidget(
           post: posts[0],
           onTapPostCallBack: () => callBack(0),
