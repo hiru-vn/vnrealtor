@@ -105,9 +105,7 @@ ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').re
 
   Future getPostByUserId(String userId) async {
     final res = await PostSrv().getList(
-        limit: 20,
-        order: '{createdAt: -1}',
-        filter: '{userId: "$userId"  flag: false }');
+        limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId" }');
     return res;
   }
 

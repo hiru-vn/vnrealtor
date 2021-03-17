@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/utils/call_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
@@ -24,6 +27,7 @@ import 'inbox_model.dart';
 import 'video_call_page.dart';
 import 'voice_call_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import './import/media_group.dart';
 
 class InboxChat extends StatefulWidget {
   final FbInboxGroupModel group;
@@ -43,9 +47,10 @@ class _InboxChatState extends State<InboxChat> {
   final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
   final List<ChatUser> _users = [];
   final List<FbInboxUserModel> _fbUsers = [];
+  List<UserModel> _severUsers = [];
   final TextEditingController _chatC = TextEditingController();
 
-  File _file;
+  List<File> _files = [];
   InboxBloc _inboxBloc;
   AuthBloc _authBloc;
   ScrollController scrollController = ScrollController();
@@ -96,7 +101,25 @@ class _InboxChatState extends State<InboxChat> {
       user.avatar = fbUser.image;
       user.name = fbUser.name;
     }
-    setState(() {});
+    loadUsersFromSever();
+  }
+
+  Future loadUsersFromSever() async {
+    final res = await UserBloc.instance
+        .getListUserIn(widget.group.users.map((e) => e.id).toList());
+    if (res.isSuccess) {
+      _severUsers.clear();
+      _severUsers.addAll(res.data);
+      _users.forEach((i) {
+        _severUsers.forEach((j) {
+          if (i.uid == j.id) {
+            i.avatar = j.avatar;
+            i.name = j.name;
+          }
+        });
+      });
+    }
+    if (mounted) setState(() {});
   }
 
   Future<void> loadFirst20Message() async {
@@ -108,16 +131,17 @@ class _InboxChatState extends State<InboxChat> {
           user: _users.firstWhere((user) => user.uid == element.uid),
           text: element.text,
           id: element.id,
-          image: element.filePath,
+          image:
+              'assets/image/loading.gif', // temp image, widget need temp string to build image builder
           createdAt: DateTime.tryParse(element.date),
           customProperties: <String, dynamic>{
             'long': element.location?.longitude,
             'lat': element.location?.latitude,
+            'files': element.filePaths ?? [],
           });
     }).toList());
-    print(messages[1].video);
-    setState(() {});
-    Future.delayed(Duration(milliseconds: 50), () => jumpToEnd());
+    Future.delayed(Duration(milliseconds: 100), () => jumpToEnd());
+    Future.delayed(Duration(milliseconds: 500), () => jumpToEnd());
 
     // init stream with last messageId
     _incomingMessageStream = await _inboxBloc.getStreamIncomingMessages(
@@ -142,11 +166,14 @@ class _InboxChatState extends State<InboxChat> {
           user: _users.firstWhere((user) => user.uid == element.uid),
           text: element.text,
           id: element.id,
-          image: element.filePath,
           createdAt: DateTime.tryParse(element.date),
+          image:
+              'assets/image/loading.gif', // temp image, widget need temp string to build image builder
+
           customProperties: <String, dynamic>{
             'long': element.location?.longitude,
             'lat': element.location?.latitude,
+            'files': element.filePaths ?? [],
           });
     }).toList());
 
@@ -169,19 +196,22 @@ class _InboxChatState extends State<InboxChat> {
   Future<void> loadNext20Message() async {
     if (reachEndList) return; // none to fetch
     // get list first 20 message by group id
-    setState(() {
-      onLoadMore = true;
-    });
+    if (mounted)
+      setState(() {
+        onLoadMore = true;
+      });
     final fbMessages = await _inboxBloc.get20Messages(widget.group.id,
         lastMessageId: messages[0].id);
-    setState(() {
-      onLoadMore = false;
-    });
+    if (mounted)
+      setState(() {
+        onLoadMore = false;
+      });
     if (fbMessages.length < 20) {
       // if return messages is smaller than 20 then it must have get everything
-      setState(() {
-        reachEndList = true;
-      });
+      if (mounted)
+        setState(() {
+          reachEndList = true;
+        });
       if (fbMessages.length == 0) return; //if zero do not insert or setState
     }
     messages.insertAll(
@@ -191,74 +221,86 @@ class _InboxChatState extends State<InboxChat> {
             user: _users.firstWhere((user) => user.uid == element.uid),
             text: element.text,
             id: element.id,
-            image: element.filePath,
+            image:
+                'assets/image/loading.gif', // temp image, widget need temp string to build image builder
             customProperties: <String, dynamic>{
               'long': element.location?.longitude,
               'lat': element.location?.latitude,
+              'files': element.filePaths ?? [],
             },
             createdAt: DateTime.tryParse(element.date),
           );
         }).toList());
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   void onSend(ChatMessage message) {
-    if (_file != null) {
+    if (_files.length > 0) {
       // add a loading gif
       if (message.customProperties == null)
         message.customProperties = <String, dynamic>{};
-      if (FileUtil.getFbUrlFileType(_file.path) == FileType.video) {
-        message.image = 'assets/image/loading_video.gif';
-        message.customProperties['cache_file_path'] = _file.path;
-      }
-      if (FileUtil.getFbUrlFileType(_file.path) == FileType.image) {
-        message.image = 'assets/image/loading.gif';
-        message.customProperties['cache_file_path'] = _file.path;
-      }
+      _files.forEach((element) {
+        if (message.customProperties['cache_file_paths'] == null) {
+          message.customProperties['cache_file_paths'] = <String>[];
+        }
+        if (FileUtil.getFilePathType(element.path) == FileType.video) {
+          message.image = 'assets/image/loading.gif'; // temp
+          message.customProperties['cache_file_paths'].add(element.path);
+        }
+        if (FileUtil.getFilePathType(element.path) == FileType.image) {
+          message.image = 'assets/image/loading.gif'; // temp
+          message.customProperties['cache_file_paths'].add(element.path);
+        }
+      });
     }
-    setState(() {
-      messages.add(message);
-    });
+    if (mounted)
+      setState(() {
+        messages.add(message);
+      });
     scrollToEnd();
 
     String text = message.text;
 
     _updateGroupPageText(widget.group.id, _authBloc.userModel.name, text,
         message.createdAt, message.user.avatar);
-    if (text.length > 0) {
-      if (_file == null) {
+
+    if (_files.length == 0) {
+      _inboxBloc.addMessage(
+          widget.group.id,
+          text,
+          message.createdAt,
+          _authBloc.userModel.id,
+          _authBloc.userModel.name,
+          _authBloc.userModel.avatar);
+    } else {
+      Future.wait(_files.map((e) => FileUtil.uploadFireStorage(e,
+              path:
+                  'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}')))
+          .then((value) {
+        if (mounted)
+          setState(() {
+            messages
+                .firstWhere((m) => m.id == message.id)
+                ?.customProperties['files'] = value;
+          });
         _inboxBloc.addMessage(
             widget.group.id,
             text,
             message.createdAt,
             _authBloc.userModel.id,
             _authBloc.userModel.name,
-            _authBloc.userModel.avatar);
-      } else {
-        FileUtil.uploadFireStorage(_file,
-                path:
-                    'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}')
-            .then((fileUrl) {
-          setState(() {
-            messages.firstWhere((m) => m.id == message.id)?.image = fileUrl;
-          });
-          _inboxBloc.addMessage(
-              widget.group.id,
-              text,
-              message.createdAt,
-              _authBloc.userModel.id,
-              _authBloc.userModel.name,
-              _authBloc.userModel.avatar,
-              filePath: fileUrl,
-              location: message.customProperties['lat'] != null
-                  ? LatLng(message.customProperties['lat'],
-                      message.customProperties['long'])
-                  : null);
-        });
-        setState(() {
-          _file = null;
-        });
-      }
+            _authBloc.userModel.avatar,
+            filePaths: value,
+            location: message.customProperties['lat'] != null
+                ? LatLng(message.customProperties['lat'],
+                    message.customProperties['long'])
+                : null);
+      });
+      Future.delayed(
+          Duration(milliseconds: 100),
+          () => setState(() {
+                _files = [];
+              }));
     }
   }
 
@@ -288,11 +330,29 @@ class _InboxChatState extends State<InboxChat> {
       );
   }
 
-  void _onFilePick(String path) {
+  void _onFilePick(String path) async {
+    if ((await File(path).length()) > 20000000) {
+      showToast(
+          'File có kích thước quá lớn, vui lòng upload file có dung lương < 20MB',
+          context);
+      return;
+    }
     if (path != null) {
-      setState(() {
-        _file = File(path);
-      });
+      if (mounted)
+        setState(() {
+          _files.add(File(path));
+        });
+    } else {
+      // User canceled the picker
+    }
+  }
+
+  void _onMultiFilePick(List<String> paths) {
+    if (paths != null) {
+      if (mounted)
+        setState(() {
+          _files.addAll(paths.map((e) => File(e)).toList());
+        });
     } else {
       // User canceled the picker
     }
@@ -327,62 +387,56 @@ class _InboxChatState extends State<InboxChat> {
       backgroundColor: Colors.grey[50],
       body: DashChat(
         messageImageBuilder: (url, [messages]) {
-          if (url == 'assets/image/loading.gif') {
-            if (messages.customProperties == null) return Image.asset(url);
-            final mes = messages.customProperties['cache_file_path'];
+          if (messages.customProperties == null) return SizedBox.shrink();
+
+          if (messages.customProperties['long'] != null) {
+            final location = LatLng(messages.customProperties['lat'],
+                messages.customProperties['long']);
+            if ((messages.customProperties['files'] == null ||
+                    messages.customProperties['files'].length == 0) &&
+                (messages.customProperties['cache_file_paths'] == null ||
+                    messages.customProperties['cache_file_paths'].length == 0))
+              return SizedBox.shrink();
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Image.file(File(mes)),
-            );
-          }
-          if (FileUtil.getFbUrlFileType(url) == FileType.gif) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(url),
-            );
-          }
-          if (FileUtil.getFbUrlFileType(url) == FileType.video) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: VideoViewNetwork(url: url),
-            );
-          }
-          if (FileUtil.getFbUrlFileType(url) == FileType.image) {
-            if (messages.customProperties != null &&
-                messages.customProperties['long'] != null) {
-              final location = LatLng(messages.customProperties['lat'],
-                  messages.customProperties['long']);
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    launchMaps(location.latitude, location.longitude);
-                  },
-                  child: AbsorbPointer(
-                    child: ImageViewNetwork(
-                      url: url,
-                      borderRadius: 10,
-                      cacheFilePath: messages.customProperties != null
-                          ? messages.customProperties['cache_file_path']
-                          : null,
-                    ),
+              child: GestureDetector(
+                onTap: () {
+                  launchMaps(location.latitude, location.longitude);
+                },
+                child: AbsorbPointer(
+                  child: ImageViewNetwork(
+                    url: (messages.customProperties['files'] != null &&
+                            messages.customProperties['files'].length > 0)
+                        ? messages.customProperties['files'][0]
+                        : null,
+                    borderRadius: 10,
+                    cacheFilePath:
+                        (messages.customProperties['cache_file_paths'] !=
+                                    null &&
+                                messages.customProperties['cache_file_paths']
+                                        .length >
+                                    0)
+                            ? messages.customProperties['cache_file_paths'][0]
+                            : null,
                   ),
                 ),
-              );
-            } else {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ImageViewNetwork(
-                  url: url,
-                  borderRadius: 10,
-                  cacheFilePath: messages.customProperties != null
-                      ? messages.customProperties['cache_file_path']
-                      : null,
-                ),
-              );
-            }
+              ),
+            );
           }
 
+          final files = messages.customProperties['files'];
+          if (files != null && files.length > 0) {
+            return MediaGroupWidgetNetwork(
+              urls: files,
+            );
+          }
+
+          final cachePaths = messages.customProperties['cache_file_paths'];
+          if (cachePaths != null && cachePaths.length > 0) {
+            return MediaGroupWidgetCache(
+              paths: cachePaths,
+            );
+          }
           return SizedBox.shrink();
         },
         scrollController: scrollController,
@@ -390,13 +444,6 @@ class _InboxChatState extends State<InboxChat> {
         key: _chatViewKey,
         inverted: false,
         onSend: onSend,
-        // sendButtonBuilder: (onSend) {
-        //   return IconButton(
-        //       onPressed: () {
-        //         onSend();
-        //       },
-        //       icon: Icon(Icons.send));
-        // },
         sendOnEnter: true,
         textInputAction: TextInputAction.send,
         user: _users.firstWhere((user) => user.uid == _authBloc.userModel.id),
@@ -453,31 +500,39 @@ class _InboxChatState extends State<InboxChat> {
           else
             return SizedBox.shrink();
         },
-        inputFooterBuilder: () => _file != null
+        inputFooterBuilder: () => (_files != null || _files.length == 0)
             ? Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 3),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(bottom: 8),
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          color: Colors.green[50],
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.file_present),
-                          Text(
-                            path.basename(_file.path),
-                            style: ptBody().copyWith(
-                              color: Colors.black54,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: _files
+                      .map(
+                        (file) => Row(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(bottom: 8),
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  color: Colors.green[50],
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.file_present),
+                                  Text(
+                                    path.basename(file.path),
+                                    style: ptBody().copyWith(
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                          ],
+                        ),
+                      )
+                      .toList(),
                 ),
               )
             : SizedBox.shrink(),
@@ -495,9 +550,9 @@ class _InboxChatState extends State<InboxChat> {
                         Container(
                           decoration: BoxDecoration(
                               color: ptPrimaryColorLight(context)),
-                          width: MediaQuery.of(context).size.width - 30,
+                          width: MediaQuery.of(context).size.width,
                           padding: EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 10),
+                              vertical: 20, horizontal: 25),
                           child: Row(
                             children: [
                               ActionItem(
@@ -539,6 +594,7 @@ class _InboxChatState extends State<InboxChat> {
                                 img: 'assets/image/invite_chat.jpg',
                                 name: 'Mới người khac',
                                 onTap: () async {
+                                  showToast('Tính năng này chưa có', context);
                                   await navigatorKey.currentState.maybePop();
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
@@ -563,7 +619,7 @@ class _InboxChatState extends State<InboxChat> {
             onPressed: () async {
               imagePicker(context,
                   onCameraPick: _onFilePick,
-                  onImagePick: _onFilePick,
+                  onMultiImagePick: _onMultiFilePick,
                   onVideoPick: _onFilePick);
             },
           ),

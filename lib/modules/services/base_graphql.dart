@@ -277,6 +277,7 @@ class BaseService {
     // }
     // print(result.first);
     // GraphQL.instance.client.cache.reset();
+    Future.delayed(Duration(seconds: 2), () => print(result));
     return result;
   }
 }
@@ -286,11 +287,10 @@ class GraphQL {
     url: Config.wsUri,
     config: SocketClientConfig(
       autoReconnect: true,
+      inactivityTimeout: Duration(seconds: 30),
       initPayload: () async {
         final token = await SPref.instance.get('token');
-        return {
-          'headers' : {'x-token': token}
-        };
+        return {'x-token': token};
       },
     ),
   );
