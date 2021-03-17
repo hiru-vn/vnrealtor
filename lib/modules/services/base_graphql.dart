@@ -286,8 +286,12 @@ class GraphQL {
     url: Config.wsUri,
     config: SocketClientConfig(
       autoReconnect: true,
-      inactivityTimeout: Duration(seconds: 30),
-      // initPayload: {'x-token':},
+      initPayload: () async {
+        final token = await SPref.instance.get('token');
+        return {
+          'headers' : {'x-token': token}
+        };
+      },
     ),
   );
 

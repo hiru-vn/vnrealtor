@@ -416,21 +416,21 @@ class _BottomNavigationTile extends StatelessWidget {
     double topPadding;
     if (showSelectedLabels && !showUnselectedLabels) {
       bottomPadding = Tween<double>(
-        begin: selectedIconDiff / 2.0 - 10,
-        end: selectedFontSize / 2.0 - unselectedIconDiff / 2.0 - 10,
+        begin: selectedIconDiff / 2.0,
+        end: selectedFontSize / 2.0 - unselectedIconDiff / 2.0,
       ).evaluate(animation);
       topPadding = Tween<double>(
-        begin: selectedFontSize + selectedIconDiff / 2.0 - 10,
-        end: selectedFontSize / 2.0 - unselectedIconDiff / 2.0 - 10,
+        begin: selectedFontSize + selectedIconDiff / 2.0,
+        end: selectedFontSize / 2.0 - unselectedIconDiff / 2.0,
       ).evaluate(animation);
     } else if (!showSelectedLabels && !showUnselectedLabels) {
       bottomPadding = Tween<double>(
-        begin: selectedIconDiff / 2.0 - 10,
-        end: unselectedIconDiff / 2.0 - 10,
+        begin: selectedIconDiff / 2.0,
+        end: unselectedIconDiff / 2.0,
       ).evaluate(animation);
       topPadding = Tween<double>(
-        begin: selectedFontSize + selectedIconDiff / 2.0 - 10,
-        end: selectedFontSize + unselectedIconDiff / 2.0 - 10,
+        begin: selectedFontSize + selectedIconDiff / 2.0,
+        end: selectedFontSize + unselectedIconDiff / 2.0,
       ).evaluate(animation);
     } else {
       bottomPadding = Tween<double>(
@@ -456,7 +456,7 @@ class _BottomNavigationTile extends StatelessWidget {
       onTap: onTap,
       mouseCursor: mouseCursor,
       child: Padding(
-        padding: EdgeInsets.only(top: topPadding, bottom: bottomPadding),
+        padding: EdgeInsets.only(top: 0, bottom: bottomPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -557,7 +557,7 @@ class _TileIcon extends StatelessWidget {
 
     return Align(
       alignment: Alignment.topCenter,
-      heightFactor: 1.0,
+      // heightFactor: 1.0,
       child: Container(
         child: IconTheme(
           data: iconThemeData,
@@ -653,7 +653,7 @@ class _Label extends StatelessWidget {
     text = Align(
       alignment: Alignment.bottomCenter,
       heightFactor: 1.0,
-      child: Container(child: text),
+      child: Container(child: text,),
     );
 
     if (item.label != null) {
@@ -957,7 +957,7 @@ class _BottomNavigationBarState extends State<BottomNavigationBar>
         color: backgroundColor,
         child: ConstrainedBox(
           constraints: BoxConstraints(
-              minHeight: kBottomNavigationBarHeight + additionalBottomPadding),
+              minHeight: 50.0  + 0),
           child: CustomPaint(
             painter: _RadialPainter(
               circles: _circles.toList(),
@@ -967,7 +967,7 @@ class _BottomNavigationBarState extends State<BottomNavigationBar>
               // Splashes.
               type: MaterialType.transparency,
               child: Padding(
-                padding: EdgeInsets.only(bottom: additionalBottomPadding),
+                padding: EdgeInsets.only(bottom: 0),
                 child: MediaQuery.removePadding(
                   context: context,
                   removeBottom: true,
