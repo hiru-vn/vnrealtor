@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:datcao/config.dart';
 import 'package:graphql/client.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/share/import.dart';
@@ -281,19 +282,17 @@ class BaseService {
 }
 
 class GraphQL {
-  static String uri = '://vnrealtor.herokuapp.com/graphql';
-  // static String uri = '://vnrealtor-sq73uv5o7a-as.a.run.app/graphql';
-  // static String uri = '://datcao-be-hv2wn47voq-as.a.run.app/graphql';
-
   static final WebSocketLink _webSocketLink = WebSocketLink(
-    url: 'ws' + uri,
+    url: Config.wsUri,
     config: SocketClientConfig(
       autoReconnect: true,
+      inactivityTimeout: Duration(seconds: 30),
+      // initPayload: {'x-token':},
     ),
   );
 
   static final HttpLink _httpLink = HttpLink(
-    uri: 'https' + uri,
+    uri: Config.httpUri,
   );
 
   static final AuthLink _authLink = AuthLink(getToken: () async {
