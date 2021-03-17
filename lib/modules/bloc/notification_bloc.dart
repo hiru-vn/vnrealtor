@@ -23,7 +23,7 @@ class NotificationBloc extends ChangeNotifier {
       notifications = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       isLoadNoti = false;
       notifyListeners();
@@ -36,7 +36,7 @@ class NotificationBloc extends ChangeNotifier {
       final res = await NotificationRepo().sendNotiMessage(users, content);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       // notifyListeners();
     }
@@ -47,7 +47,7 @@ class NotificationBloc extends ChangeNotifier {
       final res = await NotificationRepo().seenNoti(id);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message??e.toString());
     } finally {
       // notifyListeners();
     }

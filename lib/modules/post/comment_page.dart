@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:flutter/rendering.dart';
@@ -8,6 +10,7 @@ import 'package:datcao/modules/model/media_post.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/share/import.dart';
 import 'package:popup_menu/popup_menu.dart';
+import 'package:graphql/client.dart';
 
 class CommentPage extends StatefulWidget {
   final PostModel post;
@@ -34,6 +37,7 @@ class _CommentPageState extends State<CommentPage> {
   PostBloc _postBloc;
   String sort = '{createdAt: 1}';
   ScrollController _controller;
+  StreamSubscription<FetchResult> _streamSubcription;
 
   @override
   void initState() {
@@ -72,8 +76,30 @@ class _CommentPageState extends State<CommentPage> {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
       _getComments(filter: GraphqlFilter(limit: 20));
+
+      //setup socket
+      if (isPost) _postBloc.subscriptionCommentByPostId(widget.post.id);
+      if (isMediaPost)
+        _postBloc.subscriptionCommentByPostId(widget.mediaPost.id);
+      Future.delayed(Duration(seconds: 2), () {
+        _streamSubcription = _postBloc.commentSubcription.listen((event) {
+          print(event.data);
+          CommentModel socketComment =
+              CommentModel.fromJson(event.data['newComment']);
+          if (socketComment.userId != AuthBloc.instance.userModel?.id)
+            setState(() {
+              comments.add(socketComment);
+            });
+        });
+      });
     }
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _streamSubcription?.cancel();
   }
 
   Future _getComments({GraphqlFilter filter}) async {

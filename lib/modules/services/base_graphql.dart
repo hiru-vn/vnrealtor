@@ -256,13 +256,45 @@ class BaseService {
     GraphQL.instance.client.cache.reset();
     return result.data;
   }
+
+  Stream<FetchResult> subscription(String name, String data,
+      {String fragment}) {
+    String subscriptionNode;
+    if (fragment == null)
+      subscriptionNode = 'subscription { $name($data) { $_fragmentDefault } }';
+    else
+      subscriptionNode = 'subscription { $name($data) { $fragment } }';
+    print('subscription $subscriptionNode');
+
+    final Operation operation = Operation(documentNode: gql(subscriptionNode));
+
+    final Stream<FetchResult> result =
+        GraphQL.instance.socketClient.subscribe(operation);
+    // if (result.) {
+    //   print('name ${result.exception.toString()}');
+    //   throw (Exception(result.exception.graphqlErrors[0].message.toString()));
+    // }
+    // print(result.first);
+    // GraphQL.instance.client.cache.reset();
+    return result;
+  }
 }
 
 class GraphQL {
+  static String uri = '://vnrealtor.herokuapp.com/graphql';
+  // static String uri = '://vnrealtor-sq73uv5o7a-as.a.run.app/graphql';
+  // static String uri = '://datcao-be-hv2wn47voq-as.a.run.app/graphql';
+
+  static final WebSocketLink _webSocketLink = WebSocketLink(
+    url: 'ws' + uri,
+    config: SocketClientConfig(
+      autoReconnect: true,
+    ),
+  );
+
   static final HttpLink _httpLink = HttpLink(
-      // uri: 'https://vnrealtor.herokuapp.com/graphql',
-      // uri: 'https://vnrealtor-sq73uv5o7a-as.a.run.app/graphql'
-      uri: 'https://datcao-be-hv2wn47voq-as.a.run.app/graphql');
+    uri: 'https' + uri,
+  );
 
   static final AuthLink _authLink = AuthLink(getToken: () async {
     final token = await SPref.instance.get('token');
@@ -270,14 +302,22 @@ class GraphQL {
   });
 
   static final Link _link = _authLink.concat(_httpLink);
+  static final Link _socketLink = _authLink.concat(_webSocketLink);
+
   static GraphQLClient _client = GraphQLClient(
     cache: InMemoryCache(),
     link: _link,
+  );
+
+  static GraphQLClient _socketClient = GraphQLClient(
+    cache: InMemoryCache(),
+    link: _socketLink,
   );
   GraphQL._internal();
   static final GraphQL instance = GraphQL._internal();
 
   GraphQLClient get client => _client;
+  GraphQLClient get socketClient => _socketClient;
 }
 
 //Set x-token to header
