@@ -37,7 +37,17 @@ class FileUtil {
     return File(filePath)..writeAsBytesSync(img.encodePng(thumbnail));
   }
 
-  static Future<String> uploadFireStorage(File file, {String path}) async {
+  static Future<File> resizeImageOverride(File file, int resizeWidth) async {
+    img.Image image = img.decodeImage(file.readAsBytesSync());
+
+    // Resize the image to a 240? thumbnail (maintaining the aspect ratio).
+    img.Image thumbnail = img.copyResize(image, width: resizeWidth);
+
+    return file..writeAsBytesSync(img.encodePng(thumbnail));
+  }
+
+  static Future<String> uploadFireStorage(File file,
+      {String path, bool isResize = true}) async {
     if (file == null) return '';
     if ((await file.length()) > 20 * 1024 * 1024) {
       showToastNoContext(
@@ -47,12 +57,13 @@ class FileUtil {
       return '';
     }
     try {
-      // if (getFbUrlFileType(Path.basename(file.path)) == FileType.image) {
-      //   file = await resizeImage(file.readAsBytesSync(), 720);
-      // }
-      print(Path.basename(file.path).replaceAll(new RegExp(r'(\?alt).*'), ''));
+      if (isResize &&
+          getFbUrlFileType(Path.basename(file.path)) == FileType.image) {
+        file = await resizeImageOverride(file, 1080);
+      }
+
       Reference storageReference = FirebaseStorage.instance.ref().child(
-          '${path ?? 'root'}/${Path.basename(file.path).replaceAll(new RegExp(r'(\?alt).*'), '')}');
+          '${path ?? 'root'}/${Path.basename(file.path).replaceAll(new RegExp(r'(\?alt).*'), '').replaceAll(' ', '')}');
       UploadTask uploadTask = storageReference.putFile(file);
       print('uploading...');
       await uploadTask.whenComplete(() {});
