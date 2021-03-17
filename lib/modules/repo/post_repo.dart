@@ -1,8 +1,8 @@
 import 'package:datcao/modules/services/comment_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
+import 'package:graphql/client.dart';
 import 'package:datcao/modules/services/post_srv.dart';
 import 'package:datcao/modules/services/report_srv.dart';
-
 import 'filter.dart';
 
 class PostRepo {
@@ -312,6 +312,13 @@ $postFragment
   Future getAllHashTagTP() async {
     final res = await ReportSrv().queryEnum('getAllHashTagTP');
     return res['getAllHashTagTP'];
+  }
+
+  Stream<FetchResult> subscriptionCommentByPostId(String postId) {
+    List<String> ids = [postId];
+    final res = CommentSrv().subscription('newComment',
+        'postIds: ${GraphqlHelper.listStringToGraphqlString(ids)}');
+    return res;
   }
 
   String postFragment = '''

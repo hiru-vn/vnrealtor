@@ -34,7 +34,7 @@ class UserBloc extends ChangeNotifier {
       friendRequestFromOtherUsers = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       notifyListeners();
     }
@@ -49,7 +49,7 @@ class UserBloc extends ChangeNotifier {
           (element) => element.id == AuthBloc.instance.userModel.id);
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -61,7 +61,7 @@ class UserBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -75,7 +75,7 @@ class UserBloc extends ChangeNotifier {
       final list = listRaw.map((e) => UserModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       notifyListeners();
     }
@@ -88,7 +88,7 @@ class UserBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       notifyListeners();
       AuthBloc.instance.notifyListeners();
@@ -102,7 +102,7 @@ class UserBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -117,7 +117,7 @@ class UserBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -132,7 +132,7 @@ class UserBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -150,7 +150,7 @@ class UserBloc extends ChangeNotifier {
       followersIn7Days = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       notifyListeners();
     }
@@ -161,7 +161,7 @@ class UserBloc extends ChangeNotifier {
       final res = await UserRepo().getMyFriendShipWith(userId);
       return BaseResponse.success(FriendshipModel.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -173,7 +173,7 @@ class UserBloc extends ChangeNotifier {
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -185,7 +185,7 @@ class UserBloc extends ChangeNotifier {
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -197,7 +197,7 @@ class UserBloc extends ChangeNotifier {
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -209,7 +209,7 @@ class UserBloc extends ChangeNotifier {
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -221,7 +221,7 @@ class UserBloc extends ChangeNotifier {
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -234,7 +234,7 @@ class UserBloc extends ChangeNotifier {
       final val = UserModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.toString());
+      return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       // notifyListeners();
     }

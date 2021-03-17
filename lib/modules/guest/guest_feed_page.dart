@@ -1,7 +1,9 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/post/post_detail.dart';
+import 'package:datcao/modules/post/post_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
+import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/share/widget/load_more.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -119,6 +121,45 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                   pageController: _postBloc.pageController,
                   stories: stories,
                 ),
+                if (_postBloc.hasTags != null && _postBloc.hasTags.length > 0)
+                  Container(
+                    width: deviceWidth(context),
+                    height: 30,
+                    margin: EdgeInsets.only(top: 8),
+                    // padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: ListView.separated(
+                      // shrinkWrap: true,
+                      padding: EdgeInsets.only(left: 15),
+                      separatorBuilder: (context, index) {
+                        return SizedBox(
+                          width: 10,
+                        );
+                      },
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(15),
+                          onTap: () {
+                            SearchPostPage.navigate(
+                                hashTag: _postBloc.hasTags[index]['value']);
+                          },
+                          child: Container(
+                            height: 30,
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                                color: ptSecondaryColor(context),
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Center(
+                              child: Text(
+                                _postBloc.hasTags[index]['value'].toString(),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: _postBloc.hasTags.length,
+                      scrollDirection: Axis.horizontal,
+                    ),
+                  ),
                 if (posts == null)
                   PostSkeleton()
                 else
@@ -243,6 +284,7 @@ class CreatePostCardGuest extends StatelessWidget {
               Divider(
                 height: 10,
               ),
+
             // Padding(
             //   padding: const EdgeInsets.symmetric(
             //     horizontal: 20,
@@ -282,98 +324,10 @@ class CreatePostCardGuest extends StatelessWidget {
                             separatorBuilder: (context, index) =>
                                 SizedBox(width: 8),
                             itemBuilder: (context, index) {
-                              return _buildStoryWidget(stories[index]);
+                              return buildStoryWidget(stories[index]);
                             }),
                       ),
           ],
-        ),
-      ),
-    );
-  }
-
-  _buildStoryWidget(PostModel postModel) {
-    return Center(
-      child: GestureDetector(
-        onTap: () {
-          PostDetail.navigate(postModel);
-        },
-        child: Material(
-          elevation: 0,
-          borderRadius: BorderRadius.circular(6),
-          child: Container(
-            height: 144,
-            width: 109,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(
-                        postModel.storyImages[0] ??
-                            postModel.mediaPosts[0].url))),
-            child: Column(children: [
-              Padding(
-                padding: const EdgeInsets.all(4),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(width: 1.5, color: Colors.white),
-                      ),
-                      child: Center(
-                        child: CircleAvatar(
-                          radius: 13,
-                          backgroundColor: Colors.white,
-                          backgroundImage: postModel.user.avatar != null
-                              ? CachedNetworkImageProvider(
-                                  postModel.user.avatar)
-                              : AssetImage('assets/image/default_avatar.png'),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 3,
-                    ),
-                    Expanded(
-                      child: Text(
-                        postModel.user.name,
-                        overflow: TextOverflow.fade,
-                        style: ptTiny().copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 6),
-              if (postModel.district != null && postModel.district.trim() != "")
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.white,
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.location_pin, size: 16),
-                      SizedBox(width: 1),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 95),
-                        child: Text(
-                          postModel.district,
-                          style: ptTiny(),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-            ]),
-          ),
         ),
       ),
     );

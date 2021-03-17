@@ -28,6 +28,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   List<String> _images = [];
   List<String> _allVideoAndImage = [];
   PostBloc _postBloc;
+  bool isProcess = false;
 
   @override
   void initState() {
@@ -43,38 +44,44 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   Future _createPost() async {
-    if (_contentC.text.trim() == '') {
-      showToast('Nội dung không được để trống', context);
-      return;
-    }
-    if (_allVideoAndImage.length == 0) {
-      showToast('Phải có ít nhất một hình ảnh hoặc video', context);
-      return;
-    }
-    showSimpleLoadingDialog(context);
-    final res = await _postBloc.createPost(
-        _contentC.text.trim(),
-        _expirationDate?.toIso8601String(),
-        _shareWith == 'public',
-        _pos?.latitude,
-        _pos?.longitude,
-        _images,
-        _videos);
-    await navigatorKey.currentState.maybePop();
-    if (res.isSuccess) {
-      await widget.pageController.animateToPage(0,
-          duration: Duration(milliseconds: 200), curve: Curves.decelerate);
-      FocusScope.of(context).requestFocus(FocusNode());
-      //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
-      _images.map((e) => FileUtil.deleteFileFireStorage(e));
+    if (isProcess) return;
+    try {
+      isProcess = true;
+      if (_contentC.text.trim() == '') {
+        showToast('Nội dung không được để trống', context);
+        return;
+      }
+      if (_allVideoAndImage.length == 0) {
+        showToast('Phải có ít nhất một hình ảnh hoặc video', context);
+        return;
+      }
+      showSimpleLoadingDialog(context);
+      final res = await _postBloc.createPost(
+          _contentC.text.trim(),
+          _expirationDate?.toIso8601String(),
+          _shareWith == 'public',
+          _pos?.latitude,
+          _pos?.longitude,
+          _images,
+          _videos);
+      await navigatorKey.currentState.maybePop();
+      if (res.isSuccess) {
+        await widget.pageController.animateToPage(0,
+            duration: Duration(milliseconds: 200), curve: Curves.decelerate);
+        FocusScope.of(context).requestFocus(FocusNode());
+        //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
+        _images.map((e) => FileUtil.deleteFileFireStorage(e));
 
-      _expirationDate = null;
-      _contentC.clear();
-      _videos = [];
-      _images = [];
-      _allVideoAndImage = [];
-    } else {
-      showToast(res.errMessage, context);
+        _expirationDate = null;
+        _contentC.clear();
+        _videos = [];
+        _images = [];
+        _allVideoAndImage = [];
+      } else {
+        showToast(res.errMessage, context);
+      }
+    } catch (e) {} finally {
+      isProcess = false;
     }
   }
 
@@ -99,9 +106,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
         _allVideoAndImage.add(res);
       }
       _allVideoAndImage.remove(loadingGif);
-      setState(() {});
     } catch (e) {
+      _allVideoAndImage.remove(loadingGif);
       showToast(e.toString(), context);
+    } finally {
+      setState(() {});
     }
   }
 
