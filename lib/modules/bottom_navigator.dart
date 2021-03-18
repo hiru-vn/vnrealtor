@@ -45,8 +45,8 @@ class _BottomNavigatorState extends State<BottomNavigator> {
             icon: Stack(
               children: [
                 Container(
-                  height: 35,
-                  width: 35,
+                  height: 31,
+                  width: 31,
                   color: Colors.transparent,
                   child: Center(
                     child: Icon(
@@ -100,8 +100,8 @@ class _BottomNavigatorState extends State<BottomNavigator> {
             activeIcon: Stack(
               children: [
                 Container(
-                  height: 35,
-                  width: 35,
+                  height: 31,
+                  width: 31,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle, color: Colors.transparent),
                   child: Center(
@@ -131,7 +131,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
     return cbn.BottomNavigationBar(
       elevation: 0,
       backgroundColor: Colors.white,
-      iconSize: 24,
+      iconSize: 23,
       selectedItemColor: ptPrimaryColor(context),
       unselectedItemColor: ptPrimaryColor(context),
       type: cbn.BottomNavigationBarType.fixed,

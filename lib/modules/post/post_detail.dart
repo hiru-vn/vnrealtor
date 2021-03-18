@@ -45,7 +45,7 @@ class _PostDetailState extends State<PostDetail> {
       }
 
       //setup socket
-      _postBloc.subscriptionCommentByPostId(widget.postModel.id);
+        _postBloc.subscriptionCommentByPostId(widget.postModel?.id??widget.postId);
 
       Future.delayed(Duration(seconds: 2), () {
         _streamSubcription = _postBloc.commentSubcription.listen((event) {

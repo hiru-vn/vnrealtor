@@ -131,12 +131,12 @@ class _PostWidgetState extends State<PostWidget> {
                                     '')
                                 : Formart.timeByDayVi(
                                     DateTime.tryParse(widget.post?.createdAt)),
-                            style: ptSmall().copyWith(color: Colors.black54),
+                            style: ptTiny().copyWith(color: Colors.black54),
                           ),
                           SizedBox(width: 8),
                           Text(
                             widget.post?.user?.reputationScore.toString(),
-                            style: ptBody().copyWith(color: Colors.yellow),
+                            style: ptSmall().copyWith(color: Colors.orange),
                           ),
                           SizedBox(width: 2),
                           Image.asset('assets/image/coin.png'),
@@ -154,7 +154,7 @@ class _PostWidgetState extends State<PostWidget> {
                           menu.show(widgetKey: moreBtnKey);
                         },
                       ),
-                    )
+                    ),
                 ],
               ),
             ),
