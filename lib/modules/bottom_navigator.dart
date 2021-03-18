@@ -41,12 +41,13 @@ class _BottomNavigatorState extends State<BottomNavigator> {
     final List<BottomNavigationBarItem> bottomNavBarItems = widget.list
         .map(
           (e) => BottomNavigationBarItem(
-            label: e.title,
+            // label: e.title,
+            title: SizedBox.shrink(),
             icon: Stack(
               children: [
                 Container(
-                  height: 31,
-                  width: 31,
+                  height: 28,
+                  width: 28,
                   color: Colors.transparent,
                   child: Center(
                     child: Icon(
@@ -69,7 +70,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                 //     ),
                 //   ),
                 // ),
-                if ((_authBloc?.userModel?.notiCount??0) > 0 && e.isNoti)
+                if ((_authBloc?.userModel?.notiCount ?? 0) > 0 && e.isNoti)
                   Positioned(
                     top: 0,
                     right: 0,
@@ -100,17 +101,18 @@ class _BottomNavigatorState extends State<BottomNavigator> {
             activeIcon: Stack(
               children: [
                 Container(
-                  height: 31,
-                  width: 31,
+                  height: 28,
+                  width: 28,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle, color: Colors.transparent),
-                  child: Center(
+                  child: Align(
+                    alignment: Alignment.center,
                     child: Icon(
                       e.iconActive,
                     ),
                   ),
                 ),
-                if ((_authBloc?.userModel?.notiCount??0) > 0 && e.isNoti)
+                if ((_authBloc?.userModel?.notiCount ?? 0) > 0 && e.isNoti)
                   Positioned(
                     top: 2,
                     right: 3,
@@ -132,6 +134,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
       elevation: 0,
       backgroundColor: Colors.white,
       iconSize: 23,
+      selectedFontSize: 24,
       selectedItemColor: ptPrimaryColor(context),
       unselectedItemColor: ptPrimaryColor(context),
       type: cbn.BottomNavigationBarType.fixed,
