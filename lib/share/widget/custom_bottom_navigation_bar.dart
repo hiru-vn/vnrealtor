@@ -456,7 +456,7 @@ class _BottomNavigationTile extends StatelessWidget {
       onTap: onTap,
       mouseCursor: mouseCursor,
       child: Padding(
-        padding: EdgeInsets.only(top: 0, bottom: bottomPadding),
+        padding: EdgeInsets.only(top: 0, bottom: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -653,7 +653,9 @@ class _Label extends StatelessWidget {
     text = Align(
       alignment: Alignment.bottomCenter,
       heightFactor: 1.0,
-      child: Container(child: text,),
+      child: Container(
+        child: text,
+      ),
     );
 
     if (item.label != null) {
@@ -956,8 +958,7 @@ class _BottomNavigationBarState extends State<BottomNavigationBar>
         elevation: widget.elevation ?? bottomTheme.elevation ?? 8.0,
         color: backgroundColor,
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-              minHeight: 50.0  + 0),
+          constraints: BoxConstraints(minHeight: 46.0 + 0),
           child: CustomPaint(
             painter: _RadialPainter(
               circles: _circles.toList(),

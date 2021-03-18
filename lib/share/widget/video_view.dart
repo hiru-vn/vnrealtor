@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import 'package:datcao/modules/inbox/import/video_view.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
 import 'spin_loader.dart';

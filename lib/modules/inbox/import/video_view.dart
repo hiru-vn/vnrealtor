@@ -155,7 +155,7 @@ class _DetailVideoScreenState extends State<DetailVideoScreen> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.white24,
+                    color: Colors.black54,
                     borderRadius: BorderRadius.circular(20)),
                 width: 40,
                 height: 40,

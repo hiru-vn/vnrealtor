@@ -277,11 +277,12 @@ class _InboxChatState extends State<InboxChat> {
           _authBloc.userModel.avatar);
     } else {
       Future.wait(
-        _tempFiles.map(
-          (e) => FileUtil.uploadFireStorage(File(e),
+        _tempFiles.map((e) => FileUtil.uploadFireStorage(
+              File(e),
               path:
-                  'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}', resizeWidth: 480,)
-        ),
+                  'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}',
+              resizeWidth: 480,
+            )),
       ).then((value) {
         // if (mounted)
         //   setState(() {
