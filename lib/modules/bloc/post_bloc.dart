@@ -290,6 +290,21 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getAllReplyByCommentIdGuest(String commentId,
+      {GraphqlFilter filter}) async {
+    try {
+      final res = await PostRepo()
+          .getAllReplyByCommentIdGuest(commentId: commentId, filter: filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => ReplyModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> createPost(
       String content,
       String expirationDate,

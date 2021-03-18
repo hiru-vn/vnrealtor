@@ -54,6 +54,7 @@ class _CommentPageState extends State<CommentPage> {
       if (!_focusNodeComment.hasFocus) {
         setState(() {
           isReply = false;
+          replyComment = null;
         });
       }
     });
@@ -218,6 +219,7 @@ class _CommentPageState extends State<CommentPage> {
                 comments != null
                     ? Expanded(
                         child: ListView.separated(
+                          physics: AlwaysScrollableScrollPhysics(),
                           controller: controller,
                           padding: EdgeInsets.zero,
                           itemCount: comments.length,
@@ -226,6 +228,8 @@ class _CommentPageState extends State<CommentPage> {
                             return CommentWidget(
                                 userReplyCache: localReplies,
                                 comment: comment,
+                                shouldExpand:
+                                    comments[index].id == replyComment?.id,
                                 tapCallBack: () {
                                   setState(() {
                                     isReply = true;
@@ -316,9 +320,14 @@ class CommentWidget extends StatefulWidget {
   final CommentModel comment;
   final Function tapCallBack;
   final List<ReplyModel> userReplyCache;
+  final bool shouldExpand;
 
   const CommentWidget(
-      {Key key, this.comment, this.tapCallBack, this.userReplyCache})
+      {Key key,
+      this.comment,
+      this.tapCallBack,
+      this.userReplyCache,
+      this.shouldExpand = false})
       : super(key: key);
   @override
   _CommentWidgetState createState() => _CommentWidgetState();
@@ -330,9 +339,11 @@ class _CommentWidgetState extends State<CommentWidget> {
   List<ReplyModel> replies = [];
   bool isLoadReply = false;
   bool isExpandReply = false;
+  List<ReplyModel> userReplyCache;
 
   @override
   void initState() {
+    userReplyCache = widget.userReplyCache;
     if (widget.comment.userLikeIds != null)
       _isLike = widget.comment.userLikeIds
               ?.contains(AuthBloc.instance.userModel?.id ?? '') ??
@@ -346,6 +357,10 @@ class _CommentWidgetState extends State<CommentWidget> {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
     }
+    if (userReplyCache != widget.userReplyCache) {
+      userReplyCache = widget.userReplyCache;
+      isExpandReply = true;
+    }
     super.didChangeDependencies();
   }
 
@@ -355,9 +370,8 @@ class _CommentWidgetState extends State<CommentWidget> {
       isLoadReply = true;
     });
     if (AuthBloc.instance.userModel == null) {
-      // res = await _postBloc.getAllCommentByMediaPostIdGuest(
-      //     widget.mediaPost.id,
-      //     filter: filter);
+      res = await _postBloc.getAllReplyByCommentIdGuest(widget.comment.id,
+          filter: filter);
     } else {
       res = await _postBloc.getAllReplyByCommentId(widget.comment.id,
           filter: filter);
@@ -382,8 +396,9 @@ class _CommentWidgetState extends State<CommentWidget> {
   Widget build(BuildContext context) {
     final List<ReplyModel> mergeReplies = [
       ...replies,
-      ...(widget.userReplyCache
-              .where((element) => element.commentId == widget.comment.id) ??
+      ...(userReplyCache
+              .where((element) => element.commentId == widget.comment.id)
+              ?.toList() ??
           [])
     ];
     return Column(
@@ -445,10 +460,11 @@ class _CommentWidgetState extends State<CommentWidget> {
                           DateTime.tryParse(widget.comment.updatedAt)),
                   style: ptTiny().copyWith(color: Colors.black54),
                 ),
-                TextSpan(
-                  text: '   ' + 'Trả lời',
-                  style: ptTiny(),
-                ),
+                if (AuthBloc.instance.userModel != null)
+                  TextSpan(
+                    text: '   ' + 'Trả lời',
+                    style: ptTiny(),
+                  ),
               ])),
             ],
           ),
@@ -486,7 +502,7 @@ class _CommentWidgetState extends State<CommentWidget> {
             ]),
           ),
         ),
-        isExpandReply
+        isExpandReply || widget.shouldExpand
             ? Padding(
                 padding: const EdgeInsets.only(left: 65),
                 child: Column(

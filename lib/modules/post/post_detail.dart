@@ -8,6 +8,7 @@ import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
 import 'dart:async';
+import 'package:datcao/modules/model/reply.dart';
 
 class PostDetail extends StatefulWidget {
   final PostModel postModel;
@@ -31,6 +32,24 @@ class _PostDetailState extends State<PostDetail> {
   PostBloc _postBloc;
   PostModel _post;
   StreamSubscription<FetchResult> _streamSubcription;
+  bool isReply = false;
+  FocusNode _focusNodeComment = FocusNode();
+  CommentModel replyComment;
+  List<ReplyModel> localReplies = [];
+
+  @override
+  void initState() {
+    _focusNodeComment.addListener(() {
+      if (!_focusNodeComment.hasFocus) {
+        setState(() {
+          isReply = false;
+          replyComment = null;
+        });
+      }
+    });
+
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -60,6 +79,33 @@ class _PostDetailState extends State<PostDetail> {
       // });
     }
     super.didChangeDependencies();
+  }
+
+  _reply(String text) async {
+    if (replyComment == null) return;
+    text = text.trim();
+    if (comments == null) await Future.delayed(Duration(seconds: 1));
+    _commentC.clear();
+    localReplies.add(ReplyModel(
+        content: text,
+        userId: AuthBloc.instance.userModel.uid,
+        commentId: replyComment.id,
+        user: AuthBloc.instance.userModel,
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String()));
+    setState(() {});
+    FocusScope.of(context).requestFocus(FocusNode());
+    BaseResponse res = await _postBloc.createReply(text, replyComment.id);
+    if (!res.isSuccess) {
+      showToast(res.errMessage, context);
+    } else {
+      final index = localReplies
+          .indexWhere((element) => element.createdAt == res.data.createdAt);
+      if (index >= 0) {
+        localReplies[index] = res.data;
+      }
+      if (mounted) setState(() {});
+    }
   }
 
   @override
@@ -132,7 +178,8 @@ class _PostDetailState extends State<PostDetail> {
           ),
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 100),
+              padding: EdgeInsets.only(
+                  bottom: AuthBloc.instance.userModel == null ? 20 : 100),
               child: Column(
                 children: [
                   _post == null
@@ -151,7 +198,18 @@ class _PostDetailState extends State<PostDetail> {
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             final comment = comments[index];
-                            return new CommentWidget(comment: comment);
+                            return new CommentWidget(
+                                comment: comment,
+                                userReplyCache: localReplies,
+                                shouldExpand:
+                                    comments[index].id == replyComment?.id,
+                                tapCallBack: () {
+                                  setState(() {
+                                    isReply = true;
+                                    replyComment = comments[index];
+                                  });
+                                  _focusNodeComment.requestFocus();
+                                });
                           },
                           separatorBuilder: (context, index) =>
                               SizedBox.shrink(),
@@ -194,16 +252,21 @@ class _PostDetailState extends State<PostDetail> {
                         },
                         // maxLength: 200,
                         onSubmitted: _comment,
+                        focusNode: _focusNodeComment,
                         decoration: InputDecoration(
                           suffixIcon: GestureDetector(
                               onTap: () {
-                                _comment(_commentC.text);
+                                (isReply)
+                                    ? _reply(_commentC.text)
+                                    : _comment(_commentC.text);
                               },
                               child: Icon(Icons.send)),
                           contentPadding:
                               EdgeInsets.symmetric(horizontal: 15, vertical: 6),
                           isDense: true,
-                          hintText: 'Viết bình luận.',
+                          hintText: isReply
+                              ? 'Trả lời ${replyComment?.user?.name ?? ''}'
+                              : 'Viết bình luận.',
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Colors.transparent,
