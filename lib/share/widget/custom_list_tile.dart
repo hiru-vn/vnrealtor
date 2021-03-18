@@ -1289,7 +1289,7 @@ class _RenderCustomListTile extends RenderBox {
 
   static const double _minLeadingWidth = 0.0;
   // The horizontal gap between the titles and the leading/trailing widgets
-  double get _horizontalTitleGap => 16.0 + visualDensity.horizontal * 2.0;
+  double get _horizontalTitleGap => 14.0 + visualDensity.horizontal * 2.0;
   // The minimum padding on the top and bottom of the title and subtitle widgets.
   static const double _minVerticalPadding = 0.0;
 

@@ -1,5 +1,6 @@
 import 'package:datcao/modules/services/comment_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
+import 'package:datcao/modules/services/reply_srv.dart';
 import 'package:graphql/client.dart';
 import 'package:datcao/modules/services/post_srv.dart';
 import 'package:datcao/modules/services/report_srv.dart';
@@ -144,6 +145,24 @@ like: 0
     return res;
   }
 
+  Future createReply({String commentId, String content}) async {
+    String data = '''
+commentId: "$commentId"
+content: """
+$content
+"""
+    ''';
+    final res = await ReplySrv().add(data, fragment: '''
+    id
+    userId
+    commentId
+    content
+    createdAt
+    updatedAt
+    ''');
+    return res;
+  }
+
   Future createPost(String content, String expirationDate, bool publicity,
       double lat, double long, List<String> images, List<String> videos) async {
     String data = '''
@@ -236,12 +255,32 @@ $postFragment
     return res;
   }
 
+  Future getAllReplyByCommentId(
+      {String commentId, GraphqlFilter filter}) async {
+    final res = await ReplySrv().getList(
+        limit: filter?.limit,
+        offset: filter?.offset,
+        search: filter?.search,
+        page: filter?.page,
+        order: filter?.order,
+        filter: "{commentId: \"$commentId\"}");
+    return res;
+  }
+
   Future getAllCommentByPostIdGuest(
       {String postId, GraphqlFilter filter}) async {
     final res = await CommentSrv().query(
         'getCommentByGuest', ' q : { filter: {postId: \"$postId\"} } ',
         fragment: 'data { ${CommentSrv().fragmentDefault} }');
     return res['getCommentByGuest'];
+  }
+
+  Future getAllReplyByCommentIdGuest(
+      {String commentId, GraphqlFilter filter}) async {
+    final res = await CommentSrv().query(
+        'getReplyByGuest', ' q : { filter: {commentId: \"$commentId\"} } ',
+        fragment: 'data { ${ReplySrv().fragmentDefault} }');
+    return res['getReplyByGuest'];
   }
 
   Future getAllCommentByMediaPostIdGuest(

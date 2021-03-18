@@ -45,19 +45,19 @@ class _PostDetailState extends State<PostDetail> {
       }
 
       //setup socket
-        _postBloc.subscriptionCommentByPostId(widget.postModel?.id??widget.postId);
+      // _postBloc.subscriptionCommentByPostId(widget.postModel?.id??widget.postId);
 
-      Future.delayed(Duration(seconds: 2), () {
-        _streamSubcription = _postBloc.commentSubcription.listen((event) {
-          print(event.data);
-          CommentModel socketComment =
-              CommentModel.fromJson(event.data['newComment']);
-          if (socketComment.userId != AuthBloc.instance.userModel?.id)
-            setState(() {
-              comments.add(socketComment);
-            });
-        });
-      });
+      // Future.delayed(Duration(seconds: 2), () {
+      //   _streamSubcription = _postBloc.commentSubcription.listen((event) {
+      //     print(event.data);
+      //     CommentModel socketComment =
+      //         CommentModel.fromJson(event.data['newComment']);
+      //     if (socketComment.userId != AuthBloc.instance.userModel?.id)
+      //       setState(() {
+      //         comments.add(socketComment);
+      //       });
+      //   });
+      // });
     }
     super.didChangeDependencies();
   }

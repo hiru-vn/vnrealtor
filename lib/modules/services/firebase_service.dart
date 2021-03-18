@@ -58,7 +58,7 @@ class FcmService {
       }
 
       NotificationBloc.instance
-          .getListNotification(filter: GraphqlFilter(order: 'createdAt: -1'));
+          .getListNotification(filter: GraphqlFilter(order: '{createdAt: -1}'));
 
       if (message.notification != null) {
         print('Message also contained a notification: ${message.notification}');

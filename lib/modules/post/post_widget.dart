@@ -15,6 +15,7 @@ import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:readmore/readmore.dart';
 import 'package:popup_menu/popup_menu.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'comment_page.dart';
 
@@ -160,20 +161,29 @@ class _PostWidgetState extends State<PostWidget> {
             ),
             Padding(
               padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 5),
-              child: ReadMoreText(
-                widget.post?.content?.trim() ?? '',
-                trimLines: 5,
-                trimLength: 1000,
+              child: Linkify(
+                onOpen: (link) async {
+                  // if (Validator.isUrl(link.url)) {
+                  if (await canLaunch(link.url)) {
+                    await launch(link.url);
+                  } else {
+                    showToastNoContext('Đường dẫn hết hiệu lực');
+                  }
+                  // }
+                },
+                text: (widget.post?.content?.trim() ?? ''),
+                // trimLines: 5,
+                // trimLength: 1000,
                 style: ptBody().copyWith(color: Colors.black87),
                 textAlign: TextAlign.start,
-                colorClickableText: Colors.pink,
-                trimMode: TrimMode.Length,
-                trimCollapsedText: 'Xem thêm',
-                trimExpandedText: 'Rút gọn',
-                moreStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
+                // colorClickableText: Colors.pink,
+                // trimMode: TrimMode.Length,
+                // trimCollapsedText: 'Xem thêm',
+                // trimExpandedText: 'Rút gọn',
+                // moreStyle: TextStyle(
+                //   fontSize: 14,
+                //   fontWeight: FontWeight.bold,
+                // ),
               ),
             ),
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:datcao/modules/authentication/login.dart';
+import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
@@ -32,12 +33,16 @@ class CommentPage extends StatefulWidget {
 class _CommentPageState extends State<CommentPage> {
   bool isPost = true;
   bool isMediaPost = false;
+  bool isReply = false;
   List<CommentModel> comments;
   TextEditingController _commentC = TextEditingController();
   PostBloc _postBloc;
   String sort = '{createdAt: 1}';
   ScrollController _controller;
   StreamSubscription<FetchResult> _streamSubcription;
+  FocusNode _focusNodeComment = FocusNode();
+  CommentModel replyComment;
+  List<ReplyModel> localReplies = [];
 
   @override
   void initState() {
@@ -45,8 +50,22 @@ class _CommentPageState extends State<CommentPage> {
       isPost = false;
       isMediaPost = true;
     }
+    _focusNodeComment.addListener(() {
+      if (!_focusNodeComment.hasFocus) {
+        setState(() {
+          isReply = false;
+        });
+      }
+    });
 
     super.initState();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    _focusNodeComment?.dispose();
+    _streamSubcription?.cancel();
   }
 
   _comment(String text) async {
@@ -71,35 +90,56 @@ class _CommentPageState extends State<CommentPage> {
     }
   }
 
+  _reply(String text) async {
+    if (replyComment == null) return;
+    text = text.trim();
+    if (comments == null) await Future.delayed(Duration(seconds: 1));
+    _commentC.clear();
+    localReplies.add(ReplyModel(
+        content: text,
+        userId: AuthBloc.instance.userModel.uid,
+        commentId: replyComment.id,
+        user: AuthBloc.instance.userModel,
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String()));
+    setState(() {});
+    FocusScope.of(context).requestFocus(FocusNode());
+    BaseResponse res = await _postBloc.createReply(text, replyComment.id);
+    if (!res.isSuccess) {
+      showToast(res.errMessage, context);
+    } else {
+      final index = localReplies
+          .indexWhere((element) => element.createdAt == res.data.createdAt);
+      if (index >= 0) {
+        localReplies[index] = res.data;
+      }
+      if (mounted) setState(() {});
+    }
+  }
+
   @override
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
       _getComments(filter: GraphqlFilter(limit: 20));
 
-      //setup socket
-      if (isPost) _postBloc.subscriptionCommentByPostId(widget.post.id);
-      if (isMediaPost)
-        _postBloc.subscriptionCommentByPostId(widget.mediaPost.id);
-      Future.delayed(Duration(seconds: 2), () {
-        _streamSubcription = _postBloc.commentSubcription.listen((event) {
-          print(event.data);
-          CommentModel socketComment =
-              CommentModel.fromJson(event.data['newComment']);
-          if (socketComment.userId != AuthBloc.instance.userModel?.id)
-            setState(() {
-              comments.add(socketComment);
-            });
-        });
-      });
+      // //setup socket
+      // if (isPost) _postBloc.subscriptionCommentByPostId(widget.post.id);
+      // if (isMediaPost)
+      //   _postBloc.subscriptionCommentByPostId(widget.mediaPost.id);
+      // Future.delayed(Duration(seconds: 2), () {
+      //   _streamSubcription = _postBloc.commentSubcription.listen((event) {
+      //     print(event.data);
+      //     CommentModel socketComment =
+      //         CommentModel.fromJson(event.data['newComment']);
+      //     if (socketComment.userId != AuthBloc.instance.userModel?.id)
+      //       setState(() {
+      //         comments.add(socketComment);
+      //       });
+      //   });
+      // });
     }
     super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _streamSubcription?.cancel();
   }
 
   Future _getComments({GraphqlFilter filter}) async {
@@ -183,7 +223,16 @@ class _CommentPageState extends State<CommentPage> {
                           itemCount: comments.length,
                           itemBuilder: (context, index) {
                             final comment = comments[index];
-                            return new CommentWidget(comment: comment);
+                            return CommentWidget(
+                                userReplyCache: localReplies,
+                                comment: comment,
+                                tapCallBack: () {
+                                  setState(() {
+                                    isReply = true;
+                                    replyComment = comments[index];
+                                  });
+                                  _focusNodeComment.requestFocus();
+                                });
                           },
                           separatorBuilder: (context, index) =>
                               SizedBox.shrink(),
@@ -211,6 +260,7 @@ class _CommentPageState extends State<CommentPage> {
                         ),
                         Expanded(
                           child: TextField(
+                            focusNode: _focusNodeComment,
                             controller: _commentC,
                             maxLines: null,
                             // maxLength: 200,
@@ -218,13 +268,17 @@ class _CommentPageState extends State<CommentPage> {
                             decoration: InputDecoration(
                               suffixIcon: GestureDetector(
                                   onTap: () {
-                                    _comment(_commentC.text);
+                                    (isReply)
+                                        ? _reply(_commentC.text)
+                                        : _comment(_commentC.text);
                                   },
                                   child: Icon(Icons.send)),
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 6),
                               isDense: true,
-                              hintText: 'Viết bình luận.',
+                              hintText: isReply
+                                  ? 'Trả lời ${replyComment?.user?.name ?? ''}'
+                                  : 'Viết bình luận.',
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Colors.transparent,
@@ -260,8 +314,12 @@ class _CommentPageState extends State<CommentPage> {
 
 class CommentWidget extends StatefulWidget {
   final CommentModel comment;
+  final Function tapCallBack;
+  final List<ReplyModel> userReplyCache;
 
-  const CommentWidget({Key key, this.comment}) : super(key: key);
+  const CommentWidget(
+      {Key key, this.comment, this.tapCallBack, this.userReplyCache})
+      : super(key: key);
   @override
   _CommentWidgetState createState() => _CommentWidgetState();
 }
@@ -269,6 +327,9 @@ class CommentWidget extends StatefulWidget {
 class _CommentWidgetState extends State<CommentWidget> {
   bool _isLike = false;
   PostBloc _postBloc;
+  List<ReplyModel> replies = [];
+  bool isLoadReply = false;
+  bool isExpandReply = false;
 
   @override
   void initState() {
@@ -288,138 +349,298 @@ class _CommentWidgetState extends State<CommentWidget> {
     super.didChangeDependencies();
   }
 
+  Future _getReply({GraphqlFilter filter}) async {
+    BaseResponse res;
+    setState(() {
+      isLoadReply = true;
+    });
+    if (AuthBloc.instance.userModel == null) {
+      // res = await _postBloc.getAllCommentByMediaPostIdGuest(
+      //     widget.mediaPost.id,
+      //     filter: filter);
+    } else {
+      res = await _postBloc.getAllReplyByCommentId(widget.comment.id,
+          filter: filter);
+    }
+    if (mounted)
+      setState(() {
+        isLoadReply = false;
+      });
+    if (res == null) return;
+    if (res.isSuccess) {
+      if (mounted)
+        setState(() {
+          replies = res.data;
+          isExpandReply = true;
+        });
+    } else {
+      showToast('Có lỗi khi lấy dữ liệu', context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CustomListTile(
-      onTap: () {
-        ProfileOtherPage.navigate(widget.comment.user);
-      },
-      tileColor: Colors.white,
-      leading: Container(
-        padding: EdgeInsets.all(1),
-        decoration: BoxDecoration(
-          border: Border.all(width: 1, color: Colors.black45),
-          shape: BoxShape.circle,
-        ),
-        child: GestureDetector(
-          onTap: () {},
-          child: CircleAvatar(
-            radius: 18,
-            backgroundColor: Colors.white,
-            backgroundImage: widget.comment.user.avatar != null
-                ? CachedNetworkImageProvider(widget.comment.user.avatar)
-                : AssetImage('assets/image/default_avatar.png'),
-          ),
-        ),
-      ),
-      title: Padding(
-        padding: const EdgeInsets.only(top: 13),
-        child: Text(
-          widget.comment.user?.name ?? '',
-          style: ptTitle().copyWith(fontSize: 15),
-        ),
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 2,
-          ),
-          Text(
-            widget.comment.content ?? '',
-            style:
-                ptTiny().copyWith(fontWeight: FontWeight.w500, fontSize: 13.5),
-          ),
-          SizedBox(
-            height: 2,
-          ),
-          Row(
-            children: [
-              Text(
-                Formart.timeByDayVi(
-                    DateTime.tryParse(widget.comment.updatedAt)),
-                style: ptTiny(),
+    final List<ReplyModel> mergeReplies = [
+      ...replies,
+      ...(widget.userReplyCache
+              .where((element) => element.commentId == widget.comment.id) ??
+          [])
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomListTile(
+          onTap: () {
+            if (widget.tapCallBack != null) widget.tapCallBack();
+          },
+          onLongPress: () {},
+          tileColor: Colors.white,
+          leading: Container(
+            width: 36,
+            padding: EdgeInsets.only(top: 15),
+            alignment: Alignment.topCenter,
+            child: GestureDetector(
+              onTap: () => ProfileOtherPage.navigate(widget.comment.user),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Colors.white,
+                  backgroundImage: widget.comment.user.avatar != null
+                      ? CachedNetworkImageProvider(widget.comment.user.avatar)
+                      : AssetImage('assets/image/default_avatar.png'),
+                ),
               ),
-              // SizedBox(
-              //   width: 50,
-              //   child: Center(
-              //     child: Text(
-              //       'Trả lời',
-              //       style: ptSmall(),
-              //     ),
-              //   ),
-              // ),
-              Spacer(),
-              GestureDetector(
-                onTap: () async {
-                  if (AuthBloc.instance.userModel == null) {
-                    await navigatorKey.currentState.maybePop();
-                    LoginPage.navigatePush();
-                    return;
-                  }
-                  setState(() {
-                    _isLike = !_isLike;
-                  });
-                  if (_isLike) {
-                    widget.comment.userLikeIds
-                        .add(AuthBloc.instance.userModel.id);
-                    widget.comment.like++;
-                    _postBloc.likeComment(widget.comment.id);
-                  } else {
-                    if (widget.comment.like > 0) widget.comment.like--;
-                    _postBloc.unlikeComment(widget.comment.id);
-                  }
-                  setState(() {});
-                },
-                child: Row(children: [
-                  Icon(
-                    MdiIcons.thumbUp,
-                    size: 17,
-                    color: _isLike ? ptPrimaryColor(context) : Colors.grey[200],
-                  ),
-                  SizedBox(width: 4),
-                  Text(
-                    widget.comment.like.toString(),
-                    style: ptTiny(),
-                  )
-                ]),
-              )
+            ),
+          ),
+          title: GestureDetector(
+            onTap: () => ProfileOtherPage.navigate(widget.comment.user),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  widget.comment.user?.name ?? '',
+                  style: ptBody().copyWith(fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 3,
+              ),
+              Text.rich(TextSpan(children: [
+                TextSpan(
+                  text: widget.comment.content ?? '',
+                  style: ptBody().copyWith(
+                      fontWeight: FontWeight.w500, color: Colors.black87),
+                ),
+                TextSpan(
+                  text: '  ' +
+                      Formart.timeByDayViShort(
+                          DateTime.tryParse(widget.comment.updatedAt)),
+                  style: ptTiny().copyWith(color: Colors.black54),
+                ),
+                TextSpan(
+                  text: '   ' + 'Trả lời',
+                  style: ptTiny(),
+                ),
+              ])),
             ],
           ),
-          SizedBox(
-            height: 4,
+          trailing: GestureDetector(
+            onTap: () async {
+              if (AuthBloc.instance.userModel == null) {
+                await navigatorKey.currentState.maybePop();
+                LoginPage.navigatePush();
+                return;
+              }
+              setState(() {
+                _isLike = !_isLike;
+              });
+              if (_isLike) {
+                widget.comment.userLikeIds.add(AuthBloc.instance.userModel.id);
+                widget.comment.like++;
+                _postBloc.likeComment(widget.comment.id);
+              } else {
+                if (widget.comment.like > 0) widget.comment.like--;
+                _postBloc.unlikeComment(widget.comment.id);
+              }
+              setState(() {});
+            },
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Icon(
+                MdiIcons.thumbUp,
+                size: 17,
+                color: _isLike ? ptPrimaryColor(context) : Colors.grey[200],
+              ),
+              SizedBox(width: 4),
+              Text(
+                widget.comment.like.toString(),
+                style: ptTiny(),
+              )
+            ]),
           ),
+        ),
+        isExpandReply
+            ? Padding(
+                padding: const EdgeInsets.only(left: 65),
+                child: Column(
+                  children: mergeReplies
+                      .map(
+                        (e) => ReplyWidget(
+                          reply: e,
+                        ),
+                      )
+                      .toList(),
+                ),
+              )
+            : SizedBox.shrink(),
+        if ((widget.comment?.replyIds?.length ?? 0) > 0)
+          Padding(
+            padding: const EdgeInsets.only(left: 65),
+            child: GestureDetector(
+              onTap: () {
+                if (isExpandReply) {
+                  setState(() {
+                    isExpandReply = false;
+                  });
+                } else {
+                  if (replies.length > 0) {
+                    setState(() {
+                      isExpandReply = true;
+                    });
+                  } else {
+                    _getReply(
+                        filter:
+                            GraphqlFilter(limit: 40, order: "{updatedAt: 1}"));
+                  }
+                }
+              },
+              child: SizedBox(
+                height: 18,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        isExpandReply
+                            ? 'Rút gọn'
+                            : 'Xem ${widget.comment.replyIds.length} phản hồi',
+                        style: ptSmall().copyWith(color: Colors.black54),
+                      ),
+                      Icon(
+                        isExpandReply
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down,
+                        color: Colors.black54,
+                        size: 18,
+                      ),
+                      if (isLoadReply)
+                        SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(
+                            backgroundColor: Colors.blue,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class ReplyWidget extends StatefulWidget {
+  final ReplyModel reply;
+
+  const ReplyWidget({Key key, this.reply}) : super(key: key);
+  @override
+  _ReplyWidgetState createState() => _ReplyWidgetState();
+}
+
+class _ReplyWidgetState extends State<ReplyWidget> {
+  bool _isLike = false;
+  PostBloc _postBloc;
+
+  @override
+  void initState() {
+    // if (widget.reply.userLikeIds != null)
+    //   _isLike = widget.reply.userLikeIds
+    //           ?.contains(AuthBloc.instance.userModel?.id ?? '') ??
+    //       false;
+
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_postBloc == null) {
+      _postBloc = Provider.of<PostBloc>(context);
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+            child: GestureDetector(
+              onTap: () {},
+              child: CircleAvatar(
+                radius: 13,
+                backgroundColor: Colors.white,
+                backgroundImage: widget.reply.user?.avatar != null
+                    ? CachedNetworkImageProvider(widget.reply.user.avatar)
+                    : AssetImage('assets/image/default_avatar.png'),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.reply.user?.name ?? '',
+                style: ptBody().copyWith(fontWeight: FontWeight.w500),
+              ),
+              Text.rich(TextSpan(children: [
+                TextSpan(
+                  text: widget.reply.content ?? '',
+                  style: ptBody().copyWith(
+                      fontWeight: FontWeight.w500, color: Colors.black87),
+                ),
+                TextSpan(
+                  text: '  ' +
+                      Formart.timeByDayViShort(
+                          DateTime.tryParse(widget.reply.updatedAt)),
+                  style: ptTiny().copyWith(color: Colors.black54),
+                ),
+              ])),
+            ],
+          )
         ],
       ),
     );
   }
-
-  initMenu() {
-    menu = PopupMenu(
-        items: [
-          MenuItem(
-              title: 'Xóa',
-              image: Icon(
-                Icons.delete,
-                color: Colors.white,
-              )),
-        ],
-        onClickMenu: (val) async {
-          final confirm = await showConfirmDialog(
-              context, 'Xác nhận xóa bình luận này?',
-              confirmTap: () {}, navigatorKey: navigatorKey);
-          if (!confirm) return;
-          if (val.menuTitle == 'Xóa') {
-            final res = await _postBloc.deleteComment(widget.comment.id);
-            if (res.isSuccess) {
-            } else {
-              showToast(res.errMessage, context);
-            }
-          }
-        },
-        stateChanged: (val) {},
-        onDismiss: () {});
-  }
-
-  PopupMenu menu;
 }

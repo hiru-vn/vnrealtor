@@ -3,6 +3,9 @@ final emailPattern =
     r'^[a-zA-Z0-9](([.]{1}|[_]{1})?[a-zA-Z0-9])*[@]([a-z0-9]+([.]{1}|-)?)*[a-zA-Z0-9]+[.]{1}[a-z]{2,253}$';
 final phonePattern = r'^[+]{0,1}[0-9]{5,13}$';
 
+final urlPattern =
+    r'/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/';
+
 bool isMatchedPattern(String pattern, dynamic input) {
   if (!RegExp(pattern).hasMatch(input)) {
     return false;
@@ -21,7 +24,17 @@ class Validator {
   }
 
   static bool isEmail(String email) {
-    if (email.isEmpty || email.length < 6 || !isMatchedPattern(emailPattern, email)) {
+    if (email.isEmpty ||
+        email.length < 6 ||
+        !isMatchedPattern(emailPattern, email)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  static bool isUrl(String url) {
+    if (!isMatchedPattern(urlPattern, url)) {
       return false;
     }
 
@@ -62,7 +75,6 @@ class Validator {
     return regexPin.hasMatch(pin);
   }
 }
-
 
 class TextFieldValidator {
   static String notEmptyValidator(String string) {

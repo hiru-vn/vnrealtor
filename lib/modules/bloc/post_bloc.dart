@@ -2,6 +2,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/media_post.dart';
 import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
@@ -274,6 +275,21 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getAllReplyByCommentId(String commentId,
+      {GraphqlFilter filter}) async {
+    try {
+      final res = await PostRepo()
+          .getAllReplyByCommentId(commentId: commentId, filter: filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => ReplyModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> createPost(
       String content,
       String expirationDate,
@@ -323,6 +339,18 @@ class PostBloc extends ChangeNotifier {
       final res = await PostRepo().createComment(
           postId: postId, mediaPostId: mediaPostId, content: content);
       return BaseResponse.success(CommentModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> createReply(String content, String commentId) async {
+    try {
+      final res =
+          await PostRepo().createReply(commentId: commentId, content: content);
+      return BaseResponse.success(ReplyModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());
     } finally {

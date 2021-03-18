@@ -1,15 +1,11 @@
 import 'base_graphql.dart';
 
-class CommentSrv extends BaseService {
-  CommentSrv() : super(module: 'Comment', fragment: '''
+class ReplySrv extends BaseService {
+  ReplySrv() : super(module: 'Reply', fragment: ''' 
 id: String
 userId: ID
-postId: ID
-mediaPostId: ID
-like: Int
-userLikeIds: [ID]
+commentId: ID
 content: String
-replyIds: [ID]
 user {
   id 
   uid 
@@ -31,6 +27,6 @@ user {
 }
 createdAt: DateTime
 updatedAt: DateTime
-userLikeIds
+
   ''');
 }

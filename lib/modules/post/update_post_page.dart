@@ -215,7 +215,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                                 horizontal: 15, vertical: 5)
                             .copyWith(bottom: 0),
                         child: HashTagTextField(
-                          maxLength: 400,
+                          maxLength: 500,
                           maxLines: null,
                           minLines: 4,
                           controller: _contentC,
