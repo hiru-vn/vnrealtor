@@ -133,8 +133,8 @@ class _BottomNavigatorState extends State<BottomNavigator> {
     return cbn.BottomNavigationBar(
       elevation: 0,
       backgroundColor: Colors.white,
-      iconSize: 23,
-      selectedFontSize: 24,
+      iconSize: 24,
+      selectedFontSize: 25,
       selectedItemColor: ptPrimaryColor(context),
       unselectedItemColor: ptPrimaryColor(context),
       type: cbn.BottomNavigationBarType.fixed,

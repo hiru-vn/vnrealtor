@@ -360,7 +360,7 @@ class _SettingPageState extends State<SettingPage> {
                       style: ptSmall().copyWith(color: Colors.black54),
                     );
                   }),
-              SizedBox(height: 65),
+              SizedBox(height: 50),
             ],
           ),
         ),
