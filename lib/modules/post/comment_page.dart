@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/model/reply.dart';
+import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
@@ -71,7 +72,15 @@ class _CommentPageState extends State<CommentPage> {
     _streamSubcription?.cancel();
   }
 
+  _deleteComment(String id) async {
+    comments.removeWhere((element) => element.id == id);
+    setState(() {});
+    final res = await _postBloc.deleteComment(id);
+    if (!res.isSuccess) showToast(res.errMessage, context);
+  }
+
   _comment(String text) async {
+    if (text.trim() == '') return;
     text = text.trim();
     if (comments == null) await Future.delayed(Duration(seconds: 1));
     _commentC.clear();
@@ -101,6 +110,7 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   _reply(String text) async {
+    if (text.trim() == '') return;
     if (replyComment == null) return;
     text = text.trim();
     if (comments == null) await Future.delayed(Duration(seconds: 1));
@@ -246,6 +256,10 @@ class _CommentPageState extends State<CommentPage> {
                             return CommentWidget(
                                 userReplyCache: localReplies,
                                 comment: comment,
+                                deleteCallBack: comments[index].userId ==
+                                        AuthBloc.instance.userModel?.id
+                                    ? () => _deleteComment(comments[index].id)
+                                    : () {},
                                 shouldExpand:
                                     comments[index].id == replyComment?.id,
                                 tapCallBack: () {
@@ -289,12 +303,16 @@ class _CommentPageState extends State<CommentPage> {
                             onSubmitted: _comment,
                             decoration: InputDecoration(
                               suffixIcon: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
                                   onTap: () {
                                     (isReply)
                                         ? _reply(_commentC.text)
                                         : _comment(_commentC.text);
                                   },
-                                  child: Icon(Icons.send)),
+                                  child: Container(
+                                      height: 35,
+                                      width: 35,
+                                      child: Center(child: Icon(Icons.send)))),
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 6),
                               isDense: true,
@@ -337,6 +355,7 @@ class _CommentPageState extends State<CommentPage> {
 class CommentWidget extends StatefulWidget {
   final CommentModel comment;
   final Function tapCallBack;
+  final Function deleteCallBack;
   final List<ReplyModel> userReplyCache;
   final bool shouldExpand;
 
@@ -345,6 +364,7 @@ class CommentWidget extends StatefulWidget {
       this.comment,
       this.tapCallBack,
       this.userReplyCache,
+      this.deleteCallBack,
       this.shouldExpand = false})
       : super(key: key);
   @override
@@ -358,6 +378,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   bool isLoadReply = false;
   bool isExpandReply = false;
   List<ReplyModel> userReplyCache;
+  final GlobalKey _menuKey = new GlobalKey();
 
   @override
   void initState() {
@@ -412,6 +433,38 @@ class _CommentWidgetState extends State<CommentWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final button = SizedBox(
+        width: 0,
+        height: 0,
+        child: PopupMenuButton(
+            padding: EdgeInsets.zero,
+            child: SizedBox.shrink(),
+            key: _menuKey,
+            itemBuilder: (_) => <PopupMenuItem<String>>[
+                  if (AuthBloc.instance.userModel?.id == widget.comment.userId)
+                    PopupMenuItem<String>(
+                        child: Text(
+                          'Xóa',
+                          style: ptBody(),
+                        ),
+                        value: 'delete'),
+                  if (AuthBloc.instance.userModel?.id != widget.comment.userId)
+                    PopupMenuItem<String>(
+                        child: Text(
+                          'Báo xấu',
+                          style: ptBody(),
+                        ),
+                        value: 'report'),
+                ],
+            onSelected: (val) {
+              if (val == 'report') showToast('Đã gửi yêu cầu', context, isSuccess: true);
+              if (val == 'delete') {
+                showConfirmDialog(context, 'Bạn muốn xóa bình luận này?',
+                    confirmTap: () {
+                  widget.deleteCallBack();
+                }, navigatorKey: navigatorKey);
+              }
+            }));
     final List<ReplyModel> mergeReplies = [
       ...replies,
       ...(userReplyCache
@@ -426,7 +479,11 @@ class _CommentWidgetState extends State<CommentWidget> {
           onTap: () {
             if (widget.tapCallBack != null) widget.tapCallBack();
           },
-          onLongPress: () {},
+          onLongPress: () {
+            if (AuthBloc.instance.userModel == null) return;
+            dynamic state = _menuKey.currentState;
+            state.showButtonMenu();
+          },
           tileColor: Colors.white,
           leading: Container(
             width: 36,
@@ -486,38 +543,45 @@ class _CommentWidgetState extends State<CommentWidget> {
               ])),
             ],
           ),
-          trailing: GestureDetector(
-            onTap: () async {
-              if (AuthBloc.instance.userModel == null) {
-                await navigatorKey.currentState.maybePop();
-                LoginPage.navigatePush();
-                return;
-              }
-              setState(() {
-                _isLike = !_isLike;
-              });
-              if (_isLike) {
-                widget.comment.userLikeIds.add(AuthBloc.instance.userModel.id);
-                widget.comment.like++;
-                _postBloc.likeComment(widget.comment.id);
-              } else {
-                if (widget.comment.like > 0) widget.comment.like--;
-                _postBloc.unlikeComment(widget.comment.id);
-              }
-              setState(() {});
-            },
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(
-                MdiIcons.thumbUp,
-                size: 17,
-                color: _isLike ? ptPrimaryColor(context) : Colors.grey[200],
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (AuthBloc.instance.userModel != null) button,
+              GestureDetector(
+                onTap: () async {
+                  if (AuthBloc.instance.userModel == null) {
+                    await navigatorKey.currentState.maybePop();
+                    LoginPage.navigatePush();
+                    return;
+                  }
+                  setState(() {
+                    _isLike = !_isLike;
+                  });
+                  if (_isLike) {
+                    widget.comment.userLikeIds
+                        .add(AuthBloc.instance.userModel.id);
+                    widget.comment.like++;
+                    _postBloc.likeComment(widget.comment.id);
+                  } else {
+                    if (widget.comment.like > 0) widget.comment.like--;
+                    _postBloc.unlikeComment(widget.comment.id);
+                  }
+                  setState(() {});
+                },
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(
+                    MdiIcons.thumbUp,
+                    size: 17,
+                    color: _isLike ? ptPrimaryColor(context) : Colors.grey[200],
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    widget.comment.like.toString(),
+                    style: ptTiny(),
+                  )
+                ]),
               ),
-              SizedBox(width: 4),
-              Text(
-                widget.comment.like.toString(),
-                style: ptTiny(),
-              )
-            ]),
+            ],
           ),
         ),
         isExpandReply || widget.shouldExpand

@@ -82,6 +82,7 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   _reply(String text) async {
+    if (text.trim() == '') return;
     if (replyComment == null) return;
     text = text.trim();
     if (comments == null) await Future.delayed(Duration(seconds: 1));
@@ -151,6 +152,7 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   _comment(String text) async {
+    if (text.trim() == '') return;
     text = text.trim();
     if (comments == null) await Future.delayed(Duration(seconds: 1));
     _commentC.clear();
@@ -275,12 +277,16 @@ class _PostDetailState extends State<PostDetail> {
                         focusNode: _focusNodeComment,
                         decoration: InputDecoration(
                           suffixIcon: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
                               onTap: () {
                                 (isReply)
                                     ? _reply(_commentC.text)
                                     : _comment(_commentC.text);
                               },
-                              child: Icon(Icons.send)),
+                              child: Container(
+                                      height: 35,
+                                      width: 35,
+                                      child: Center(child: Icon(Icons.send)))),
                           contentPadding:
                               EdgeInsets.symmetric(horizontal: 15, vertical: 6),
                           isDense: true,
