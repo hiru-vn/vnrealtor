@@ -23,10 +23,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   bool uploadingAvatar = false;
   bool isLoading = false;
   TextEditingController _nameC = TextEditingController();
+  TextEditingController _tagNameC = TextEditingController();
   TextEditingController _emailC = TextEditingController();
   TextEditingController _phoneC = TextEditingController();
   TextEditingController _facebookC = TextEditingController();
   TextEditingController _descriptionC = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
@@ -34,6 +36,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       _authBloc = Provider.of<AuthBloc>(context);
       _userBloc = Provider.of(context);
       _nameC.text = _authBloc.userModel.name;
+      _tagNameC.text = _authBloc.userModel.tagName;
       _emailC.text = _authBloc.userModel.email;
       _phoneC.text = _authBloc.userModel.phone;
       _facebookC.text = _authBloc.userModel.facebookUrl;
@@ -60,7 +63,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   Future _updateUserInfo() async {
+    if (!_formKey.currentState.validate()) return;
+
     _authBloc.userModel.name = _nameC.text;
+    _authBloc.userModel.tagName = _tagNameC.text;
     _authBloc.userModel.email = _emailC.text;
     _authBloc.userModel.phone = _phoneC.text;
     _authBloc.userModel.facebookUrl = _facebookC.text;
@@ -69,12 +75,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       isLoading = true;
     });
     final res = await _userBloc.updateUser(_authBloc.userModel);
-    setState(() {
+    if (mounted) setState(() {
       isLoading = false;
     });
     if (res.isSuccess) {
       showToast('Cập nhật thành công', context, isSuccess: true);
-      navigatorKey.currentState.maybePop();
+      if (mounted) navigatorKey.currentState.maybePop();
     } else
       showToast(res.errMessage, context);
   }
@@ -143,75 +149,81 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 SpacingBox(h: 2.5),
                 Container(
                   width: deviceWidth(context),
-                  child: Column(
-                    children: [
-                      _buildFormField(context, 'Tên gọi', _nameC,
-                          Icons.person_outlined),
-                      _buildFormField(
-                        context,
-                        'Email',
-                        _emailC,
-                        Icons.email_outlined,
-                      ),
-                      _buildFormField(context, 'Số điện thoại', _phoneC,
-                          Icons.phone_rounded,
-                          readOnly: true),
-                      _buildFormField(
-                          context, 'Facebook', _facebookC, Icons.web_outlined),
-                      _buildFormField(context, 'Giới thiệu ngắn', _descriptionC,
-                          Icons.description_outlined,
-                          maxLine: 4),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      GestureDetector(
-                        onTap: () => UpdatePasswordPage.navigate(),
-                        child: Container(
-                          height: 65,
-                          margin: EdgeInsets.symmetric(vertical: 1),
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          color: Colors.white,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Icon(
-                                Icons.lock_outline_rounded,
-                                size: 24,
-                              ),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              SizedBox(
-                                width: deviceWidth(context) / 3,
-                                child: Text(
-                                  'Đổi mật khẩu',
-                                  style: ptTitle()
-                                      .copyWith(fontWeight: FontWeight.w600),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        _buildFormField(
+                            context, 'Tên gọi', _nameC, Icons.person_outlined),
+                        _buildFormField(context, 'Tên người dùng', _tagNameC,
+                            Icons.tag_faces,
+                            validator: TextFieldValidator.formalValidator, hint: '@tennguoidungs'),
+                        _buildFormField(
+                          context,
+                          'Email',
+                          _emailC,
+                          Icons.email_outlined,
+                        ),
+                        _buildFormField(context, 'Số điện thoại', _phoneC,
+                            Icons.phone_rounded,
+                            readOnly: true),
+                        _buildFormField(context, 'Facebook', _facebookC,
+                            Icons.web_outlined),
+                        _buildFormField(context, 'Giới thiệu ngắn',
+                            _descriptionC, Icons.description_outlined,
+                            maxLine: 4),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        GestureDetector(
+                          onTap: () => UpdatePasswordPage.navigate(),
+                          child: Container(
+                            height: 65,
+                            margin: EdgeInsets.symmetric(vertical: 1),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            color: Colors.white,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.lock_outline_rounded,
+                                  size: 24,
                                 ),
-                              ),
-                              Spacer(),
-                              Icon(
-                                Icons.chevron_right,
-                                size: 24,
-                              ),
-                            ],
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                SizedBox(
+                                  width: deviceWidth(context) / 3,
+                                  child: Text(
+                                    'Đổi mật khẩu',
+                                    style: ptTitle()
+                                        .copyWith(fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                Spacer(),
+                                Icon(
+                                  Icons.chevron_right,
+                                  size: 24,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      SpacingBox(h: 3),
-                      // RoundedBtn(
-                      //   height: 45,
-                      //   text: 'Cập nhật',
-                      //   onPressed: _updateUserInfo,
-                      //   width: 140,
-                      //   color: ptPrimaryColor(context),
-                      //   padding: EdgeInsets.symmetric(
-                      //     horizontal: 15,
-                      //     vertical: 8,
-                      //   ),
-                      // ),
-                      // SizedBox(height: 10),
-                    ],
+                        SpacingBox(h: 3),
+                        // RoundedBtn(
+                        //   height: 45,
+                        //   text: 'Cập nhật',
+                        //   onPressed: _updateUserInfo,
+                        //   width: 140,
+                        //   color: ptPrimaryColor(context),
+                        //   padding: EdgeInsets.symmetric(
+                        //     horizontal: 15,
+                        //     vertical: 8,
+                        //   ),
+                        // ),
+                        // SizedBox(height: 10),
+                      ],
+                    ),
                   ),
                 )
               ],
@@ -225,7 +237,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
 
   _buildFormField(BuildContext context, String text,
           TextEditingController controller, IconData icon,
-          {int maxLine, bool readOnly = false}) =>
+          {int maxLine, bool readOnly = false, Function validator, String hint}) =>
       // Padding(
       //   padding: const EdgeInsets.symmetric(horizontal: 10),
       //   child: Container(
@@ -266,13 +278,17 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
             ),
             new Expanded(
               flex: 3,
-              child: new TextField(
-                maxLines: null,
-                readOnly: readOnly,
-                controller: controller,
-                textAlign: TextAlign.end,
-                style: ptTitle().copyWith(fontWeight: FontWeight.w400),
-                decoration: new InputDecoration.collapsed(hintText: '$text'),
+              child: new Directionality(
+                textDirection: TextDirection.rtl,
+                child: TextFormField(
+                  maxLines: null,
+                  validator: validator,
+                  readOnly: readOnly,
+                  controller: controller,
+                  textAlign: TextAlign.start,
+                  style: ptTitle().copyWith(fontWeight: FontWeight.w400),
+                  decoration: new InputDecoration.collapsed(hintText: hint??'$text'),
+                ),
               ),
             ),
           ],

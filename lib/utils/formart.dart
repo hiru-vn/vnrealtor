@@ -226,12 +226,12 @@ class MmsShort {
   String minutes(int minutes) => '${minutes}p';
   String aboutAnHour(int minutes) => '1h';
   String hours(int hours) => '${hours}h';
-  String aDay(int hours) => '1 ngày';
-  String days(int days) => '$days ngày';
-  String aboutAMonth(int days) => '1 tháng';
-  String months(int months) => '$months tháng';
-  String aboutAYear(int year) => '1 năm';
-  String years(int years) => '$years năm';
+  String aDay(int hours) => '1d';
+  String days(int days) => '${days}d';
+  String aboutAMonth(int days) => '1mo';
+  String months(int months) => '${months}mos';
+  String aboutAYear(int year) => '1yrs';
+  String years(int years) => '${years}yrs';
   String wordSeparator() => ' ';
   String empty() => 'Chưa có tin nhắn nào';
 }

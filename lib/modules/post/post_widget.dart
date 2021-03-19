@@ -135,12 +135,17 @@ class _PostWidgetState extends State<PostWidget> {
                             style: ptTiny().copyWith(color: Colors.black54),
                           ),
                           SizedBox(width: 8),
-                          Text(
-                            widget.post?.user?.reputationScore.toString(),
-                            style: ptSmall().copyWith(color: Colors.orange),
+                          CustomTooltip(
+                            message: 'Điểm uy tín',
+                            child: Text(
+                              widget.post?.user?.reputationScore.toString(),
+                              style: ptSmall().copyWith(color: Colors.orange),
+                            ),
                           ),
                           SizedBox(width: 2),
-                          Image.asset('assets/image/coin.png'),
+                          CustomTooltip(
+                              message: 'Điểm uy tín',
+                              child: Image.asset('assets/image/coin.png')),
                         ],
                       ),
                     ],
@@ -614,7 +619,8 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
     return Container(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.only(top: 10, left: 20, right: 15, bottom: 10),
+        padding:
+            const EdgeInsets.only(top: 10, left: 20, right: 15, bottom: 10),
         child: Container(
             width: deviceWidth(context),
             color: Colors.white,
@@ -638,13 +644,14 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.post.content.trim().length>0?
-                            widget.post.content.trim()[0].toUpperCase() +
-                                widget.post.content
-                                    .trim()
-                                    .substring(1)
-                                    .replaceAll('\n', ' ')
-                                    .replaceAll('  ', ''): '',
+                            widget.post.content.trim().length > 0
+                                ? widget.post.content.trim()[0].toUpperCase() +
+                                    widget.post.content
+                                        .trim()
+                                        .substring(1)
+                                        .replaceAll('\n', ' ')
+                                        .replaceAll('  ', '')
+                                : '',
                             style: ptTitle(),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,

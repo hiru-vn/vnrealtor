@@ -6,6 +6,8 @@ final phonePattern = r'^[+]{0,1}[0-9]{5,13}$';
 final urlPattern =
     r'/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/';
 
+final formalPattern = r'^[A-Za-z0-9_.]+$';
+
 bool isMatchedPattern(String pattern, dynamic input) {
   if (!RegExp(pattern).hasMatch(input)) {
     return false;
@@ -84,6 +86,12 @@ class TextFieldValidator {
 
   static String emailValidator(String string) {
     if (!Validator.isEmail(string)) return 'Email không hợp lệ';
+    return null;
+  }
+
+  static String formalValidator(String string) {
+    if (string.trim() == '') return null;
+    if (!RegExp(formalPattern).hasMatch(string)) return """dấu _ , a-z , 0-9""";
     return null;
   }
 

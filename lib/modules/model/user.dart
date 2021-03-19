@@ -4,6 +4,7 @@ class UserModel {
   String id;
   String uid;
   String name;
+  String tagName;
   String email;
   String phone;
   String role;
@@ -26,6 +27,7 @@ class UserModel {
       {this.id,
       this.uid,
       this.name,
+      this.tagName,
       this.email,
       this.phone,
       this.role,
@@ -48,6 +50,7 @@ class UserModel {
     id = json['id'];
     uid = json['uid'];
     name = json['name'];
+    tagName = json['tagName'];
     email = json['email'];
     phone = json['phone'];
     role = json['role'];
@@ -91,6 +94,7 @@ class UserModel {
     data['description'] = this.description;
     data['facebookUrl'] = this.facebookUrl;
     data['isVerify'] = this.isVerify;
+    data['tagName'] = this.tagName;
 
     return data;
   }

@@ -5,6 +5,7 @@ class UserSrv extends BaseService {
   UserSrv()  : super(module: 'User', fragment: ''' 
 id: String
 name: String
+tagName: String
 phone: String
 uid: String
 email: String
