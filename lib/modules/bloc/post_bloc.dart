@@ -373,12 +373,12 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> deletePost(String postId) async {
+  Future<BaseResponse> deletePost(String id) async {
     try {
-      feed.removeWhere((item) => item.id == postId);
-      myPosts.removeWhere((item) => item.id == postId);
+      feed.removeWhere((item) => item.id == id);
+      myPosts.removeWhere((item) => item.id == id);
       notifyListeners();
-      final res = await PostRepo().deletePost(postId);
+      final res = await PostRepo().deletePost(id);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
@@ -387,9 +387,20 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> deleteComment(String postId) async {
+  Future<BaseResponse> deleteComment(String id) async {
     try {
-      final res = await PostRepo().deleteComment(postId);
+      final res = await PostRepo().deleteComment(id);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> deleteReply(String id) async {
+    try {
+      final res = await PostRepo().deleteReply(id);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());

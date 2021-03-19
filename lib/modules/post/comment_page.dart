@@ -117,7 +117,7 @@ class _CommentPageState extends State<CommentPage> {
     _commentC.clear();
     localReplies.add(ReplyModel(
         content: text,
-        userId: AuthBloc.instance.userModel.uid,
+        userId: AuthBloc.instance.userModel.id,
         commentId: replyComment.id,
         user: AuthBloc.instance.userModel,
         createdAt: DateTime.now().toIso8601String(),
@@ -129,15 +129,15 @@ class _CommentPageState extends State<CommentPage> {
       showToast(res.errMessage, context);
     } else {
       final index = localReplies
-          .indexWhere((element) => element.createdAt == res.data.createdAt);
+          .lastIndexWhere((element) => element.userId == res.data.userId);
       if (index >= 0) {
         localReplies[index] = res.data;
+        comments
+            .firstWhere((element) => element.id == replyComment.id)
+            .replyIds
+            .add(localReplies[index].id);
       }
 
-      comments
-          .firstWhere((element) => element.id == replyComment.id)
-          .replyIds
-          .add(localReplies[index].id);
       if (mounted)
         setState(() {
           isReply = false;
@@ -431,6 +431,15 @@ class _CommentWidgetState extends State<CommentWidget> {
     }
   }
 
+  _deleteReplyCallBack(String id) async {
+    widget.comment.replyIds.remove(id);
+    replies.removeWhere((element) => element.id == id);
+    userReplyCache.removeWhere((element) => element.id == id);
+    setState(() {});
+    final res = await _postBloc.deleteReply(id);
+    if (!res.isSuccess) showToast(res.errMessage, context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final button = SizedBox(
@@ -593,8 +602,10 @@ class _CommentWidgetState extends State<CommentWidget> {
                   children: mergeReplies
                       .map(
                         (e) => ReplyWidget(
-                          reply: e,
-                        ),
+                            reply: e,
+                            deleteCallBack: () {
+                              _deleteReplyCallBack(e.id);
+                            }),
                       )
                       .toList(),
                 ),
@@ -641,10 +652,11 @@ class _CommentWidgetState extends State<CommentWidget> {
                         color: Colors.black54,
                         size: 18,
                       ),
+                      SizedBox(width: 3),
                       if (isLoadReply)
                         SizedBox(
-                          height: 16,
-                          width: 16,
+                          height: 15,
+                          width: 15,
                           child: CircularProgressIndicator(
                             backgroundColor: Colors.blue,
                             strokeWidth: 2.5,
@@ -663,8 +675,10 @@ class _CommentWidgetState extends State<CommentWidget> {
 
 class ReplyWidget extends StatefulWidget {
   final ReplyModel reply;
+  final Function deleteCallBack;
 
-  const ReplyWidget({Key key, this.reply}) : super(key: key);
+  const ReplyWidget({Key key, this.reply, this.deleteCallBack})
+      : super(key: key);
   @override
   _ReplyWidgetState createState() => _ReplyWidgetState();
 }
@@ -672,6 +686,7 @@ class ReplyWidget extends StatefulWidget {
 class _ReplyWidgetState extends State<ReplyWidget> {
   bool _isLike = false;
   PostBloc _postBloc;
+  final GlobalKey _menuKey = new GlobalKey();
 
   @override
   void initState() {
@@ -695,51 +710,95 @@ class _ReplyWidgetState extends State<ReplyWidget> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-            ),
-            child: GestureDetector(
-              onTap: () {},
-              child: CircleAvatar(
-                radius: 13,
-                backgroundColor: Colors.white,
-                backgroundImage: widget.reply.user?.avatar != null
-                    ? CachedNetworkImageProvider(widget.reply.user.avatar)
-                    : AssetImage('assets/image/default_avatar.png'),
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onLongPress: () {
+          if (AuthBloc.instance.userModel == null) return;
+          dynamic state = _menuKey.currentState;
+          state.showButtonMenu();
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              child: GestureDetector(
+                onTap: () => ProfileOtherPage.navigate(widget.reply.user),
+                child: CircleAvatar(
+                  radius: 13,
+                  backgroundColor: Colors.white,
+                  backgroundImage: widget.reply.user?.avatar != null
+                      ? CachedNetworkImageProvider(widget.reply.user.avatar)
+                      : AssetImage('assets/image/default_avatar.png'),
+                ),
               ),
             ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.reply.user?.name ?? '',
-                style: ptBody().copyWith(fontWeight: FontWeight.w500),
-              ),
-              Text.rich(TextSpan(children: [
-                TextSpan(
-                  text: widget.reply.content ?? '',
-                  style: ptBody().copyWith(
-                      fontWeight: FontWeight.w500, color: Colors.black87),
+            SizedBox(
+              width: 10,
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () => ProfileOtherPage.navigate(widget.reply.user),
+                  child: Text(
+                    widget.reply.user?.name ?? '',
+                    style: ptBody().copyWith(fontWeight: FontWeight.w500),
+                  ),
                 ),
-                TextSpan(
-                  text: '  ' +
-                      Formart.timeByDayViShort(
-                          DateTime.tryParse(widget.reply.updatedAt)),
-                  style: ptTiny().copyWith(color: Colors.black54),
-                ),
-              ])),
-            ],
-          )
-        ],
+                Text.rich(TextSpan(children: [
+                  TextSpan(
+                    text: widget.reply.content ?? '',
+                    style: ptBody().copyWith(
+                        fontWeight: FontWeight.w500, color: Colors.black87),
+                  ),
+                  TextSpan(
+                    text: '  ' +
+                        Formart.timeByDayViShort(
+                            DateTime.tryParse(widget.reply.updatedAt)),
+                    style: ptTiny().copyWith(color: Colors.black54),
+                  ),
+                ])),
+              ],
+            ),
+            Spacer(),
+            PopupMenuButton(
+                key: _menuKey,
+                child: SizedBox.shrink(),
+                itemBuilder: (_) => <PopupMenuItem<String>>[
+                      if (AuthBloc.instance.userModel?.id ==
+                          widget.reply.userId)
+                        PopupMenuItem<String>(
+                            child: Text(
+                              'Xóa',
+                              style: ptBody(),
+                            ),
+                            value: 'delete'),
+                      if (AuthBloc.instance.userModel?.id !=
+                          widget.reply.userId)
+                        PopupMenuItem<String>(
+                            child: Text(
+                              'Báo xấu',
+                              style: ptBody(),
+                            ),
+                            value: 'report'),
+                    ],
+                onSelected: (val) {
+                  if (val == 'report')
+                    showToast('Đã gửi yêu cầu', context, isSuccess: true);
+                  if (val == 'delete') {
+                    showConfirmDialog(context, 'Bạn muốn xóa bình luận này?',
+                        confirmTap: () {
+                      widget.deleteCallBack();
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    }, navigatorKey: navigatorKey);
+                  }
+                })
+          ],
+        ),
       ),
     );
   }
