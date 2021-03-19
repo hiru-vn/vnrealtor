@@ -100,15 +100,16 @@ class _ProfilePageState extends State<ProfilePage>
                   ? kLoadingSpinner
                   : (_postBloc.savePosts.length != 0
                       ? ListView.separated(
-                          // controller: _userBloc.profileScrollController,
-                          itemCount: _postBloc.savePosts.length,
-                          itemBuilder: (context, index) {
-                            final post = _postBloc.savePosts[index];
-                            return PostSmallWidget(post);
-                          },
-                          separatorBuilder: (context, index) =>
-                              SizedBox(height: 0),
-                        )
+                        // controller: _userBloc.profileScrollController,
+                        padding: EdgeInsets.only(bottom: 20),
+                        itemCount: _postBloc.savePosts.length,
+                        itemBuilder: (context, index) {
+                          final post = _postBloc.savePosts[index];
+                          return PostSmallWidget(post);
+                        },
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 0),
+                      )
                       : EmptyWidget(
                           assetImg: 'assets/image/no_post.png',
                           content: 'Kho lưu trữ trống.',
@@ -362,7 +363,8 @@ class _ProfileCardState extends State<ProfileCard> {
                       ),
                     ],
                   ),
-                  (_authBloc.userModel.description == null || _authBloc.userModel.description.trim().isEmpty)
+                  (_authBloc.userModel.description == null ||
+                          _authBloc.userModel.description.trim().isEmpty)
                       ? SizedBox(height: 3)
                       : SizedBox(height: 12),
                   // Text(
@@ -371,7 +373,8 @@ class _ProfileCardState extends State<ProfileCard> {
                   //       : 'Người dùng cơ bản',
                   //   style: ptSmall().copyWith(color: Colors.blue),
                   // ),
-                  if (_authBloc.userModel.description != null && _authBloc.userModel.description.trim().isNotEmpty)
+                  if (_authBloc.userModel.description != null &&
+                      _authBloc.userModel.description.trim().isNotEmpty)
                     Text(_authBloc.userModel.description),
                   SizedBox(height: 5),
                   Row(

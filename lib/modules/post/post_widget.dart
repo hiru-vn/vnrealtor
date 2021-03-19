@@ -614,7 +614,7 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
     return Container(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.only(top: 20, left: 25, right: 15),
+        padding: const EdgeInsets.only(top: 10, left: 20, right: 15, bottom: 10),
         child: Container(
             width: deviceWidth(context),
             color: Colors.white,
@@ -638,12 +638,13 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
+                            widget.post.content.trim().length>0?
                             widget.post.content.trim()[0].toUpperCase() +
                                 widget.post.content
                                     .trim()
                                     .substring(1)
                                     .replaceAll('\n', ' ')
-                                    .replaceAll('  ', ''),
+                                    .replaceAll('  ', ''): '',
                             style: ptTitle(),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,

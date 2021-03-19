@@ -34,6 +34,27 @@ class PickCoordinatesState extends State<PickCoordinates> {
     });
   }
 
+  void _selectMyLocation() {
+    getDevicePosition().then((value) => setState(() {
+          selectedMarker = Marker(
+            markerId: MarkerId(value.toString()),
+            position: LatLng(value.latitude, value.longitude),
+            infoWindow: InfoWindow(
+              title: 'Ví trí của tôi',
+            ),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          );
+          CameraPosition _curPos = CameraPosition(
+              bearing: 0,
+              target: LatLng(value.latitude, value.longitude),
+              tilt: 0,
+              zoom: 15);
+          _controller.future.then((controller) => controller
+              .animateCamera(CameraUpdate.newCameraPosition(_curPos)));
+        }));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -84,19 +105,41 @@ class PickCoordinatesState extends State<PickCoordinates> {
           )
         ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: _initPos,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-              onTap: _selectMarker,
-              markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
-            ),
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: _initPos,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+            onTap: _selectMarker,
+            markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
           ),
+          Positioned(
+              bottom: 120,
+              right: 10,
+              child: Material(
+                borderRadius: BorderRadius.circular(21),
+                elevation: 4,
+                child: GestureDetector(
+                  onTap: _selectMyLocation,
+                  child: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.my_location,
+                        color: ptPrimaryColor(context),
+                      ),
+                    ),
+                  ),
+                ),
+              ))
         ],
       ),
     );

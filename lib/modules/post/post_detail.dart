@@ -5,10 +5,10 @@ import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/comment_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
+import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
 import 'dart:async';
-import 'package:datcao/modules/model/reply.dart';
 
 class PostDetail extends StatefulWidget {
   final PostModel postModel;
@@ -154,12 +154,15 @@ class _PostDetailState extends State<PostDetail> {
     text = text.trim();
     if (comments == null) await Future.delayed(Duration(seconds: 1));
     _commentC.clear();
-    comments.add(CommentModel(
+    comments.add(
+      CommentModel(
         content: text,
         like: 0,
         userId: AuthBloc.instance.userModel.id,
         user: AuthBloc.instance.userModel,
-        updatedAt: DateTime.now().toIso8601String()));
+        updatedAt: DateTime.now().toIso8601String(),
+      ),
+    );
     setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text, postId: _post?.id);
