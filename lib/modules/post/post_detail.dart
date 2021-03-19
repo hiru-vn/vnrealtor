@@ -81,6 +81,13 @@ class _PostDetailState extends State<PostDetail> {
     super.didChangeDependencies();
   }
 
+  _deleteComment(String id) async {
+    comments.removeWhere((element) => element.id == id);
+    setState(() {});
+    final res = await _postBloc.deleteComment(id);
+    if (!res.isSuccess) showToast(res.errMessage, context);
+  }
+
   _reply(String text) async {
     if (text.trim() == '') return;
     if (replyComment == null) return;
@@ -225,6 +232,10 @@ class _PostDetailState extends State<PostDetail> {
                                 userReplyCache: localReplies,
                                 shouldExpand:
                                     comments[index].id == replyComment?.id,
+                                deleteCallBack: comments[index].userId ==
+                                        AuthBloc.instance.userModel?.id
+                                    ? () => _deleteComment(comments[index].id)
+                                    : () {},
                                 tapCallBack: () {
                                   setState(() {
                                     isReply = true;
@@ -277,16 +288,16 @@ class _PostDetailState extends State<PostDetail> {
                         focusNode: _focusNodeComment,
                         decoration: InputDecoration(
                           suffixIcon: GestureDetector(
-                            behavior: HitTestBehavior.translucent,
+                              behavior: HitTestBehavior.translucent,
                               onTap: () {
                                 (isReply)
                                     ? _reply(_commentC.text)
                                     : _comment(_commentC.text);
                               },
                               child: Container(
-                                      height: 35,
-                                      width: 35,
-                                      child: Center(child: Icon(Icons.send)))),
+                                  height: 35,
+                                  width: 35,
+                                  child: Center(child: Icon(Icons.send)))),
                           contentPadding:
                               EdgeInsets.symmetric(horizontal: 15, vertical: 6),
                           isDense: true,

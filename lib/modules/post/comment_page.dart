@@ -457,11 +457,13 @@ class _CommentWidgetState extends State<CommentWidget> {
                         value: 'report'),
                 ],
             onSelected: (val) {
-              if (val == 'report') showToast('Đã gửi yêu cầu', context, isSuccess: true);
+              if (val == 'report')
+                showToast('Đã gửi yêu cầu', context, isSuccess: true);
               if (val == 'delete') {
                 showConfirmDialog(context, 'Bạn muốn xóa bình luận này?',
                     confirmTap: () {
                   widget.deleteCallBack();
+                  FocusScope.of(context).requestFocus(FocusNode());
                 }, navigatorKey: navigatorKey);
               }
             }));

@@ -90,9 +90,9 @@ class _MyAppState extends State<MyApp> {
         Responsive.init(constraints, orientation);
         return GestureDetector(
           onTap: () {
-            if (!FocusScope.of(context).hasPrimaryFocus) {
+            // if (!FocusScope.of(context).hasPrimaryFocus) {
               FocusScope.of(context).requestFocus(FocusNode());
-            }
+            // }
           },
           child: ThemeProvider(
             initTheme: lightTheme,
