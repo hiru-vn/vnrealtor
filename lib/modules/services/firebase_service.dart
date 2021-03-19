@@ -5,7 +5,7 @@ import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/import.dart';
 
-enum FcmType { message, like, comment, share, system }
+enum FcmType { message, like, comment, share, system , new_post}
 
 class FcmService {
   FcmService._();
@@ -21,6 +21,7 @@ class FcmService {
     if (type.toLowerCase() == 'Comment'.toLowerCase()) return FcmType.comment;
     if (type.toLowerCase() == 'Share'.toLowerCase()) return FcmType.share;
     if (type.toLowerCase() == 'System'.toLowerCase()) return FcmType.system;
+    if (type.toLowerCase() == 'NEW_POST'.toLowerCase()) return FcmType.new_post;
     return null;
   }
 
@@ -54,6 +55,10 @@ class FcmService {
       }
 
       if (type == FcmType.system) {
+        showToastNoContext('${message.notification.body}');
+      }
+
+      if (type == FcmType.new_post) {
         showToastNoContext('${message.notification.body}');
       }
 

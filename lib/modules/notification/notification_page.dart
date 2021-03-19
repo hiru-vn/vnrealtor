@@ -155,7 +155,7 @@ class NotificationTab extends StatelessWidget {
                     notificationBloc.seenNoti(list[index].id);
                     list[index].seen = true;
                   }
-                  if (['LIKE', 'COMMENT', 'SHARE']
+                  if (['LIKE', 'COMMENT', 'SHARE', 'NEW_POST']
                       .contains(list[index].type.toUpperCase())) {
                     PostDetail.navigate(null,
                         postId: list[index].data['modelId']);
@@ -218,7 +218,8 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
   @override
   Widget build(BuildContext context) {
     return _userBloc.friendRequestFromOtherUsers.length != 0
-        ? RefreshIndicator(color: ptPrimaryColor(context),
+        ? RefreshIndicator(
+            color: ptPrimaryColor(context),
             onRefresh: () async {
               await _userBloc.getFriendRequestFromOtherUsers();
               return;

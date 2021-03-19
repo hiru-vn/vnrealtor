@@ -187,6 +187,11 @@ $postFragment
     return res;
   }
 
+  Future deleteReply(String replyId) async {
+    final res = await ReplySrv().delete(replyId);
+    return res;
+  }
+
   Future updatePost(
       String id,
       String content,
