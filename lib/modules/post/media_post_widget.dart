@@ -535,7 +535,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                         setState(() {});
                       },
                       child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                          mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
@@ -559,56 +559,55 @@ class _DetailImagePostState extends State<DetailImagePost> {
                     ),
                   ),
                   Expanded(
-                    child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            MdiIcons.commentOutline,
-                            color: Colors.white,
-                            size: 19,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              // if (AuthBloc.instance.userModel == null) {
-                              //   await navigatorKey.currentState.maybePop();
-                              //   LoginPage.navigatePush();
-                              //   return;
-                              // }
-                              showComment(widget.post, context);
-                            },
-                            child: Text(
+                    child: GestureDetector(
+                      onTap: () async {
+                        // if (AuthBloc.instance.userModel == null) {
+                        //   await navigatorKey.currentState.maybePop();
+                        //   LoginPage.navigatePush();
+                        //   return;
+                        // }
+                        showComment(widget.post, context);
+                      },
+                      child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              MdiIcons.commentOutline,
+                              color: Colors.white,
+                              size: 19,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
                               'Bình luận',
                               style: TextStyle(color: Colors.white),
                             ),
-                          ),
-                        ]),
+                          ]),
+                    ),
                   ),
                   Expanded(
-                    child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            MdiIcons.shareOutline,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          GestureDetector(
-                            onTap: () =>
-                                shareTo(context, image: [widget.post.url]),
-                            child: Text(
+                    child: GestureDetector(
+                      onTap: () => shareTo(context, image: [widget.post.url]),
+                      child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              MdiIcons.shareOutline,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
                               'Chia sẻ',
                               style: TextStyle(color: Colors.white),
                             ),
-                          ),
-                        ]),
+                          ]),
+                    ),
                   )
                 ],
               ),
@@ -792,7 +791,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                         setState(() {});
                       },
                       child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                          mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
@@ -816,50 +815,50 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                     ),
                   ),
                   Expanded(
-                    child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            MdiIcons.commentOutline,
-                            color: Colors.white,
-                            size: 19,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              showComment(_post, context);
-                            },
-                            child: Text(
+                    child: GestureDetector(
+                      onTap: () {
+                        showComment(_post, context);
+                      },
+                      child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              MdiIcons.commentOutline,
+                              color: Colors.white,
+                              size: 19,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
                               'Bình luận',
                               style: TextStyle(color: Colors.white),
                             ),
-                          ),
-                        ]),
+                          ]),
+                    ),
                   ),
                   Expanded(
-                    child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            MdiIcons.shareOutline,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          GestureDetector(
-                            onTap: () => shareTo(context, video: [_post.url]),
-                            child: Text(
+                    child: GestureDetector(
+                      onTap: () => shareTo(context, video: [_post.url]),
+                      child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              MdiIcons.shareOutline,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
                               'Chia sẻ',
                               style: TextStyle(color: Colors.white),
                             ),
-                          ),
-                        ]),
+                          ]),
+                    ),
                   )
                 ],
               ),
