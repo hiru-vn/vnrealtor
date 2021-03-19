@@ -66,9 +66,10 @@ class _MyAppState extends State<MyApp> {
 
     ConnectionStatusSingleton connectionStatus =
         ConnectionStatusSingleton.getInstance();
-    isOffline = !connectionStatus.hasConnection;
-    _connectionChangeStream =
-        connectionStatus.connectionChange.listen(connectionChanged);
+    Future.delayed(Duration(seconds: 2), () { // prevent spash no internet when open app
+      _connectionChangeStream =
+          connectionStatus.connectionChange.listen(connectionChanged);
+    });
   }
 
   void connectionChanged(dynamic hasConnection) {
@@ -79,7 +80,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    _connectionChangeStream.cancel();
+    _connectionChangeStream?.cancel();
     super.dispose();
   }
 
@@ -91,7 +92,7 @@ class _MyAppState extends State<MyApp> {
         return GestureDetector(
           onTap: () {
             // if (!FocusScope.of(context).hasPrimaryFocus) {
-              FocusScope.of(context).requestFocus(FocusNode());
+            FocusScope.of(context).requestFocus(FocusNode());
             // }
           },
           child: ThemeProvider(
