@@ -34,7 +34,7 @@ class BaseService {
     var resData = [];
     for (var item in a) {
       final b = item.split(':');
-      resData = [...resData, b[0].replaceAll(' ', '')];
+      resData = [...resData, b[0].replaceAll(' ', ' ')];
     }
     return resData.join(' ');
   }

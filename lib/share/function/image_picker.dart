@@ -52,7 +52,7 @@ void imagePicker(BuildContext context,
                           onGranted: () {
                             // close showModalBottomSheet
                             Navigator.of(context).pop();
-                            ImagePicker.pickVideo(source: ImageSource.camera)
+                            ImagePicker.pickImage(source: ImageSource.camera)
                                 .then((value) {
                               if (value == null) return;
                               onCameraPick(value.path);

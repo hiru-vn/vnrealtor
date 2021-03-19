@@ -189,7 +189,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   List<Widget> _buildUserForm() {
     return [
-      _buildFormField(context, 'Tên người dùng', _nameC,
+      _buildFormField(context, 'Tên gọi', _nameC,
           validator: TextFieldValidator.notEmptyValidator, icon: Icons.person),
       SpacingBox(h: 1.2),
       _buildFormField(context, 'Email', _emailC,

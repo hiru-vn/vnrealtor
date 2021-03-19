@@ -135,12 +135,7 @@ like: 0
       data += '\npostId: "$postId"';
     }
     final res = await CommentSrv().add(data, fragment: '''
-    id
-    userId
-    postId
-    mediaPostId
-    like
-    content
+    ${CommentSrv().fragmentDefault}
     ''');
     return res;
   }
@@ -153,12 +148,7 @@ $content
 """
     ''';
     final res = await ReplySrv().add(data, fragment: '''
-    id
-    userId
-    commentId
-    content
-    createdAt
-    updatedAt
+    ${ReplySrv().fragmentDefault}
     ''');
     return res;
   }

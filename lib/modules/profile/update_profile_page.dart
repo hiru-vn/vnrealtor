@@ -145,7 +145,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                   width: deviceWidth(context),
                   child: Column(
                     children: [
-                      _buildFormField(context, 'Tên người dùng', _nameC,
+                      _buildFormField(context, 'Tên gọi', _nameC,
                           Icons.person_outlined),
                       _buildFormField(
                         context,

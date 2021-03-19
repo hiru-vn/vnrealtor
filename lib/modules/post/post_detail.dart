@@ -41,10 +41,10 @@ class _PostDetailState extends State<PostDetail> {
   void initState() {
     _focusNodeComment.addListener(() {
       if (!_focusNodeComment.hasFocus) {
-        setState(() {
-          isReply = false;
-          replyComment = null;
-        });
+        // setState(() {
+        //   isReply = false;
+        //   replyComment = null;
+        // });
       }
     });
 
@@ -104,7 +104,16 @@ class _PostDetailState extends State<PostDetail> {
       if (index >= 0) {
         localReplies[index] = res.data;
       }
-      if (mounted) setState(() {});
+      comments
+          .firstWhere((element) => element.id == replyComment.id)
+          .replyIds
+          .add(localReplies[index].id);
+
+      if (mounted)
+        setState(() {
+          isReply = false;
+          replyComment = null;
+        });
     }
   }
 
@@ -148,6 +157,7 @@ class _PostDetailState extends State<PostDetail> {
     comments.add(CommentModel(
         content: text,
         like: 0,
+        userId: AuthBloc.instance.userModel.id,
         user: AuthBloc.instance.userModel,
         updatedAt: DateTime.now().toIso8601String()));
     setState(() {});
@@ -156,7 +166,14 @@ class _PostDetailState extends State<PostDetail> {
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
-      _post.commentIds.add((res.data as CommentModel).id);
+      final resComment = (res.data as CommentModel);
+      _post.commentIds.add(resComment.id);
+      final index = comments
+          .lastIndexWhere((element) => element.userId == resComment.userId);
+      if (index >= 0)
+        setState(() {
+          comments[index] = resComment;
+        });
     }
   }
 
