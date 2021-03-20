@@ -126,6 +126,7 @@ class _SearchPostPageState extends State<SearchPostPage>
     return Stack(
       children: [
         Scaffold(
+          resizeToAvoidBottomPadding: false,
           appBar: AppBar(
             elevation: 0,
             backgroundColor: ptPrimaryColorLight(context),

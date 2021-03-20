@@ -72,6 +72,8 @@ dev_dependencies:
   image: ^2.1.19
   connectivity: ^2.0.2
   flutter_linkify: ^4.1.0
+  material_floating_search_bar: ^0.2.6
+  dio: ^3.0.10
 
   # call
   flutter_callkeep: ^0.1.8

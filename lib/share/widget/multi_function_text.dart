@@ -80,7 +80,7 @@ class MultiFunctionTextState extends State<MultiFunctionText> {
         widget.textScaleFactor ?? MediaQuery.textScaleFactorOf(context);
     final overflow = defaultTextStyle.overflow;
     final locale =
-        widget.locale ?? Localizations.localeOf(context, nullOk: true);
+        widget.locale ?? Localizations.localeOf(context);
     final colorClickableText =
         widget.colorClickableText ?? Theme.of(context).accentColor;
     final _defaultLessStyle = widget.lessStyle ??

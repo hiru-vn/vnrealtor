@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:datcao/share/import.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -76,6 +75,22 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     }
   }
 
+  // _onSearch(double lat, double long, String name) async {
+  //   selectedMarker = Marker(
+  //     markerId: MarkerId(LatLng(lat, long).toString()),
+  //     position: LatLng(lat, long),
+  //     infoWindow: InfoWindow(
+  //       title: name,
+  //     ),
+  //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+  //   );
+
+  //   CameraPosition _curPos = CameraPosition(
+  //       bearing: 0, target: LatLng(lat, long), tilt: 0, zoom: 15);
+  //   final GoogleMapController controller = await _controller.future;
+  //   controller.moveCamera(CameraUpdate.newCameraPosition(_curPos));
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -108,6 +123,9 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
               ),
             ),
           ),
+          // CustomFloatingSearchBar(
+          //   onSearch: _onSearch,
+          // ),
           Positioned(
             bottom: 15,
             left: 12,

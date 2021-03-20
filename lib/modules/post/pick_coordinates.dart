@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/share/import.dart';
 
@@ -83,28 +84,44 @@ class PickCoordinatesState extends State<PickCoordinates> {
     }
   }
 
+  _onSearch(double lat, double long, String name) async {
+    selectedMarker = Marker(
+      markerId: MarkerId(LatLng(lat, long).toString()),
+      position: LatLng(lat, long),
+      infoWindow: InfoWindow(
+        title: name,
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    );
+
+    CameraPosition _curPos = CameraPosition(
+        bearing: 0, target: LatLng(lat, long), tilt: 0, zoom: 15);
+    final GoogleMapController controller = await _controller.future;
+    controller.moveCamera(CameraUpdate.newCameraPosition(_curPos));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar2(
-        'Nhấn để chọn điểm',
-        actions: [
-          GestureDetector(
-            onTap: () {
-              navigatorKey.currentState.maybePop(selectedMarker.position);
-            },
-            child: SizedBox(
-                width: 40,
-                height: 40,
-                child: Center(
-                  child: Text(
-                    'OK',
-                    style: ptTitle().copyWith(color: Colors.white),
-                  ),
-                )),
-          )
-        ],
-      ),
+      // appBar: AppBar2(
+      //   'Nhấn để chọn điểm',
+      //   actions: [
+      //     GestureDetector(
+      //       onTap: () {
+      //         navigatorKey.currentState.maybePop(selectedMarker.position);
+      //       },
+      //       child: SizedBox(
+      //           width: 40,
+      //           height: 40,
+      //           child: Center(
+      //             child: Text(
+      //               'OK',
+      //               style: ptTitle().copyWith(color: Colors.white),
+      //             ),
+      //           )),
+      //     )
+      //   ],
+      // ),
       body: Stack(
         children: [
           GoogleMap(
@@ -115,6 +132,10 @@ class PickCoordinatesState extends State<PickCoordinates> {
             },
             onTap: _selectMarker,
             markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
+          ),
+          CustomFloatingSearchBar(
+            onSearch: _onSearch,
+            automaticallyImplyBackButton: true,
           ),
           Positioned(
               bottom: 120,

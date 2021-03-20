@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/post_detail.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/share/import.dart';
 
 class PostMap extends StatefulWidget {
@@ -208,9 +207,27 @@ class PostMapState extends State<PostMap> {
         }));
   }
 
+  _onSearch(double lat, double long, String name) async {
+    selectedMarkers.add(Marker(
+      markerId: MarkerId(LatLng(lat, long).toString()),
+      position: LatLng(lat, long),
+      infoWindow: InfoWindow(
+        title: name,
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    ));
+    setState(() {});
+
+    CameraPosition _curPos = CameraPosition(
+        bearing: 0, target: LatLng(lat, long), tilt: 0, zoom: 15);
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(_curPos));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
+      fit: StackFit.expand,
       children: [
         GoogleMap(
           mapType: MapType.normal,
@@ -220,6 +237,9 @@ class PostMapState extends State<PostMap> {
           },
           onCameraMove: _onCameraMove,
           markers: selectedMarkers,
+        ),
+        CustomFloatingSearchBar(
+          onSearch: _onSearch,
         ),
         Positioned(
             bottom: 120,

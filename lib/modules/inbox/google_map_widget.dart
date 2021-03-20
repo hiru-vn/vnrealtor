@@ -17,7 +17,7 @@ Future showGoogleMap(BuildContext context, {double height}) {
     height = MediaQuery.of(context).size.height - kToolbarHeight;
   return showDialog(
       context: context,
-      useRootNavigator: true,
+      useRootNavigator: false,
       builder: (context) {
         return SizedBox(
             height: height,
@@ -50,6 +50,22 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     });
 
     return pngBytes;
+  }
+
+  Future _onSearch(double lat, double long, String name) async {
+    selectedMarker = Marker(
+      markerId: MarkerId(LatLng(lat, long).toString()),
+      position: LatLng(lat, long),
+      infoWindow: InfoWindow(
+        title: name,
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    );
+
+    CameraPosition _curPos = CameraPosition(
+        bearing: 0, target: LatLng(lat, long), tilt: 0, zoom: 15);
+    final GoogleMapController controller = await _controller.future;
+    controller.moveCamera(CameraUpdate.newCameraPosition(_curPos));
   }
 
   void _selectMarker(LatLng point) {
@@ -181,8 +197,8 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Stack(
+    return Scaffold(
+      body: Stack(
         fit: StackFit.expand,
         children: [
           GoogleMap(
@@ -212,24 +228,31 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
               ),
             ),
           ),
-          Positioned(
-            top: 20,
-            right: 12,
-            child: InkWell(
-              onTap: () => Navigator.of(context).maybePop(),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.black38,
-                    borderRadius: BorderRadius.circular(20)),
-                width: 40,
-                height: 40,
-                child: Icon(
-                  Icons.close,
-                  color: Colors.white,
-                ),
-              ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: CustomFloatingSearchBar(
+              onSearch: _onSearch,
+              automaticallyImplyBackButton: true,
             ),
           ),
+          // Positioned(
+          //   top: 20,
+          //   right: 12,
+          //   child: InkWell(
+          //     onTap: () => Navigator.of(context).maybePop(),
+          //     child: Container(
+          //       decoration: BoxDecoration(
+          //           color: Colors.black38,
+          //           borderRadius: BorderRadius.circular(20)),
+          //       width: 40,
+          //       height: 40,
+          //       child: Icon(
+          //         Icons.close,
+          //         color: Colors.white,
+          //       ),
+          //     ),
+          //   ),
+          // ),
           Positioned(
             bottom: 15,
             left: 12,
