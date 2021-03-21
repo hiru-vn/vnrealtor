@@ -193,3 +193,114 @@ class _DetailVideoScreenState extends State<DetailVideoScreen> {
     );
   }
 }
+
+class DetailVideoScreenCache extends StatefulWidget {
+  final String path;
+  final String tag;
+  final int scaleW, scaleH;
+  DetailVideoScreenCache(this.path, {this.tag, this.scaleW, this.scaleH});
+
+  @override
+  _DetailVideoScreenCacheState createState() => _DetailVideoScreenCacheState();
+}
+
+class _DetailVideoScreenCacheState extends State<DetailVideoScreenCache> {
+  VideoPlayerController _controller;
+  bool videoEnded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.file(File(widget.path))
+      ..initialize().then(
+        (_) {
+          if (mounted)
+            setState(() {
+              _controller.play();
+            });
+        },
+      );
+    _controller.addListener(() {
+      if (_controller.value.position == _controller.value.duration) {
+        setState(() {
+          videoEnded = true;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Container(
+        child: Stack(fit: StackFit.expand, children: [
+          Positioned(
+            width: MediaQuery.of(context).size.width,
+            top: kToolbarHeight,
+            bottom: 0,
+            child: Container(
+              child: Center(
+                child: _controller.value.initialized
+                    ? AspectRatio(
+                        aspectRatio: _controller.value.aspectRatio,
+                        child: VideoPlayer(_controller),
+                      )
+                    : kLoadingSpinner,
+              ),
+            ),
+          ),
+          Positioned(
+            top: kToolbarHeight,
+            right: 10,
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).maybePop();
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(20)),
+                width: 40,
+                height: 40,
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ]),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          if (videoEnded) {
+            await _controller.seekTo(Duration.zero);
+            _controller.play();
+            setState(() {
+              videoEnded = false;
+            });
+            return;
+          }
+          setState(() {
+            _controller.value.isPlaying
+                ? _controller.pause()
+                : _controller.play();
+          });
+        },
+        child: Icon(
+          videoEnded
+              ? Icons.replay
+              : (_controller.value.isPlaying ? Icons.pause : Icons.play_arrow),
+        ),
+      ),
+    );
+  }
+}

@@ -8,12 +8,21 @@ class MediaGroupWidgetCache extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final callBack = (int index) {
+      Navigator.push(context, MaterialPageRoute(builder: (_) {
+        return DetailMediaGroupWidgetCache(
+          files: paths,
+          index: index,
+        );
+      }));
+    };
     if (paths.length == 1) {
       return SizedBox(
         width: double.infinity,
         height: (MediaQuery.of(context).size.width * 0.7) / 1.75,
         child: MediaWidgetCache(
           path: paths[0],
+          callBack: () => callBack(0),
         ),
       );
     }
@@ -25,6 +34,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
               height: (MediaQuery.of(context).size.width * 0.7) / 2,
               child: MediaWidgetCache(
                 path: paths[0],
+                callBack: () => callBack(0),
               ),
             ),
           ),
@@ -37,6 +47,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
               height: (MediaQuery.of(context).size.width * 0.7) / 2,
               child: MediaWidgetCache(
                 path: paths[1],
+                callBack: () => callBack(1),
               ),
             ),
           ),
@@ -51,6 +62,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
             height: (MediaQuery.of(context).size.width * 0.7) / 2,
             child: MediaWidgetCache(
               path: paths[0],
+              callBack: () => callBack(0),
             ),
           ),
           SizedBox(
@@ -63,6 +75,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 2.5,
                   child: MediaWidgetCache(
                     path: paths[1],
+                    callBack: () => callBack(1),
                   ),
                 ),
               ),
@@ -74,6 +87,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 2.5,
                   child: MediaWidgetCache(
                     path: paths[2],
+                    callBack: () => callBack(2),
                   ),
                 ),
               ),
@@ -90,6 +104,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
             height: (MediaQuery.of(context).size.width * 0.7) / 2,
             child: MediaWidgetCache(
               path: paths[0],
+              callBack: () => callBack(0),
             ),
           ),
           SizedBox(
@@ -102,6 +117,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
                   child: MediaWidgetCache(
                     path: paths[1],
+                    callBack: () => callBack(1),
                   ),
                 ),
               ),
@@ -113,6 +129,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
                   child: MediaWidgetCache(
                     path: paths[2],
+                    callBack: () => callBack(2),
                   ),
                 ),
               ),
@@ -124,6 +141,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                 height: (MediaQuery.of(context).size.width * 0.7) / 3,
                 child: MediaWidgetCache(
                   path: paths[3],
+                  callBack: () => callBack(3),
                 ),
               ),
             ],
@@ -141,6 +159,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 2,
                   child: MediaWidgetCache(
                     path: paths[0],
+                    callBack: () => callBack(0),
                   ),
                 ),
               ),
@@ -152,6 +171,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 2,
                   child: MediaWidgetCache(
                     path: paths[1],
+                    callBack: () => callBack(1),
                   ),
                 ),
               ),
@@ -167,6 +187,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
                   child: MediaWidgetCache(
                     path: paths[2],
+                    callBack: () => callBack(2),
                   ),
                 ),
               ),
@@ -178,6 +199,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
                   child: MediaWidgetCache(
                     path: paths[3],
+                    callBack: () => callBack(3),
                   ),
                 ),
               ),
@@ -189,6 +211,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
                   child: MediaWidgetCache(
                     path: paths[4],
+                    callBack: () => callBack(4),
                   ),
                 ),
               ),
@@ -208,6 +231,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 2,
                   child: MediaWidgetCache(
                     path: paths[0],
+                    callBack: () => callBack(0),
                   ),
                 ),
               ),
@@ -219,6 +243,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 2,
                   child: MediaWidgetCache(
                     path: paths[1],
+                    callBack: () => callBack(1),
                   ),
                 ),
               ),
@@ -234,6 +259,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
                   child: MediaWidgetCache(
                     path: paths[2],
+                    callBack: () => callBack(2),
                   ),
                 ),
               ),
@@ -245,6 +271,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                   height: (MediaQuery.of(context).size.width * 0.7) / 3,
                   child: MediaWidgetCache(
                     path: paths[3],
+                    callBack: () => callBack(3),
                   ),
                 ),
               ),
@@ -262,6 +289,7 @@ class MediaGroupWidgetCache extends StatelessWidget {
                         height: (MediaQuery.of(context).size.width * 0.7) / 3,
                         child: MediaWidgetCache(
                           path: paths[4],
+                          callBack: () => callBack(4),
                         ),
                       ),
                       IgnorePointer(

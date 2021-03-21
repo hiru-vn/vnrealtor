@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/utils/call_kit.dart';
@@ -474,7 +475,11 @@ class _InboxChatState extends State<InboxChat> {
         showAvatarForEveryMessage: false,
         scrollToBottom: true,
         onPressAvatar: (ChatUser user) {
-          print("OnPressAvatar: ${user.name}");
+          final svUser = _severUsers.firstWhere(
+            (element) => element.id == user.uid,
+            orElse: () => null,
+          );
+          if (svUser != null) ProfileOtherPage.navigate(svUser);
         },
         onLongPressAvatar: (ChatUser user) {
           print("OnLongPressAvatar: ${user.name}");
@@ -482,11 +487,13 @@ class _InboxChatState extends State<InboxChat> {
         inputMaxLines: 5,
         messageContainerPadding: EdgeInsets.only(left: 10, right: 10),
         alwaysShowSend: true,
-        inputTextStyle: TextStyle(fontSize: 16.0),
+        inputTextStyle: TextStyle(fontSize: 15.5),
         inputContainerStyle: BoxDecoration(
           border: Border.all(width: 0.0),
           color: Colors.white,
         ),
+        // messageContainerDecoration: BoxDecoration(
+        //     borderRadius: BorderRadius.circular(50), color: Colors.amber),
         onQuickReply: (Reply reply) {},
         shouldShowLoadEarlier: true,
         showTraillingBeforeSend: true,

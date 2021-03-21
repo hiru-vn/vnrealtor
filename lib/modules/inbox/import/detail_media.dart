@@ -32,6 +32,28 @@ class DetailMediaGroupWidget extends StatelessWidget {
   }
 }
 
+class DetailMediaGroupWidgetCache extends StatelessWidget {
+  final List<String> files;
+  final int index;
+
+  const DetailMediaGroupWidgetCache({Key key, this.files, this.index})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    PageController controller = PageController(initialPage: index);
+    return PageView(
+      controller: controller,
+      children: files.map((e) {
+        if (FileUtil.getFilePathType(e) == FileType.video)
+          return DetailVideoScreenCache(e);
+        if (FileUtil.getFilePathType(e) == FileType.image)
+          return DetailImageScreenCache(e);
+      }).toList(),
+    );
+  }
+}
+
 class MediaWidgetNetwork extends StatefulWidget {
   final String file;
   final Function callBack;
@@ -112,8 +134,9 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
 
 class MediaWidgetCache extends StatefulWidget {
   final String path;
+  final Function callBack;
 
-  const MediaWidgetCache({Key key, this.path}) : super(key: key);
+  const MediaWidgetCache({Key key, this.path, this.callBack}) : super(key: key);
 
   @override
   _MediaWidgetCacheState createState() => _MediaWidgetCacheState();
@@ -143,7 +166,13 @@ class _MediaWidgetCacheState extends State<MediaWidgetCache> {
 
   @override
   Widget build(BuildContext context) {
-    return _getWidget(type);
+    return GestureDetector(
+        onTap: () {
+          widget.callBack();
+
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: _getWidget(type));
   }
 
   Widget _getWidget(FileType type) {

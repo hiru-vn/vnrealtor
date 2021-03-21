@@ -105,3 +105,85 @@ class DetailImageScreen extends StatelessWidget {
     );
   }
 }
+
+class ImageViewNetworkCache extends StatelessWidget {
+  final String filePath;
+  final int w, h;
+  final double borderRadius;
+  ImageViewNetworkCache(
+      {this.filePath,
+      this.w,
+      this.h,
+      this.borderRadius = 0});
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+        Navigator.push(context, MaterialPageRoute(builder: (_) {
+          return DetailImageScreenCache(
+            filePath,
+            scaleW: w,
+            scaleH: h,
+          );
+        }));
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child:Image.file(
+                File(filePath),
+                fit: BoxFit.cover,
+              )
+           ,
+      ),
+    );
+  }
+}
+
+class DetailImageScreenCache extends StatelessWidget {
+  final String filePath;
+  final String tag;
+  final int scaleW, scaleH;
+  DetailImageScreenCache(this.filePath, {this.tag, this.scaleW, this.scaleH});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        child: Stack(fit: StackFit.expand, children: [
+          Center(
+            child: PhotoView(
+              backgroundDecoration: BoxDecoration(color: Colors.black87),
+              imageProvider: FileImage(
+                File(filePath),
+              ),
+              errorBuilder: (_, __, ___) => SizedBox.shrink(),
+              
+            ),
+          ),
+          Positioned(
+            top: 50,
+            right: 10,
+            child: InkWell(
+              onTap: () async {
+                await Navigator.of(context).maybePop();
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(20)),
+                width: 40,
+                height: 40,
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}

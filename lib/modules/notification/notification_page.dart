@@ -166,9 +166,10 @@ class NotificationTab extends StatelessWidget {
                     : ptBackgroundColor(context),
                 leading: CircleAvatar(
                   radius: 22,
+                  backgroundColor: Colors.white,
                   backgroundImage:
                       (list[index].image == null || list[index].image == '')
-                          ? AssetImage('assets/image/icon_white.png')
+                          ? AssetImage('assets/image/default_avatar.png')
                           : CachedNetworkImageProvider(list[index].image),
                 ),
                 title: Text(
