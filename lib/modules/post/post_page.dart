@@ -1,3 +1,5 @@
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/share/widget/load_more.dart';
 import 'package:flutter/rendering.dart';
@@ -18,6 +20,7 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   bool showAppBar = true;
   PostBloc _postBloc;
+  AuthBloc _authBloc;
   ScrollController _controller = ScrollController();
 
   @override
@@ -30,6 +33,7 @@ class _PostPageState extends State<PostPage> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
+      _authBloc = Provider.of(context);
       _postBloc.feedScrollController = _controller;
     }
     super.didChangeDependencies();
@@ -65,7 +69,9 @@ class _PostPageState extends State<PostPage> {
           if (index == 0)
             return Scaffold(
               backgroundColor: ptBackgroundColor(context),
-              appBar: showAppBar ? PostPageAppBar() : null,
+              appBar: showAppBar
+                  ? PostPageAppBar(_authBloc.userModel.messNotiCount ?? 0)
+                  : null,
               body: LoadMoreScrollView(
                 scrollController: _controller,
                 onLoadMore: () {
@@ -395,19 +401,24 @@ buildStoryWidget(PostModel postModel) {
 
 class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
-  PostPageAppBar();
+  final int unReadCount;
+  PostPageAppBar(this.unReadCount);
   @override
   Widget build(BuildContext context) {
+    final count = unReadCount > 9 ? '9+' : unReadCount.toString();
     return Container(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      child: Padding(
-        padding:
-            const EdgeInsets.only(left: 15, top: 12, bottom: 10, right: 12),
-        child: Row(
-          children: [
-            Image.asset('assets/image/logo_full.png'),
-            Spacer(),
-            GestureDetector(
+      child: Row(
+        children: [
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 15, top: 12, bottom: 10, right: 12),
+            child: Image.asset('assets/image/logo_full.png'),
+          ),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.only(top: 12, bottom: 10),
+            child: GestureDetector(
               onTap: () {
                 SearchPostPage.navigate().then((value) =>
                     FocusScope.of(context).requestFocus(FocusNode()));
@@ -421,20 +432,49 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                InboxList.navigate();
-              },
-              child: SizedBox(
-                  width: 42,
-                  height: 42,
-                  child: Icon(
-                    MdiIcons.chatProcessing,
-                    size: 26,
-                  )),
-            )
-          ],
-        ),
+          ),
+          GestureDetector(
+            onTap: () {
+              AuthBloc.instance.userModel.messNotiCount = 0;
+              UserBloc.instance.seenNotiMess();
+              InboxList.navigate();
+            },
+            child: Stack(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 12, bottom: 10, right: 12),
+                  child: Container(
+                      width: 42,
+                      height: 42,
+                      child: Icon(
+                        MdiIcons.chatProcessing,
+                        size: 26,
+                      )),
+                ),
+                if (unReadCount > 0)
+                  Positioned(
+                    top: 9,
+                    right: 11,
+                    child: Container(
+                      // width: 8,
+                      // height: 8,
+                      padding: EdgeInsets.all(count.length == 2 ? 3.5 : 5),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(count,
+                          style: ptTiny().copyWith(
+                              fontSize: 10.5,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+              ],
+            ),
+          )
+        ],
       ),
       color: ptSecondaryColor(context),
     );

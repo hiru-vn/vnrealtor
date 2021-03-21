@@ -16,8 +16,8 @@ class ScrollToBottom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: scrollToBottomStyle.width,
-      height: scrollToBottomStyle.height,
+      width: scrollToBottomStyle.width - 3,
+      height: scrollToBottomStyle.height - 3,
       child: RawMaterialButton(
         elevation: 5,
         fillColor: scrollToBottomStyle.backgroundColor ?? Colors.white,

@@ -961,7 +961,7 @@ class LoadEarlierWidget extends StatelessWidget {
                   ]),
               child: Text(
                 "Cũ hơn",
-                style: TextStyle(color: Theme.of(context).primaryColor),
+                style: ptBody().copyWith(color: Colors.black87),
               ),
             ),
           );

@@ -95,6 +95,18 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> seenNotiMess() async {
+    try {
+      final res = await UserRepo().seenNotiMess(AuthBloc.instance.userModel.id);
+
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      AuthBloc.instance.notifyListeners();
+    }
+  }
+
   Future<BaseResponse> updateSetting(SettingModel setting) async {
     try {
       final res = await UserRepo().updateSetting(

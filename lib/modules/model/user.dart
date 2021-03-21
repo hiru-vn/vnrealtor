@@ -22,6 +22,7 @@ class UserModel {
   String facebookUrl;
   SettingModel setting;
   bool isVerify;
+  int messNotiCount;
 
   UserModel(
       {this.id,
@@ -44,6 +45,7 @@ class UserModel {
       this.description,
       this.facebookUrl,
       this.setting,
+      this.messNotiCount,
       this.isVerify});
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -54,6 +56,7 @@ class UserModel {
     email = json['email'];
     phone = json['phone'];
     role = json['role'];
+    messNotiCount = json['messNotiCount'];
     reputationScore = json['reputationScore'];
     friendIds =
         json['friendIds'] != null ? json['friendIds'].cast<String>() : [];
@@ -95,7 +98,7 @@ class UserModel {
     data['facebookUrl'] = this.facebookUrl;
     data['isVerify'] = this.isVerify;
     data['tagName'] = this.tagName;
-
+    
     return data;
   }
 }

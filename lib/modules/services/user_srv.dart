@@ -1,8 +1,7 @@
-
 import 'base_graphql.dart';
 
 class UserSrv extends BaseService {
-  UserSrv()  : super(module: 'User', fragment: ''' 
+  UserSrv() : super(module: 'User', fragment: ''' 
 id: String
 name: String
 tagName: String
@@ -16,6 +15,7 @@ friendIds: [ID]
 createdAt: DateTime
 updatedAt: DateTime
 followerIds: [ID]
+messNotiCount
 followingIds: [ID]
 savedPostIds: [ID]
 totalPost
