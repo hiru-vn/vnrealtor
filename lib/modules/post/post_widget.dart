@@ -95,11 +95,19 @@ class _PostWidgetState extends State<PostWidget> {
                       SizedBox(height: 3),
                       Row(
                         children: [
-                          Text(
-                            widget.post?.user?.name ?? '',
-                            style: ptTitle(),
+                          GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              ProfileOtherPage.navigate(widget.post?.user);
+                            },
+                            child: Text(
+                              widget.post?.user?.name ?? '',
+                              style: ptTitle(),
+                            ),
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(
+                            width: 8,
+                          ),
                           if (widget.post?.user?.role == 'AGENT')
                             CustomTooltip(
                               margin: EdgeInsets.only(top: 0),
@@ -166,29 +174,34 @@ class _PostWidgetState extends State<PostWidget> {
             ),
             Padding(
               padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 5),
-              child: Linkify(
-                onOpen: (link) async {
-                  // if (Validator.isUrl(link.url)) {
-                  if (await canLaunch(link.url)) {
-                    await launch(link.url);
-                  } else {
-                    showToastNoContext('Đường dẫn hết hiệu lực');
-                  }
-                  // }
+              child: GestureDetector(
+                onTap: () {
+                  PostDetail.navigate(widget.post);
                 },
-                text: (widget.post?.content?.trim() ?? ''),
-                // trimLines: 5,
-                // trimLength: 1000,
-                style: ptBody().copyWith(color: Colors.black87),
-                textAlign: TextAlign.start,
-                // colorClickableText: Colors.pink,
-                // trimMode: TrimMode.Length,
-                // trimCollapsedText: 'Xem thêm',
-                // trimExpandedText: 'Rút gọn',
-                // moreStyle: TextStyle(
-                //   fontSize: 14,
-                //   fontWeight: FontWeight.bold,
-                // ),
+                child: Linkify(
+                  onOpen: (link) async {
+                    // if (Validator.isUrl(link.url)) {
+                    if (await canLaunch(link.url)) {
+                      await launch(link.url);
+                    } else {
+                      showToastNoContext('Đường dẫn hết hiệu lực');
+                    }
+                    // }
+                  },
+                  text: (widget.post?.content?.trim() ?? ''),
+                  // trimLines: 5,
+                  // trimLength: 1000,
+                  style: ptBody().copyWith(color: Colors.black87),
+                  textAlign: TextAlign.start,
+                  // colorClickableText: Colors.pink,
+                  // trimMode: TrimMode.Length,
+                  // trimCollapsedText: 'Xem thêm',
+                  // trimExpandedText: 'Rút gọn',
+                  // moreStyle: TextStyle(
+                  //   fontSize: 14,
+                  //   fontWeight: FontWeight.bold,
+                  // ),
+                ),
               ),
             ),
 

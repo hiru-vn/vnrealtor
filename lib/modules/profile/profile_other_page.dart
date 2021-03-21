@@ -265,7 +265,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                       ),
                                       Text(
                                         'Số lượt\nthích',
-                                        style: ptBody(),
+                                        style: ptSmall(),
                                         textAlign: TextAlign.center,
                                       ),
                                     ],
@@ -292,7 +292,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                         ),
                                         Text(
                                           'Người theo\ndõi',
-                                          style: ptBody(),
+                                          style: ptSmall(),
                                           textAlign: TextAlign.center,
                                         )
                                       ],
@@ -320,7 +320,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                         ),
                                         Text(
                                           'Đang theo\ndõi',
-                                          style: ptBody(),
+                                          style: ptSmall(),
                                           textAlign: TextAlign.center,
                                         )
                                       ],

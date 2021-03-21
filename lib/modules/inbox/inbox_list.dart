@@ -92,12 +92,12 @@ class _InboxListState extends State<InboxList>
         title: ' Hộp thư tin nhắn',
         automaticallyImplyLeading: true,
         actions: [
-          Center(
-            child: AnimatedSearchBar(
-              width: MediaQuery.of(context).size.width / 2,
-              height: 40,
-            ),
-          ),
+          // Center(
+          //   child: AnimatedSearchBar(
+          //     width: MediaQuery.of(context).size.width / 2,
+          //     height: 40,
+          //   ),
+          // ),
         ],
       ),
       body: _inboxBloc.groupInboxList != null
