@@ -526,8 +526,16 @@ class _InboxChatState extends State<InboxChat> {
               ),
               inputToolbarPadding:
                   EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-              inputDecoration:
-                  InputDecoration.collapsed(hintText: "Tin nhắn ..."),
+              inputDecoration: InputDecoration(
+                  hintText: "Nhập tin nhắn...",
+                  border: InputBorder.none,
+                  filled: true,
+                  isDense: true,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 9, horizontal: 12),
+                  hintStyle:
+                      ptBody().copyWith(color: Colors.black54, fontSize: 14),
+                  fillColor: Colors.grey[200]),
               focusNode: _focusNode,
               dateFormat: DateFormat('d-M-yyyy'),
               timeFormat: DateFormat('HH:mm'),
@@ -550,7 +558,6 @@ class _InboxChatState extends State<InboxChat> {
               alwaysShowSend: _files.length > 0,
               inputTextStyle: TextStyle(fontSize: 15.5),
               inputContainerStyle: BoxDecoration(
-                border: Border.all(width: 0.0),
                 color: Colors.white,
               ),
               messageDecorationBuilder: (message, isUser) {
@@ -839,6 +846,25 @@ class _InboxChatState extends State<InboxChat> {
                             }));
                   },
                 ),
+                // GestureDetector(
+                //   behavior: HitTestBehavior.translucent,
+                //   child: Padding(
+                //     padding: const EdgeInsets.only(
+                //         top: 14, bottom: 14, left: 8, right: 4),
+                //     child: Icon(
+                //       Icons.thumb_up_rounded,
+                //       color: userColor,
+                //     ),
+                //   ),
+                //   onTap: () async {
+                //     FocusScope.of(context).requestFocus(FocusNode());
+                //     Future.delayed(
+                //         Duration(milliseconds: 150),
+                //         () => setState(() {
+                //               showEmoj = true;
+                //             }));
+                //   },
+                // ),
               ],
             ),
           ),

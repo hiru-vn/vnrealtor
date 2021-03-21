@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-Color ptPrimaryColor(BuildContext context) => Theme.of(context).primaryColor;
+Color ptPrimaryColor(BuildContext context) => HexColor('#4D94FF');
 Color ptSecondaryColor(BuildContext context) => Theme.of(context).accentColor;
 Color ptPrimaryColorLight(BuildContext context) =>
     Theme.of(context).primaryColorLight;

@@ -20,12 +20,11 @@ class ScrollToBottom extends StatelessWidget {
       height: scrollToBottomStyle.height,
       child: RawMaterialButton(
         elevation: 5,
-        fillColor: scrollToBottomStyle.backgroundColor ??
-            Theme.of(context).primaryColor,
+        fillColor: scrollToBottomStyle.backgroundColor ?? Colors.white,
         shape: CircleBorder(),
         child: Icon(
           scrollToBottomStyle.icon ?? Icons.keyboard_arrow_down,
-          color: scrollToBottomStyle.textColor ?? Colors.white,
+          color: scrollToBottomStyle.textColor ?? ptPrimaryColor(context),
         ),
         onPressed: () {
           if (onScrollToBottomPress != null) {
@@ -33,7 +32,7 @@ class ScrollToBottom extends StatelessWidget {
           } else {
             scrollController.animateTo(
               inverted ? 0.0 : scrollController.position.maxScrollExtent + 25.0,
-              duration: const Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
             );
           }

@@ -95,40 +95,43 @@ class ChatInputToolbar extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Directionality(
                     textDirection: textDirection,
-                    child: TextField(
-                      focusNode: focusNode,
-                      onChanged: (value) {
-                        onTextChange(value);
-                      },
-                      onSubmitted: (value) {
-                        if (sendOnEnter) {
-                          _sendMessage(context, message);
-                        }
-                      },
-                      textInputAction: textInputAction,
-                      buildCounter: (
-                        BuildContext context, {
-                        int currentLength,
-                        int maxLength,
-                        bool isFocused,
-                      }) =>
-                          null,
-                      decoration: inputDecoration != null
-                          ? inputDecoration
-                          : InputDecoration.collapsed(
-                              hintText: "",
-                              fillColor: Colors.white,
-                            ),
-                      textCapitalization: textCapitalization,
-                      controller: controller,
-                      style: inputTextStyle,
-                      maxLength: maxInputLength,
-                      minLines: 1,
-                      maxLines: inputMaxLines,
-                      showCursor: showInputCursor,
-                      cursorColor: inputCursorColor,
-                      cursorWidth: inputCursorWidth,
-                      enabled: !inputDisabled,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: TextField(
+                        focusNode: focusNode,
+                        onChanged: (value) {
+                          onTextChange(value);
+                        },
+                        onSubmitted: (value) {
+                          if (sendOnEnter) {
+                            _sendMessage(context, message);
+                          }
+                        },
+                        textInputAction: textInputAction,
+                        buildCounter: (
+                          BuildContext context, {
+                          int currentLength,
+                          int maxLength,
+                          bool isFocused,
+                        }) =>
+                            null,
+                        decoration: inputDecoration != null
+                            ? inputDecoration
+                            : InputDecoration.collapsed(
+                                hintText: "",
+                                fillColor: Colors.white,
+                              ),
+                        textCapitalization: textCapitalization,
+                        controller: controller,
+                        style: inputTextStyle,
+                        maxLength: maxInputLength,
+                        minLines: 1,
+                        maxLines: inputMaxLines,
+                        showCursor: showInputCursor,
+                        cursorColor: inputCursorColor,
+                        cursorWidth: inputCursorWidth,
+                        enabled: !inputDisabled,
+                      ),
                     ),
                   ),
                 ),
