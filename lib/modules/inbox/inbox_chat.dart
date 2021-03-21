@@ -30,6 +30,7 @@ import 'video_call_page.dart';
 import 'voice_call_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './import/media_group.dart';
+import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 
 class InboxChat extends StatefulWidget {
   final FbInboxGroupModel group;
@@ -64,10 +65,11 @@ class _InboxChatState extends State<InboxChat> {
   StreamSubscription _incomingMessageListener;
   GlobalKey<State<StatefulWidget>> moreBtnKey =
       GlobalKey<State<StatefulWidget>>();
-
+  FocusNode _focusNode = FocusNode();
   List<ChatMessage> messages = List<ChatMessage>();
 
   var i = 0;
+  bool showEmoj = false;
 
   @override
   void didChangeDependencies() {
@@ -84,6 +86,12 @@ class _InboxChatState extends State<InboxChat> {
 
   @override
   void initState() {
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus)
+        setState(() {
+          showEmoj = false;
+        });
+    });
     for (final user in widget.group.users) {
       _users.add(ChatUser(
         uid: user.id,
@@ -100,6 +108,7 @@ class _InboxChatState extends State<InboxChat> {
   dispose() {
     super.dispose();
     _incomingMessageListener?.cancel();
+    _focusNode.dispose();
   }
 
   Future<void> loadUsers() async {
@@ -417,348 +426,431 @@ class _InboxChatState extends State<InboxChat> {
         ],
       ),
       backgroundColor: Colors.white,
-      body: DashChat(
-        messageImageBuilder: (url, [messages]) {
-          if (messages.customProperties == null) return SizedBox.shrink();
-
-          if (messages.customProperties['long'] != null) {
-            final location = LatLng(messages.customProperties['lat'],
-                messages.customProperties['long']);
-            if ((messages.customProperties['files'] == null ||
-                    messages.customProperties['files'].length == 0) &&
-                (messages.customProperties['cache_file_paths'] == null ||
-                    messages.customProperties['cache_file_paths'].length == 0))
-              return SizedBox.shrink();
-            return GestureDetector(
-              onTap: () {
-                launchMaps(location.latitude, location.longitude);
+      body: Column(
+        children: [
+          Expanded(
+            child: DashChat(
+              onTapNonKeyboard: () {
+                if (showEmoj)
+                  setState(() {
+                    showEmoj = false;
+                  });
               },
-              child: AbsorbPointer(
-                child: ImageViewNetwork(
-                  url: (messages.customProperties['files'] != null &&
-                          messages.customProperties['files'].length > 0)
-                      ? messages.customProperties['files'][0]
-                      : null,
-                  borderRadius: 10,
-                  cacheFilePath:
-                      (messages.customProperties['cache_file_paths'] != null &&
-                              messages.customProperties['cache_file_paths']
-                                      .length >
-                                  0)
-                          ? messages.customProperties['cache_file_paths'][0]
-                          : null,
-                ),
-              ),
-            );
-          }
+              messageImageBuilder: (url, [messages]) {
+                if (messages.customProperties == null) return SizedBox.shrink();
 
-          final files = messages.customProperties['files'];
-          if (files != null && files.length > 0) {
-            return MediaGroupWidgetNetwork(
-              urls: files,
-            );
-          }
+                if (messages.customProperties['long'] != null) {
+                  final location = LatLng(messages.customProperties['lat'],
+                      messages.customProperties['long']);
+                  if ((messages.customProperties['files'] == null ||
+                          messages.customProperties['files'].length == 0) &&
+                      (messages.customProperties['cache_file_paths'] == null ||
+                          messages.customProperties['cache_file_paths']
+                                  .length ==
+                              0)) return SizedBox.shrink();
+                  return GestureDetector(
+                    onTap: () {
+                      launchMaps(location.latitude, location.longitude);
+                    },
+                    child: AbsorbPointer(
+                      child: ImageViewNetwork(
+                        url: (messages.customProperties['files'] != null &&
+                                messages.customProperties['files'].length > 0)
+                            ? messages.customProperties['files'][0]
+                            : null,
+                        borderRadius: 10,
+                        cacheFilePath: (messages
+                                        .customProperties['cache_file_paths'] !=
+                                    null &&
+                                messages.customProperties['cache_file_paths']
+                                        .length >
+                                    0)
+                            ? messages.customProperties['cache_file_paths'][0]
+                            : null,
+                      ),
+                    ),
+                  );
+                }
 
-          final cachePaths = messages.customProperties['cache_file_paths'];
-          if (cachePaths != null && cachePaths.length > 0) {
-            return MediaGroupWidgetCache(
-              paths: cachePaths,
-            );
-          }
-          return SizedBox.shrink();
-        },
-        scrollController: scrollController,
-        textController: _chatC,
-        key: _chatViewKey,
-        inverted: false,
-        onSend: onSend,
-        sendOnEnter: true,
-        textInputAction: TextInputAction.send,
-        user: _users.firstWhere((user) => user.uid == _authBloc.userModel.id),
-        textCapitalization: TextCapitalization.sentences,
-        messageTextBuilder: (text, [messages]) {
-          if (text.trim() == '') {
-            return SizedBox.shrink();
-          }
-          return Padding(
-            padding: const EdgeInsets.all(3),
-            child: Text.rich(TextSpan(children: [
-              TextSpan(
-                text: text,
-                style: ptBody().copyWith(
-                    fontSize: 13.8,
-                    color: messages.user.uid == _authBloc.userModel.id
-                        ? Colors.white
-                        : Colors.black),
-              ),
-            ])),
-          );
-        },
-        messageTimeBuilder: (text, [messages]) {
-          return SizedBox.shrink();
-        },
-        dateBuilder: (text) => Text(
-          text,
-          style: ptSmall()
-              .copyWith(fontWeight: FontWeight.w600, color: Colors.black38),
-        ),
-        inputToolbarPadding: EdgeInsets.all(4),
-        inputDecoration:
-            InputDecoration.collapsed(hintText: "Nhập tin nhắn..."),
-        dateFormat: DateFormat('d-M-yyyy'),
-        timeFormat: DateFormat('HH:mm'),
-        messages: messages,
-        showUserAvatar: false,
-        showAvatarForEveryMessage: false,
-        scrollToBottom: true,
-        onPressAvatar: (ChatUser user) {
-          final svUser = _severUsers.firstWhere(
-            (element) => element.id == user.uid,
-            orElse: () => null,
-          );
-          if (svUser != null) ProfileOtherPage.navigate(svUser);
-        },
-        onLongPressAvatar: (ChatUser user) {
-          print("OnLongPressAvatar: ${user.name}");
-        },
-        inputMaxLines: 5,
-        messageContainerPadding: EdgeInsets.only(left: 5, right: 10),
-        alwaysShowSend: _files.length > 0,
-        inputTextStyle: TextStyle(fontSize: 15.5),
-        inputContainerStyle: BoxDecoration(
-          border: Border.all(width: 0.0),
-          color: Colors.white,
-        ),
-        messageDecorationBuilder: (message, isUser) {
-          double topLeft = 20, bottomLeft = 20, topRight = 20, bottomRight = 20;
-          final index = messages.indexOf(message);
-          if (messages.length >= 2) {
-            if (isUser) {
-              if (index == 0) {
-                if (messages[1].user.uid == AuthBloc.instance.userModel.id) {
-                  bottomRight = 4;
+                final files = messages.customProperties['files'];
+                if (files != null && files.length > 0) {
+                  return MediaGroupWidgetNetwork(
+                    urls: files,
+                  );
                 }
-              } else if (index == messages.length - 1) {
-                if (messages[messages.length - 2].user.uid ==
-                    AuthBloc.instance.userModel.id) {
-                  topRight = 4;
-                }
-              } else {
-                if (messages[index - 1].user.uid ==
-                        AuthBloc.instance.userModel.id &&
-                    messages[index + 1].user.uid ==
-                        AuthBloc.instance.userModel.id) {
-                  topRight = 4;
-                  bottomRight = 4;
-                } else if (messages[index - 1].user.uid ==
-                    AuthBloc.instance.userModel.id) {
-                  topRight = 4;
-                } else if (messages[index + 1].user.uid ==
-                    AuthBloc.instance.userModel.id) {
-                  bottomRight = 4;
-                }
-              }
-            } else {
-              String userId = message.user.uid;
-              if (index == 0) {
-                if (messages[1].user.uid == userId) {
-                  bottomLeft = 4;
-                }
-              } else if (index == messages.length - 1) {
-                if (messages[messages.length - 2].user.uid == userId) {
-                  topLeft = 4;
-                }
-              } else {
-                if (messages[index - 1].user.uid == userId &&
-                    messages[index + 1].user.uid == userId) {
-                  topLeft = 4;
-                  bottomLeft = 4;
-                } else if (messages[index - 1].user.uid == userId) {
-                  topLeft = 4;
-                } else if (messages[index + 1].user.uid == userId) {
-                  bottomLeft = 4;
-                }
-              }
-            }
-          }
 
-          return BoxDecoration(
-            color: (message.customProperties != null &&
-                    ((message.customProperties['cache_file_paths'] != null &&
-                            message.customProperties['cache_file_paths']
-                                    .length >
-                                0) ||
-                        (message.customProperties['files'] != null &&
-                            message.customProperties['files'].length > 0)))
-                ? Colors.white
-                : (isUser ? userColor : Colors.grey[200]),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(topLeft),
-              topRight: Radius.circular(topRight),
-              bottomLeft: Radius.circular(bottomLeft),
-              bottomRight: Radius.circular(bottomRight),
-            ),
-          );
-        },
-        messagePadding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-        onQuickReply: (Reply reply) {},
-        shouldShowLoadEarlier: true,
-        showTraillingBeforeSend: true,
-        showLoadEarlierWidget: () {
-          if (!reachEndList)
-            return LoadEarlierWidget(
-              onLoadEarlier: () {
-                print("loading...");
-                loadNext20Message();
+                final cachePaths =
+                    messages.customProperties['cache_file_paths'];
+                if (cachePaths != null && cachePaths.length > 0) {
+                  return MediaGroupWidgetCache(
+                    paths: cachePaths,
+                  );
+                }
+                return SizedBox.shrink();
               },
-              onLoad: onLoadMore,
-            );
-          else
-            return SizedBox.shrink();
-        },
-        inputFooterBuilder: () => (_files != null || _files.length == 0)
-            ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: _files
-                      .map(
-                        (file) => Row(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(bottom: 8),
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  color: Colors.green[50],
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
+              scrollController: scrollController,
+              textController: _chatC,
+              key: _chatViewKey,
+              inverted: false,
+              onSend: onSend,
+              sendOnEnter: true,
+              textInputAction: TextInputAction.send,
+              user: _users
+                  .firstWhere((user) => user.uid == _authBloc.userModel.id),
+              textCapitalization: TextCapitalization.sentences,
+              messageTextBuilder: (text, [messages]) {
+                if (text.trim() == '') {
+                  return SizedBox.shrink();
+                }
+                return Padding(
+                  padding: const EdgeInsets.all(3),
+                  child: Text.rich(TextSpan(children: [
+                    TextSpan(
+                      text: text,
+                      style: ptBody().copyWith(
+                          fontSize: 13.8,
+                          color: messages.user.uid == _authBloc.userModel.id
+                              ? Colors.white
+                              : Colors.black),
+                    ),
+                  ])),
+                );
+              },
+              messageTimeBuilder: (text, [messages]) {
+                return SizedBox.shrink();
+              },
+              dateBuilder: (text) => Text(
+                text,
+                style: ptSmall().copyWith(
+                    fontWeight: FontWeight.w600, color: Colors.black38),
+              ),
+              inputToolbarPadding:
+                  EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+              inputDecoration:
+                  InputDecoration.collapsed(hintText: "Tin nhắn ..."),
+              focusNode: _focusNode,
+              dateFormat: DateFormat('d-M-yyyy'),
+              timeFormat: DateFormat('HH:mm'),
+              messages: messages,
+              showUserAvatar: false,
+              showAvatarForEveryMessage: false,
+              scrollToBottom: true,
+              onPressAvatar: (ChatUser user) {
+                final svUser = _severUsers.firstWhere(
+                  (element) => element.id == user.uid,
+                  orElse: () => null,
+                );
+                if (svUser != null) ProfileOtherPage.navigate(svUser);
+              },
+              onLongPressAvatar: (ChatUser user) {
+                print("OnLongPressAvatar: ${user.name}");
+              },
+              inputMaxLines: 5,
+              messageContainerPadding: EdgeInsets.only(left: 5, right: 10),
+              alwaysShowSend: _files.length > 0,
+              inputTextStyle: TextStyle(fontSize: 15.5),
+              inputContainerStyle: BoxDecoration(
+                border: Border.all(width: 0.0),
+                color: Colors.white,
+              ),
+              messageDecorationBuilder: (message, isUser) {
+                double topLeft = 20,
+                    bottomLeft = 20,
+                    topRight = 20,
+                    bottomRight = 20;
+                final index = messages.indexOf(message);
+                if (messages.length >= 2) {
+                  if (isUser) {
+                    if (index == 0) {
+                      if (messages[1].user.uid ==
+                          AuthBloc.instance.userModel.id) {
+                        bottomRight = 4;
+                      }
+                    } else if (index == messages.length - 1) {
+                      if (messages[messages.length - 2].user.uid ==
+                          AuthBloc.instance.userModel.id) {
+                        topRight = 4;
+                      }
+                    } else {
+                      if (messages[index - 1].user.uid ==
+                              AuthBloc.instance.userModel.id &&
+                          messages[index + 1].user.uid ==
+                              AuthBloc.instance.userModel.id) {
+                        topRight = 4;
+                        bottomRight = 4;
+                      } else if (messages[index - 1].user.uid ==
+                          AuthBloc.instance.userModel.id) {
+                        topRight = 4;
+                      } else if (messages[index + 1].user.uid ==
+                          AuthBloc.instance.userModel.id) {
+                        bottomRight = 4;
+                      }
+                    }
+                  } else {
+                    String userId = message.user.uid;
+                    if (index == 0) {
+                      if (messages[1].user.uid == userId) {
+                        bottomLeft = 4;
+                      }
+                    } else if (index == messages.length - 1) {
+                      if (messages[messages.length - 2].user.uid == userId) {
+                        topLeft = 4;
+                      }
+                    } else {
+                      if (messages[index - 1].user.uid == userId &&
+                          messages[index + 1].user.uid == userId) {
+                        topLeft = 4;
+                        bottomLeft = 4;
+                      } else if (messages[index - 1].user.uid == userId) {
+                        topLeft = 4;
+                      } else if (messages[index + 1].user.uid == userId) {
+                        bottomLeft = 4;
+                      }
+                    }
+                  }
+                }
+
+                return BoxDecoration(
+                  color: (message.customProperties != null &&
+                          ((message.customProperties['cache_file_paths'] !=
+                                      null &&
+                                  message.customProperties['cache_file_paths']
+                                          .length >
+                                      0) ||
+                              (message.customProperties['files'] != null &&
+                                  message.customProperties['files'].length >
+                                      0)))
+                      ? Colors.white
+                      : (isUser ? userColor : Colors.grey[200]),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(topLeft),
+                    topRight: Radius.circular(topRight),
+                    bottomLeft: Radius.circular(bottomLeft),
+                    bottomRight: Radius.circular(bottomRight),
+                  ),
+                );
+              },
+              iconSendColor: userColor,
+              messagePaddingBuilder: (message) {
+                return message.text.trim() != ''
+                    ? EdgeInsets.symmetric(vertical: 5, horizontal: 8)
+                    : EdgeInsets.zero;
+              },
+              onQuickReply: (Reply reply) {},
+              shouldShowLoadEarlier: true,
+              showTraillingBeforeSend: true,
+              showLoadEarlierWidget: () {
+                if (!reachEndList)
+                  return LoadEarlierWidget(
+                    onLoadEarlier: () {
+                      print("loading...");
+                      loadNext20Message();
+                    },
+                    onLoad: onLoadMore,
+                  );
+                else
+                  return SizedBox.shrink();
+              },
+              inputFooterBuilder: () => (_files != null || _files.length == 0)
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: _files
+                            .map(
+                              (file) => Row(
                                 children: [
-                                  Icon(
-                                    Icons.file_present,
-                                    color: userColor,
-                                  ),
-                                  Text(
-                                    path.basename(file),
-                                    style: ptBody().copyWith(
-                                      color: userColor,
+                                  Container(
+                                    margin: EdgeInsets.only(bottom: 8),
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.green[50],
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.file_present,
+                                          color: userColor,
+                                        ),
+                                        Text(
+                                          path.basename(file),
+                                          style: ptBody().copyWith(
+                                            color: userColor,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
+                            )
+                            .toList(),
+                      ),
+                    )
+                  : SizedBox.shrink(),
+              leading: [
+                Row(
+                  children: [
+                    GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () async {
+                        showModalBottomSheet(
+                            useRootNavigator: true,
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: ptPrimaryColorLight(context)),
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 20, horizontal: 25),
+                                    child: Row(
+                                      children: [
+                                        ActionItem(
+                                          img: 'assets/image/location.png',
+                                          name: 'Gắn vị trí',
+                                          onTap: () async {
+                                            if (_files.length > 0) {
+                                              final confirm =
+                                                  await showConfirmDialog(
+                                                      context,
+                                                      'Xác nhận xóa các file đính kèm?',
+                                                      confirmTap: () {},
+                                                      navigatorKey:
+                                                          navigatorKey);
+                                              if (!confirm) return;
+                                              setState(() {
+                                                _files.clear();
+                                              });
+                                            }
+                                            await navigatorKey.currentState
+                                                .maybePop();
+                                            FocusScope.of(context)
+                                                .requestFocus(FocusNode());
+                                            final res =
+                                                await showGoogleMap(context);
+
+                                            print(res);
+
+                                            // res[0] is long lat, res[1] is image file
+                                            if (res != null &&
+                                                res[0] != null &&
+                                                res[1] != null) {
+                                              Map<String, dynamic>
+                                                  customProperties = {};
+                                              customProperties['long'] =
+                                                  (res[0] as LatLng).longitude;
+                                              customProperties['lat'] =
+                                                  (res[0] as LatLng).latitude;
+                                              await _onFilePick(
+                                                  (res[1] as File)?.path);
+                                              onSend(ChatMessage(
+                                                  text:
+                                                      '${AuthBloc.instance.userModel.name} đã chia sẻ 1 địa điểm',
+                                                  user: _users.firstWhere(
+                                                      (user) =>
+                                                          user.uid ==
+                                                          AuthBloc.instance
+                                                              .userModel.id),
+                                                  customProperties:
+                                                      customProperties));
+                                            }
+                                          },
+                                        ),
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              6 /
+                                              100,
+                                        ),
+                                        ActionItem(
+                                          img: 'assets/image/invite_chat.jpg',
+                                          name: 'Mới người khac',
+                                          onTap: () async {
+                                            showToast('Tính năng này chưa có',
+                                                context);
+                                            await navigatorKey.currentState
+                                                .maybePop();
+                                            FocusScope.of(context)
+                                                .requestFocus(FocusNode());
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 14, bottom: 14, left: 8, right: 4),
+                        child: Icon(
+                          Icons.apps,
+                          color: userColor,
                         ),
-                      )
-                      .toList(),
+                      ),
+                    ),
+                    GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 14, bottom: 14, left: 4, right: 4),
+                        child: Icon(
+                          Icons.file_present,
+                          color: userColor,
+                        ),
+                      ),
+                      onTap: () async {
+                        imagePicker(context,
+                            onCameraPick: _onFilePick,
+                            onMultiImagePick: _onMultiFilePick,
+                            onVideoPick: _onFilePick);
+                      },
+                    ),
+                  ],
                 ),
-              )
-            : SizedBox.shrink(),
-        leading: [
-          GestureDetector(
-            onTap: () async {
-              showModalBottomSheet(
-                  useRootNavigator: true,
-                  isScrollControlled: true,
-                  context: context,
-                  builder: (context) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              color: ptPrimaryColorLight(context)),
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 25),
-                          child: Row(
-                            children: [
-                              ActionItem(
-                                img: 'assets/image/location.png',
-                                name: 'Gắn vị trí',
-                                onTap: () async {
-                                  if (_files.length > 0) {
-                                    final confirm = await showConfirmDialog(
-                                        context,
-                                        'Xác nhận xóa các file đính kèm?',
-                                        confirmTap: () {},
-                                        navigatorKey: navigatorKey);
-                                    if (!confirm) return;
-                                    setState(() {
-                                      _files.clear();
-                                    });
-                                  }
-                                  await navigatorKey.currentState.maybePop();
-                                  FocusScope.of(context)
-                                      .requestFocus(FocusNode());
-                                  final res = await showGoogleMap(context);
-
-                                  print(res);
-
-                                  // res[0] is long lat, res[1] is image file
-                                  if (res != null &&
-                                      res[0] != null &&
-                                      res[1] != null) {
-                                    Map<String, dynamic> customProperties = {};
-                                    customProperties['long'] =
-                                        (res[0] as LatLng).longitude;
-                                    customProperties['lat'] =
-                                        (res[0] as LatLng).latitude;
-                                    await _onFilePick((res[1] as File)?.path);
-                                    onSend(ChatMessage(
-                                        text:
-                                            '${AuthBloc.instance.userModel.name} đã chia sẻ 1 địa điểm',
-                                        user: _users.firstWhere((user) =>
-                                            user.uid ==
-                                            AuthBloc.instance.userModel.id),
-                                        customProperties: customProperties));
-                                  }
-                                },
-                              ),
-                              SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 6 / 100,
-                              ),
-                              ActionItem(
-                                img: 'assets/image/invite_chat.jpg',
-                                name: 'Mới người khac',
-                                onTap: () async {
-                                  showToast('Tính năng này chưa có', context);
-                                  await navigatorKey.currentState.maybePop();
-                                  FocusScope.of(context)
-                                      .requestFocus(FocusNode());
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  });
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(right: 5),
-              child: Icon(
-                Icons.apps,
-                color: userColor,
-              ),
+              ],
+              trailing: <Widget>[
+                GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 14, bottom: 14, left: 4, right: 4),
+                    child: Icon(
+                      Icons.emoji_emotions_rounded,
+                      color: userColor,
+                    ),
+                  ),
+                  onTap: () async {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    Future.delayed(
+                        Duration(milliseconds: 150),
+                        () => setState(() {
+                              showEmoj = true;
+                            }));
+                  },
+                ),
+              ],
             ),
           ),
-        ],
-        trailing: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.file_present,
-              color: userColor,
-            ),
-            onPressed: () async {
-              imagePicker(context,
-                  onCameraPick: _onFilePick,
-                  onMultiImagePick: _onMultiFilePick,
-                  onVideoPick: _onFilePick);
-            },
-          ),
+          if (showEmoj)
+            EmojiKeyboard(
+              onEmojiSelected: (Emoji emoji) {
+                setState(() {
+                  _chatC.text += emoji.text;
+                  print(_chatC.text.trim() == '');
+                });
+              },
+            )
         ],
       ),
     );

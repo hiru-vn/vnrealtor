@@ -12,6 +12,7 @@ class MessageListView extends StatefulWidget {
   final bool renderAvatarOnTop;
   final Function(ChatMessage) onLongPressMessage;
   final bool inverted;
+  final Function onTapNonKeyboard;
   final Widget Function(ChatUser) avatarBuilder;
   final Widget Function(ChatMessage) messageBuilder;
   final Widget Function(String, [ChatMessage]) messageTextBuilder;
@@ -32,7 +33,7 @@ class MessageListView extends StatefulWidget {
   final Function(bool) defaultLoadCallback;
   final BoxConstraints constraints;
   final List<Widget> Function(ChatMessage) messageButtonsBuilder;
-  final EdgeInsets messagePadding;
+  final EdgeInsets Function(ChatMessage) messagePaddingBuilder;
   final bool textBeforeImage;
   final double avatarMaxSize;
   final BoxDecoration Function(ChatMessage, bool) messageDecorationBuilder;
@@ -47,6 +48,7 @@ class MessageListView extends StatefulWidget {
     this.messageContainerPadding =
         const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
     this.scrollController,
+    this.onTapNonKeyboard,
     this.parsePatterns = const [],
     this.messageContainerDecoration,
     this.messages,
@@ -71,7 +73,7 @@ class MessageListView extends StatefulWidget {
     this.visible,
     this.showLoadMore,
     this.messageButtonsBuilder,
-    this.messagePadding = const EdgeInsets.all(8.0),
+    this.messagePaddingBuilder,
     this.textBeforeImage = true,
     this.messageDecorationBuilder,
   });
@@ -124,7 +126,10 @@ class _MessageListViewState extends State<MessageListView> {
 
     return Flexible(
       child: GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+          if (widget.onTapNonKeyboard != null) widget.onTapNonKeyboard();
+        },
         child: Padding(
           padding: widget.messageContainerPadding,
           child: NotificationListener<ScrollNotification>(
@@ -264,8 +269,8 @@ class _MessageListViewState extends State<MessageListView> {
                                                 : AlignmentDirectional
                                                     .centerStart,
                                             child: MessageContainer(
-                                              messagePadding:
-                                                  widget.messagePadding,
+                                              messagePaddingBuilder:
+                                                  widget.messagePaddingBuilder,
                                               constraints: constraints,
                                               isUser:
                                                   widget.messages[i].user.uid ==

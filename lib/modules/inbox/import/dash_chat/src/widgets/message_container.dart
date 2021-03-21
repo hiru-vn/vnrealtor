@@ -54,7 +54,7 @@ class MessageContainer extends StatelessWidget {
 
   /// Padding of the message
   /// Default to EdgeInsets.all(8.0)
-  final EdgeInsets messagePadding;
+  final EdgeInsets Function(ChatMessage) messagePaddingBuilder;
 
   /// Should show the text before the image in the chat bubble
   /// or the opposite
@@ -80,7 +80,7 @@ class MessageContainer extends StatelessWidget {
     this.isUser,
     this.messageButtonsBuilder,
     this.buttons,
-    this.messagePadding = const EdgeInsets.all(8.0),
+    this.messagePaddingBuilder,
     this.messageDecorationBuilder,
   });
 
@@ -112,9 +112,11 @@ class MessageContainer extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
         margin: EdgeInsets.only(
-          bottom: 5.0,
+          bottom: 2.5,
         ),
-        padding: messagePadding,
+        padding: messagePaddingBuilder != null
+            ? messagePaddingBuilder(message)
+            : EdgeInsets.symmetric(vertical: 5, horizontal: 8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment:

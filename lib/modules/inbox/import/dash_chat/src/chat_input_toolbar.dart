@@ -31,6 +31,7 @@ class ChatInputToolbar extends StatelessWidget {
   final bool sendOnEnter;
   final bool reverse;
   final TextInputAction textInputAction;
+  final Color iconSendColor;
 
   ChatInputToolbar({
     Key key,
@@ -43,6 +44,7 @@ class ChatInputToolbar extends StatelessWidget {
     this.onTextChange,
     this.inputDisabled = false,
     this.controller,
+    this.iconSendColor,
     this.leading = const [],
     this.trailling = const [],
     this.inputDecoration,
@@ -69,7 +71,7 @@ class ChatInputToolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChatMessage message = ChatMessage(
-      text: text,
+      text: controller.text,
       user: user,
       messageIdGenerator: messageIdGenerator,
       createdAt: DateTime.now(),
@@ -143,12 +145,18 @@ class ChatInputToolbar extends StatelessWidget {
                   // }
                 })
               else
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: alwaysShowSend || text.length != 0
-                      ? () => _sendMessage(context, message)
-                      : null,
-                ),
+                alwaysShowSend || controller.text.trim() != ''
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.send,
+                          color: iconSendColor,
+                        ),
+                        onPressed:
+                            alwaysShowSend || controller.text.trim() != ''
+                                ? () => _sendMessage(context, message)
+                                : null,
+                      )
+                    : SizedBox.shrink(),
               if (!showTraillingBeforeSend) ...trailling,
             ],
           ),
