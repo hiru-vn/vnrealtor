@@ -1,9 +1,10 @@
+import 'package:datcao/modules/inbox/inbox_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/navigator.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'import/animated_search_bar.dart';
 import 'import/app_bar.dart';
 import 'import/color.dart';
@@ -62,6 +63,28 @@ class _InboxListState extends State<InboxList>
       });
   }
 
+  Widget _getChatGroupAvatar(FbInboxGroupModel group) {
+    if (group.userAvatars == null) return SizedBox.shrink();
+    List listAvatar = group.userAvatars.map((e) {
+      if (e != AuthBloc.instance.userModel.avatar) return e;
+    }).toList();
+    listAvatar.remove(null);
+    if (listAvatar.length > 0) {
+      return CircleAvatar(
+        radius: 21,
+        backgroundColor: Colors.white,
+        backgroundImage: listAvatar[0] != null
+            ? CachedNetworkImageProvider(listAvatar[0])
+            : AssetImage('assets/image/default_avatar.png'),
+      );
+    } else
+      return CircleAvatar(
+        radius: 21,
+        backgroundColor: Colors.white,
+        backgroundImage: AssetImage('assets/image/default_avatar.png'),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,14 +133,7 @@ class _InboxListState extends State<InboxList>
                                   group.reader.contains(_authBloc.userModel.id)
                                       ? Colors.white
                                       : ptBackgroundColor(context),
-                              leading: CircleAvatar(
-                                radius: 21,
-                                backgroundColor: Colors.white,
-                                backgroundImage: group.image != null
-                                    ? NetworkImage(group.image)
-                                    : AssetImage(group.image ??
-                                        'assets/image/default_avatar.png'),
-                              ),
+                              leading: _getChatGroupAvatar(group),
                               title: Text(
                                 nameGroup,
                                 style: ptTitle().copyWith(

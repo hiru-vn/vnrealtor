@@ -480,6 +480,9 @@ class _ProfileCardState extends State<ProfileCard> {
                                       widget.user.avatar, [
                                     AuthBloc.instance.userModel.id,
                                     widget.user.id,
+                                  ], [
+                                    AuthBloc.instance.userModel.avatar,
+                                    widget.user.avatar,
                                   ]);
                                   navigatorKey.currentState.maybePop();
                                 },

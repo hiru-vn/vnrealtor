@@ -509,6 +509,9 @@ class _PostWidgetState extends State<PostWidget> {
                 widget.post.user.avatar, [
               AuthBloc.instance.userModel.id,
               widget.post.user.id,
+            ], [
+              AuthBloc.instance.userModel.avatar,
+              widget.post.user.avatar,
             ]);
             navigatorKey.currentState.maybePop();
           }

@@ -78,7 +78,7 @@ class FileUtil {
       }
 
       Reference storageReference = FirebaseStorage.instance.ref().child(
-          '${path ?? 'root'}/${Path.basename(file.path).replaceAll(new RegExp(r'(\?alt).*'), '').replaceAll(' ', '')}');
+          '${path ?? 'root'}/${DateTime.now().toString().replaceAll(' ', '')}${Path.basename(file.path).replaceAll(new RegExp(r'(\?alt).*'), '').replaceAll(' ', '')}');
       UploadTask uploadTask = storageReference.putFile(file);
       print('uploading...');
       await uploadTask.whenComplete(() {});

@@ -30,8 +30,10 @@ class InboxBloc extends ChangeNotifier {
       String lastAvatar,
       DateTime time,
       String image,
-      List<String> userIds) async {
+      List<String> userIds,
+      List<String> userAvatars) async {
     userIds.sort();
+
     final snap = await firestore
         .collection(groupCollection)
         .doc(userIds.join("-"))
@@ -45,6 +47,7 @@ class InboxBloc extends ChangeNotifier {
             '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện',
         'image': image,
         'userIds': userIds,
+        'userAvatars': userAvatars
       });
       userIds.forEach((uid) {
         firestore.collection(userCollection).doc(uid).update({
@@ -66,7 +69,8 @@ class InboxBloc extends ChangeNotifier {
             time.toIso8601String(),
             [],
             users,
-            userIds),
+            userIds,
+            userAvatars),
         lastUser);
     getList20InboxGroup(AuthBloc.instance.userModel.id);
     return;
@@ -74,8 +78,13 @@ class InboxBloc extends ChangeNotifier {
 
   Future<void> userJoinGroupChat(String uid, String groupId) async {}
 
-  Future<void> updateGroupOnMessage(String groupid, String lastUser,
-      DateTime time, String lastMessage, String image) async {
+  Future<void> updateGroupOnMessage(
+      String groupid,
+      String lastUser,
+      DateTime time,
+      String lastMessage,
+      String image,
+      List<String> userAvatars) async {
     final snapShot =
         await firestore.collection(groupCollection).doc(groupid).get();
     if (snapShot.exists) {
@@ -84,6 +93,7 @@ class InboxBloc extends ChangeNotifier {
         'time': time.toIso8601String(),
         'lastMessage': lastMessage,
         'image': image,
+        'userAvatars': userAvatars
       });
     }
   }
