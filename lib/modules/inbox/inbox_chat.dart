@@ -8,8 +8,8 @@ import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/utils/call_kit.dart';
 import 'package:flutter/material.dart';
+import './import/dash_chat/dash_chat.dart';
 import 'package:path/path.dart' as path;
-import 'package:dash_chat/dash_chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/utils/file_util.dart';
@@ -84,7 +84,12 @@ class _InboxChatState extends State<InboxChat> {
   @override
   void initState() {
     for (final user in widget.group.users) {
-      _users.add(ChatUser(uid: user.id, name: user.name));
+      _users.add(ChatUser(
+          uid: user.id,
+          name: user.name,
+          containerColor: user.id == AuthBloc.instance.userModel.id
+              ? HexColor('#4D94FF')
+              : Colors.grey[200]));
     }
     super.initState();
   }
@@ -369,6 +374,7 @@ class _InboxChatState extends State<InboxChat> {
         title: widget.title,
         automaticallyImplyLeading: true,
         bgColor: Colors.white,
+        elevation: 2,
         actions: [
           // Center(
           //   child: AnimatedSearchBar(
@@ -387,7 +393,7 @@ class _InboxChatState extends State<InboxChat> {
               }),
         ],
       ),
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       body: DashChat(
         messageImageBuilder: (url, [messages]) {
           if (messages.customProperties == null) return SizedBox.shrink();
@@ -454,21 +460,28 @@ class _InboxChatState extends State<InboxChat> {
         messageTextBuilder: (text, [messages]) {
           return Padding(
             padding: const EdgeInsets.all(3),
-            child: Text(
-              text,
-              style: ptBigBody(),
-            ),
+            child: Text.rich(TextSpan(children: [
+              TextSpan(
+                text: text,
+                style: ptBody().copyWith(
+                    color: messages.user.uid == _authBloc.userModel.id
+                        ? Colors.white
+                        : Colors.black),
+              ),
+            ])),
           );
         },
         messageTimeBuilder: (text, [messages]) {
-          return Text(
-            text,
-            style: ptTiny(),
-          );
+          return SizedBox.shrink();
         },
+        dateBuilder: (text) => Text(
+          text,
+          style: ptSmall()
+              .copyWith(fontWeight: FontWeight.w600, color: Colors.black38),
+        ),
         inputToolbarPadding: EdgeInsets.all(4),
         inputDecoration: InputDecoration.collapsed(hintText: "Send message.."),
-        dateFormat: DateFormat('d/M/yyyy'),
+        dateFormat: DateFormat('d-M-yyyy'),
         timeFormat: DateFormat('HH:mm'),
         messages: messages,
         showUserAvatar: false,
@@ -492,8 +505,19 @@ class _InboxChatState extends State<InboxChat> {
           border: Border.all(width: 0.0),
           color: Colors.white,
         ),
-        // messageContainerDecoration: BoxDecoration(
-        //     borderRadius: BorderRadius.circular(50), color: Colors.amber),
+        // messageDecorationBuilder: (message, isUser) {
+        //   double topLeft, bottomLeft, topRight, bottomRight = 0.0;
+        //   return BoxDecoration(
+        //     color: isUser? ,
+        //     borderRadius: BorderRadius.only(
+        //       topLeft: Radius.circular(topLeft),
+        //       topRight: Radius.circular(topRight),
+        //       bottomLeft: Radius.circular(bottomLeft),
+        //       bottomRight: Radius.circular(bottomRight),
+        //     ),
+        //   );
+        // },
+        messagePadding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
         onQuickReply: (Reply reply) {},
         shouldShowLoadEarlier: true,
         showTraillingBeforeSend: true,

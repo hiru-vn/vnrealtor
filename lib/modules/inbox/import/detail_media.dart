@@ -101,11 +101,14 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
 
   Widget _getWidget(FileType type) {
     if (type == FileType.image || type == FileType.gif)
-      return Image(
-        image: CachedNetworkImageProvider(widget.file),
-        fit: BoxFit.cover,
-        errorBuilder: imageNetworkErrorBuilder,
-        loadingBuilder: kLoadingBuilder,
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Image(
+          image: CachedNetworkImageProvider(widget.file),
+          fit: BoxFit.cover,
+          errorBuilder: imageNetworkErrorBuilder,
+          loadingBuilder: kLoadingBuilder,
+        ),
       );
     else if (type == FileType.video)
       return thumbnailPath == null

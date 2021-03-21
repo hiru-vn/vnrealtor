@@ -11,19 +11,21 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool automaticallyImplyLeading;
   final bool centerTitle;
+  final int elevation;
 
   MyAppBar(
       {this.actions,
       this.bgColor,
       this.leading,
       this.title,
+      this.elevation = 0,
       this.centerTitle = false,
       this.automaticallyImplyLeading = false});
   @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: bgColor ?? Colors.transparent,
-      elevation: 0,
+      elevation: elevation.toDouble(),
       automaticallyImplyLeading: automaticallyImplyLeading,
       leading: leading,
       centerTitle: centerTitle,
@@ -41,9 +43,11 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           //   ),
           // ],
           Text(
-            title ?? 'Petland',
+            title ?? '',
             style: ptBigTitle().copyWith(
-                color: (bgColor != null && bgColor != Colors.white) ? Colors.white : Colors.black87),
+                color: (bgColor != null && bgColor != Colors.white)
+                    ? Colors.white
+                    : Colors.black87),
           ),
         ],
       ),
