@@ -130,7 +130,7 @@ class ImageViewNetworkCache extends StatelessWidget {
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child:Image.file(
+        child: Image.file(
                 File(filePath),
                 fit: BoxFit.cover,
               )

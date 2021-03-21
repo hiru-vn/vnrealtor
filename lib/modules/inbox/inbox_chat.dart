@@ -51,6 +51,7 @@ class _InboxChatState extends State<InboxChat> {
   final List<FbInboxUserModel> _fbUsers = [];
   List<UserModel> _severUsers = [];
   final TextEditingController _chatC = TextEditingController();
+  final userColor = HexColor('#4D94FF');
 
   List<String> _files = [];
   InboxBloc _inboxBloc;
@@ -85,11 +86,12 @@ class _InboxChatState extends State<InboxChat> {
   void initState() {
     for (final user in widget.group.users) {
       _users.add(ChatUser(
-          uid: user.id,
-          name: user.name,
-          containerColor: user.id == AuthBloc.instance.userModel.id
-              ? HexColor('#4D94FF')
-              : Colors.grey[200]));
+        uid: user.id,
+        name: user.name,
+        // containerColor: user.id == AuthBloc.instance.userModel.id
+        //     ? HexColor('#4D94FF')
+        //     : Colors.grey[200]
+      ));
     }
     super.initState();
   }
@@ -244,8 +246,29 @@ class _InboxChatState extends State<InboxChat> {
   void onSend(ChatMessage message) {
     List<String> _tempFiles = [];
     _tempFiles.addAll(_files);
+    if (_tempFiles.length == 0 && message.text.trim() == '') return;
     if (_files.length > 0) {
       // add a loading gif
+      if (message.text.trim() != '') {
+        // send message text first then send image or video ...
+        ChatMessage copyMessage = ChatMessage(
+          // do this because every message gen unique id
+          text: message.text,
+          user: message.user,
+          createdAt: message.createdAt,
+        );
+        setState(() {
+          messages.add(copyMessage);
+        });
+        _inboxBloc.addMessage(
+            widget.group.id,
+            message.text,
+            message.createdAt,
+            _authBloc.userModel.id,
+            _authBloc.userModel.name,
+            _authBloc.userModel.avatar);
+        message.text = '';
+      }
       if (message.customProperties == null)
         message.customProperties = <String, dynamic>{};
       _files.forEach((path) {
@@ -314,7 +337,7 @@ class _InboxChatState extends State<InboxChat> {
 
   _updateGroupPageText(String groupid, String lastUser, String lastMessage,
       DateTime time, String image) {
-    if (lastMessage.length > 20) {
+    if (lastMessage.length > 30) {
       lastMessage = lastMessage.substring(0, 30) + "...";
     }
 
@@ -406,28 +429,24 @@ class _InboxChatState extends State<InboxChat> {
                 (messages.customProperties['cache_file_paths'] == null ||
                     messages.customProperties['cache_file_paths'].length == 0))
               return SizedBox.shrink();
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {
-                  launchMaps(location.latitude, location.longitude);
-                },
-                child: AbsorbPointer(
-                  child: ImageViewNetwork(
-                    url: (messages.customProperties['files'] != null &&
-                            messages.customProperties['files'].length > 0)
-                        ? messages.customProperties['files'][0]
-                        : null,
-                    borderRadius: 10,
-                    cacheFilePath:
-                        (messages.customProperties['cache_file_paths'] !=
-                                    null &&
-                                messages.customProperties['cache_file_paths']
-                                        .length >
-                                    0)
-                            ? messages.customProperties['cache_file_paths'][0]
-                            : null,
-                  ),
+            return GestureDetector(
+              onTap: () {
+                launchMaps(location.latitude, location.longitude);
+              },
+              child: AbsorbPointer(
+                child: ImageViewNetwork(
+                  url: (messages.customProperties['files'] != null &&
+                          messages.customProperties['files'].length > 0)
+                      ? messages.customProperties['files'][0]
+                      : null,
+                  borderRadius: 10,
+                  cacheFilePath:
+                      (messages.customProperties['cache_file_paths'] != null &&
+                              messages.customProperties['cache_file_paths']
+                                      .length >
+                                  0)
+                          ? messages.customProperties['cache_file_paths'][0]
+                          : null,
                 ),
               ),
             );
@@ -458,12 +477,16 @@ class _InboxChatState extends State<InboxChat> {
         user: _users.firstWhere((user) => user.uid == _authBloc.userModel.id),
         textCapitalization: TextCapitalization.sentences,
         messageTextBuilder: (text, [messages]) {
+          if (text.trim() == '') {
+            return SizedBox.shrink();
+          }
           return Padding(
             padding: const EdgeInsets.all(3),
             child: Text.rich(TextSpan(children: [
               TextSpan(
                 text: text,
                 style: ptBody().copyWith(
+                    fontSize: 13.8,
                     color: messages.user.uid == _authBloc.userModel.id
                         ? Colors.white
                         : Colors.black),
@@ -480,7 +503,8 @@ class _InboxChatState extends State<InboxChat> {
               .copyWith(fontWeight: FontWeight.w600, color: Colors.black38),
         ),
         inputToolbarPadding: EdgeInsets.all(4),
-        inputDecoration: InputDecoration.collapsed(hintText: "Send message.."),
+        inputDecoration:
+            InputDecoration.collapsed(hintText: "Nhập tin nhắn..."),
         dateFormat: DateFormat('d-M-yyyy'),
         timeFormat: DateFormat('HH:mm'),
         messages: messages,
@@ -498,25 +522,84 @@ class _InboxChatState extends State<InboxChat> {
           print("OnLongPressAvatar: ${user.name}");
         },
         inputMaxLines: 5,
-        messageContainerPadding: EdgeInsets.only(left: 10, right: 10),
-        alwaysShowSend: true,
+        messageContainerPadding: EdgeInsets.only(left: 5, right: 10),
+        alwaysShowSend: _files.length > 0,
         inputTextStyle: TextStyle(fontSize: 15.5),
         inputContainerStyle: BoxDecoration(
           border: Border.all(width: 0.0),
           color: Colors.white,
         ),
-        // messageDecorationBuilder: (message, isUser) {
-        //   double topLeft, bottomLeft, topRight, bottomRight = 0.0;
-        //   return BoxDecoration(
-        //     color: isUser? ,
-        //     borderRadius: BorderRadius.only(
-        //       topLeft: Radius.circular(topLeft),
-        //       topRight: Radius.circular(topRight),
-        //       bottomLeft: Radius.circular(bottomLeft),
-        //       bottomRight: Radius.circular(bottomRight),
-        //     ),
-        //   );
-        // },
+        messageDecorationBuilder: (message, isUser) {
+          double topLeft = 20, bottomLeft = 20, topRight = 20, bottomRight = 20;
+          final index = messages.indexOf(message);
+          if (messages.length >= 2) {
+            if (isUser) {
+              if (index == 0) {
+                if (messages[1].user.uid == AuthBloc.instance.userModel.id) {
+                  bottomRight = 4;
+                }
+              } else if (index == messages.length - 1) {
+                if (messages[messages.length - 2].user.uid ==
+                    AuthBloc.instance.userModel.id) {
+                  topRight = 4;
+                }
+              } else {
+                if (messages[index - 1].user.uid ==
+                        AuthBloc.instance.userModel.id &&
+                    messages[index + 1].user.uid ==
+                        AuthBloc.instance.userModel.id) {
+                  topRight = 4;
+                  bottomRight = 4;
+                } else if (messages[index - 1].user.uid ==
+                    AuthBloc.instance.userModel.id) {
+                  topRight = 4;
+                } else if (messages[index + 1].user.uid ==
+                    AuthBloc.instance.userModel.id) {
+                  bottomRight = 4;
+                }
+              }
+            } else {
+              String userId = message.user.uid;
+              if (index == 0) {
+                if (messages[1].user.uid == userId) {
+                  bottomLeft = 4;
+                }
+              } else if (index == messages.length - 1) {
+                if (messages[messages.length - 2].user.uid == userId) {
+                  topLeft = 4;
+                }
+              } else {
+                if (messages[index - 1].user.uid == userId &&
+                    messages[index + 1].user.uid == userId) {
+                  topLeft = 4;
+                  bottomLeft = 4;
+                } else if (messages[index - 1].user.uid == userId) {
+                  topLeft = 4;
+                } else if (messages[index + 1].user.uid == userId) {
+                  bottomLeft = 4;
+                }
+              }
+            }
+          }
+
+          return BoxDecoration(
+            color: (message.customProperties != null &&
+                    ((message.customProperties['cache_file_paths'] != null &&
+                            message.customProperties['cache_file_paths']
+                                    .length >
+                                0) ||
+                        (message.customProperties['files'] != null &&
+                            message.customProperties['files'].length > 0)))
+                ? Colors.white
+                : (isUser ? userColor : Colors.grey[200]),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(topLeft),
+              topRight: Radius.circular(topRight),
+              bottomLeft: Radius.circular(bottomLeft),
+              bottomRight: Radius.circular(bottomRight),
+            ),
+          );
+        },
         messagePadding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
         onQuickReply: (Reply reply) {},
         shouldShowLoadEarlier: true,
@@ -552,11 +635,14 @@ class _InboxChatState extends State<InboxChat> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.file_present),
+                                  Icon(
+                                    Icons.file_present,
+                                    color: userColor,
+                                  ),
                                   Text(
                                     path.basename(file),
                                     style: ptBody().copyWith(
-                                      color: Colors.black54,
+                                      color: userColor,
                                     ),
                                   ),
                                 ],
@@ -653,13 +739,19 @@ class _InboxChatState extends State<InboxChat> {
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0).copyWith(right: 5),
-              child: Icon(Icons.apps),
+              child: Icon(
+                Icons.apps,
+                color: userColor,
+              ),
             ),
           ),
         ],
         trailing: <Widget>[
           IconButton(
-            icon: Icon(Icons.file_present),
+            icon: Icon(
+              Icons.file_present,
+              color: userColor,
+            ),
             onPressed: () async {
               imagePicker(context,
                   onCameraPick: _onFilePick,

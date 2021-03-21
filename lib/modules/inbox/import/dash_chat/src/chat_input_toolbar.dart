@@ -134,13 +134,13 @@ class ChatInputToolbar extends StatelessWidget {
               if (showTraillingBeforeSend) ...trailling,
               if (sendButtonBuilder != null)
                 sendButtonBuilder(() async {
-                  if (text.length != 0) {
-                    await onSend(message);
+                  // if (text.length != 0) {
+                  await onSend(message);
 
-                    controller.text = "";
+                  controller.text = "";
 
-                    onTextChange("");
-                  }
+                  onTextChange("");
+                  // }
                 })
               else
                 IconButton(
@@ -159,22 +159,22 @@ class ChatInputToolbar extends StatelessWidget {
   }
 
   void _sendMessage(BuildContext context, ChatMessage message) async {
-    if (text.length != 0) {
-      await onSend(message);
+    // if (text.length != 0) {
+    await onSend(message);
 
-      controller.text = "";
+    controller.text = "";
 
-      onTextChange("");
+    onTextChange("");
 
-      FocusScope.of(context).requestFocus(focusNode);
+    FocusScope.of(context).requestFocus(focusNode);
 
-      Timer(Duration(milliseconds: 150), () {
-        scrollController.animateTo(
-          reverse ? 0.0 : scrollController.position.maxScrollExtent + 30.0,
-          curve: Curves.easeOut,
-          duration: const Duration(milliseconds: 300),
-        );
-      });
-    }
+    Timer(Duration(milliseconds: 150), () {
+      scrollController.animateTo(
+        reverse ? 0.0 : scrollController.position.maxScrollExtent + 30.0,
+        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 300),
+      );
+    });
+    // }
   }
 }

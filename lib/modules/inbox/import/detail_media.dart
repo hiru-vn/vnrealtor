@@ -112,18 +112,24 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
       );
     else if (type == FileType.video)
       return thumbnailPath == null
-          ? Image.asset(
-              'assets/image/video_holder.png',
-              fit: BoxFit.cover,
-              errorBuilder: imageNetworkErrorBuilder,
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: Image.asset(
+                'assets/image/video_holder.png',
+                fit: BoxFit.cover,
+                errorBuilder: imageNetworkErrorBuilder,
+              ),
             )
           : Stack(
               fit: StackFit.expand,
               children: [
-                Image.file(
-                  File(thumbnailPath),
-                  fit: BoxFit.cover,
-                  errorBuilder: imageNetworkErrorBuilder,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Image.file(
+                    File(thumbnailPath),
+                    fit: BoxFit.cover,
+                    errorBuilder: imageNetworkErrorBuilder,
+                  ),
                 ),
                 Center(
                   child: Icon(Icons.play_circle_outline_rounded,
@@ -180,25 +186,34 @@ class _MediaWidgetCacheState extends State<MediaWidgetCache> {
 
   Widget _getWidget(FileType type) {
     if (type == FileType.image || type == FileType.gif)
-      return Image.file(
-        File(widget.path),
-        fit: BoxFit.cover,
-        errorBuilder: imageNetworkErrorBuilder,
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Image.file(
+          File(widget.path),
+          fit: BoxFit.cover,
+          errorBuilder: imageNetworkErrorBuilder,
+        ),
       );
     else if (type == FileType.video)
       return thumbnailPath == null
-          ? Image.asset(
-              'assets/image/video_holder.png',
-              fit: BoxFit.cover,
-              errorBuilder: imageNetworkErrorBuilder,
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: Image.asset(
+                'assets/image/video_holder.png',
+                fit: BoxFit.cover,
+                errorBuilder: imageNetworkErrorBuilder,
+              ),
             )
           : Stack(
               fit: StackFit.expand,
               children: [
-                Image.file(
-                  File(thumbnailPath),
-                  fit: BoxFit.cover,
-                  errorBuilder: imageNetworkErrorBuilder,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Image.file(
+                    File(thumbnailPath),
+                    fit: BoxFit.cover,
+                    errorBuilder: imageNetworkErrorBuilder,
+                  ),
                 ),
                 Center(
                   child: Icon(Icons.play_circle_outline_rounded,

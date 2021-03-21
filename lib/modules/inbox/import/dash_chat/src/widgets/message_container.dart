@@ -92,7 +92,7 @@ class MessageContainer extends StatelessWidget {
             maxWidth: MediaQuery.of(context).size.width);
     return ConstrainedBox(
       constraints: BoxConstraints(
-        maxWidth: constraints.maxWidth * 0.8,
+        maxWidth: constraints.maxWidth * 0.6,
       ),
       child: Container(
         decoration: messageDecorationBuilder != null
