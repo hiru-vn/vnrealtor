@@ -224,11 +224,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     _contentC.text = _contentC.text +
                                         ' ' +
                                         _postBloc.hasTags
-                                            .where((element) =>
-                                                _contentC.text
-                                                    .contains(element['key']) &&
-                                                !_contentC.text
-                                                    .contains(element['value']))
+                                            .where((element) => !_contentC.text
+                                                .contains(element['value']))
                                             .toList()[index]['value']
                                             .toString();
                                     _contentC.selection =
@@ -245,11 +242,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   child: Center(
                                     child: Text(
                                       _postBloc.hasTags
-                                          .where((element) =>
-                                              _contentC.text
-                                                  .contains(element['key']) &&
-                                              !_contentC.text
-                                                  .contains(element['value']))
+                                          .where((element) => !_contentC.text
+                                              .contains(element['value']))
                                           .toList()[index]['value']
                                           .toString(),
                                     ),
@@ -259,7 +253,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             },
                             itemCount: _postBloc.hasTags
                                 .where((element) =>
-                                    _contentC.text.contains(element['key']) &&
                                     !_contentC.text.contains(element['value']))
                                 .toList()
                                 .length,

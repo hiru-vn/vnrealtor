@@ -138,6 +138,43 @@ class PickCoordinatesState extends State<PickCoordinates> {
             automaticallyImplyBackButton: true,
           ),
           Positioned(
+            bottom: 15,
+            left: 12,
+            child: InkWell(
+              onTap: () async {
+                if (selectedMarker == null) {
+                  showToast('Chạm để chọn vị trí', context);
+                  return;
+                }
+                navigatorKey.currentState.maybePop(selectedMarker.position);
+              },
+              child: Material(
+                borderRadius: BorderRadius.circular(20),
+                elevation: 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  height: 40,
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.send,
+                        color: Colors.blue,
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text('Chọn địa điểm')
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
               bottom: 120,
               right: 10,
               child: Material(

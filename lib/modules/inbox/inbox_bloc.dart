@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datcao/share/import.dart';
 import 'package:flutter/material.dart';
@@ -49,12 +47,12 @@ class InboxBloc extends ChangeNotifier {
         'userIds': userIds,
         'userAvatars': userAvatars
       });
-      userIds.forEach((uid) {
-        firestore.collection(userCollection).doc(uid).update({
-          'groups': FieldValue.arrayUnion([userIds.join("-")])
-        });
-      });
     }
+    userIds.forEach((uid) {
+      firestore.collection(userCollection).doc(uid).update({
+        'groups': FieldValue.arrayUnion([userIds.join("-")])
+      });
+    });
     final users = await getUsers(userIds);
     if (users == null) {
       showToastNoContext('Người này không nhận tin nhắn');
