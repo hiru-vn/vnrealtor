@@ -159,6 +159,16 @@ phone: "$phone"
     return res['checkValidUser'];
   }
 
+  Future suggestFollow() async {
+    final res = await UserSrv().query(
+        'suggestFollow',
+        '''
+q: {}
+    ''',
+        fragment: 'data { $userFragment }');
+    return res['suggestFollow'];
+  }
+
   Future resetPassWithPhone({String password, String idToken}) async {
     final res = await UserSrv().mutate(
         'resetPassword',
@@ -170,8 +180,15 @@ idToken: "$idToken"
     return res['resetPassword'];
   }
 
-  Future updateUser(String id, String name, String tagName, String email, String phone,
-      String avatar, String description, String facebookUrl) async {
+  Future updateUser(
+      String id,
+      String name,
+      String tagName,
+      String email,
+      String phone,
+      String avatar,
+      String description,
+      String facebookUrl) async {
     final res = await UserSrv().update(
         id: id,
         data: '''

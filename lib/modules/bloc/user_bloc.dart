@@ -14,6 +14,7 @@ class UserBloc extends ChangeNotifier {
   ScrollController profileScrollController = ScrollController();
   List<FriendshipModel> friendRequestFromOtherUsers = [];
   List<UserModel> followersIn7Days = [];
+  List<UserModel> suggestFollowUsers = [];
 
   Future init() async {
     final token = await SPref.instance.get('token');
@@ -22,6 +23,7 @@ class UserBloc extends ChangeNotifier {
       // getFriendRequestFromOtherUsers();
       getFollowerIn7d();
       setUserlocation();
+      suggestFollow();
     }
   }
 
@@ -215,6 +217,21 @@ class UserBloc extends ChangeNotifier {
       final res = await UserRepo().followUser(userId);
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> suggestFollow() async {
+    try {
+      final res = await UserRepo().suggestFollow();
+      final listRaw = res['data'];
+      suggestFollowUsers =
+          (listRaw.map((e) => UserModel.fromJson(e)).toList() as List)
+              .cast<UserModel>();
+      return BaseResponse.success(suggestFollowUsers);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {

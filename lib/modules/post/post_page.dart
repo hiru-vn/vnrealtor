@@ -1,6 +1,7 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/post/post_detail.dart';
+import 'package:datcao/modules/post/suggest_list.dart';
 import 'package:datcao/share/widget/load_more.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -148,13 +149,26 @@ class _PostPageState extends State<PostPage> {
                             ),
                           ),
                         ListView.builder(
-                          padding: EdgeInsets.all(0),
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: _postBloc.feed.length,
                           itemBuilder: (context, index) {
                             final item = _postBloc.feed[index];
-                            return PostWidget(item);
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (index == 5 &&
+                                    UserBloc.instance.suggestFollowUsers !=
+                                        null &&
+                                    UserBloc.instance.suggestFollowUsers
+                                            .length >
+                                        0)
+                                  SuggestList(
+                                    users: UserBloc.instance.suggestFollowUsers,
+                                  ),
+                                PostWidget(item),
+                              ],
+                            );
                           },
                         ),
                         if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
