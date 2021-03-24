@@ -24,20 +24,20 @@ TextStyle ptBigTitle() => TextStyle(
 TextStyle ptTitle() => TextStyle(
     fontSize: 14.3, fontWeight: FontWeight.w600, color: HexColor('#05515e'));
 
-TextStyle ptButton() => GoogleFonts.nunito(
+TextStyle ptButton() => TextStyle(
     letterSpacing: 0.1,
     fontSize: 15.5,
     fontWeight: FontWeight.w600,
     color: Colors.white);
 
-TextStyle ptBigBody() => GoogleFonts.nunito(
+TextStyle ptBigBody() => TextStyle(
     fontSize: 15.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
 
-TextStyle ptBody() => GoogleFonts.nunito(
+TextStyle ptBody() => TextStyle(
     fontSize: 13.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
 
-TextStyle ptSmall() => GoogleFonts.nunito(
+TextStyle ptSmall() => TextStyle(
     fontSize: 12.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
 
-TextStyle ptTiny() => GoogleFonts.nunito(
+TextStyle ptTiny() => TextStyle(
     fontSize: 11.5, fontWeight: FontWeight.w400, color: HexColor('#05515e'));

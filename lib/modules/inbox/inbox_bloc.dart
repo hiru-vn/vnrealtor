@@ -82,7 +82,9 @@ class InboxBloc extends ChangeNotifier {
       DateTime time,
       String lastMessage,
       String image,
-      List<String> userAvatars) async {
+      List<String> userAvatars,
+      List<String> readers) async {
+    readers = readers.toSet().toList(); //distinct
     final snapShot =
         await firestore.collection(groupCollection).doc(groupid).get();
     if (snapShot.exists) {
@@ -91,7 +93,8 @@ class InboxBloc extends ChangeNotifier {
         'time': time.toIso8601String(),
         'lastMessage': lastMessage,
         'image': image,
-        'userAvatars': userAvatars
+        'userAvatars': userAvatars,
+        'readers': readers
       });
     }
   }

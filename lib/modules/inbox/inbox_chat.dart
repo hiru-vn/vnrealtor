@@ -302,8 +302,13 @@ class _InboxChatState extends State<InboxChat> {
 
     String text = message.text;
 
-    _updateGroupPageText(widget.group.id, _authBloc.userModel.name, text,
-        message.createdAt, message.user.avatar);
+    _updateGroupPageText(
+        widget.group.id,
+        _authBloc.userModel.name,
+        text,
+        message.createdAt,
+        message.user.avatar,
+        [...widget.group.readers, AuthBloc.instance.userModel.id]);
 
     if (_tempFiles.length == 0) {
       _inboxBloc.addMessage(
@@ -345,13 +350,13 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   _updateGroupPageText(String groupid, String lastUser, String lastMessage,
-      DateTime time, String image) {
+      DateTime time, String image, List<String> readers) {
     if (lastMessage.length > 30) {
       lastMessage = lastMessage.substring(0, 30) + "...";
     }
 
     _inboxBloc.updateGroupOnMessage(groupid, lastUser, time, lastMessage, image,
-        _severUsers.map((e) => e.avatar).toList());
+        _severUsers.map((e) => e.avatar).toList(), readers);
   }
 
   void scrollToEnd() {

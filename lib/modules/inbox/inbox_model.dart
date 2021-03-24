@@ -21,13 +21,13 @@ class FbInboxGroupModel {
   final String lastMessage;
   final String lastUser;
   final String time;
-  final List<String> reader;
+  final List<String> readers;
   final List<FbInboxUserModel> users;
   final List<String> userIds;
   final List<String> userAvatars;
 
   FbInboxGroupModel(this.id, this.image, this.lastMessage, this.lastUser,
-      this.time, this.reader, this.users, this.userIds, this.userAvatars);
+      this.time, this.readers, this.users, this.userIds, this.userAvatars);
 
   factory FbInboxGroupModel.fromJson(
       Map<String, dynamic> map, String id, List<FbInboxUserModel> users) {
@@ -37,10 +37,12 @@ class FbInboxGroupModel {
         map['lastMessage'],
         map["lastUser"],
         map['time'],
-        map['reader'] == null ? [] : (map['reader'] as List).cast<String>(),
+        map['readers'] == null ? [] : (map['readers'] as List).cast<String>(),
         users,
         map['userIds'] == null ? [] : (map['userIds'] as List).cast<String>(),
-        map['userAvatars'] == null ? [] : (map['userAvatars'] as List).cast<String>());
+        map['userAvatars'] == null
+            ? []
+            : (map['userAvatars'] as List).cast<String>());
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:datcao/modules/inbox/inbox_model.dart';
+import 'package:datcao/utils/formart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
@@ -9,7 +10,6 @@ import 'import/animated_search_bar.dart';
 import 'import/app_bar.dart';
 import 'import/color.dart';
 import 'import/font.dart';
-import 'import/formart.dart';
 import 'import/page_builder.dart';
 import 'import/skeleton.dart';
 import 'inbox_bloc.dart';
@@ -130,21 +130,14 @@ class _InboxListState extends State<InboxList>
                                     .then((value) => reload());
                               },
                               tileColor:
-                                  group.reader.contains(_authBloc.userModel.id)
+                                  group.readers.contains(_authBloc.userModel.id)
                                       ? Colors.white
                                       : ptBackgroundColor(context),
                               leading: _getChatGroupAvatar(group),
                               title: Text(
                                 nameGroup,
                                 style: ptTitle().copyWith(
-                                    color: group.reader
-                                            .contains(_authBloc.userModel.id)
-                                        ? Colors.black54
-                                        : Colors.black87,
-                                    fontSize: group.reader
-                                            .contains(_authBloc.userModel.id)
-                                        ? 14
-                                        : 15),
+                                    color: Colors.black87, fontSize: 14.5),
                               ),
                               subtitle: Text(
                                 // (group.lastUser ==  _authBloc.userModel.name? 'Bạn: ':'Tin nhắn mới: ')+
@@ -153,15 +146,12 @@ class _InboxListState extends State<InboxList>
                                 overflow: TextOverflow.ellipsis,
                                 style: ptTiny().copyWith(
                                     fontWeight: _inboxBloc
-                                            .groupInboxList[index].reader
+                                            .groupInboxList[index].readers
                                             .contains(_authBloc.userModel.id)
                                         ? FontWeight.w400
                                         : FontWeight.w500,
-                                    color: group.reader
-                                            .contains(_authBloc.userModel.id)
-                                        ? Colors.black54
-                                        : Colors.black87,
-                                    fontSize: group.reader
+                                    color: Colors.black87,
+                                    fontSize: group.readers
                                             .contains(_authBloc.userModel.id)
                                         ? 11.7
                                         : 12.5),
@@ -171,25 +161,17 @@ class _InboxListState extends State<InboxList>
                                 children: [
                                   SizedBox(height: 12),
                                   Text(
-                                    Formart.timeByDayVi(
+                                    Formart.timeByDayViShort(
                                         DateTime.tryParse(group.time)),
                                     style: ptSmall().copyWith(
                                         fontWeight: _inboxBloc
-                                                .groupInboxList[index].reader
+                                                .groupInboxList[index].readers
                                                 .contains(
                                                     _authBloc.userModel.id)
                                             ? FontWeight.w500
                                             : FontWeight.w600,
-                                        color: group.reader.contains(
-                                                _authBloc.userModel.id)
-                                            ? Colors.black54
-                                            : Colors.black87,
-                                        fontSize: _inboxBloc
-                                                .groupInboxList[index].reader
-                                                .contains(
-                                                    _authBloc.userModel.id)
-                                            ? 11.5
-                                            : 12),
+                                        color: Colors.black87,
+                                        fontSize: 11.5),
                                   ),
                                 ],
                               ),
