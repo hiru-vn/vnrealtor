@@ -15,6 +15,7 @@ class UserModel {
   String avatar;
   List<String> followerIds;
   List<String> followingIds;
+  List<String> fastFollowIds;
   List<String> savedPostIds;
   int totalPost;
   int notiCount;
@@ -76,6 +77,12 @@ class UserModel {
     isVerify = json['isVerify'] ?? false;
     if (json['settings'] != null)
       setting = SettingModel.fromJson(json['settings']);
+
+    if (json['followerIds'] != null && json['followingIds'] != null)
+      fastFollowIds = (json['followerIds'].cast<String>() as List)
+          .where((element) =>
+              !(json['followingIds'].cast<String>() as List).contains(element))
+          .toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -98,7 +105,7 @@ class UserModel {
     data['facebookUrl'] = this.facebookUrl;
     data['isVerify'] = this.isVerify;
     data['tagName'] = this.tagName;
-    
+
     return data;
   }
 }
