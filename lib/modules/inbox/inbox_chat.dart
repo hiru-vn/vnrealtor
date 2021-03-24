@@ -351,9 +351,9 @@ class _InboxChatState extends State<InboxChat> {
 
   _updateGroupPageText(String groupid, String lastUser, String lastMessage,
       DateTime time, String image, List<String> readers) {
-    if (lastMessage.length > 30) {
-      lastMessage = lastMessage.substring(0, 30) + "...";
-    }
+    // if (lastMessage.length > 30) {
+    //   lastMessage = lastMessage.substring(0, 30) + "...";
+    // }
 
     _inboxBloc.updateGroupOnMessage(groupid, lastUser, time, lastMessage, image,
         _severUsers.map((e) => e.avatar).toList(), readers);

@@ -89,8 +89,10 @@ class _InboxListState extends State<InboxList>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        title: ' Hộp thư tin nhắn',
+        title: 'Tin nhắn',
         automaticallyImplyLeading: true,
+        elevation: 3,
+        bgColor: Colors.white,
         actions: [
           // Center(
           //   child: AnimatedSearchBar(
@@ -144,7 +146,7 @@ class _InboxListState extends State<InboxList>
                                 group.lastMessage,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: ptTiny().copyWith(
+                                style: ptSmall().copyWith(
                                     fontWeight: _inboxBloc
                                             .groupInboxList[index].readers
                                             .contains(_authBloc.userModel.id)
@@ -153,13 +155,13 @@ class _InboxListState extends State<InboxList>
                                     color: Colors.black87,
                                     fontSize: group.readers
                                             .contains(_authBloc.userModel.id)
-                                        ? 11.7
-                                        : 12.5),
+                                        ? 12.3
+                                        : 12.8),
                               ),
                               trailing: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  SizedBox(height: 12),
+                                  Spacer(),
                                   Text(
                                     Formart.timeByDayViShort(
                                         DateTime.tryParse(group.time)),
@@ -168,10 +170,16 @@ class _InboxListState extends State<InboxList>
                                                 .groupInboxList[index].readers
                                                 .contains(
                                                     _authBloc.userModel.id)
-                                            ? FontWeight.w500
-                                            : FontWeight.w600,
-                                        color: Colors.black87,
-                                        fontSize: 11.5),
+                                            ? FontWeight.w400
+                                            : FontWeight.w500,
+                                        color: Colors.black54,
+                                        fontSize: group.readers.contains(
+                                                _authBloc.userModel.id)
+                                            ? 12.3
+                                            : 12.8),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
                                   ),
                                 ],
                               ),

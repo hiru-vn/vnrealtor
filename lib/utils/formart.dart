@@ -230,7 +230,7 @@ class MmsShort {
   String days(int days) => '${days}d';
   String aboutAMonth(int days) => '1mo';
   String months(int months) => '${months}mos';
-  String aboutAYear(int year) => '1yrs';
+  String aboutAYear(int year) => '1yr';
   String years(int years) => '${years}yrs';
   String wordSeparator() => ' ';
   String empty() => 'Chưa có tin nhắn nào';
