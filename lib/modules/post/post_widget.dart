@@ -1,6 +1,7 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/media_post_widget.dart';
@@ -108,7 +109,7 @@ class _PostWidgetState extends State<PostWidget> {
                           SizedBox(
                             width: 8,
                           ),
-                          if (widget.post?.user?.role == 'AGENT')
+                          if ([UserRole.agent, UserRole.company].contains(UserBloc.getRole(widget.post?.user)))
                             CustomTooltip(
                               margin: EdgeInsets.only(top: 0),
                               message: 'Tài khoản xác thực',

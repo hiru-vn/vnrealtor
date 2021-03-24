@@ -5,11 +5,50 @@ import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
 
+enum UserRole {
+  user,
+  agent,
+  admin,
+  admin_post,
+  admin_user,
+  mod,
+  company,
+}
+
 class UserBloc extends ChangeNotifier {
   UserBloc._privateConstructor() {
     init();
   }
   static final UserBloc instance = UserBloc._privateConstructor();
+
+  static UserRole getRole(UserModel user) {
+    if (user == null) return null;
+    switch (user.role) {
+      case 'USER':
+        return UserRole.user;
+        break;
+      case 'COMPANY':
+        return UserRole.company;
+        break;
+      case 'AGENT':
+        return UserRole.agent;
+        break;
+      case 'ADMIN':
+        return UserRole.admin;
+        break;
+      case 'ADMIN_POST':
+        return UserRole.admin_post;
+        break;
+      case 'ADMIN_USER':
+        return UserRole.admin_user;
+        break;
+      case 'MOD':
+        return UserRole.mod;
+        break;
+      default:
+        return UserRole.user;
+    }
+  }
 
   ScrollController profileScrollController = ScrollController();
   List<FriendshipModel> friendRequestFromOtherUsers = [];

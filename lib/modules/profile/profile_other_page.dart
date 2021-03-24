@@ -231,7 +231,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                   style: ptBigTitle(),
                                 ),
                                 SizedBox(width: 8),
-                                if (widget.user.role == 'AGENT')
+                                if ([UserRole.agent, UserRole.company].contains(UserBloc.getRole(widget.user)))
                                   CustomTooltip(
                                     margin: EdgeInsets.only(top: 0),
                                     message: 'Tài khoản xác thực',

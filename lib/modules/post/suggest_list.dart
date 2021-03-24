@@ -1,3 +1,4 @@
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/share/import.dart';
 
@@ -67,9 +68,16 @@ class SuggestList extends StatelessWidget {
                                     textAlign: TextAlign.center,
                                   ),
                                   Text(
-                                    users[index].role?.toUpperCase() == 'AGENT'
-                                        ? 'Nhà môi giới'
-                                        : 'Người dùng',
+                                    (() {
+                                      final role =
+                                          UserBloc.getRole(users[index]);
+                                      if (role == UserRole.company)
+                                        return 'Công ty';
+                                      if (role == UserRole.agent)
+                                        return 'Nhà môi giới';
+
+                                      return 'Người dùng';
+                                    })(),
                                     style:
                                         ptSmall().copyWith(color: Colors.black),
                                   ),

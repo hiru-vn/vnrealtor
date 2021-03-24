@@ -45,7 +45,7 @@ class PeopleWidget extends StatelessWidget {
                         SizedBox(
                           width: 6,
                         ),
-                        if (user?.role == 'AGENT') ...[
+                        if ([UserRole.agent, UserRole.company].contains(UserBloc.getRole(user))) ...[
                           CustomTooltip(
                             margin: EdgeInsets.only(top: 0),
                             message: 'Tài khoản xác thực',
@@ -78,9 +78,13 @@ class PeopleWidget extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          user.role?.toUpperCase() == 'AGENT'
-                              ? 'Nhà môi giới'
-                              : 'Người dùng',
+                          (() {
+                            final role = UserBloc.getRole(user);
+                            if (role == UserRole.company) return 'Công ty';
+                            if (role == UserRole.agent) return 'Nhà môi giới';
+
+                            return 'Người dùng';
+                          })(),
                           style: ptSmall().copyWith(color: Colors.grey),
                         ),
                         if (_authBloc.userModel.followingIds
