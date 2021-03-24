@@ -61,76 +61,105 @@ class _NotificationPageState extends State<NotificationPage>
       ),
       body: Column(
         children: [
-          Align(
-            alignment: Alignment.center,
-            child: TabBar(
-              indicatorSize: TabBarIndicatorSize.label,
-              indicatorWeight: 3,
-              indicatorColor: ptPrimaryColor(context),
-              indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
-              controller: _tabController,
-              isScrollable: true,
-              labelColor: Colors.black87,
-              unselectedLabelStyle:
-                  TextStyle(fontSize: 14, color: Colors.black54),
-              labelStyle: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold),
-              tabs: [
-                SizedBox(
-                  height: 40,
-                  width: deviceWidth(context) / 2 - 45,
-                  child: Tab(
-                    text: 'Thông báo mới',
-                  ),
-                ),
-                SizedBox(
-                    height: 40,
-                    width: deviceWidth(context) / 2 - 45,
-                    child: Tab(text: 'Người theo dõi')
-                    //'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
-                    ),
-              ],
+          Expanded(
+            child: NotificationTab(
+              search: _searchC.text,
             ),
           ),
-          Expanded(
-            child: TabBarView(controller: _tabController, children: [
-              NotificationTab(
-                list: _notificationBloc.notifications
-                    .where((element) =>
-                        element.body.contains(_searchC.text) ||
-                        element.title.contains(_searchC.text))
-                    .toList(),
-                notificationBloc: _notificationBloc,
-                search: _searchC.text,
-              ),
-              //FriendRequestTab()
-              FollowTab(
-                list: _userBloc.followersIn7Days
-                    .where((element) => element.name.contains(_searchC.text))
-                    .toList(),
-                search: _searchC.text,
-              )
-            ]),
-          )
+          // Align(
+          //   alignment: Alignment.center,
+          //   child: TabBar(
+          //     indicatorSize: TabBarIndicatorSize.label,
+          //     indicatorWeight: 3,
+          //     indicatorColor: ptPrimaryColor(context),
+          //     indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
+          //     controller: _tabController,
+          //     isScrollable: true,
+          //     labelColor: Colors.black87,
+          //     unselectedLabelStyle:
+          //         TextStyle(fontSize: 14, color: Colors.black54),
+          //     labelStyle: TextStyle(
+          //         fontSize: 14,
+          //         color: Colors.black87,
+          //         fontWeight: FontWeight.bold),
+          //     tabs: [
+          //       SizedBox(
+          //         height: 40,
+          //         width: deviceWidth(context) / 2 - 45,
+          //         child: Tab(
+          //           text: 'Thông báo mới',
+          //         ),
+          //       ),
+          //       SizedBox(
+          //           height: 40,
+          //           width: deviceWidth(context) / 2 - 45,
+          //           child: Tab(text: 'Người theo dõi')
+          //           //'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
+          //           ),
+          //     ],
+          //   ),
+          // ),
+          // Expanded(
+          //   child: TabBarView(controller: _tabController, children: [
+          //     NotificationTab(
+          //       list: _notificationBloc.notifications
+          //           .where((element) =>
+          //               element.body.contains(_searchC.text) ||
+          //               element.title.contains(_searchC.text))
+          //           .toList(),
+          //       notificationBloc: _notificationBloc,
+          //       search: _searchC.text,
+          //     ),
+          //     //FriendRequestTab()
+          //     // FollowTab(
+          //     //   list: _userBloc.followersIn7Days
+          //     //       .where((element) => element.name.contains(_searchC.text))
+          //     //       .toList(),
+          //     //   search: _searchC.text,
+          //     // )
+          //   ]),
+          // )
         ],
       ),
     );
   }
 }
 
-class NotificationTab extends StatelessWidget {
-  final List<NotificationModel> list;
-  final NotificationBloc notificationBloc;
+class NotificationTab extends StatefulWidget {
   final String search;
 
-  const NotificationTab(
-      {Key key, this.list, this.notificationBloc, this.search})
-      : super(key: key);
+  const NotificationTab({Key key, this.search}) : super(key: key);
+
+  @override
+  _NotificationTabState createState() => _NotificationTabState();
+}
+
+class _NotificationTabState extends State<NotificationTab> {
+  UserBloc _userBloc;
+  NotificationBloc _notificationBloc;
+  List<dynamic> list = [];
+
+  @override
+  void didChangeDependencies() {
+    if (_userBloc == null) {
+      _userBloc = Provider.of<UserBloc>(context);
+      _notificationBloc = Provider.of(context);
+    }
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (notificationBloc.isLoadNoti)
+    list = [
+      ..._notificationBloc.notifications
+          .where((element) =>
+              element.body.contains(widget.search) ||
+              element.title.contains(widget.search))
+          .toList(),
+      ..._userBloc.followersIn7Days
+    ];
+    list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    if (_notificationBloc.isLoadNoti)
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: ListSkeleton(),
@@ -139,60 +168,90 @@ class NotificationTab extends StatelessWidget {
         ? RefreshIndicator(
             color: ptPrimaryColor(context),
             onRefresh: () async {
-              await NotificationBloc.instance.getListNotification(
-                  filter: GraphqlFilter(order: '{createdAt: -1}'));
+              await Future.wait([
+                _notificationBloc.getListNotification(
+                  filter: GraphqlFilter(order: '{createdAt: -1}'),
+                ),
+                _userBloc.getFollowerIn7d()
+              ]);
               return;
             },
             child: ListView.separated(
-              controller: notificationBloc.notiScrollController,
+              controller: _notificationBloc.notiScrollController,
               separatorBuilder: (context, index) => Divider(
                 height: 1,
               ),
               itemCount: list.length,
-              itemBuilder: (context, index) => ListTile(
-                onTap: () {
-                  if (!list[index].seen) {
-                    notificationBloc.seenNoti(list[index].id);
-                    list[index].seen = true;
-                  }
-                  if (['LIKE', 'COMMENT', 'SHARE', 'NEW_POST']
-                      .contains(list[index].type.toUpperCase())) {
-                    PostDetail.navigate(null,
-                        postId: list[index].data['modelId']);
-                  }
-                },
-                tileColor: list[index].seen
-                    ? Colors.white
-                    : ptBackgroundColor(context),
-                leading: CircleAvatar(
-                  radius: 22,
-                  backgroundColor: Colors.white,
-                  backgroundImage:
-                      (list[index].image == null || list[index].image == '')
-                          ? AssetImage('assets/image/default_avatar.png')
-                          : CachedNetworkImageProvider(list[index].image),
-                ),
-                title: Text(
-                  list[index].body,
-                  style: ptBody(),
-                ),
-                subtitle: Text(
-                  Formart.timeByDayVi(
-                          DateTime.tryParse(list[index].createdAt)) ??
-                      '',
-                  style: ptTiny(),
-                ),
-              ),
+              itemBuilder: (context, index) =>
+                  list[index].runtimeType == UserModel
+                      ? ListTile(
+                          tileColor: ptBackgroundColor(context),
+                          onTap: () {
+                            ProfileOtherPage.navigate(list[index]);
+                          },
+                          leading: CircleAvatar(
+                            radius: 22,
+                            backgroundImage: (list[index].avatar == null ||
+                                    list[index].avatar == '')
+                                ? AssetImage('assets/image/icon_white.png')
+                                : NetworkImage(list[index].avatar),
+                          ),
+                          title: Text(
+                            list[index].name + ' đã theo dõi bạn',
+                            style: ptBody(),
+                          ),
+                          subtitle: Text(
+                            Formart.timeByDayVi(
+                                    DateTime.tryParse(list[index].updatedAt)) ??
+                                '',
+                            style: ptTiny(),
+                          ),
+                        )
+                      : ListTile(
+                          onTap: () {
+                            if (!list[index].seen) {
+                              _notificationBloc.seenNoti(list[index].id);
+                              list[index].seen = true;
+                            }
+                            if (['LIKE', 'COMMENT', 'SHARE', 'NEW_POST']
+                                .contains(list[index].type.toUpperCase())) {
+                              PostDetail.navigate(null,
+                                  postId: list[index].data['modelId']);
+                            }
+                          },
+                          tileColor: list[index].seen
+                              ? Colors.white
+                              : ptBackgroundColor(context),
+                          leading: CircleAvatar(
+                            radius: 22,
+                            backgroundColor: Colors.white,
+                            backgroundImage: (list[index].image == null ||
+                                    list[index].image == '')
+                                ? AssetImage('assets/image/default_avatar.png')
+                                : CachedNetworkImageProvider(list[index].image),
+                          ),
+                          title: Text(
+                            list[index].body,
+                            style: ptBody(),
+                          ),
+                          subtitle: Text(
+                            Formart.timeByDayVi(
+                                    DateTime.tryParse(list[index].createdAt)) ??
+                                '',
+                            style: ptTiny(),
+                          ),
+                        ),
             ),
           )
         : EmptyWidget(
-            assetImg: search?.trim() != ''
+            assetImg: widget.search?.trim() != ''
                 ? null
                 : 'assets/image/no_notification.png',
-            title: search?.trim() == '' ? 'Bạn chưa có thông báo mới' : '',
-            content: search?.trim() == ''
+            title:
+                widget.search?.trim() == '' ? 'Bạn chưa có thông báo mới' : '',
+            content: widget.search?.trim() == ''
                 ? ''
-                : 'Không tìm thấy kết quả cho: $search',
+                : 'Không tìm thấy kết quả cho: ${widget.search}',
           );
   }
 }
