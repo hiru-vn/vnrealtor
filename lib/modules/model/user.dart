@@ -24,6 +24,7 @@ class UserModel {
   SettingModel setting;
   bool isVerify;
   int messNotiCount;
+  bool isMod;
 
   UserModel(
       {this.id,
@@ -47,7 +48,8 @@ class UserModel {
       this.facebookUrl,
       this.setting,
       this.messNotiCount,
-      this.isVerify});
+      this.isVerify,
+      this.isMod});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -74,6 +76,7 @@ class UserModel {
     notiCount = json['notiCount'];
     description = json['description'];
     facebookUrl = json['facebookUrl'];
+    isMod = json['isMod'] ?? false;
     isVerify = json['isVerify'] ?? false;
     if (json['settings'] != null)
       setting = SettingModel.fromJson(json['settings']);

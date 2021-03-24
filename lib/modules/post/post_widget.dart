@@ -109,7 +109,8 @@ class _PostWidgetState extends State<PostWidget> {
                           SizedBox(
                             width: 8,
                           ),
-                          if ([UserRole.agent, UserRole.company].contains(UserBloc.getRole(widget.post?.user)))
+                          if ([UserRole.agent, UserRole.company]
+                              .contains(UserBloc.getRole(widget.post?.user)))
                             CustomTooltip(
                               margin: EdgeInsets.only(top: 0),
                               message: 'Tài khoản xác thực',
@@ -492,12 +493,20 @@ class _PostWidgetState extends State<PostWidget> {
                   Icons.post_add,
                   color: Colors.white,
                 )),
-            MenuItem(
-                title: 'Báo cáo',
-                image: Icon(
-                  Icons.report,
-                  color: Colors.white,
-                )),
+            ([UserRole.admin, UserRole.admin_post, UserRole.manager]
+                    .contains(UserBloc.getRole(AuthBloc.instance.userModel)))
+                ? MenuItem(
+                    title: 'Ẩn bài',
+                    image: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ))
+                : MenuItem(
+                    title: 'Báo cáo',
+                    image: Icon(
+                      Icons.report,
+                      color: Colors.white,
+                    )),
           ] else ...[
             MenuItem(
                 title: 'Xóa bài',
@@ -539,6 +548,17 @@ class _PostWidgetState extends State<PostWidget> {
             if (!confirm) return;
             final res = await _postBloc.deletePost(widget.post.id);
             if (res.isSuccess) {
+            } else {
+              showToast(res.errMessage, context);
+            }
+          }
+          if (val.menuTitle == 'Ẩn bài') {
+            final res = await _postBloc.hidePost(widget.post.id);
+            if (res.isSuccess) {
+              showToast(
+                  'Đã ẩn, bài viết này sẽ không hiện trên feed của tất cả user khác',
+                  context,
+                  isSuccess: true);
             } else {
               showToast(res.errMessage, context);
             }

@@ -615,6 +615,20 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> hidePost(String postId) async {
+    try {
+      final res = await PostRepo()
+          .hidePost(postId);
+      if (res == null)
+        return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Stream<FetchResult> subscriptionCommentByPostId(String id) {
     try {
       final res = PostRepo().subscriptionCommentByPostId(id);

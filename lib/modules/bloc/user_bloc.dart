@@ -13,6 +13,7 @@ enum UserRole {
   admin_user,
   mod,
   company,
+  manager,
 }
 
 class UserBloc extends ChangeNotifier {
@@ -23,6 +24,7 @@ class UserBloc extends ChangeNotifier {
 
   static UserRole getRole(UserModel user) {
     if (user == null) return null;
+    if (user.isMod) return UserRole.mod;
     switch (user.role) {
       case 'USER':
         return UserRole.user;
@@ -45,6 +47,10 @@ class UserBloc extends ChangeNotifier {
       case 'MOD':
         return UserRole.mod;
         break;
+      case 'MANAGER':
+        return UserRole.manager;
+        break;
+
       default:
         return UserRole.user;
     }
@@ -309,6 +315,17 @@ class UserBloc extends ChangeNotifier {
       final res = await UserRepo().changePassword(oldPassword, newPassword);
       final val = UserModel.fromJson(res);
       return BaseResponse.success(val);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> blockUser(String id) async {
+    try {
+      final res = await UserRepo().blockUser(id);
+      return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {

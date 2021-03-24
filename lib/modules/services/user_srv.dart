@@ -11,6 +11,7 @@ email: String
 role: String
 reputationScore: Int
 avatar
+isMod
 friendIds: [ID]
 createdAt: DateTime
 updatedAt: DateTime

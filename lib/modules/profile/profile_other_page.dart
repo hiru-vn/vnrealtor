@@ -7,6 +7,7 @@ import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/profile/follow_page.dart';
 import 'package:datcao/modules/profile/profile_page.dart';
+import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
@@ -66,6 +67,58 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
       appBar: AppBar1(
         title: widget.user.name,
         automaticallyImplyLeading: true,
+        actions: [
+          if ([
+            UserRole.admin,
+            UserRole.admin_user,
+            UserRole.manager,
+            UserRole.mod
+          ].contains(UserBloc.getRole(AuthBloc.instance.userModel)))
+            PopupMenuButton(
+              itemBuilder: (_) => <PopupMenuItem<String>>[
+                PopupMenuItem<String>(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.lock,
+                          color: Colors.black,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Khoá người dùng',
+                          style: ptBody().copyWith(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                    value: 'lock'),
+              ],
+              onSelected: (val) async {
+                if (val == 'lock') {
+                  final res = await UserBloc.instance.blockUser(widget.user.id);
+                  if (res.isSuccess)
+                    showToast('Đã khoá tài khoản người dùng này', context,
+                        isSuccess: true);
+                  else
+                    showToast(res.errMessage, context);
+                }
+              },
+              child: SizedBox(
+                width: 25,
+                height: 25,
+                child: Icon(
+                  Icons.more_horiz_rounded,
+                  color: Colors.black.withOpacity(0.8),
+                  size: 25,
+                ),
+              ),
+            ),
+          SizedBox(
+            width: 18,
+          )
+        ],
       ),
       body: NestedScrollView(
         headerSliverBuilder: (context, value) {
@@ -231,7 +284,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                   style: ptBigTitle(),
                                 ),
                                 SizedBox(width: 8),
-                                if ([UserRole.agent, UserRole.company].contains(UserBloc.getRole(widget.user)))
+                                if ([UserRole.agent, UserRole.company]
+                                    .contains(UserBloc.getRole(widget.user)))
                                   CustomTooltip(
                                     margin: EdgeInsets.only(top: 0),
                                     message: 'Tài khoản xác thực',

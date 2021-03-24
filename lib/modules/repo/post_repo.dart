@@ -223,6 +223,19 @@ $postFragment
     return res["updatePost"];
   }
 
+  Future hidePost(
+    String id,
+  ) async {
+    String data = '''
+flag: true
+    ''';
+    final res = await PostSrv()
+        .mutate('updatePost', 'id: "$id"  data: {$data}', fragment: '''
+id
+    ''');
+    return res["updatePost"];
+  }
+
   Future savePost(String postId) async {
     final res =
         await PostSrv().mutate('savePost', 'postId: "$postId"', fragment: '''

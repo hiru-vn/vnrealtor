@@ -227,6 +227,16 @@ commentNoti: $comment
     return res['id'];
   }
 
+  Future blockUser(String userId) async {
+    final res = await UserSrv().mutate(
+        'blockUser',
+        '''
+userId: "$userId"
+    ''',
+        fragment: 'id');
+    return res['blockUser'];
+  }
+
   Future seenAllNoti() async {
     final id = await SPref.instance.get('id');
     final res = await UserSrv().update(
