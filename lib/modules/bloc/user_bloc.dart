@@ -214,6 +214,7 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> followUser(String userId) async {
     try {
+      notifyListeners();
       final res = await UserRepo().followUser(userId);
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);

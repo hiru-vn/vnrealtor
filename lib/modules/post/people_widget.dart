@@ -110,7 +110,9 @@ class PeopleWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              if (!_authBloc.userModel.followingIds.contains(user.id))
+              if (AuthBloc.instance.userModel != null &&
+                  !_authBloc.userModel.followingIds.contains(user.id) &&
+                  user.id != AuthBloc.instance.userModel.id)
                 GestureDetector(
                   onTap: () {
                     _authBloc.userModel.followingIds.add(user.id);
