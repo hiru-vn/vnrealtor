@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 Center kLoadingSpinner = Center(
-  child: SpinKitCircle(
-    color: Colors.greenAccent,
-    size: 50.0,
+  child: SizedBox(
+    width: 20,
+    height: 20,
+    child: CircularProgressIndicator(
+      strokeWidth: 2,
+      backgroundColor: Colors.blue,
+    ),
   ),
 );
 Function kLoadingBuilder =

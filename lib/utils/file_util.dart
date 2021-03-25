@@ -27,16 +27,16 @@ class FileUtil {
 
   static FileType getFilePathType(String path) {
     if (path == null) return null;
-    path = Path.basename(path);
 
-    if (path.contains('.png') ||
-        path.contains('.jpg') ||
-        path.contains('.img') ||
-        path.contains('.jpeg') ||
-        path.contains('.webp')) return FileType.image;
-    if (path.contains('.mp4') || path.contains('.wmv')) return FileType.video;
-    if (path.contains('.doc')) return FileType.document;
-    if (path.contains('.gif')) return FileType.gif;
+    if (Path.extension(path).toLowerCase() == '.png' ||
+        Path.extension(path).toLowerCase() == '.jpg' ||
+        Path.extension(path).toLowerCase() == '.img' ||
+        Path.extension(path).toLowerCase() == '.jpeg' ||
+        Path.extension(path).toLowerCase() == '.webp') return FileType.image;
+    if (Path.extension(path).toLowerCase() == '.mp4' ||
+        Path.extension(path).toLowerCase() == '.wmv') return FileType.video;
+    if (Path.extension(path).toLowerCase() == '.doc') return FileType.document;
+    if (Path.extension(path).toLowerCase() == '.gif') return FileType.gif;
     return null;
   }
 
@@ -48,7 +48,7 @@ class FileUtil {
 
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
-    var filePath = tempPath + '/thumbnail.jpeg';
+    var filePath = tempPath + '/thumbnail.jpg';
     return File(filePath)..writeAsBytesSync(img.encodePng(thumbnail));
   }
 
@@ -78,7 +78,7 @@ class FileUtil {
       }
 
       Reference storageReference = FirebaseStorage.instance.ref().child(
-          '${path ?? 'root'}/${DateTime.now().toString().replaceAll(' ', '')}${Path.basename(file.path).replaceAll(new RegExp(r'(\?alt).*'), '').replaceAll(' ', '')}');
+          '${path ?? 'root'}/${DateTime.now().toString().replaceAll(' ', '')}${changeImageToJpg(Path.basename(file.path)).replaceAll(new RegExp(r'(\?alt).*'), '').replaceAll(' ', '')}');
       UploadTask uploadTask = storageReference.putFile(file);
       print('uploading...');
       await uploadTask.whenComplete(() {});
@@ -88,6 +88,12 @@ class FileUtil {
     } catch (e) {
       throw Exception("Upload file thất bại. Xin vui lòng thử lại");
     }
+  }
+
+  static String changeImageToJpg(String name) {
+    if (getFilePathType(name) == FileType.image)
+      return name.replaceAll(Path.extension(name), '.jpg');
+    return name;
   }
 
   static Future<bool> deleteFileFireStorage(String path) async {

@@ -138,9 +138,9 @@ class ChatInputToolbar extends StatelessWidget {
               ),
               if (showTraillingBeforeSend) ...trailling,
               if (sendButtonBuilder != null)
-                sendButtonBuilder(() async {
+                sendButtonBuilder(() {
                   // if (text.length != 0) {
-                  await onSend(message);
+                  onSend(message);
 
                   controller.text = "";
 
@@ -169,9 +169,9 @@ class ChatInputToolbar extends StatelessWidget {
     );
   }
 
-  void _sendMessage(BuildContext context, ChatMessage message) async {
+  void _sendMessage(BuildContext context, ChatMessage message) {
     // if (text.length != 0) {
-    await onSend(message);
+    onSend(message);
 
     controller.text = "";
 
@@ -179,11 +179,11 @@ class ChatInputToolbar extends StatelessWidget {
 
     FocusScope.of(context).requestFocus(focusNode);
 
-    Timer(Duration(milliseconds: 150), () {
+    Future.delayed(Duration(milliseconds: 100), () {
       scrollController.animateTo(
-        reverse ? 0.0 : scrollController.position.maxScrollExtent + 30.0,
+        reverse ? 0.0 : scrollController.position.maxScrollExtent + 100.0,
         curve: Curves.easeOut,
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 200),
       );
     });
     // }

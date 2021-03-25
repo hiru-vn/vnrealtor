@@ -298,8 +298,6 @@ class _InboxChatState extends State<InboxChat> {
     _files.clear();
     messages.add(message);
     // });
-    Future.delayed(Duration(seconds: 100), () => scrollToEnd());
-
     String text = message.text;
 
     _updateGroupPageText(
@@ -360,19 +358,18 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   void scrollToEnd() {
-    _chatViewKey.currentState.scrollController
-      ..animateTo(
-        _chatViewKey.currentState.scrollController.position.maxScrollExtent,
-        curve: Curves.easeOut,
-        duration: const Duration(milliseconds: 300),
-      );
+    _chatViewKey.currentState?.scrollController?.animateTo(
+      _chatViewKey.currentState.scrollController.position.maxScrollExtent,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 250),
+    );
   }
 
   void jumpToEnd() {
-    _chatViewKey.currentState.scrollController
-      ..jumpTo(
-        _chatViewKey.currentState.scrollController.position.maxScrollExtent,
-      );
+    _chatViewKey.currentState?.scrollController?.jumpTo(
+      _chatViewKey.currentState.scrollController.position.maxScrollExtent +
+          30.0,
+    );
   }
 
   Future _onFilePick(String path) async {

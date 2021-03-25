@@ -90,7 +90,8 @@ void imagePicker(BuildContext context,
                             // close showModalBottomSheet
                             Navigator.of(context).pop();
                             try {
-                              final assets = await MultiImagePicker.pickImages(
+                              final List<Asset> assets =
+                                  await MultiImagePicker.pickImages(
                                 maxImages: 9,
                                 enableCamera: false,
                                 cupertinoOptions:
@@ -105,10 +106,15 @@ void imagePicker(BuildContext context,
                                   selectCircleStrokeColor: "#000000",
                                 ),
                               );
+                              print(
+                                  '1111111111111111111111111111111111111111111111');
                               final List<String> images = await Future.wait(
                                   assets.map(
                                       (e) => getImageFilePathFromAssets(e)));
+                              print(
+                                  '222222222222222222222222222222222222222222222');
                               onMultiImagePick(images);
+                              return;
                             } on Exception catch (e) {
                               showToast(e.toString(), context);
                             }

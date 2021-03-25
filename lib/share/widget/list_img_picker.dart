@@ -6,6 +6,8 @@
 // **** CURRENT SELECTED IMAGE URL ****
 // WHEN IMAGE URL IS UPLOAD OR REMOVE - IMPLEMENT FROM FATHER WIDGET
 
+import 'dart:io';
+
 import 'package:datcao/share/import.dart';
 import 'package:datcao/utils/file_util.dart';
 
@@ -75,7 +77,7 @@ class _ImageRowPickerState extends State<ImageRowPicker>
                   child: InkWell(
                     onTap: () {
                       showConfirmDialog(context, 'Xác nhận xóa hình ảnh này?',
-                          navigatorKey: navigatorKey, confirmTap: () async {
+                          navigatorKey: navigatorKey, confirmTap: () {
                         widget.listImg.removeAt(index);
                         setState(() {});
                         //await navigatorKey.currentState.maybePop();
@@ -153,32 +155,31 @@ class ImageButtonPicker extends StatefulWidget {
   _ImageButtonPickerState createState() => _ImageButtonPickerState();
 }
 
-class _ImageButtonPickerState extends State<ImageButtonPicker>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  get wantKeepAlive => true;
-
+class _ImageButtonPickerState extends State<ImageButtonPicker> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    print('reloadddddddddddddddddddddddddddd');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
-          onTap: () => imagePicker(context, onCameraPick: (str) {
-            if (widget.onAddImg != null) widget.onAddImg(str);
-          },
+          onTap: () async {
+            imagePicker(
+              context,
+              onCameraPick: (str) {
+                if (widget.onAddImg != null) widget.onAddImg(str);
+              },
               // , onImagePick: (str) {
               //   if (widget.onAddImg != null) widget.onAddImg(str);
               // },
               onVideoPick: (str) {
-            if (widget.onAddImg != null) widget.onAddImg(str);
+                if (widget.onAddImg != null) widget.onAddImg(str);
+              },
+              onMultiImagePick: (str) {
+                if (widget.onAddMultiImg != null) widget.onAddMultiImg(str);
+              },
+            );
           },
-              onMultiImagePick: (widget.onAddMultiImg != null)
-                  ? (list) {
-                      widget.onAddMultiImg(list);
-                    }
-                  : null),
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -227,8 +228,16 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
                             width: 95,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: widget.listImg[index].startsWith('assets/')
-                                  ? Center(child: Image.asset(loadingGif))
+                              child: !widget.listImg[index].startsWith('http')
+                                  ? FileUtil.getFilePathType(
+                                              widget.listImg[index]) ==
+                                          FileType.video
+                                      ? kLoadingSpinner
+                                      : kLoadingSpinner
+                                  // Image.file(
+                                  //     File(widget.listImg[index]),
+                                  //     fit: BoxFit.cover,
+                                  //   )
                                   : (FileUtil.getFbUrlFileType(
                                               widget.listImg[index]) ==
                                           FileType.video
@@ -252,8 +261,7 @@ class _ImageButtonPickerState extends State<ImageButtonPicker>
                             onTap: () {
                               showConfirmDialog(
                                   context, 'Xác nhận xóa hình ảnh này?',
-                                  navigatorKey: navigatorKey,
-                                  confirmTap: () async {
+                                  navigatorKey: navigatorKey, confirmTap: () {
                                 // widget.listImg.removeAt(index);
                                 //await navigatorKey.currentState.maybePop();
                                 if (widget.onRemoveImg != null)

@@ -91,11 +91,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
         showToast('Chỉ được đăng tối đa 9 ảnh/video', context);
         return;
       }
-      _allVideoAndImage.add(loadingGif);
-      setState(() {});
-      final res = await FileUtil.uploadFireStorage(File(filePath),
-          path:
-              'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
+
+      setState(() {
+        _allVideoAndImage.add(filePath);
+      });
+      final res = await FileUtil.uploadFireStorage(
+        File(filePath),
+        path:
+            'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}',
+      );
       if (FileUtil.getFbUrlFileType(res) == FileType.image ||
           FileUtil.getFbUrlFileType(res) == FileType.gif) {
         _images.add(res);
@@ -105,27 +109,32 @@ class _CreatePostPageState extends State<CreatePostPage> {
         _videos.add(res);
         _allVideoAndImage.add(res);
       }
-      _allVideoAndImage.remove(loadingGif);
+      _allVideoAndImage.remove(filePath);
     } catch (e) {
-      _allVideoAndImage.remove(loadingGif);
+      _allVideoAndImage.remove(filePath);
       showToast(e.toString(), context);
     } finally {
       setState(() {});
     }
   }
 
-  Future _uploadMultiImage(List<String> filePaths) async {
+  void _uploadMultiImage(List<String> filePaths) async {
     try {
+      print('3333333333333333333333333333333333333333333');
       if (_allVideoAndImage.length >= 9) {
         showToast('Chỉ được đăng tối đa 9 ảnh/video', context);
         return;
       }
-      _allVideoAndImage.addAll(filePaths.map((e) => loadingGif));
-      setState(() {});
+
+      setState(() {
+        print('setstateeeeeeeee');
+        _allVideoAndImage.addAll(filePaths);
+      });
       final res = await Future.wait(filePaths.map((e) => FileUtil.uploadFireStorage(
           File(e),
           path:
               'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
+      print('444444444444444444444444444444444444444444');
       res.forEach((element) {
         if (FileUtil.getFbUrlFileType(element) == FileType.image ||
             FileUtil.getFbUrlFileType(element) == FileType.gif) {
@@ -138,7 +147,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         }
       });
 
-      _allVideoAndImage.removeWhere((e) => e == loadingGif);
+      _allVideoAndImage.removeWhere((e) => filePaths.contains(e));
       setState(() {});
     } catch (e) {
       showToast(e.toString(), context);
@@ -147,12 +156,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('reload1111111111111111111111111111111111111111');
     return Container(
       width: deviceWidth(context),
       height: deviceHeight(context),
       child: Scaffold(
         appBar: CreatePostPageAppBar(widget.pageController, _createPost,
-            _allVideoAndImage.contains(loadingGif)),
+            !_allVideoAndImage.contains(loadingGif)),
         body: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -451,7 +461,7 @@ class CreatePostPageAppBar extends StatelessWidget
             Spacer(),
             FlatButton(
                 color: ptPrimaryColor(context),
-                onPressed: enableBtn ? null : createPost,
+                onPressed: enableBtn ? createPost : null,
                 child: Text(
                   'Đăng',
                   style: ptTitle().copyWith(color: Colors.white),
