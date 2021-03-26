@@ -102,7 +102,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
     try {
       _allVideoAndImage.add(loadingGif);
       setState(() {});
-      final res = await FileUtil.uploadFireStorage(File(filePath),
+      final res = await FileUtil.uploadFireStorage(filePath,
           path:
               'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
       if (FileUtil.getFbUrlFileType(res) == FileType.image ||
@@ -130,7 +130,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
       _allVideoAndImage.addAll(filePaths.map((e) => loadingGif));
       setState(() {});
       final res = await Future.wait(filePaths.map((e) => FileUtil.uploadFireStorage(
-          File(e),
+          e,
           path:
               'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
       res.forEach((element) {

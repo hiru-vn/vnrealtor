@@ -52,7 +52,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       });
       final uint8 = (await File(filePath).readAsBytes());
       final thumbnail = await FileUtil.resizeImage(uint8, 120);
-      final url = await FileUtil.uploadFireStorage(thumbnail);
+      final url = await FileUtil.uploadFireStorage(thumbnail?.path);
       setState(() {
         _authBloc.userModel.avatar = url;
         uploadingAvatar = false;

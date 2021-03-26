@@ -215,7 +215,8 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                           .then((value) async {
                         try {
                           if (value == null) return;
-                          final url = await FileUtil.uploadFireStorage(value);
+                          final url =
+                              await FileUtil.uploadFireStorage(value.path);
                           if (isFront)
                             _verificationBloc.imageFront = url;
                           else

@@ -233,11 +233,10 @@ class _ImageButtonPickerState extends State<ImageButtonPicker> {
                                               widget.listImg[index]) ==
                                           FileType.video
                                       ? kLoadingSpinner
-                                      : kLoadingSpinner
-                                  // Image.file(
-                                  //     File(widget.listImg[index]),
-                                  //     fit: BoxFit.cover,
-                                  //   )
+                                      : Image.file(
+                                          File(widget.listImg[index]),
+                                          fit: BoxFit.cover,
+                                        )
                                   : (FileUtil.getFbUrlFileType(
                                               widget.listImg[index]) ==
                                           FileType.video

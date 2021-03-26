@@ -140,7 +140,7 @@ class _MyAppState extends State<MyApp> {
                             title: 'Không có kết nối mạng',
                             content:
                                 'Ứng dụng đang chờ thiết bị kết nối mạng để hoạt động trở lại',
-                          )),
+                          ),),
                         ),
                       )
                     : MaterialApp(

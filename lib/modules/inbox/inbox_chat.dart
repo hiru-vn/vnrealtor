@@ -319,7 +319,7 @@ class _InboxChatState extends State<InboxChat> {
     } else {
       Future.wait(
         _tempFiles.map((e) => FileUtil.uploadFireStorage(
-              File(e),
+              e,
               path:
                   'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}',
               resizeWidth: 480,

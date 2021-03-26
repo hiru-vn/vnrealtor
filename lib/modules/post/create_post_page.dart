@@ -96,7 +96,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         _allVideoAndImage.add(filePath);
       });
       final res = await FileUtil.uploadFireStorage(
-        File(filePath),
+        filePath,
         path:
             'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}',
       );
@@ -131,7 +131,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         _allVideoAndImage.addAll(filePaths);
       });
       final res = await Future.wait(filePaths.map((e) => FileUtil.uploadFireStorage(
-          File(e),
+          e,
           path:
               'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
       print('444444444444444444444444444444444444444444');

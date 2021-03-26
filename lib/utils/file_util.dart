@@ -52,18 +52,20 @@ class FileUtil {
     return File(filePath)..writeAsBytesSync(img.encodePng(thumbnail));
   }
 
-  static Future<File> resizeImageOverride(File file, int resizeWidth) async {
-    img.Image image = img.decodeImage(file.readAsBytesSync());
+  static Future<File> resizeImageOverride(
+      String filePath, int resizeWidth) async {
+    img.Image image = img.decodeImage(File(filePath).readAsBytesSync());
 
     // Resize the image to a 240? thumbnail (maintaining the aspect ratio).
     img.Image thumbnail = img.copyResize(image, width: resizeWidth);
 
-    return file..writeAsBytesSync(img.encodePng(thumbnail));
+    return File(filePath)..writeAsBytesSync(img.encodePng(thumbnail));
   }
 
-  static Future<String> uploadFireStorage(File file,
+  static Future<String> uploadFireStorage(String filePath,
       {String path, bool isResize = true, int resizeWidth = 1080}) async {
-    if (file == null) return '';
+    if (filePath == null) return '';
+    File file = File(filePath);
     if ((await file.length()) > 20 * 1024 * 1024) {
       showToastNoContext(
           'File có kích thước quá lớn, vui lòng upload file có dung lương < 20MB',
@@ -71,11 +73,12 @@ class FileUtil {
           textColor: Colors.white);
       return '';
     }
+
     try {
-      if (isResize &&
-          getFbUrlFileType(Path.basename(file.path)) == FileType.image) {
-        file = await resizeImageOverride(file, resizeWidth);
-      }
+      // if (isResize &&
+      //     getFbUrlFileType(Path.basename(filePath)) == FileType.image) {
+      //   file = await resizeImageOverride(filePath, resizeWidth);
+      // }
 
       Reference storageReference = FirebaseStorage.instance.ref().child(
           '${path ?? 'root'}/${DateTime.now().toString().replaceAll(' ', '')}${changeImageToJpg(Path.basename(file.path)).replaceAll(new RegExp(r'(\?alt).*'), '').replaceAll(' ', '')}');
