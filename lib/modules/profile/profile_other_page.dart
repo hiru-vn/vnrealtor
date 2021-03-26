@@ -97,7 +97,8 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
               ],
               onSelected: (val) async {
                 if (val == 'lock') {
-                  final res = await UserBloc.instance.blockUserByAdmin(widget.user.id);
+                  final res =
+                      await UserBloc.instance.blockUserByAdmin(widget.user.id);
                   if (res.isSuccess)
                     showToast('Đã khoá tài khoản người dùng này', context,
                         isSuccess: true);
@@ -315,10 +316,11 @@ class _ProfileCardState extends State<ProfileCard> {
                                     children: [
                                       Text(
                                         widget.user.totalPost.toString(),
-                                        style: ptTitle(),
+                                        style: ptBigTitle(),
                                       ),
+                                      SizedBox(height: 3),
                                       Text(
-                                        'Số lượt\nthích',
+                                        'Thích',
                                         style: ptSmall(),
                                         textAlign: TextAlign.center,
                                       ),
@@ -342,10 +344,11 @@ class _ProfileCardState extends State<ProfileCard> {
                                         Text(
                                           widget.user.followerIds.length
                                               .toString(),
-                                          style: ptTitle(),
+                                          style: ptBigTitle(),
                                         ),
+                                        SizedBox(height: 3),
                                         Text(
-                                          'Người theo\ndõi',
+                                          'Follower',
                                           style: ptSmall(),
                                           textAlign: TextAlign.center,
                                         )
@@ -370,10 +373,11 @@ class _ProfileCardState extends State<ProfileCard> {
                                         Text(
                                           widget.user.followingIds.length
                                               .toString(),
-                                          style: ptTitle(),
+                                          style: ptBigTitle(),
                                         ),
+                                        SizedBox(height: 3),
                                         Text(
-                                          'Đang theo\ndõi',
+                                          'Đang Follow',
                                           style: ptSmall(),
                                           textAlign: TextAlign.center,
                                         )
@@ -411,7 +415,10 @@ class _ProfileCardState extends State<ProfileCard> {
                                 style: ptBody().copyWith(color: Colors.black54),
                               ),
                               SizedBox(width: 5),
-                              Image.asset('assets/image/coin.png'),
+                              SizedBox(
+                                  height: 13,
+                                  width: 13,
+                                  child: Image.asset('assets/image/ip.png')),
                             ],
                           ),
                           // if (_authBloc.userModel.followingIds
@@ -506,8 +513,14 @@ class _ProfileCardState extends State<ProfileCard> {
                                   child: Text(
                                     _authBloc.userModel.followingIds
                                             .contains(widget.user.id)
-                                        ? 'Bỏ theo dõi'
-                                        : 'Theo dõi',
+                                        ? (_authBloc.userModel.followerIds
+                                                .contains(widget.user.id)
+                                            ? 'Bạn bè'
+                                            : 'Bỏ theo dõi')
+                                        : (_authBloc.userModel.followerIds
+                                                .contains(widget.user.id)
+                                            ? 'Follow lại'
+                                            : 'Follow'),
                                     style: ptTitle(),
                                   ),
                                 ),

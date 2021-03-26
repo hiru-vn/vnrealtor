@@ -100,16 +100,16 @@ class _ProfilePageState extends State<ProfilePage>
                   ? kLoadingSpinner
                   : (_postBloc.savePosts.length != 0
                       ? ListView.separated(
-                        // controller: _userBloc.profileScrollController,
-                        padding: EdgeInsets.only(bottom: 20),
-                        itemCount: _postBloc.savePosts.length,
-                        itemBuilder: (context, index) {
-                          final post = _postBloc.savePosts[index];
-                          return PostSmallWidget(post);
-                        },
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: 0),
-                      )
+                          // controller: _userBloc.profileScrollController,
+                          padding: EdgeInsets.only(bottom: 20),
+                          itemCount: _postBloc.savePosts.length,
+                          itemBuilder: (context, index) {
+                            final post = _postBloc.savePosts[index];
+                            return PostSmallWidget(post);
+                          },
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: 0),
+                        )
                       : EmptyWidget(
                           assetImg: 'assets/image/no_post.png',
                           content: 'Kho lưu trữ trống.',
@@ -257,7 +257,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                     style: ptBigTitle(),
                                   ),
                                   SizedBox(width: 8),
-                                  if ([UserRole.agent, UserRole.company].contains(UserBloc.getRole(widget.user)))
+                                  if ([UserRole.agent, UserRole.company]
+                                      .contains(UserBloc.getRole(widget.user)))
                                     CustomTooltip(
                                       margin: EdgeInsets.only(top: 0),
                                       message: 'Tài khoản xác thực',
@@ -289,10 +290,11 @@ class _ProfileCardState extends State<ProfileCard> {
                                       Text(
                                         AuthBloc.instance.userModel.totalPost
                                             .toString(),
-                                        style: ptTitle(),
+                                        style: ptBigTitle(),
                                       ),
+                                      SizedBox(height: 3),
                                       Text(
-                                        'Số lượt\nthích',
+                                        'Thích',
                                         style: ptSmall(),
                                         textAlign: TextAlign.center,
                                       ),
@@ -314,11 +316,12 @@ class _ProfileCardState extends State<ProfileCard> {
                                           AuthBloc.instance.userModel
                                               .followerIds.length
                                               .toString(),
-                                          style: ptTitle(),
+                                          style: ptBigTitle(),
                                         ),
+                                        SizedBox(height: 3),
                                         FittedBox(
                                           child: Text(
-                                            'Người theo\ndõi',
+                                            'Follower',
                                             style: ptSmall(),
                                             textAlign: TextAlign.center,
                                           ),
@@ -342,11 +345,12 @@ class _ProfileCardState extends State<ProfileCard> {
                                           AuthBloc.instance.userModel
                                               .followingIds.length
                                               .toString(),
-                                          style: ptTitle(),
+                                          style: ptBigTitle(),
                                         ),
+                                        SizedBox(height: 3),
                                         FittedBox(
                                           child: Text(
-                                            'Đang theo\ndõi',
+                                            'Đang Follow',
                                             style: ptSmall(),
                                             textAlign: TextAlign.center,
                                           ),
@@ -366,7 +370,7 @@ class _ProfileCardState extends State<ProfileCard> {
                           _authBloc.userModel.description.trim().isEmpty)
                       ? SizedBox(height: 3)
                       : SizedBox(height: 12),
-                  
+
                   if (_authBloc.userModel.description != null &&
                       _authBloc.userModel.description.trim().isNotEmpty)
                     Text(_authBloc.userModel.description),
@@ -378,7 +382,10 @@ class _ProfileCardState extends State<ProfileCard> {
                         style: ptBody().copyWith(color: Colors.black54),
                       ),
                       SizedBox(width: 5),
-                      Image.asset('assets/image/coin.png'),
+                      SizedBox(
+                          height: 13,
+                          width: 13,
+                          child: Image.asset('assets/image/ip.png')),
                       Spacer(),
                       if (widget.user.facebookUrl != null)
                         FutureBuilder(

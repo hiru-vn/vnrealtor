@@ -45,7 +45,8 @@ class PeopleWidget extends StatelessWidget {
                         SizedBox(
                           width: 6,
                         ),
-                        if ([UserRole.agent, UserRole.company].contains(UserBloc.getRole(user))) ...[
+                        if ([UserRole.agent, UserRole.company]
+                            .contains(UserBloc.getRole(user))) ...[
                           CustomTooltip(
                             margin: EdgeInsets.only(top: 0),
                             message: 'Tài khoản xác thực',
@@ -66,7 +67,7 @@ class PeopleWidget extends StatelessWidget {
                             width: 6,
                           ),
                         ],
-                        // Image.asset('assets/image/coin.png'),
+                        // Image.asset('assets/image/ip.png'),
                         // SizedBox(width: 2),
                         // Text(
                         //   user.totalPost.toString(),

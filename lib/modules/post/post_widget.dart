@@ -155,7 +155,10 @@ class _PostWidgetState extends State<PostWidget> {
                           SizedBox(width: 2),
                           CustomTooltip(
                               message: 'Điểm uy tín',
-                              child: Image.asset('assets/image/coin.png')),
+                              child: SizedBox(
+                                  height: 13,
+                                  width: 13,
+                                  child: Image.asset('assets/image/ip.png'))),
                         ],
                       ),
                     ],

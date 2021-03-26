@@ -59,6 +59,7 @@ class AuthBloc extends ChangeNotifier {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   AuthCredential authCredential;
+  static bool firstLogin = false;
 
   final _countdownStart$ = BehaviorSubject<bool>();
   Stream<bool> get countdownStartStream => _countdownStart$.stream;
@@ -140,6 +141,7 @@ class AuthBloc extends ChangeNotifier {
 
       UserBloc.instance.init();
       PostBloc.instance.init();
+      firstLogin = true;
       return BaseResponse.success(loginRes);
     } catch (e) {
       return BaseResponse.fail(e?.toString());
@@ -167,6 +169,7 @@ class AuthBloc extends ChangeNotifier {
       UserBloc.instance.init();
       PostBloc.instance.init();
 
+      firstLogin = true;
       return BaseResponse.success(loginRes);
     } catch (e) {
       return BaseResponse.fail(e?.toString());
@@ -347,6 +350,7 @@ class AuthBloc extends ChangeNotifier {
   }
 
   void logout() async {
+    firstLogin = false;
     await SPref.instance.remove('token');
     await SPref.instance.remove('id');
     AuthBloc.instance.userModel = null;

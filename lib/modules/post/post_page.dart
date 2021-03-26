@@ -157,7 +157,7 @@ class _PostPageState extends State<PostPage> {
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                if (index == 5 &&
+                                if (index == (AuthBloc.firstLogin ? 0 : 5) &&
                                     UserBloc.instance.suggestFollowUsers !=
                                         null &&
                                     UserBloc.instance.suggestFollowUsers

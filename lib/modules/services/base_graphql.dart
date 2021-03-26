@@ -221,10 +221,15 @@ class BaseService {
   query(String name, String data,
       {String fragment, bool removeData = false}) async {
     String queryNode;
-    if (fragment == null)
-      queryNode = 'query { $name($data) }';
+    String dataT;
+    if (removeData)
+      dataT = '';
     else
-      queryNode = 'query { $name($data) { $fragment } }';
+      dataT = '($data)';
+    if (fragment == null)
+      queryNode = 'query { $name$dataT }';
+    else
+      queryNode = 'query { $name$dataT { $fragment } }';
     print('$queryNode');
 
     final MutationOptions options =

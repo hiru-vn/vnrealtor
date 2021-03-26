@@ -1,10 +1,29 @@
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/share/import.dart';
 
-class SuggestList extends StatelessWidget {
+class SuggestList extends StatefulWidget {
   final List<UserModel> users;
   const SuggestList({Key key, this.users}) : super(key: key);
+
+  @override
+  _SuggestListState createState() => _SuggestListState();
+}
+
+class _SuggestListState extends State<SuggestList> {
+  AuthBloc authBloc;
+  UserBloc userBloc;
+
+  @override
+  void didChangeDependencies() {
+    if (authBloc == null) {
+      authBloc = Provider.of(context);
+      userBloc = Provider.of(context);
+    }
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +38,26 @@ class SuggestList extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 15.0),
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: Text(
-                  'Gợi ý cho bạn',
+                  AuthBloc.firstLogin
+                      ? 'Chào mừng, ${authBloc.userModel.name}'
+                      : 'Gợi ý cho bạn',
                   style: ptBigTitle().copyWith(color: Colors.black),
                 ),
               ),
+              if (AuthBloc.firstLogin) ...[
+                SizedBox(
+                  height: 8,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: Text(
+                    'Theo dõi những người dùng khác để nhận được những nội dung phù hợp với bạn.',
+                    style: ptBody(),
+                  ),
+                ),
+              ],
               SizedBox(
                 height: 12,
               ),
@@ -52,25 +85,26 @@ class SuggestList extends StatelessWidget {
                               CircleAvatar(
                                 radius: 30,
                                 backgroundColor: Colors.white,
-                                backgroundImage: users[index].avatar != null
-                                    ? CachedNetworkImageProvider(
-                                        users[index].avatar)
-                                    : AssetImage(
-                                        'assets/image/default_avatar.png'),
+                                backgroundImage:
+                                    widget.users[index].avatar != null
+                                        ? CachedNetworkImageProvider(
+                                            widget.users[index].avatar)
+                                        : AssetImage(
+                                            'assets/image/default_avatar.png'),
                               ),
                               Expanded(
                                   child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    users[index].name,
+                                    widget.users[index].name,
                                     style: ptTitle(),
                                     textAlign: TextAlign.center,
                                   ),
                                   Text(
                                     (() {
                                       final role =
-                                          UserBloc.getRole(users[index]);
+                                          UserBloc.getRole(widget.users[index]);
                                       if (role == UserRole.company)
                                         return 'Công ty';
                                       if (role == UserRole.agent)
@@ -84,7 +118,29 @@ class SuggestList extends StatelessWidget {
                                 ],
                               )),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () async {
+                                  if (AuthBloc.instance.userModel == null) {
+                                    LoginPage.navigatePush();
+                                    return;
+                                  }
+                                  authBloc.userModel.followingIds
+                                      .add(widget.users[index].id);
+                                  userBloc.suggestFollowUsers
+                                      .remove(widget.users[index]);
+                                  setState(() {});
+                                  final res = await userBloc
+                                      .followUser(widget.users[index].id);
+
+                                  if (res.isSuccess) {
+                                  } else {
+                                    showToast(res.errMessage, context);
+                                    authBloc.userModel.followingIds
+                                        .remove(widget.users[index].id);
+                                    userBloc.suggestFollowUsers
+                                        .add(widget.users[index]);
+                                    setState(() {});
+                                  }
+                                },
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 28, vertical: 6),
@@ -110,7 +166,7 @@ class SuggestList extends StatelessWidget {
                     separatorBuilder: (context, index) => SizedBox(
                           width: 10,
                         ),
-                    itemCount: users.length),
+                    itemCount: widget.users.length),
               )
             ],
           )),

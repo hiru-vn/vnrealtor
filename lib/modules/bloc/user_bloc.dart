@@ -273,11 +273,24 @@ class UserBloc extends ChangeNotifier {
   Future<BaseResponse> suggestFollow() async {
     try {
       final res = await UserRepo().suggestFollow();
-      final listRaw = res['data'];
+      final listRaw = res;
       suggestFollowUsers =
           (listRaw.map((e) => UserModel.fromJson(e)).toList() as List)
               .cast<UserModel>();
       return BaseResponse.success(suggestFollowUsers);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> suggestFollowGuest() async {
+    try {
+      final res = await UserRepo().suggestFollowGuest();
+      final listRaw = (res.map((e) => UserModel.fromJson(e)).toList() as List)
+          .cast<UserModel>();
+      return BaseResponse.success(listRaw);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {

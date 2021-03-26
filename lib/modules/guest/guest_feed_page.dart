@@ -1,9 +1,12 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/post/post_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/post/search_post_page.dart';
+import 'package:datcao/modules/post/suggest_list.dart';
 import 'package:datcao/share/widget/load_more.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -23,9 +26,11 @@ class GuestFeedPage extends StatefulWidget {
 class _GuestFeedPageState extends State<GuestFeedPage> {
   bool showAppBar = true;
   PostBloc _postBloc;
+  UserBloc _userBloc;
   ScrollController _controller = ScrollController();
   List<PostModel> posts;
   List<PostModel> stories;
+  List<UserModel> suggestFollowUsers;
   bool isReloadPost = true;
   bool isReloadStory = true;
 
@@ -39,6 +44,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
+      _userBloc = Provider.of<UserBloc>(context);
       _postBloc.getNewFeedGuest().then((res) => setState(() {
             if (res.isSuccess) {
               posts = res.data;
@@ -57,6 +63,15 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
               showToast(res.errMessage, context);
               posts = [];
               isReloadStory = false;
+            }
+          }));
+      _userBloc.suggestFollowGuest().then((res) => setState(() {
+            if (res.isSuccess) {
+              setState(() {
+                suggestFollowUsers = res.data;
+              });
+            } else {
+              showToast(res.errMessage, context);
             }
           }));
     }
@@ -170,7 +185,18 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                     itemCount: posts.length,
                     itemBuilder: (context, index) {
                       final item = posts[index];
-                      return PostWidget(item);
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (index == 0 &&
+                              UserBloc.instance.suggestFollowUsers != null &&
+                              UserBloc.instance.suggestFollowUsers.length > 0)
+                            SuggestList(
+                              users: UserBloc.instance.suggestFollowUsers,
+                            ),
+                          PostWidget(item),
+                        ],
+                      );
                     },
                   ),
                 SizedBox(

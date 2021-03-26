@@ -160,13 +160,16 @@ phone: "$phone"
   }
 
   Future suggestFollow() async {
-    final res = await UserSrv().query(
-        'suggestFollow',
-        '''
-q: {}
-    ''',
-        fragment: 'data { $userFragment }');
+    final res = await UserSrv().query('suggestFollow', '',
+        fragment: ' $userFragment ', removeData: true);
     return res['suggestFollow'];
+  }
+
+  Future suggestFollowGuest() async {
+    final res = await UserSrv().query('suggestFollowForGuest', '',
+        fragment: ' ${userFragment.replaceAll('savedPostIds', '')} ',
+        removeData: true);
+    return res['suggestFollowForGuest'];
   }
 
   Future resetPassWithPhone({String password, String idToken}) async {
