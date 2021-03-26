@@ -97,7 +97,7 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
               ],
               onSelected: (val) async {
                 if (val == 'lock') {
-                  final res = await UserBloc.instance.blockUser(widget.user.id);
+                  final res = await UserBloc.instance.blockUserByAdmin(widget.user.id);
                   if (res.isSuccess)
                     showToast('Đã khoá tài khoản người dùng này', context,
                         isSuccess: true);

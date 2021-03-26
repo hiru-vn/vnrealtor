@@ -227,14 +227,14 @@ commentNoti: $comment
     return res['id'];
   }
 
-  Future blockUser(String userId) async {
+  Future blockUserByAdmin(String userId) async {
     final res = await UserSrv().mutate(
-        'blockUser',
+        'blockUserByAdmin',
         '''
 userId: "$userId"
     ''',
         fragment: 'id');
-    return res['blockUser'];
+    return res['blockUserByAdmin'];
   }
 
   Future seenAllNoti() async {

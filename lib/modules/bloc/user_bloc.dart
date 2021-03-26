@@ -322,9 +322,9 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> blockUser(String id) async {
+  Future<BaseResponse> blockUserByAdmin(String id) async {
     try {
-      final res = await UserRepo().blockUser(id);
+      final res = await UserRepo().blockUserByAdmin(id);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());

@@ -27,6 +27,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   List<String> _videos = [];
   List<String> _images = [];
   List<String> _allVideoAndImage = [];
+  List<String> _allVideoAndImageCache = [];
   PostBloc _postBloc;
   bool isProcess = false;
 
@@ -77,6 +78,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         _videos = [];
         _images = [];
         _allVideoAndImage = [];
+        _allVideoAndImageCache = [];
       } else {
         showToast(res.errMessage, context);
       }
@@ -87,13 +89,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   Future _upload(String filePath) async {
     try {
-      if (_allVideoAndImage.length >= 9) {
+      if (_allVideoAndImageCache.length >= 9) {
         showToast('Chỉ được đăng tối đa 9 ảnh/video', context);
         return;
       }
 
       setState(() {
         _allVideoAndImage.add(filePath);
+        _allVideoAndImageCache.add(filePath);
       });
       final res = await FileUtil.uploadFireStorage(
         filePath,
@@ -120,21 +123,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   void _uploadMultiImage(List<String> filePaths) async {
     try {
-      print('3333333333333333333333333333333333333333333');
-      if (_allVideoAndImage.length >= 9) {
+      if (_allVideoAndImageCache.length >= 9) {
         showToast('Chỉ được đăng tối đa 9 ảnh/video', context);
         return;
       }
 
       setState(() {
-        print('setstateeeeeeeee');
         _allVideoAndImage.addAll(filePaths);
+        _allVideoAndImageCache.addAll(filePaths);
       });
       final res = await Future.wait(filePaths.map((e) => FileUtil.uploadFireStorage(
           e,
           path:
               'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
-      print('444444444444444444444444444444444444444444');
       res.forEach((element) {
         if (FileUtil.getFbUrlFileType(element) == FileType.image ||
             FileUtil.getFbUrlFileType(element) == FileType.gif) {
@@ -156,7 +157,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('reload1111111111111111111111111111111111111111');
     return Container(
       width: deviceWidth(context),
       height: deviceHeight(context),
@@ -169,7 +169,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
             Padding(
               padding: const EdgeInsets.all(15).copyWith(bottom: 5),
               child: ImageButtonPicker(
-                _allVideoAndImage,
+                _allVideoAndImageCache,
                 onUpdateListImg: (listImg) {},
                 onAddImg: _upload,
                 onAddMultiImg: _uploadMultiImage,
@@ -177,6 +177,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   _images.remove(file);
                   _videos.remove(file);
                   _allVideoAndImage.remove(file);
+                  _allVideoAndImageCache.remove(file);
                   FileUtil.deleteFileFireStorage(file);
                 },
               ),

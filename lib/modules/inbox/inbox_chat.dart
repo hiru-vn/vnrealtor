@@ -284,11 +284,12 @@ class _InboxChatState extends State<InboxChat> {
         if (message.customProperties['cache_file_paths'] == null) {
           message.customProperties['cache_file_paths'] = <String>[];
         }
-        if (FileUtil.getFilePathType(path) == FileType.video) {
+        if (FileUtil.getFbUrlFileType(path) == FileType.video) {
           message.image = 'assets/image/loading.gif'; // temp
           message.customProperties['cache_file_paths'].add(path);
         }
-        if (FileUtil.getFilePathType(path) == FileType.image) {
+        if (FileUtil.getFbUrlFileType(path) == FileType.image ||
+            FileUtil.getFbUrlFileType(path) == FileType.gif) {
           message.image = 'assets/image/loading.gif'; // temp
           message.customProperties['cache_file_paths'].add(path);
         }

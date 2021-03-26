@@ -217,7 +217,7 @@ class _MediaWidgetCacheState extends State<MediaWidgetCache> {
                 ),
                 Center(
                   child: Icon(Icons.play_circle_outline_rounded,
-                      size: 50, color: Colors.white),
+                      size: 45, color: Colors.white),
                 ),
               ],
             );

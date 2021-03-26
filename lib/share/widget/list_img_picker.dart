@@ -8,6 +8,7 @@
 
 import 'dart:io';
 
+import 'package:datcao/modules/inbox/import/detail_media.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/utils/file_util.dart';
 
@@ -232,7 +233,9 @@ class _ImageButtonPickerState extends State<ImageButtonPicker> {
                                   ? FileUtil.getFilePathType(
                                               widget.listImg[index]) ==
                                           FileType.video
-                                      ? kLoadingSpinner
+                                      ? MediaWidgetCache(
+                                          path: widget.listImg[index],
+                                          callBack: () {})
                                       : Image.file(
                                           File(widget.listImg[index]),
                                           fit: BoxFit.cover,
