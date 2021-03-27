@@ -42,7 +42,6 @@ class _PostWidgetState extends State<PostWidget> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
-      initMenu();
     }
     super.didChangeDependencies();
   }
@@ -166,13 +165,95 @@ class _PostWidgetState extends State<PostWidget> {
                   Spacer(),
                   if (AuthBloc.instance.userModel != null)
                     Center(
-                      child: IconButton(
-                        key: moreBtnKey,
-                        icon: Icon(Icons.more_vert),
-                        onPressed: () {
-                          menu.show(widgetKey: moreBtnKey);
-                        },
-                      ),
+                      child: PopupMenuButton(
+                          padding: EdgeInsets.zero,
+                          child:
+                              SizedBox(width: 30, child: Icon(Icons.more_vert)),
+                          itemBuilder: (_) => <PopupMenuItem<String>>[
+                                if (widget.post.userId !=
+                                    AuthBloc.instance.userModel?.id) ...[
+                                  PopupMenuItem(
+                                    child: Text('Liên hệ'),
+                                    value: 'Liên hệ',
+                                  ),
+                                  ([
+                                    UserRole.admin,
+                                    UserRole.admin_post,
+                                    UserRole.manager
+                                  ].contains(UserBloc.getRole(
+                                          AuthBloc.instance.userModel)))
+                                      ? PopupMenuItem(
+                                          child: Text('Ẩn bài'),
+                                          value: 'Ẩn bài',
+                                        )
+                                      : PopupMenuItem(
+                                          child: Text('Báo cáo'),
+                                          value: 'Báo cáo',
+                                        ),
+                                ] else ...[
+                                  PopupMenuItem(
+                                    child: Text('Xóa bài'),
+                                    value: 'Xóa bài',
+                                  ),
+                                  PopupMenuItem(
+                                      child: Text('Sửa bài'), value: 'Sửa bài'),
+                                ],
+                              ],
+                          onSelected: (val) async {
+                            if (val == 'Liên hệ') {
+                              showSimpleLoadingDialog(context);
+                              await InboxBloc.instance.navigateToChatWith(
+                                  widget.post.user.name,
+                                  widget.post.user.avatar,
+                                  DateTime.now(),
+                                  widget.post.user.avatar, [
+                                AuthBloc.instance.userModel.id,
+                                widget.post.user.id,
+                              ], [
+                                AuthBloc.instance.userModel.avatar,
+                                widget.post.user.avatar,
+                              ]);
+                              navigatorKey.currentState.maybePop();
+                            }
+                            if (val == 'Báo cáo') {
+                              showReport(widget.post, context);
+                            }
+                            if (val == 'Xóa bài') {
+                              final confirm = await showConfirmDialog(context,
+                                  'Vui lòng xác nhận xóa bài viết này.',
+                                  confirmTap: () {},
+                                  navigatorKey: navigatorKey);
+                              if (!confirm) return;
+                              final res =
+                                  await _postBloc.deletePost(widget.post.id);
+                              if (res.isSuccess) {
+                              } else {
+                                showToast(res.errMessage, context);
+                              }
+                            }
+                            if (val == 'Ẩn bài') {
+                              final res =
+                                  await _postBloc.hidePost(widget.post.id);
+                              if (res.isSuccess) {
+                                showToast(
+                                    'Đã ẩn, bài viết này sẽ không hiện trên feed của tất cả user khác',
+                                    context,
+                                    isSuccess: true);
+                              } else {
+                                showToast(res.errMessage, context);
+                              }
+                            }
+                            if (val == 'Sửa bài') {
+                              final res =
+                                  await UpdatePostPage.navigate(widget.post);
+                              if (res == true) {
+                                await _postBloc.getNewFeed(
+                                    filter: GraphqlFilter(
+                                        limit: 10, order: "{updatedAt: -1}"));
+                                return;
+                              }
+                            }
+                          }),
                     ),
                 ],
               ),
@@ -484,102 +565,6 @@ class _PostWidgetState extends State<PostWidget> {
               ));
         });
   }
-
-  initMenu() {
-    if (AuthBloc.instance.userModel == null) return;
-    menu = PopupMenu(
-        items: [
-          if (widget.post.userId != AuthBloc.instance.userModel?.id) ...[
-            MenuItem(
-                title: 'Liên hệ',
-                image: Icon(
-                  Icons.post_add,
-                  color: Colors.white,
-                )),
-            ([UserRole.admin, UserRole.admin_post, UserRole.manager]
-                    .contains(UserBloc.getRole(AuthBloc.instance.userModel)))
-                ? MenuItem(
-                    title: 'Ẩn bài',
-                    image: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                    ))
-                : MenuItem(
-                    title: 'Báo cáo',
-                    image: Icon(
-                      Icons.report,
-                      color: Colors.white,
-                    )),
-          ] else ...[
-            MenuItem(
-                title: 'Xóa bài',
-                image: Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                )),
-            MenuItem(
-                title: 'Sửa bài',
-                image: Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                )),
-          ]
-        ],
-        onClickMenu: (val) async {
-          if (val.menuTitle == 'Liên hệ') {
-            showSimpleLoadingDialog(context);
-            await InboxBloc.instance.navigateToChatWith(
-                widget.post.user.name,
-                widget.post.user.avatar,
-                DateTime.now(),
-                widget.post.user.avatar, [
-              AuthBloc.instance.userModel.id,
-              widget.post.user.id,
-            ], [
-              AuthBloc.instance.userModel.avatar,
-              widget.post.user.avatar,
-            ]);
-            navigatorKey.currentState.maybePop();
-          }
-          if (val.menuTitle == 'Báo cáo') {
-            showReport(widget.post, context);
-          }
-          if (val.menuTitle == 'Xóa bài') {
-            final confirm = await showConfirmDialog(
-                context, 'Vui lòng xác nhận xóa bài viết này.',
-                confirmTap: () {}, navigatorKey: navigatorKey);
-            if (!confirm) return;
-            final res = await _postBloc.deletePost(widget.post.id);
-            if (res.isSuccess) {
-            } else {
-              showToast(res.errMessage, context);
-            }
-          }
-          if (val.menuTitle == 'Ẩn bài') {
-            final res = await _postBloc.hidePost(widget.post.id);
-            if (res.isSuccess) {
-              showToast(
-                  'Đã ẩn, bài viết này sẽ không hiện trên feed của tất cả user khác',
-                  context,
-                  isSuccess: true);
-            } else {
-              showToast(res.errMessage, context);
-            }
-          }
-          if (val.menuTitle == 'Sửa bài') {
-            final res = await UpdatePostPage.navigate(widget.post);
-            if (res == true) {
-              await _postBloc.getNewFeed(
-                  filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
-              return;
-            }
-          }
-        },
-        stateChanged: (val) {},
-        onDismiss: () {});
-  }
-
-  PopupMenu menu;
 }
 
 class PostSmallWidget extends StatefulWidget {

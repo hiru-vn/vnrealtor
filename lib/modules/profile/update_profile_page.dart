@@ -57,6 +57,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         _authBloc.userModel.avatar = url;
         uploadingAvatar = false;
       });
+      await _userBloc.updateUser(_authBloc.userModel);
     } catch (e) {
       showToast(e.toString(), context);
     }
@@ -75,9 +76,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       isLoading = true;
     });
     final res = await _userBloc.updateUser(_authBloc.userModel);
-    if (mounted) setState(() {
-      isLoading = false;
-    });
+    if (mounted)
+      setState(() {
+        isLoading = false;
+      });
     if (res.isSuccess) {
       showToast('Cập nhật thành công', context, isSuccess: true);
       if (mounted) navigatorKey.currentState.maybePop();
@@ -157,7 +159,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                             context, 'Tên gọi', _nameC, Icons.person_outlined),
                         _buildFormField(context, 'Tên người dùng', _tagNameC,
                             Icons.tag_faces,
-                            validator: TextFieldValidator.formalValidator, hint: '@tennguoidungs'),
+                            validator: TextFieldValidator.formalValidator,
+                            hint: '@tennguoidungs'),
                         _buildFormField(
                           context,
                           'Email',
@@ -237,7 +240,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
 
   _buildFormField(BuildContext context, String text,
           TextEditingController controller, IconData icon,
-          {int maxLine, bool readOnly = false, Function validator, String hint}) =>
+          {int maxLine,
+          bool readOnly = false,
+          Function validator,
+          String hint}) =>
       // Padding(
       //   padding: const EdgeInsets.symmetric(horizontal: 10),
       //   child: Container(
@@ -287,7 +293,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                   controller: controller,
                   textAlign: TextAlign.start,
                   style: ptTitle().copyWith(fontWeight: FontWeight.w400),
-                  decoration: new InputDecoration.collapsed(hintText: hint??'$text'),
+                  decoration:
+                      new InputDecoration.collapsed(hintText: hint ?? '$text'),
                 ),
               ),
             ),
