@@ -63,14 +63,14 @@ class _SuggestListState extends State<SuggestList> {
                 height: 12,
               ),
               Container(
-                height: 190,
+                height: 175,
                 child: ListView.separated(
                     padding: EdgeInsets.only(right: 20, left: 15),
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return Container(
-                        width: 140,
-                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        width: 128,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(7),
                             border: Border.all(
@@ -81,7 +81,7 @@ class _SuggestListState extends State<SuggestList> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               SizedBox(
-                                height: 15,
+                                height: 12,
                               ),
                               GestureDetector(
                                 onTap: () {
@@ -105,7 +105,8 @@ class _SuggestListState extends State<SuggestList> {
                                 children: [
                                   Text(
                                     widget.users[index].name,
-                                    style: ptTitle(),
+                                    style: ptBody()
+                                        .copyWith(fontWeight: FontWeight.w600),
                                     textAlign: TextAlign.center,
                                   ),
                                   Text(
@@ -132,8 +133,7 @@ class _SuggestListState extends State<SuggestList> {
                                   }
                                   authBloc.userModel.followingIds
                                       .add(widget.users[index].id);
-                                  userBloc.suggestFollowUsers
-                                      .remove(widget.users[index]);
+
                                   setState(() {});
                                   final res = await userBloc
                                       .followUser(widget.users[index].id);
@@ -143,22 +143,53 @@ class _SuggestListState extends State<SuggestList> {
                                     showToast(res.errMessage, context);
                                     authBloc.userModel.followingIds
                                         .remove(widget.users[index].id);
-                                    userBloc.suggestFollowUsers
-                                        .add(widget.users[index]);
+
                                     setState(() {});
                                   }
                                 },
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 28, vertical: 6),
+                                  width: 90,
+                                  padding: EdgeInsets.symmetric(vertical: 6),
                                   decoration: BoxDecoration(
-                                    color: ptSecondaryColor(context),
+                                    border: AuthBloc
+                                            .instance.userModel.followingIds
+                                            .contains(widget.users[index].id)
+                                        ? Border.all(color: Colors.black12)
+                                        : Border.all(
+                                            color: ptPrimaryColor(context)
+                                                .withOpacity(0.2)),
+                                    color: AuthBloc
+                                            .instance.userModel.followingIds
+                                            .contains(widget.users[index].id)
+                                        ? Colors.transparent
+                                        : ptSecondaryColor(context),
                                     borderRadius: BorderRadius.circular(3),
                                   ),
-                                  child: Text(
-                                    'Theo dõi',
-                                    style: ptTitle().copyWith(
-                                        color: ptPrimaryColor(context)),
+                                  child: Center(
+                                    child: Text(
+                                      AuthBloc.instance.userModel == null
+                                          ? 'Theo dõi'
+                                          : (AuthBloc.instance.userModel
+                                                  .followerIds
+                                                  .contains(
+                                                      widget.users[index].id)
+                                              ? ((AuthBloc.instance.userModel
+                                                      .followingIds
+                                                      .contains(widget
+                                                          .users[index].id)
+                                                  ? 'Bạn bè'
+                                                  : 'Theo dõi lại'))
+                                              : (AuthBloc.instance.userModel
+                                                      .followingIds
+                                                      .contains(widget
+                                                          .users[index].id)
+                                                  ? 'Đã theo dõi'
+                                                  : 'Theo dõi')),
+                                      style: ptSmall().copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: ptPrimaryColor(context),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
