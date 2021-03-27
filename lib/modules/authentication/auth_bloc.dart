@@ -100,6 +100,7 @@ class AuthBloc extends ChangeNotifier {
       loginFirebase(userModel);
       UserBloc.instance.init();
       PostBloc.instance.init();
+      InboxBloc.instance.init();
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e?.toString());
@@ -141,6 +142,7 @@ class AuthBloc extends ChangeNotifier {
 
       UserBloc.instance.init();
       PostBloc.instance.init();
+      InboxBloc.instance.init();
       firstLogin = true;
       return BaseResponse.success(loginRes);
     } catch (e) {
@@ -168,7 +170,8 @@ class AuthBloc extends ChangeNotifier {
 
       UserBloc.instance.init();
       PostBloc.instance.init();
-
+      InboxBloc.instance.init();
+      
       firstLogin = true;
       return BaseResponse.success(loginRes);
     } catch (e) {

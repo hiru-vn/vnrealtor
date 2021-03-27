@@ -7,6 +7,7 @@ import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/share/import.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
 
 class SplashPage extends StatefulWidget {
   static Future navigate() {
@@ -47,6 +48,7 @@ class _SplashPageState extends State<SplashPage> {
                 FcmService.instance.init(),
                 PostBloc.instance.init(),
                 UserBloc.instance.init(),
+                InboxBloc.instance.init(),
               ]);
               HomePage.navigate();
             } else

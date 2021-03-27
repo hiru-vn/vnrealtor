@@ -46,12 +46,7 @@ class _InboxListState extends State<InboxList>
 
   init() async {
     try {
-      // await _inboxBloc.createUser(_authBloc.userModel.id,
-      //     _authBloc.userModel.name, _authBloc.userModel.avatar);
-      final res = await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
-      setState(() {
-        _inboxBloc.groupInboxList = res;
-      });
+      _inboxBloc.init();
     } catch (e) {}
   }
 

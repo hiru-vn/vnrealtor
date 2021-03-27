@@ -190,10 +190,10 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                         children: [
                           PostWidget(item),
                           if (index == 1 &&
-                              UserBloc.instance.suggestFollowUsers != null &&
-                              UserBloc.instance.suggestFollowUsers.length > 0)
+                              suggestFollowUsers != null &&
+                              suggestFollowUsers.length > 0)
                             SuggestList(
-                              users: UserBloc.instance.suggestFollowUsers,
+                              users: suggestFollowUsers,
                             ),
                         ],
                       );

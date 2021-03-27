@@ -125,7 +125,22 @@ class _PostWidgetState extends State<PostWidget> {
                                   size: 11,
                                 ),
                               ),
-                            )
+                            ),
+                          SizedBox(width: 5),
+                          CustomTooltip(
+                            message: 'Điểm uy tín',
+                            child: Text(
+                              widget.post?.user?.reputationScore.toString(),
+                              style: ptSmall(),
+                            ),
+                          ),
+                          SizedBox(width: 1),
+                          CustomTooltip(
+                              message: 'Điểm tương tác',
+                              child: SizedBox(
+                                  height: 13,
+                                  width: 13,
+                                  child: Image.asset('assets/image/ip.png'))),
                         ],
                       ),
                       SizedBox(height: 1),
@@ -144,20 +159,6 @@ class _PostWidgetState extends State<PostWidget> {
                             style: ptTiny().copyWith(color: Colors.black54),
                           ),
                           SizedBox(width: 8),
-                          CustomTooltip(
-                            message: 'Điểm uy tín',
-                            child: Text(
-                              widget.post?.user?.reputationScore.toString(),
-                              style: ptSmall().copyWith(color: Colors.orange),
-                            ),
-                          ),
-                          SizedBox(width: 2),
-                          CustomTooltip(
-                              message: 'Điểm uy tín',
-                              child: SizedBox(
-                                  height: 13,
-                                  width: 13,
-                                  child: Image.asset('assets/image/ip.png'))),
                         ],
                       ),
                     ],

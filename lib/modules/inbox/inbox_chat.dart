@@ -158,8 +158,7 @@ class _InboxChatState extends State<InboxChat> {
             'files': element.filePaths ?? [],
           });
     }).toList());
-    Future.delayed(Duration(milliseconds: 100), () => jumpToEnd());
-    Future.delayed(Duration(milliseconds: 500), () => jumpToEnd());
+    setState(() {});
 
     // init stream with last messageId
     _incomingMessageStream = await _inboxBloc.getStreamIncomingMessages(
@@ -167,6 +166,8 @@ class _InboxChatState extends State<InboxChat> {
         fbMessages.length > 0 ? fbMessages[fbMessages.length - 1].id : null);
     // add listener to cancel listener, or else will cause bug setState when dispose state
     _incomingMessageListener = _incomingMessageStream.listen(onIncomingMessage);
+    jumpToEnd();
+    Future.delayed(Duration(milliseconds: 500), () => jumpToEnd());
   }
 
   void onIncomingMessage(event) async {
@@ -359,18 +360,27 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   void scrollToEnd() {
-    _chatViewKey.currentState?.scrollController?.animateTo(
-      _chatViewKey.currentState.scrollController.position.maxScrollExtent,
-      curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 250),
-    );
+    if (_chatViewKey.currentState?.scrollController?.position?.pixels ??
+        0 <
+            _chatViewKey
+                .currentState?.scrollController?.position?.maxScrollExtent ??
+        1)
+      _chatViewKey.currentState?.scrollController?.animateTo(
+        _chatViewKey.currentState.scrollController.position.maxScrollExtent +
+            30,
+        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 250),
+      );
   }
 
   void jumpToEnd() {
-    _chatViewKey.currentState?.scrollController?.jumpTo(
-      _chatViewKey.currentState.scrollController.position.maxScrollExtent +
-          30.0,
-    );
+    if ((_chatViewKey.currentState?.scrollController?.position?.pixels ?? 0) <
+        (_chatViewKey
+                .currentState?.scrollController?.position?.maxScrollExtent ??
+            1))
+      _chatViewKey.currentState?.scrollController?.jumpTo(
+        _chatViewKey.currentState.scrollController.position.maxScrollExtent,
+      );
   }
 
   Future _onFilePick(String path) async {

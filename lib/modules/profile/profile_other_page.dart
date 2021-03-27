@@ -411,7 +411,7 @@ class _ProfileCardState extends State<ProfileCard> {
                           Row(
                             children: [
                               Text(
-                                'Điểm uy tín: ${widget.user.reputationScore.toString()}',
+                                'Điểm tương tác: ${widget.user.reputationScore.toString()}',
                                 style: ptBody().copyWith(color: Colors.black54),
                               ),
                               SizedBox(width: 5),

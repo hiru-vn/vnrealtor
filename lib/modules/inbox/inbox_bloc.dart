@@ -23,6 +23,12 @@ class InboxBloc extends ChangeNotifier {
   final groupCollection = 'group';
   final messageCollection = 'messages';
 
+  Future<void> init() async {
+    final res = await getList20InboxGroup(AuthBloc.instance.userModel.id);
+    groupInboxList = res;
+    notifyListeners();
+  }
+
   Future<void> navigateToChatWith(
       String lastUser, // the other user
       String lastAvatar,
