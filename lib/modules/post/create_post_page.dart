@@ -57,6 +57,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
         return;
       }
       showSimpleLoadingDialog(context);
+
+      while (_images.length + _videos.length < _allVideoAndImage.length) {
+        await Future.delayed(Duration(milliseconds: 2000));
+      }
+
       final res = await _postBloc.createPost(
           _contentC.text.trim(),
           _expirationDate?.toIso8601String(),
@@ -82,6 +87,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
       } else {
         showToast(res.errMessage, context);
       }
+      await Future.delayed(
+          Duration(seconds: 2), () => _postBloc?.notifyListeners());
     } catch (e) {} finally {
       isProcess = false;
     }

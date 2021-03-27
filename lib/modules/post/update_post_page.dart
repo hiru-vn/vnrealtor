@@ -33,6 +33,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
   List<String> _videos = [];
   List<String> _images = [];
   List<String> _allVideoAndImage = [];
+  List<String> _allVideoAndImageCache = [];
   PostBloc _postBloc;
 
   @override
@@ -46,6 +47,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         .map((e) => e.url)
         .toList();
     _allVideoAndImage = [..._videos, ..._images];
+    _allVideoAndImageCache = [..._videos, ..._images];
     _expirationDate = DateTime.tryParse(widget.post.expirationDate);
     if (widget.post.locationLat != null)
       _pos = LatLng(widget.post.locationLat, widget.post.locationLong);
@@ -74,6 +76,11 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
       return;
     }
     showSimpleLoadingDialog(context);
+
+    while (_images.length + _videos.length < _allVideoAndImage.length) {
+      await Future.delayed(Duration(milliseconds: 2000));
+    }
+
     final res = await _postBloc.updatePost(
         widget.post.id,
         _contentC.text.trim(),
@@ -90,18 +97,25 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
       _postBloc.feed[index] = res.data;
 
       //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
-
+      _videos = [];
+      _images = [];
+      _allVideoAndImage = [];
+      _allVideoAndImageCache = [];
       navigatorKey.currentState.maybePop(true);
     } else {
       showToast(res.errMessage, context);
     }
+    await Future.delayed(
+        Duration(seconds: 2), () => _postBloc?.notifyListeners());
     FocusScope.of(context).requestFocus(FocusNode());
   }
 
   Future _upload(String filePath) async {
     try {
-      _allVideoAndImage.add(loadingGif);
-      setState(() {});
+      setState(() {
+        _allVideoAndImage.add(filePath);
+        _allVideoAndImageCache.add(filePath);
+      });
       final res = await FileUtil.uploadFireStorage(filePath,
           path:
               'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
@@ -114,10 +128,12 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         _videos.add(res);
         _allVideoAndImage.add(res);
       }
-      _allVideoAndImage.remove(loadingGif);
-      setState(() {});
+      _allVideoAndImage.remove(filePath);
     } catch (e) {
+      _allVideoAndImage.remove(filePath);
       showToast(e.toString(), context);
+    } finally {
+      setState(() {});
     }
   }
 
@@ -127,8 +143,10 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         showToast('Chỉ được đăng tối đa 9 ảnh/video', context);
         return;
       }
-      _allVideoAndImage.addAll(filePaths.map((e) => loadingGif));
-      setState(() {});
+      setState(() {
+        _allVideoAndImage.addAll(filePaths);
+        _allVideoAndImageCache.addAll(filePaths);
+      });
       final res = await Future.wait(filePaths.map((e) => FileUtil.uploadFireStorage(
           e,
           path:
@@ -145,7 +163,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         }
       });
 
-      _allVideoAndImage.removeWhere((e) => e == loadingGif);
+      _allVideoAndImage.removeWhere((e) => filePaths.contains(e));
       setState(() {});
     } catch (e) {
       showToast(e.toString(), context);
@@ -186,7 +204,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
             Padding(
               padding: const EdgeInsets.all(15).copyWith(bottom: 5),
               child: ImageButtonPicker(
-                _allVideoAndImage,
+                _allVideoAndImageCache,
                 onUpdateListImg: (listImg) {},
                 onAddImg: _upload,
                 onAddMultiImg: _uploadMultiImage,
@@ -194,6 +212,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   _images.remove(file);
                   _videos.remove(file);
                   _allVideoAndImage.remove(file);
+                  _allVideoAndImageCache.remove(file);
                   setState(() {});
 
                   // FileUtil.deleteFileFireStorage(file);
