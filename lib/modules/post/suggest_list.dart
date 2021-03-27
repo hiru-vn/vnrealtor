@@ -3,6 +3,7 @@ import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/share/import.dart';
+import '../profile/profile_other_page.dart';
 
 class SuggestList extends StatefulWidget {
   final List<UserModel> users;
@@ -82,15 +83,21 @@ class _SuggestListState extends State<SuggestList> {
                               SizedBox(
                                 height: 15,
                               ),
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Colors.white,
-                                backgroundImage:
-                                    widget.users[index].avatar != null
-                                        ? CachedNetworkImageProvider(
-                                            widget.users[index].avatar)
-                                        : AssetImage(
-                                            'assets/image/default_avatar.png'),
+                              GestureDetector(
+                                onTap: () {
+                                  ProfileOtherPage.navigate(
+                                      widget.users[index]);
+                                },
+                                child: CircleAvatar(
+                                  radius: 30,
+                                  backgroundColor: Colors.white,
+                                  backgroundImage: widget.users[index].avatar !=
+                                          null
+                                      ? CachedNetworkImageProvider(
+                                          widget.users[index].avatar)
+                                      : AssetImage(
+                                          'assets/image/default_avatar.png'),
+                                ),
                               ),
                               Expanded(
                                   child: Column(

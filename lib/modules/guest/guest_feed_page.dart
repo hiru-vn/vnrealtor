@@ -188,13 +188,13 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          if (index == 0 &&
+                          PostWidget(item),
+                          if (index == 1 &&
                               UserBloc.instance.suggestFollowUsers != null &&
                               UserBloc.instance.suggestFollowUsers.length > 0)
                             SuggestList(
                               users: UserBloc.instance.suggestFollowUsers,
                             ),
-                          PostWidget(item),
                         ],
                       );
                     },
