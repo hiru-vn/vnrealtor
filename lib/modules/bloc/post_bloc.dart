@@ -36,6 +36,10 @@ class PostBloc extends ChangeNotifier {
     getAllHashTagTP();
   }
 
+  Future reload() async {
+    notifyListeners();
+  }
+
   Future<BaseResponse> getNewFeed({GraphqlFilter filter}) async {
     try {
       isEndFeed = false;
@@ -617,8 +621,7 @@ class PostBloc extends ChangeNotifier {
 
   Future<BaseResponse> hidePost(String postId) async {
     try {
-      final res = await PostRepo()
-          .hidePost(postId);
+      final res = await PostRepo().hidePost(postId);
       if (res == null)
         return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
       return BaseResponse.success(res);

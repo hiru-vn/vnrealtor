@@ -59,7 +59,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       showSimpleLoadingDialog(context);
 
       while (_images.length + _videos.length < _allVideoAndImage.length) {
-        await Future.delayed(Duration(milliseconds: 2000));
+        await Future.delayed(Duration(milliseconds: 300));
       }
 
       final res = await _postBloc.createPost(
@@ -70,7 +70,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
           _pos?.longitude,
           _images,
           _videos);
-      await navigatorKey.currentState.maybePop();
+
+      // deplay for sv to handle resize image
+      await Future.delayed(Duration(milliseconds: 1000));
+
+      navigatorKey.currentState.maybePop();
       if (res.isSuccess) {
         await widget.pageController.animateToPage(0,
             duration: Duration(milliseconds: 200), curve: Curves.decelerate);
