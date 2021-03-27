@@ -198,8 +198,9 @@ showUndoneFeature(BuildContext context, List<String> features) {
       navigatorKey: navigatorKey);
 }
 
-showSimpleLoadingDialog(BuildContext context) {
+showSimpleLoadingDialog(BuildContext context, {bool canDismiss = true}) {
   return showDialog(
+      barrierDismissible: canDismiss,
       context: context,
       builder: (context) {
         return Center(

@@ -103,25 +103,37 @@ class _SuggestListState extends State<SuggestList> {
                                   child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    widget.users[index].name,
-                                    style: ptBody()
-                                        .copyWith(fontWeight: FontWeight.w600),
-                                    textAlign: TextAlign.center,
+                                  GestureDetector(
+                                    onTap: () {
+                                      ProfileOtherPage.navigate(
+                                          widget.users[index]);
+                                    },
+                                    child: Text(
+                                      widget.users[index].name,
+                                      style: ptBody().copyWith(
+                                          fontWeight: FontWeight.w600),
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
-                                  Text(
-                                    (() {
-                                      final role =
-                                          UserBloc.getRole(widget.users[index]);
-                                      if (role == UserRole.company)
-                                        return 'Công ty';
-                                      if (role == UserRole.agent)
-                                        return 'Nhà môi giới';
+                                  GestureDetector(
+                                    onTap: () {
+                                      ProfileOtherPage.navigate(
+                                          widget.users[index]);
+                                    },
+                                    child: Text(
+                                      (() {
+                                        final role = UserBloc.getRole(
+                                            widget.users[index]);
+                                        if (role == UserRole.company)
+                                          return 'Công ty';
+                                        if (role == UserRole.agent)
+                                          return 'Nhà môi giới';
 
-                                      return 'Người dùng';
-                                    })(),
-                                    style:
-                                        ptSmall().copyWith(color: Colors.black),
+                                        return 'Người dùng';
+                                      })(),
+                                      style: ptSmall()
+                                          .copyWith(color: Colors.black),
+                                    ),
                                   ),
                                 ],
                               )),
@@ -151,16 +163,20 @@ class _SuggestListState extends State<SuggestList> {
                                   width: 90,
                                   padding: EdgeInsets.symmetric(vertical: 6),
                                   decoration: BoxDecoration(
-                                    border: AuthBloc
-                                            .instance.userModel.followingIds
-                                            .contains(widget.users[index].id)
+                                    border: (AuthBloc.instance.userModel
+                                                ?.followingIds
+                                                ?.contains(
+                                                    widget.users[index].id) ==
+                                            true)
                                         ? Border.all(color: Colors.black12)
                                         : Border.all(
                                             color: ptPrimaryColor(context)
                                                 .withOpacity(0.2)),
-                                    color: AuthBloc
-                                            .instance.userModel.followingIds
-                                            .contains(widget.users[index].id)
+                                    color: (AuthBloc.instance.userModel
+                                                ?.followingIds
+                                                ?.contains(
+                                                    widget.users[index].id) ==
+                                            true)
                                         ? Colors.transparent
                                         : ptSecondaryColor(context),
                                     borderRadius: BorderRadius.circular(3),

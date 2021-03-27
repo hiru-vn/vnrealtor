@@ -56,10 +56,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
         showToast('Phải có ít nhất một hình ảnh hoặc video', context);
         return;
       }
-      showSimpleLoadingDialog(context);
+      showSimpleLoadingDialog(context, canDismiss: false);
 
       while (_images.length + _videos.length < _allVideoAndImage.length) {
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(Duration(milliseconds: 1000));
       }
 
       final res = await _postBloc.createPost(
