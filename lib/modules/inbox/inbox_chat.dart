@@ -13,7 +13,6 @@ import 'package:path/path.dart' as path;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/utils/file_util.dart';
-import 'package:popup_menu/popup_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:datcao/navigator.dart';
 import 'google_map_widget.dart';
@@ -77,7 +76,6 @@ class _InboxChatState extends State<InboxChat> {
       _inboxBloc = Provider.of<InboxBloc>(context);
       _authBloc = Provider.of<AuthBloc>(
           context); // this just to get userId, avatar, name. you can replace this with your params
-      initMenu();
       loadUsers();
       loadFirst20Message();
     }
@@ -411,7 +409,6 @@ class _InboxChatState extends State<InboxChat> {
 
   @override
   Widget build(BuildContext context) {
-    PopupMenu.context = context;
     return Scaffold(
       appBar: MyAppBar(
         title: widget.title,
@@ -425,15 +422,38 @@ class _InboxChatState extends State<InboxChat> {
           //     height: 40,
           //   ),
           // ),
-          IconButton(
-              key: moreBtnKey,
-              icon: Icon(
+          PopupMenuButton(
+            itemBuilder: (_) => <PopupMenuItem<String>>[
+              PopupMenuItem(
+                child: Text('Gọi điện'),
+                value: 'Gọi điện',
+              ),
+            ],
+            onSelected: (val) async {
+              if (val.menuTitle == 'Gọi điện') {
+                // try {
+                //   CallKit.displayIncomingCall(context, _authBloc.userModel.id,
+                //           _authBloc.userModel.name, _authBloc.userModel.phone)
+                //       .then((value) => print('call has ended'));
+                // } catch (e) {}
+                launchCaller(_fbUsers
+                    .firstWhere(
+                        (element) => element.id != _authBloc.userModel.id)
+                    .phone);
+                // VoiceCallPage.navigate(widget.group.id, _fbUsers);
+              }
+              if (val.menuTitle == 'Video call') {
+                VideoCallPage.navigate(widget.group.id, _fbUsers);
+              }
+            },
+            child: SizedBox(
+              width: 40,
+              child: Icon(
                 Icons.more_vert,
                 color: Colors.black.withOpacity(0.7),
               ),
-              onPressed: () {
-                menu.show(widgetKey: moreBtnKey);
-              }),
+            ),
+          ),
         ],
       ),
       backgroundColor: Colors.white,
@@ -892,44 +912,6 @@ class _InboxChatState extends State<InboxChat> {
       ),
     );
   }
-
-  initMenu() {
-    menu = PopupMenu(
-        items: [
-          MenuItem(
-              title: 'Gọi điện',
-              image: Icon(
-                Icons.phone,
-                color: Colors.white,
-              )),
-          // MenuItem(
-          //     title: 'Video call',
-          //     image: Icon(
-          //       Icons.video_call,
-          //       color: Colors.white,
-          //     )),
-        ],
-        onClickMenu: (val) {
-          if (val.menuTitle == 'Gọi điện') {
-            // try {
-            //   CallKit.displayIncomingCall(context, _authBloc.userModel.id,
-            //           _authBloc.userModel.name, _authBloc.userModel.phone)
-            //       .then((value) => print('call has ended'));
-            // } catch (e) {}
-            launchCaller(_fbUsers
-                .firstWhere((element) => element.id != _authBloc.userModel.id)
-                .phone);
-            // VoiceCallPage.navigate(widget.group.id, _fbUsers);
-          }
-          if (val.menuTitle == 'Video call') {
-            VideoCallPage.navigate(widget.group.id, _fbUsers);
-          }
-        },
-        stateChanged: (val) {},
-        onDismiss: () {});
-  }
-
-  PopupMenu menu;
 }
 
 class LoadEarlierWidget extends StatelessWidget {

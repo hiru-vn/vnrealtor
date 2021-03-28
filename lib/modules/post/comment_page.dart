@@ -11,7 +11,6 @@ import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/media_post.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/share/import.dart';
-import 'package:popup_menu/popup_menu.dart';
 import 'package:graphql/client.dart';
 
 class CommentPage extends StatefulWidget {

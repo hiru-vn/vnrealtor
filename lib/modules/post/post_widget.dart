@@ -15,7 +15,6 @@ import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:readmore/readmore.dart';
-import 'package:popup_menu/popup_menu.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'comment_page.dart';
@@ -53,7 +52,6 @@ class _PostWidgetState extends State<PostWidget> {
 
   @override
   Widget build(BuildContext context) {
-    PopupMenu.context = context;
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Container(
@@ -590,7 +588,6 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
-      initMenu();
     }
     super.didChangeDependencies();
   }
@@ -602,7 +599,6 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
 
   @override
   Widget build(BuildContext context) {
-    PopupMenu.context = context;
     Widget thumbNail;
     if (widget.post.mediaPosts.any((element) => element.type == 'PICTURE')) {
       final String url = widget.post.mediaPosts
@@ -706,10 +702,23 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                       )),
                 ),
                 Center(
-                  child: GestureDetector(
+                  child: PopupMenuButton(
                       key: moreBtnKey,
-                      onTap: () {
-                        menu.show(widgetKey: moreBtnKey);
+                      itemBuilder: (_) => <PopupMenuItem<String>>[
+                            PopupMenuItem(
+                              child: Text('Bỏ lưu'),
+                              value: 'Bỏ lưu',
+                            ),
+                          ],
+                      onSelected: (val) async {
+                        if (val == 'Bỏ lưu') {
+                          final res = await _postBloc.unsavePost(widget.post);
+                          if (res.isSuccess) {
+                          } else {
+                            showToast(res.errMessage, context);
+                          }
+                          navigatorKey.currentState.maybePop();
+                        }
                       },
                       child: SizedBox(width: 30, child: Icon(Icons.more_vert))),
                 )
@@ -733,30 +742,4 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
               ));
         });
   }
-
-  initMenu() {
-    if (AuthBloc.instance.userModel == null) return;
-    menu = PopupMenu(
-        items: [
-          MenuItem(
-              title: 'Bỏ lưu',
-              image: Icon(
-                Icons.remove_circle_outline,
-                color: Colors.white,
-              )),
-        ],
-        onClickMenu: (val) async {
-          if (val.menuTitle == 'Bỏ lưu') {
-            final res = await _postBloc.unsavePost(widget.post);
-            if (res.isSuccess) {
-            } else {
-              showToast(res.errMessage, context);
-            }
-          }
-        },
-        stateChanged: (val) {},
-        onDismiss: () {});
-  }
-
-  PopupMenu menu;
 }
