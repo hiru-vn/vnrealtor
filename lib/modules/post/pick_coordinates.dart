@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/share/import.dart';
@@ -32,6 +33,27 @@ class PickCoordinatesState extends State<PickCoordinates> {
         ),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       );
+    });
+
+    PostBloc.instance.getAddress(point.longitude, point.latitude).then((res) {
+      if (res.isSuccess) {
+        setState(() {
+          selectedMarker = Marker(
+            markerId: MarkerId(point.toString()),
+            position: point,
+            infoWindow: InfoWindow(
+              snippet: res.data.address.toString(),
+              title: 'Ví trí đang chọn',
+            ),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          );
+        });
+        Future.delayed(Duration(milliseconds: 150), () {
+          _controller.future.then((value) =>
+              value.showMarkerInfoWindow(MarkerId(point.toString())));
+        });
+      }
     });
   }
 

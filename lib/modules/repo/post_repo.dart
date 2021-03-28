@@ -361,6 +361,13 @@ id
     return res['getAllHashTagTP'];
   }
 
+  Future getAddress(double long, double lat) async {
+    final res = await ReportSrv().query(
+        'getAddress', 'locationLong: $long , locationLat: $lat',
+        fragment: 'address ward district province');
+    return res['getAddress'];
+  }
+
   Stream<FetchResult> subscriptionCommentByPostId(String postId) {
     List<String> ids = [postId];
     final res = CommentSrv().subscription('newComment',

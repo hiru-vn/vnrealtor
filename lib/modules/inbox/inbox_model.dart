@@ -68,7 +68,7 @@ class FbInboxMessageModel {
         id,
         map['avatar'],
         map['date'],
-        map["fullName"],
+        map['fullName'],
         map['text'],
         map['uid'],
         map['filePaths'] == null ? [] : map['filePaths'].cast<String>(),

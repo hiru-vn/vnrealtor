@@ -40,10 +40,11 @@ class _SettingPageState extends State<SettingPage> {
       // },
       {
         "name":
-            "Điểm uy tín: ${_authBloc.userModel.reputationScore.toString()}",
+            "Điểm tương tác: ${_authBloc.userModel.reputationScore.toString()}",
         "img": "assets/image/star_point.png",
         "action": () {
-          PointPage.navigate();
+          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
+          // PointPage.navigate();
         }
       },
       {

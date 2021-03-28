@@ -167,7 +167,7 @@ class _InboxChatState extends State<InboxChat> {
     // add listener to cancel listener, or else will cause bug setState when dispose state
     _incomingMessageListener = _incomingMessageStream.listen(onIncomingMessage);
     jumpToEnd();
-    Future.delayed(Duration(milliseconds: 500), () => jumpToEnd());
+    Future.delayed(Duration(milliseconds: 300), () => jumpToEnd());
   }
 
   void onIncomingMessage(event) async {
@@ -206,9 +206,7 @@ class _InboxChatState extends State<InboxChat> {
     if (mounted) setState(() {});
     // new message! scroll to bottom to see them
     Future.delayed(Duration(milliseconds: 100), () {
-      if (_chatViewKey.currentState.scrollController.position.pixels >
-          _chatViewKey.currentState.scrollController.position.maxScrollExtent -
-              200) scrollToEnd();
+      scrollToEnd();
     });
   }
 

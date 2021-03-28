@@ -3,6 +3,7 @@ import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:datcao/modules/notification/notification_page.dart';
 import 'package:datcao/modules/post/post_page.dart';
 import 'package:datcao/modules/profile/profile_page.dart';
@@ -25,18 +26,27 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
   List<Widget> _pages = <Widget>[];
+  AuthBloc _authBloc;
 
   @override
   void initState() {
     _pages.addAll([
       PostPage(),
+      InboxList(),
       NotificationPage(),
       ProfilePage(),
       SettingPage(),
     ]);
-    
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_authBloc == null) {
+      _authBloc = Provider.of(context);
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -56,12 +66,17 @@ class _HomePageState extends State<HomePage>
         bottomNavigationBar: BottomNavigator(
           selectedIndex: _selectedIndex,
           list: [
+            BottomTabModel(0, 'Trang chủ', MdiIcons.homeOutline, MdiIcons.home),
             BottomTabModel(
-                false, 'Trang chủ', MdiIcons.homeOutline, MdiIcons.home),
-            BottomTabModel(
-                true, 'Thông báo', MdiIcons.bellOutline, MdiIcons.bell),
-            BottomTabModel(false, 'Hồ sơ', Icons.person_outline, Icons.person),
-            BottomTabModel(false, 'Menu', Icons.menu, Icons.menu_outlined)
+              _authBloc.userModel?.messNotiCount ?? 0,
+              'Hộp thư',
+              Icons.message_outlined,
+              Icons.message,
+            ),
+            BottomTabModel(_authBloc.userModel?.notiCount ?? 0, 'Thông báo',
+                MdiIcons.bellOutline, MdiIcons.bell),
+            BottomTabModel(0, 'Hồ sơ', Icons.person_outline, Icons.person),
+            BottomTabModel(0, 'Menu', Icons.menu, Icons.menu_outlined),
           ],
           onSelect: (index) {
             if (index == 0 && _selectedIndex == 0) {
@@ -73,14 +88,14 @@ class _HomePageState extends State<HomePage>
                     curve: Curves.decelerate);
               }
             }
-            if (index == 1 && _selectedIndex == 1) {
+            if (index == 2 && _selectedIndex == 2) {
               if (UserBloc.instance.profileScrollController != null) {
                 NotificationBloc.instance.notiScrollController.animateTo(0,
                     duration: Duration(milliseconds: 300),
                     curve: Curves.decelerate);
               }
             }
-            if (index == 2 && _selectedIndex == 2) {
+            if (index == 3 && _selectedIndex == 3) {
               if (UserBloc.instance.profileScrollController != null) {
                 UserBloc.instance.profileScrollController.animateTo(0,
                     duration: Duration(milliseconds: 300),
@@ -92,8 +107,14 @@ class _HomePageState extends State<HomePage>
               _selectedIndex = index;
             });
 
-            if (index == 1) {
+            if (index == 2) {
               UserBloc.instance.seenAllNoti();
+            }
+            if (index == 1) {
+              if (AuthBloc.instance.userModel.messNotiCount != 0) {
+                AuthBloc.instance.userModel.messNotiCount = 0;
+                UserBloc.instance.seenNotiMess();
+              }
             }
           },
         ),

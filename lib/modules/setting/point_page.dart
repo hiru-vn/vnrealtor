@@ -24,7 +24,7 @@ class _PointPageState extends State<PointPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
-      appBar: AppBar2('Điểm uy tín của bạn'),
+      appBar: AppBar2('Điểm tương tác của bạn'),
       body: NestedScrollView(
         headerSliverBuilder: (context, value) {
           return [
@@ -69,7 +69,7 @@ class _PointPageState extends State<PointPage>
                         SizedBox(
                           width: deviceWidth(context) / 1.4,
                           child: Text(
-                            'Điểm uy tín dùng để tăng số lượng bài đăng mà bạn có thể đăng trong ngày.',
+                            'Điểm tương tác dùng để tăng số lượng bài đăng mà bạn có thể đăng trong ngày.',
                             textAlign: TextAlign.center,
                           ),
                         ),

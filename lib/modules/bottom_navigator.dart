@@ -6,12 +6,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/rendering.dart';
 
 class BottomTabModel {
-  final bool isNoti;
+  final int counter;
   final String title;
   final IconData icon;
   final IconData iconActive;
 
-  BottomTabModel(this.isNoti, this.title, this.icon, this.iconActive);
+  BottomTabModel(this.counter, this.title, this.icon, this.iconActive);
 }
 
 class BottomNavigator extends StatefulWidget {
@@ -31,13 +31,8 @@ class BottomNavigator extends StatefulWidget {
 }
 
 class _BottomNavigatorState extends State<BottomNavigator> {
-  NotificationBloc _notificationBloc;
-  AuthBloc _authBloc;
-
   @override
   Widget build(BuildContext context) {
-    _notificationBloc = Provider.of<NotificationBloc>(context);
-    _authBloc = Provider.of(context);
     final List<BottomNavigationBarItem> bottomNavBarItems = widget.list
         .map(
           (e) => BottomNavigationBarItem(
@@ -45,32 +40,20 @@ class _BottomNavigatorState extends State<BottomNavigator> {
             title: SizedBox.shrink(),
             icon: Stack(
               children: [
-                Container(
-                  height: 28,
-                  width: 28,
-                  color: Colors.transparent,
-                  child: Center(
-                    child: Icon(
-                      e.icon,
+                Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Container(
+                    height: 28,
+                    width: 28,
+                    color: Colors.transparent,
+                    child: Center(
+                      child: Icon(
+                        e.icon,
+                      ),
                     ),
                   ),
                 ),
-                // if (_notificationBloc.notifications
-                //         .any((element) => (!element.seen)) &&
-                //     e.isNoti)
-                // Positioned(
-                //   top: 2,
-                //   left: deviceWidth(context) / 8 + 6,
-                //   child: Container(
-                //     width: 8,
-                //     height: 8,
-                //     decoration: BoxDecoration(
-                //       color: Colors.red,
-                //       shape: BoxShape.circle,
-                //     ),
-                //   ),
-                // ),
-                if ((_authBloc?.userModel?.notiCount ?? 0) > 0 && e.isNoti)
+                if (e.counter > 0)
                   Positioned(
                     top: 0,
                     right: 0,
@@ -86,7 +69,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                       ),
                       child: Center(
                         child: Text(
-                          _authBloc?.userModel?.notiCount.toString(),
+                          e.counter.toString(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 9.5,
@@ -112,19 +95,19 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                     ),
                   ),
                 ),
-                if ((_authBloc?.userModel?.notiCount ?? 0) > 0 && e.isNoti)
-                  Positioned(
-                    top: 2,
-                    right: 3,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
+                // if (e.counter > 0)
+                //   Positioned(
+                //     top: 2,
+                //     right: 3,
+                //     child: Container(
+                //       width: 8,
+                //       height: 8,
+                //       decoration: BoxDecoration(
+                //         color: Colors.red,
+                //         shape: BoxShape.circle,
+                //       ),
+                //     ),
+                //   ),
               ],
             ),
           ),

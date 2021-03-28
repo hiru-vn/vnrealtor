@@ -57,7 +57,7 @@ class _InboxListState extends State<InboxList>
         _inboxBloc.groupInboxList = res;
       });
   }
-
+  
   Widget _getChatGroupAvatar(FbInboxGroupModel group) {
     if (group.userAvatars == null) return SizedBox.shrink();
     List listAvatar = group.userAvatars.map((e) {

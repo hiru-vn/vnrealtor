@@ -1,4 +1,5 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/model/address.dart';
 import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/media_post.dart';
 import 'package:datcao/modules/model/post.dart';
@@ -625,6 +626,18 @@ class PostBloc extends ChangeNotifier {
       if (res == null)
         return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
       return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getAddress(double long, double lat) async {
+    try {
+      final res = await PostRepo().getAddress(long, lat);
+
+      return BaseResponse.success(Address.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {

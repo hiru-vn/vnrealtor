@@ -128,7 +128,7 @@ class _PostWidgetState extends State<PostWidget> {
                             ),
                           SizedBox(width: 5),
                           CustomTooltip(
-                            message: 'Điểm uy tín',
+                            message: 'Điểm tương tác',
                             child: Text(
                               widget.post?.user?.reputationScore.toString(),
                               style: ptSmall(),
