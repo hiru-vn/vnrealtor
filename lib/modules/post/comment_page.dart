@@ -765,7 +765,6 @@ class _ReplyWidgetState extends State<ReplyWidget> {
             ),
             Spacer(),
             PopupMenuButton(
-                key: _menuKey,
                 child: SizedBox.shrink(),
                 itemBuilder: (_) => <PopupMenuItem<String>>[
                       if (AuthBloc.instance.userModel?.id ==

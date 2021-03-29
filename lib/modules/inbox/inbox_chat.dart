@@ -6,6 +6,7 @@ import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
+import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:datcao/utils/call_kit.dart';
 import 'package:flutter/material.dart';
 import './import/dash_chat/dash_chat.dart';
@@ -52,6 +53,7 @@ class _InboxChatState extends State<InboxChat> {
   List<UserModel> _severUsers = [];
   final TextEditingController _chatC = TextEditingController();
   final userColor = HexColor('#4D94FF');
+  FbInboxGroupModel group;
 
   List<String> _files = [];
   InboxBloc _inboxBloc;
@@ -84,13 +86,14 @@ class _InboxChatState extends State<InboxChat> {
 
   @override
   void initState() {
+    group = widget.group;
     _focusNode.addListener(() {
       if (_focusNode.hasFocus)
         setState(() {
           showEmoj = false;
         });
     });
-    for (final user in widget.group.users) {
+    for (final user in group.users) {
       _users.add(ChatUser(
         uid: user.id,
         name: user.name,
@@ -110,7 +113,7 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   Future<void> loadUsers() async {
-    final fbUsers = widget.group.users;
+    final fbUsers = group.users;
     _fbUsers.addAll(fbUsers);
     for (final fbUser in fbUsers) {
       final user = _users.firstWhere((user) => user.uid == fbUser.id);
@@ -122,7 +125,7 @@ class _InboxChatState extends State<InboxChat> {
 
   Future loadUsersFromSever() async {
     final res = await UserBloc.instance
-        .getListUserIn(widget.group.users.map((e) => e.id).toList());
+        .getListUserIn(group.users.map((e) => e.id).toList());
     if (res.isSuccess) {
       _severUsers.clear();
       _severUsers.addAll(res.data);
@@ -140,7 +143,7 @@ class _InboxChatState extends State<InboxChat> {
 
   Future<void> loadFirst20Message() async {
     // get list first 20 message by group id
-    final fbMessages = await _inboxBloc.get20Messages(widget.group.id);
+    final fbMessages = await _inboxBloc.get20Messages(group.id);
     if (fbMessages.isEmpty) return;
     messages.addAll(fbMessages.map((element) {
       return ChatMessage(
@@ -160,7 +163,7 @@ class _InboxChatState extends State<InboxChat> {
 
     // init stream with last messageId
     _incomingMessageStream = await _inboxBloc.getStreamIncomingMessages(
-        widget.group.id,
+        group.id,
         fbMessages.length > 0 ? fbMessages[fbMessages.length - 1].id : null);
     // add listener to cancel listener, or else will cause bug setState when dispose state
     _incomingMessageListener = _incomingMessageStream.listen(onIncomingMessage);
@@ -196,7 +199,7 @@ class _InboxChatState extends State<InboxChat> {
 
     // now update stream with new last message id
     _incomingMessageStream = await _inboxBloc.getStreamIncomingMessages(
-        widget.group.id, fbMessages[fbMessages.length - 1].id);
+        group.id, fbMessages[fbMessages.length - 1].id);
     // refresh lisener to prevent bug
     _incomingMessageListener?.cancel();
     _incomingMessageListener = _incomingMessageStream.listen(onIncomingMessage);
@@ -215,8 +218,8 @@ class _InboxChatState extends State<InboxChat> {
       setState(() {
         onLoadMore = true;
       });
-    final fbMessages = await _inboxBloc.get20Messages(widget.group.id,
-        lastMessageId: messages[0].id);
+    final fbMessages =
+        await _inboxBloc.get20Messages(group.id, lastMessageId: messages[0].id);
     if (mounted)
       setState(() {
         onLoadMore = false;
@@ -267,7 +270,7 @@ class _InboxChatState extends State<InboxChat> {
           messages.add(copyMessage);
         });
         _inboxBloc.addMessage(
-            widget.group.id,
+            group.id,
             message.text,
             message.createdAt,
             _authBloc.userModel.id,
@@ -299,16 +302,16 @@ class _InboxChatState extends State<InboxChat> {
     String text = message.text;
 
     _updateGroupPageText(
-        widget.group.id,
+        group.id,
         _authBloc.userModel.name,
         text,
         message.createdAt,
         message.user.avatar,
-        [...widget.group.readers, AuthBloc.instance.userModel.id]);
+        [...group.readers, AuthBloc.instance.userModel.id]);
 
     if (_tempFiles.length == 0) {
       _inboxBloc.addMessage(
-          widget.group.id,
+          group.id,
           text,
           message.createdAt,
           _authBloc.userModel.id,
@@ -318,8 +321,7 @@ class _InboxChatState extends State<InboxChat> {
       Future.wait(
         _tempFiles.map((e) => FileUtil.uploadFireStorage(
               e,
-              path:
-                  'chats/group_${widget.group.id}/user_${_authBloc.userModel.id}',
+              path: 'chats/group_${group.id}/user_${_authBloc.userModel.id}',
               resizeWidth: 480,
             )),
       ).then((value) {
@@ -330,7 +332,7 @@ class _InboxChatState extends State<InboxChat> {
         //         ?.customProperties['files'] = value;
         //   });
         _inboxBloc.addMessage(
-            widget.group.id,
+            group.id,
             text,
             message.createdAt,
             _authBloc.userModel.id,
@@ -409,6 +411,8 @@ class _InboxChatState extends State<InboxChat> {
 
   @override
   Widget build(BuildContext context) {
+    group = _inboxBloc.groupInboxList
+        .firstWhere((element) => element.id == widget.group.id);
     return Scaffold(
       appBar: MyAppBar(
         title: widget.title,
@@ -422,15 +426,36 @@ class _InboxChatState extends State<InboxChat> {
           //     height: 40,
           //   ),
           // ),
+          if (group.blockedBy.length > 0)
+            CustomTooltip(
+              message: 'Cuộc hội thoại đã bị chặn',
+              child: SizedBox(
+                width: 30,
+                child: Icon(
+                  Icons.close,
+                  color: Colors.red,
+                ),
+              ),
+            ),
           PopupMenuButton(
             itemBuilder: (_) => <PopupMenuItem<String>>[
               PopupMenuItem(
                 child: Text('Gọi điện'),
                 value: 'Gọi điện',
               ),
+              if (group.blockedBy.contains(AuthBloc.instance.userModel.id))
+                PopupMenuItem(
+                  child: Text('Gỡ chặn'),
+                  value: 'Gỡ chặn',
+                )
+              else
+                PopupMenuItem(
+                  child: Text('Chặn tin nhắn'),
+                  value: 'Chặn tin nhắn',
+                ),
             ],
             onSelected: (val) async {
-              if (val.menuTitle == 'Gọi điện') {
+              if (val == 'Gọi điện') {
                 // try {
                 //   CallKit.displayIncomingCall(context, _authBloc.userModel.id,
                 //           _authBloc.userModel.name, _authBloc.userModel.phone)
@@ -440,10 +465,20 @@ class _InboxChatState extends State<InboxChat> {
                     .firstWhere(
                         (element) => element.id != _authBloc.userModel.id)
                     .phone);
-                // VoiceCallPage.navigate(widget.group.id, _fbUsers);
+                // VoiceCallPage.navigate(group.id, _fbUsers);
               }
-              if (val.menuTitle == 'Video call') {
-                VideoCallPage.navigate(widget.group.id, _fbUsers);
+              if (val == 'Gỡ chặn') {
+                _inboxBloc.unBlockGroup(group.id);
+              }
+              if (val == 'Chặn tin nhắn') {
+                showConfirmDialog(
+                    context, '2 người sẽ không thể nhắn tin cho nhau nữa.',
+                    confirmTap: () async {
+                  _inboxBloc.blockGroup(group.id);
+                }, navigatorKey: navigatorKey);
+              }
+              if (val == 'Video call') {
+                VideoCallPage.navigate(group.id, _fbUsers);
               }
             },
             child: SizedBox(
@@ -519,6 +554,7 @@ class _InboxChatState extends State<InboxChat> {
                 }
                 return SizedBox.shrink();
               },
+              readOnly: (group.blockedBy?.length ?? 0) > 0,
               scrollController: scrollController,
               textController: _chatC,
               key: _chatViewKey,
@@ -689,46 +725,7 @@ class _InboxChatState extends State<InboxChat> {
                 else
                   return SizedBox.shrink();
               },
-              inputFooterBuilder: () => (_files != null || _files.length == 0)
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 3),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: _files
-                            .map(
-                              (file) => Row(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(bottom: 8),
-                                    padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                        color: Colors.green[50],
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.file_present,
-                                          color: userColor,
-                                        ),
-                                        Text(
-                                          path.basename(file),
-                                          style: ptBody().copyWith(
-                                            color: userColor,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    )
-                  : SizedBox.shrink(),
+              inputFooterBuilder: _buildFooter,
               leading: [
                 Row(
                   children: [
@@ -899,6 +896,18 @@ class _InboxChatState extends State<InboxChat> {
               ],
             ),
           ),
+          if (group.blockedBy.length > 0)
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 35,
+              color: Colors.black87,
+              child: Center(
+                child: Text(
+                  'Cuộc hội thoại đã bị chặn',
+                  style: ptBody().copyWith(color: Colors.white),
+                ),
+              ),
+            ),
           if (showEmoj)
             EmojiKeyboard(
               onEmojiSelected: (Emoji emoji) {
@@ -912,6 +921,46 @@ class _InboxChatState extends State<InboxChat> {
       ),
     );
   }
+
+  Widget _buildFooter() => (_files != null || _files.length == 0)
+      ? Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 3),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: _files
+                .map(
+                  (file) => Row(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 8),
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: Colors.green[50],
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.file_present,
+                              color: userColor,
+                            ),
+                            Text(
+                              path.basename(file),
+                              style: ptBody().copyWith(
+                                color: userColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                .toList(),
+          ),
+        )
+      : SizedBox.shrink();
 }
 
 class LoadEarlierWidget extends StatelessWidget {

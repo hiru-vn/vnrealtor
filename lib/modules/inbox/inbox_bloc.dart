@@ -82,6 +82,46 @@ class InboxBloc extends ChangeNotifier {
 
   Future<void> userJoinGroupChat(String uid, String groupId) async {}
 
+  Future<void> blockGroup(String groupId) async {
+    final snapShot =
+        await firestore.collection(groupCollection).doc(groupId).get();
+    if (snapShot.exists) {
+      await getGroup(groupId).update({
+        'blockedBy': FieldValue.arrayUnion([AuthBloc.instance.userModel.id]),
+        'lastMessage':
+            '${AuthBloc.instance.userModel.name} đã chặn cuộc hội thoại.',
+      });
+      groupInboxList
+          .firstWhere((element) => element.id == groupId)
+          .blockedBy
+          .add(AuthBloc.instance.userModel.id);
+      notifyListeners();
+    }
+  }
+
+  Future<void> unBlockGroup(String groupId) async {
+    final snapShot =
+        await firestore.collection(groupCollection).doc(groupId).get();
+    if (snapShot.exists) {
+      final List<String> blockedBy = snapShot.data()['blockedBy'] != null
+          ? snapShot.data()['blockedBy'].cast<String>()
+          : [];
+      blockedBy.removeWhere(
+          (item) => item.toString() == AuthBloc.instance.userModel.id);
+      await getGroup(groupId).update({
+        'blockedBy': blockedBy,
+        'lastMessage':
+            '${AuthBloc.instance.userModel.name} đã mở cuộc hội thoại.',
+      });
+      groupInboxList
+          .firstWhere((element) => element.id == groupId)
+          .blockedBy
+          .removeWhere(
+              (item) => item.toString() == AuthBloc.instance.userModel.id);
+      notifyListeners();
+    }
+  }
+
   Future<void> updateGroupOnMessage(
       String groupid,
       String lastUser,

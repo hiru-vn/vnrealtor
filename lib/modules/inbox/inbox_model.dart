@@ -25,24 +25,30 @@ class FbInboxGroupModel {
   final List<FbInboxUserModel> users;
   final List<String> userIds;
   final List<String> userAvatars;
+  final List<String> blockedBy;
 
   FbInboxGroupModel(this.id, this.image, this.lastMessage, this.lastUser,
-      this.time, this.readers, this.users, this.userIds, this.userAvatars);
+      this.time, this.readers, this.users, this.userIds, this.userAvatars,
+      {this.blockedBy});
 
   factory FbInboxGroupModel.fromJson(
       Map<String, dynamic> map, String id, List<FbInboxUserModel> users) {
     return FbInboxGroupModel(
-        id,
-        map['image'],
-        map['lastMessage'],
-        map["lastUser"],
-        map['time'],
-        map['readers'] == null ? [] : (map['readers'] as List).cast<String>(),
-        users,
-        map['userIds'] == null ? [] : (map['userIds'] as List).cast<String>(),
-        map['userAvatars'] == null
-            ? []
-            : (map['userAvatars'] as List).cast<String>());
+      id,
+      map['image'],
+      map['lastMessage'],
+      map["lastUser"],
+      map['time'],
+      map['readers'] == null ? [] : (map['readers'] as List).cast<String>(),
+      users,
+      map['userIds'] == null ? [] : (map['userIds'] as List).cast<String>(),
+      map['userAvatars'] == null
+          ? []
+          : (map['userAvatars'] as List).cast<String>(),
+      blockedBy: map['blockedBy'] == null
+          ? []
+          : (map['blockedBy'] as List).cast<String>(),
+    );
   }
 }
 
