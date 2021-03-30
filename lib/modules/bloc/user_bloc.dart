@@ -69,7 +69,18 @@ class UserBloc extends ChangeNotifier {
       getFollowerIn7d();
       setUserlocation();
       suggestFollow();
+      getListFriendIds();
     }
+  }
+
+  void getListFriendIds() {
+    List<String> users = [];
+    AuthBloc.instance.userModel.followerIds.forEach((element) {
+      if (AuthBloc.instance.userModel.followingIds.contains(element)) {
+        users.add(element);
+      }
+    });
+    AuthBloc.instance.userModel.friendIds = users;
   }
 
   Future<BaseResponse> getFriendRequestFromOtherUsers() async {
