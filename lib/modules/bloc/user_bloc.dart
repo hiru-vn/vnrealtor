@@ -175,7 +175,7 @@ class UserBloc extends ChangeNotifier {
   Future<BaseResponse> updateSetting(SettingModel setting) async {
     try {
       final res = await UserRepo().updateSetting(
-          setting.likeNoti, setting.commentNoti, setting.shareNoti);
+          setting.likeNoti, setting.commentNoti, setting.shareNoti, setting.postNoti);
 
       return BaseResponse.success(res);
     } catch (e) {

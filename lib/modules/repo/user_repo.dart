@@ -218,13 +218,14 @@ messNotiCount: 0
     return res['id'];
   }
 
-  Future updateSetting(bool like, bool share, bool comment) async {
+  Future updateSetting(bool like, bool share, bool comment, bool post) async {
     final res = await UserSrv().mutate(
         'updateSetting',
         '''
 likeNoti: $like
 shareNoti: $share
 commentNoti: $comment
+postNoti: $post
     ''',
         fragment: 'id');
     return res['id'];

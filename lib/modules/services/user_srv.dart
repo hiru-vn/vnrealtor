@@ -12,6 +12,7 @@ role: String
 reputationScore: Int
 avatar
 isMod
+postNoti
 friendIds: [ID]
 createdAt: DateTime
 updatedAt: DateTime

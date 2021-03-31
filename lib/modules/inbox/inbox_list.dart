@@ -110,6 +110,7 @@ class _InboxListState extends State<InboxList>
               Padding(
                 padding: const EdgeInsets.all(10.5),
                 child: Material(
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   elevation: 5,
                   child: Row(

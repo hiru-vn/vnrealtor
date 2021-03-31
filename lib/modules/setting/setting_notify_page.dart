@@ -16,6 +16,7 @@ class _SettingNotifyPageState extends State<SettingNotifyPage> {
   bool isLike = false;
   bool isComment = true;
   bool isShare = true;
+  bool isPost = true;
   AuthBloc _authBloc;
   UserBloc _userBloc;
 
@@ -28,6 +29,7 @@ class _SettingNotifyPageState extends State<SettingNotifyPage> {
         isLike = _authBloc.userModel.setting.likeNoti ?? false;
         isComment = _authBloc.userModel.setting.commentNoti ?? true;
         isShare = _authBloc.userModel.setting.shareNoti ?? true;
+        isPost = _authBloc.userModel.setting.postNoti ?? true;
       }
     }
     super.didChangeDependencies();
@@ -37,7 +39,8 @@ class _SettingNotifyPageState extends State<SettingNotifyPage> {
     _authBloc.userModel.setting
       ..likeNoti = isLike
       ..commentNoti = isComment
-      ..shareNoti = isShare;
+      ..shareNoti = isShare
+      ..postNoti = isPost;
     final res = await _userBloc.updateSetting(_authBloc.userModel.setting);
     if (res.isSuccess) {
     } else {
@@ -165,6 +168,42 @@ class _SettingNotifyPageState extends State<SettingNotifyPage> {
                 onChanged: (bool val) {
                   setState(() {
                     isShare = !isShare;
+                  });
+                }),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          CustomListTile(
+            tileColor: Colors.white,
+            leading: Container(
+              decoration: BoxDecoration(
+                color: ptSecondaryColor(context),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              padding: EdgeInsets.all(6),
+              child: Icon(
+                MdiIcons.newspaper,
+                color: ptPrimaryColor(context),
+                size: 19,
+              ),
+            ),
+            title: Text(
+              'Từ bài viết khác',
+              style: ptTitle().copyWith(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15),
+            ),
+            // subtitle: Text(
+            //   'Khi có người chia sẻ bài viết',
+            //   style: ptTiny().copyWith(color: Colors.black54),
+            // ),
+            trailing: Switch(
+                value: isPost,
+                onChanged: (bool val) {
+                  setState(() {
+                    isPost = !isPost;
                   });
                 }),
           ),
