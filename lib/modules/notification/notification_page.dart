@@ -1,5 +1,7 @@
+import 'package:datcao/main.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/inbox/import/app_bar.dart';
 import 'package:datcao/modules/model/notification.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_detail.dart';
@@ -41,7 +43,10 @@ class _NotificationPageState extends State<NotificationPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar1(
+      appBar: MyAppBar(
+        icon: Icon(
+          Icons.notifications,
+        ),
         title: 'Thông báo',
         actions: [
           Center(

@@ -12,6 +12,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool automaticallyImplyLeading;
   final bool centerTitle;
   final int elevation;
+  final Widget icon;
 
   MyAppBar(
       {this.actions,
@@ -20,6 +21,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       this.title,
       this.elevation = 0,
       this.centerTitle = false,
+      this.icon,
       this.automaticallyImplyLeading = false});
   @override
   Widget build(BuildContext context) {
@@ -42,6 +44,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           //     width: 7,
           //   ),
           // ],
+          if (icon != null) ...[
+            icon,
+            SizedBox(
+              width: 15,
+            ),
+          ],
           Text(
             title ?? '',
             style: ptBigTitle().copyWith(
