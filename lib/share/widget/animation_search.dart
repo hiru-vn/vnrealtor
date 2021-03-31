@@ -5,10 +5,17 @@ class AnimatedSearchBar extends StatefulWidget {
   final double height;
   final String value;
   final Function(String) onSearch;
+  final Function(String) onSubmit;
   final TextEditingController controller;
 
   const AnimatedSearchBar(
-      {Key key, this.width, this.height, this.onSearch, this.value, this.controller})
+      {Key key,
+      this.width,
+      this.height,
+      this.onSearch,
+      this.onSubmit,
+      this.value,
+      this.controller})
       : super(key: key);
 
   @override
@@ -55,6 +62,7 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
               child: !_folded
                   ? TextField(
                       onChanged: widget.onSearch,
+                      onSubmitted: widget.onSubmit,
                       controller: widget.controller,
                       focusNode: _focusNode,
                       decoration: InputDecoration(
@@ -87,9 +95,9 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
                   setState(() {
                     _folded = !_folded;
                   });
-                  Future.delayed(Duration(milliseconds: 100), () {
-                    _focusNode.requestFocus();
-                  });
+                  // Future.delayed(Duration(milliseconds: 300), () {
+                  //   _focusNode.requestFocus();
+                  // });
                 },
               ),
             ),

@@ -250,7 +250,7 @@ class InboxBloc extends ChangeNotifier {
     return;
   }
 
-  Future<List<String>> get20UserGroupInboxList(String idUser) async {
+  Future<List<String>> getUserGroupInboxListIds(String idUser) async {
     final snapShot =
         await firestore.collection(userCollection).doc(idUser).get();
     if (!snapShot.exists) return <String>[];
@@ -260,27 +260,6 @@ class InboxBloc extends ChangeNotifier {
   Future<List<FbInboxGroupModel>> getGroupInboxList(
       List<String> idGroups) async {
     var list = <FbInboxGroupModel>[];
-    // idGroups.forEach((id) async {
-    //    final snapShot =
-    //       await firestore.collection(groupCollection).doc(id).get();
-    //   list.add(FbInboxGroupModel.fromJson(snapShot.data(), id));
-    // });
-
-    // for (int i = 0; i < idGroups.length; i++) {
-    //   final item =
-    //       await firestore.collection(groupCollection).doc(idGroups[i]).get();
-    //   final users =
-    //       await getUsers((item.data()['userIds'] as List).cast<String>());
-    //   if (users != null) {
-    //     list.add(FbInboxGroupModel.fromJson(item.data(), item.id, users));
-    //     list.sort((a, b) =>
-    //         DateTime.tryParse(b.time).compareTo(DateTime.tryParse(a.time)));
-    //     groupInboxList = list;
-    //     // notifyListeners();
-    //   }
-    // }
-
-    //final List<FbInboxGroupModel> listGroup =
     await Future.wait(idGroups.map((e) async {
       final item = await firestore.collection(groupCollection).doc(e).get();
       final users =
@@ -290,7 +269,8 @@ class InboxBloc extends ChangeNotifier {
         list.sort((a, b) =>
             DateTime.tryParse(b.time).compareTo(DateTime.tryParse(a.time)));
         groupInboxList = list;
-        // notifyListeners();
+        // reload every 10 groups
+        if ((groupInboxList.length % 20) == 0) notifyListeners();
       }
     }));
 
@@ -298,7 +278,7 @@ class InboxBloc extends ChangeNotifier {
   }
 
   Future<List<FbInboxGroupModel>> getList20InboxGroup(String idUser) async {
-    final groups = await get20UserGroupInboxList(idUser);
+    final groups = await getUserGroupInboxListIds(idUser);
     final inboxes = await getGroupInboxList(groups);
     notifyListeners();
     return inboxes;

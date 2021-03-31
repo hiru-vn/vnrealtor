@@ -3,6 +3,8 @@ import 'package:datcao/modules/inbox/inbox_model.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/share/function/dialog.dart';
+import 'package:datcao/share/widget/animation_search.dart';
+import 'package:datcao/share/widget/spacing_box.dart';
 import 'package:datcao/utils/formart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +35,8 @@ class _InboxListState extends State<InboxList>
   AuthBloc _authBloc;
   int tabIndex = 0;
   PageController _pageController = PageController();
-  List<UserModel> friends = [];
+  List<UserModel> _friends = [];
+  TextEditingController _searchC = TextEditingController();
 
   @override
   void initState() {
@@ -51,7 +54,7 @@ class _InboxListState extends State<InboxList>
           .then((res) {
         if (res.isSuccess) {
           setState(() {
-            friends = res.data;
+            _friends = res.data;
           });
         }
       });
@@ -97,6 +100,18 @@ class _InboxListState extends State<InboxList>
 
   @override
   Widget build(BuildContext context) {
+    final friends = _friends
+        .where((element) => element.name
+            .toLowerCase()
+            .contains(_searchC.text.trim().toLowerCase()))
+        .toList();
+    final groups = _inboxBloc.groupInboxList
+        .where((element) => element.users.any((element) =>
+            element.id != AuthBloc.instance.userModel.id &&
+            element.name
+                .toLowerCase()
+                .contains(_searchC.text.trim().toLowerCase())))
+        .toList();
     return Scaffold(
       appBar: MyAppBar(
         title: 'Hộp thư',
@@ -104,97 +119,104 @@ class _InboxListState extends State<InboxList>
         elevation: 3,
         bgColor: Colors.white,
         actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.5),
-                child: Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  elevation: 5,
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            tabIndex = 0;
-                            _pageController.animateToPage(0,
-                                duration: Duration(milliseconds: 200),
-                                curve: Curves.decelerate);
-                          });
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 3 - 25,
-                          decoration: BoxDecoration(
-                            color: tabIndex == 0
-                                ? ptPrimaryColor(context)
-                                : Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 5),
-                          child: Center(
-                            child: Text(
-                              'Tin nhắn',
-                              style: ptTitle().copyWith(
-                                  color: tabIndex == 0
-                                      ? Colors.white
-                                      : Colors.black54),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            tabIndex = 1;
-                            _pageController.animateToPage(1,
-                                duration: Duration(milliseconds: 200),
-                                curve: Curves.decelerate);
-                          });
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 3 - 25,
-                          decoration: BoxDecoration(
-                            color: tabIndex == 1
-                                ? ptPrimaryColor(context)
-                                : Colors.white,
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 5),
-                          child: Center(
-                            child: Text(
-                              'Bạn bè',
-                              style: ptTitle().copyWith(
-                                  color: tabIndex == 1
-                                      ? Colors.white
-                                      : Colors.black54),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+          Center(
+              child: AnimatedSearchBar(
+            onSearch: (val) {},
+            controller: _searchC,
+          )),
+          Center(
+            child: IconButton(
+              splashColor: Colors.white,
+              onPressed: () {
+                // SettingChatPage.navigate();
+              },
+              icon: Icon(Icons.settings_outlined),
+            ),
           ),
         ],
       ),
       body: Column(
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10.5, bottom: 5),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          tabIndex = 0;
+                          _pageController.animateToPage(0,
+                              duration: Duration(milliseconds: 200),
+                              curve: Curves.decelerate);
+                        });
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 3 - 20,
+                        decoration: BoxDecoration(
+                          color:
+                              tabIndex == 0 ? Colors.grey[400] : Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: Center(
+                          child: Text(
+                            'Tin nhắn',
+                            style: ptTitle().copyWith(
+                                color: tabIndex == 0
+                                    ? Colors.white
+                                    : Colors.black54),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SpacingBox(w: 8),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          tabIndex = 1;
+                          _pageController.animateToPage(1,
+                              duration: Duration(milliseconds: 200),
+                              curve: Curves.decelerate);
+                        });
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 3 - 20,
+                        decoration: BoxDecoration(
+                          color:
+                              tabIndex == 1 ? Colors.grey[400] : Colors.white,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: Center(
+                          child: Text(
+                            'Bạn bè',
+                            style: ptTitle().copyWith(
+                                color: tabIndex == 1
+                                    ? Colors.white
+                                    : Colors.black54),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
           Expanded(
             child: PageView(
               controller: _pageController,
               children: [
-                _inboxBloc.groupInboxList != null
-                    ? _inboxBloc.groupInboxList.length == 0
+                groups != null
+                    ? groups.length == 0
                         ? EmptyWidget(
                             // assetImg: 'assets/image/no_message.dart',
-                            title: 'Bạn chưa có tin nhắn nào.',
+                            title: _searchC.text.trim() == ''
+                                ? 'Bạn chưa có tin nhắn nào.'
+                                : 'Không tìm thấy người dùng',
                           )
                         : RefreshIndicator(
                             color: ptPrimaryColor(context),
@@ -203,12 +225,11 @@ class _InboxListState extends State<InboxList>
                                   .getList20InboxGroup(_authBloc.userModel.id);
                               return;
                             },
-                            child: _inboxBloc.groupInboxList.length != 0
+                            child: groups.length != 0
                                 ? ListView.separated(
-                                    itemCount: _inboxBloc.groupInboxList.length,
+                                    itemCount: groups.length,
                                     itemBuilder: (context, index) {
-                                      final group =
-                                          _inboxBloc.groupInboxList[index];
+                                      final group = groups[index];
                                       final String nameGroup = group.users
                                           .where((element) =>
                                               element.id !=
