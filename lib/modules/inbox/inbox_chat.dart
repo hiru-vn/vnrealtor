@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
+import 'package:datcao/modules/inbox/import/spin_loader.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/dialog.dart';
@@ -411,8 +412,11 @@ class _InboxChatState extends State<InboxChat> {
 
   @override
   Widget build(BuildContext context) {
-    group = _inboxBloc.groupInboxList
-        .firstWhere((element) => element.id == widget.group.id);
+    group = _inboxBloc.groupInboxList.firstWhere(
+        (element) => element.id == widget.group.id,
+        orElse: () => null);
+    if (group == null)
+      return Container(color: Colors.white, child: kLoadingSpinner);
     return Scaffold(
       appBar: MyAppBar(
         title: widget.title,

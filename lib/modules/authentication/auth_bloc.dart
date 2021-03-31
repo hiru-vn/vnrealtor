@@ -109,12 +109,12 @@ class AuthBloc extends ChangeNotifier {
 
   Future<BaseResponse> loginFirebase(UserModel user) async {
     try {
-      InboxBloc.instance
-          .createUser(user.id, user.name, user.avatar, user.phone);
       final res = await _userRepo.loginFirebase(user.uid);
       await SPref.instance.set('FBtoken', res);
       final fbAuth = await FirebaseAuth.instance.signInWithCustomToken(res);
       print(fbAuth);
+      InboxBloc.instance
+          .createUser(user.id, user.name, user.avatar, user.phone);
 
       return BaseResponse.success(res);
     } catch (e) {
@@ -171,7 +171,7 @@ class AuthBloc extends ChangeNotifier {
       UserBloc.instance.init();
       PostBloc.instance.init();
       InboxBloc.instance.init();
-      
+
       firstLogin = true;
       return BaseResponse.success(loginRes);
     } catch (e) {

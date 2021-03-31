@@ -59,11 +59,15 @@ class InboxBloc extends ChangeNotifier {
         'groups': FieldValue.arrayUnion([userIds.join("-")])
       });
     });
+
     final users = await getUsers(userIds);
     if (users == null) {
       showToastNoContext('Người này không nhận tin nhắn');
       return;
     }
+
+    getList20InboxGroup(AuthBloc.instance.userModel.id);
+
     await InboxChat.navigate(
         FbInboxGroupModel(
             userIds.join("-"),
@@ -76,7 +80,7 @@ class InboxBloc extends ChangeNotifier {
             userIds,
             userAvatars),
         lastUser);
-    getList20InboxGroup(AuthBloc.instance.userModel.id);
+
     return;
   }
 
@@ -149,8 +153,6 @@ class InboxBloc extends ChangeNotifier {
     try {
       final List<DocumentSnapshot> snapShots = await Future.wait(
           users.map((e) => firestore.collection(userCollection).doc(e).get()));
-      print(snapShots[0].data());
-      print(snapShots[1].data());
       final listUser =
           snapShots.map((e) => FbInboxUserModel.fromJson(e.data())).toList();
       return listUser;
