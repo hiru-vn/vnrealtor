@@ -141,15 +141,15 @@ class _InboxListState extends State<InboxList>
             },
             controller: _searchC,
           )),
-          Center(
-            child: IconButton(
-              splashColor: Colors.white,
-              onPressed: () {
-                InboxSettingPage.navigate();
-              },
-              icon: Icon(Icons.settings_outlined),
-            ),
-          ),
+          // Center(
+          //   child: IconButton(
+          //     splashColor: Colors.white,
+          //     onPressed: () {
+          //       InboxSettingPage.navigate();
+          //     },
+          //     icon: Icon(Icons.settings_outlined),
+          //   ),
+          // ),
         ],
       ),
       body: Column(
