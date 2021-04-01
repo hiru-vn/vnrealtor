@@ -356,4 +356,15 @@ class UserBloc extends ChangeNotifier {
       // notifyListeners();
     }
   }
+
+  Future<BaseResponse> checkChatAble(String id) async {
+    try {
+      final res = await UserRepo().checkChatAble(id);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
 }

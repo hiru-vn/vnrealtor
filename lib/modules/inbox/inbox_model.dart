@@ -26,10 +26,11 @@ class FbInboxGroupModel {
   final List<String> userIds;
   final List<String> userAvatars;
   final List<String> blockedBy;
+  final List<String> waitingBy;
 
   FbInboxGroupModel(this.id, this.image, this.lastMessage, this.lastUser,
       this.time, this.readers, this.users, this.userIds, this.userAvatars,
-      {this.blockedBy});
+      {this.blockedBy, this.waitingBy});
 
   factory FbInboxGroupModel.fromJson(
       Map<String, dynamic> map, String id, List<FbInboxUserModel> users) {
@@ -48,6 +49,9 @@ class FbInboxGroupModel {
       blockedBy: map['blockedBy'] == null
           ? []
           : (map['blockedBy'] as List).cast<String>(),
+      waitingBy: map['waitingBy'] == null
+          ? []
+          : (map['waitingBy'] as List).cast<String>(),
     );
   }
 }

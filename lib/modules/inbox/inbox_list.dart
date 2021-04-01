@@ -5,6 +5,7 @@ import 'package:datcao/modules/inbox/inbox_setting.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/share/function/dialog.dart';
+import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/widget/animation_search.dart';
 import 'package:datcao/share/widget/spacing_box.dart';
 import 'package:datcao/utils/formart.dart';
@@ -109,6 +110,17 @@ class _InboxListState extends State<InboxList>
             .contains(_searchC.text.trim().toLowerCase()))
         .toList();
     final groups = _inboxBloc.groupInboxList
+        .where((element) =>
+            !element.waitingBy.contains(AuthBloc.instance.userModel.id))
+        .where((element) => element.users.any((element) =>
+            element.id != AuthBloc.instance.userModel.id &&
+            element.name
+                .toLowerCase()
+                .contains(_searchC.text.trim().toLowerCase())))
+        .toList();
+    final waitingGroups = _inboxBloc.groupInboxList
+        .where((element) =>
+            element.waitingBy.contains(AuthBloc.instance.userModel.id))
         .where((element) => element.users.any((element) =>
             element.id != AuthBloc.instance.userModel.id &&
             element.name
@@ -154,74 +166,93 @@ class _InboxListState extends State<InboxList>
       ),
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10.5, bottom: 5),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          tabIndex = 0;
-                          _pageController.animateToPage(0,
-                              duration: Duration(milliseconds: 200),
-                              curve: Curves.decelerate);
-                        });
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 3 - 20,
-                        decoration: BoxDecoration(
-                          color:
-                              tabIndex == 0 ? Colors.grey[400] : Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: Center(
-                          child: Text(
-                            'Tin nhắn',
-                            style: ptTitle().copyWith(
-                                color: tabIndex == 0
-                                    ? Colors.white
-                                    : Colors.black54),
-                          ),
-                        ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.5, bottom: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      tabIndex = 0;
+                      _pageController.animateToPage(0,
+                          duration: Duration(milliseconds: 200),
+                          curve: Curves.decelerate);
+                    });
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 3 - 20,
+                    decoration: BoxDecoration(
+                      color: tabIndex == 0 ? Colors.grey[400] : Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Center(
+                      child: Text(
+                        'Tin nhắn',
+                        style: ptTitle().copyWith(
+                            color:
+                                tabIndex == 0 ? Colors.white : Colors.black54),
                       ),
                     ),
-                    SpacingBox(w: 8),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          tabIndex = 1;
-                          _pageController.animateToPage(1,
-                              duration: Duration(milliseconds: 200),
-                              curve: Curves.decelerate);
-                        });
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 3 - 20,
-                        decoration: BoxDecoration(
-                          color:
-                              tabIndex == 1 ? Colors.grey[400] : Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: Center(
-                          child: Text(
-                            'Bạn bè',
-                            style: ptTitle().copyWith(
-                                color: tabIndex == 1
-                                    ? Colors.white
-                                    : Colors.black54),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      tabIndex = 1;
+                      _pageController.animateToPage(1,
+                          duration: Duration(milliseconds: 200),
+                          curve: Curves.decelerate);
+                    });
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 3 - 20,
+                    decoration: BoxDecoration(
+                      color: tabIndex == 1 ? Colors.grey[400] : Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Center(
+                      child: Text(
+                        'Bạn bè',
+                        style: ptTitle().copyWith(
+                            color:
+                                tabIndex == 1 ? Colors.white : Colors.black54),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      tabIndex = 2;
+                      _pageController.animateToPage(2,
+                          duration: Duration(milliseconds: 200),
+                          curve: Curves.decelerate);
+                    });
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 3 - 20,
+                    decoration: BoxDecoration(
+                      color: tabIndex == 2 ? Colors.grey[400] : Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Center(
+                      child: Text(
+                        'Đang chờ',
+                        style: ptTitle().copyWith(
+                            color:
+                                tabIndex == 2 ? Colors.white : Colors.black54),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           isSearching
               ? Padding(
@@ -260,80 +291,8 @@ class _InboxListState extends State<InboxList>
                                                 .toList()
                                                 .map((e) => e.name)
                                                 .join(', ');
-                                            return ListTile(
-                                              onTap: () {
-                                                InboxChat.navigate(
-                                                        group, nameGroup)
-                                                    .then((value) => reload());
-                                              },
-                                              tileColor: group.readers.contains(
-                                                      _authBloc.userModel.id)
-                                                  ? Colors.white
-                                                  : ptBackgroundColor(context),
-                                              leading:
-                                                  _getChatGroupAvatar(group),
-                                              title: Text(
-                                                nameGroup,
-                                                style: ptTitle().copyWith(
-                                                    color: Colors.black87,
-                                                    fontSize: 14.5),
-                                              ),
-                                              subtitle: Text(
-                                                // (group.lastUser ==  _authBloc.userModel.name? 'Bạn: ':'Tin nhắn mới: ')+
-                                                group.lastMessage,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: ptSmall().copyWith(
-                                                    fontWeight: _inboxBloc
-                                                            .groupInboxList[
-                                                                index]
-                                                            .readers
-                                                            .contains(_authBloc
-                                                                .userModel.id)
-                                                        ? FontWeight.w400
-                                                        : FontWeight.w500,
-                                                    color: Colors.black87,
-                                                    fontSize: group.readers
-                                                            .contains(_authBloc
-                                                                .userModel.id)
-                                                        ? 12.3
-                                                        : 12.8),
-                                              ),
-                                              trailing: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Spacer(),
-                                                  Text(
-                                                    Formart.timeByDayViShort(
-                                                        DateTime.tryParse(
-                                                            group.time)),
-                                                    style: ptSmall().copyWith(
-                                                        fontWeight: _inboxBloc
-                                                                .groupInboxList[
-                                                                    index]
-                                                                .readers
-                                                                .contains(
-                                                                    _authBloc
-                                                                        .userModel
-                                                                        .id)
-                                                            ? FontWeight.w400
-                                                            : FontWeight.w500,
-                                                        color: Colors.black54,
-                                                        fontSize: group.readers
-                                                                .contains(
-                                                                    _authBloc
-                                                                        .userModel
-                                                                        .id)
-                                                            ? 12.3
-                                                            : 12.8),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 8,
-                                                  ),
-                                                ],
-                                              ),
-                                            );
+                                            return _buildChatTile(
+                                                group, nameGroup);
                                           },
                                           separatorBuilder: (context, index) =>
                                               Divider(
@@ -356,6 +315,7 @@ class _InboxListState extends State<InboxList>
                               onTap: () async {
                                 showSimpleLoadingDialog(context);
                                 await InboxBloc.instance.navigateToChatWith(
+                                    context,
                                     user.name,
                                     user.avatar,
                                     DateTime.now(),
@@ -374,10 +334,136 @@ class _InboxListState extends State<InboxList>
                         separatorBuilder: (context, index) => SizedBox(
                           height: 0,
                         ),
-                      )
+                      ),
+                      waitingGroups != null
+                          ? waitingGroups.length == 0
+                              ? EmptyWidget(
+                                  // assetImg: 'assets/image/no_message.dart',
+                                  title: _searchC.text.trim() == ''
+                                      ? 'Không có tin nhắn chờ.'
+                                      : 'Không tìm thấy người dùng',
+                                )
+                              : RefreshIndicator(
+                                  color: ptPrimaryColor(context),
+                                  onRefresh: () async {
+                                    await _inboxBloc.getList20InboxGroup(
+                                        _authBloc.userModel.id);
+                                    return;
+                                  },
+                                  child: waitingGroups.length != 0
+                                      ? ListView.separated(
+                                          itemCount: waitingGroups.length,
+                                          itemBuilder: (context, index) {
+                                            final group = waitingGroups[index];
+                                            final String nameGroup = group.users
+                                                .where((element) =>
+                                                    element.id !=
+                                                    _authBloc.userModel.id)
+                                                .toList()
+                                                .map((e) => e.name)
+                                                .join(', ');
+                                            return _buildChatTile(
+                                                group, nameGroup);
+                                          },
+                                          separatorBuilder: (context, index) =>
+                                              Divider(
+                                            height: 1,
+                                          ),
+                                        )
+                                      : EmptyWidget(
+                                          // assetImg: 'assets/image/no_message.png',
+                                          title: 'Bạn chưa có tin nhắn nào',
+                                          content:
+                                              'Bạn có thể nhắn tin với người khác khi cả 2 là bạn bè.',
+                                        ),
+                                )
+                          : ListSkeleton(),
                     ],
                   ),
                 ),
+        ],
+      ),
+    );
+  }
+
+  _buildChatTile(FbInboxGroupModel group, String nameGroup) {
+    final GlobalKey _menuKey = new GlobalKey();
+    final button = SizedBox(
+        width: 0,
+        height: 0,
+        child: PopupMenuButton(
+            padding: EdgeInsets.zero,
+            child: SizedBox.shrink(),
+            key: _menuKey,
+            itemBuilder: (_) => <PopupMenuItem<String>>[
+                  if (!group.waitingBy.contains(AuthBloc.instance.userModel.id))
+                    PopupMenuItem(
+                      child: Text('Đưa vào tin nhắn chờ'),
+                      value: 'Đưa vào tin nhắn chờ',
+                    ),
+                  if (!group.waitingBy.contains(AuthBloc.instance.userModel.id))
+                    PopupMenuItem(
+                      child: Text('Xoá trò chuyện'),
+                      value: 'Xoá trò chuyện',
+                    )
+                ],
+            onSelected: (val) {
+              if (val == 'Đưa vào tin nhắn chờ') {
+                _inboxBloc.setPendingGroup(group.id);
+              }
+              if (val == 'Xoá trò chuyện') {
+                showToast('Chưa hỗ trợ', context);
+              }
+            }));
+    return ListTile(
+      onTap: () {
+        InboxChat.navigate(group, nameGroup).then((value) => reload());
+      },
+      onLongPress: () {
+        if (AuthBloc.instance.userModel == null) return;
+        dynamic state = _menuKey.currentState;
+        state.showButtonMenu();
+      },
+      tileColor: group.readers.contains(_authBloc.userModel.id)
+          ? Colors.white
+          : ptBackgroundColor(context),
+      leading: _getChatGroupAvatar(group),
+      title: Text(
+        nameGroup,
+        style: ptTitle().copyWith(color: Colors.black87, fontSize: 14.5),
+      ),
+      subtitle: Text(
+        // (group.lastUser ==  _authBloc.userModel.name? 'Bạn: ':'Tin nhắn mới: ')+
+        group.lastMessage,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: ptSmall().copyWith(
+            fontWeight: group.readers.contains(_authBloc.userModel.id)
+                ? FontWeight.w400
+                : FontWeight.w500,
+            color: Colors.black87,
+            fontSize:
+                group.readers.contains(_authBloc.userModel.id) ? 12.3 : 12.8),
+      ),
+      trailing: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          button,
+          Spacer(),
+          Text(
+            Formart.timeByDayViShort(DateTime.tryParse(group.time)),
+            style: ptSmall().copyWith(
+                fontWeight: group.readers.contains(_authBloc.userModel.id)
+                    ? FontWeight.w400
+                    : FontWeight.w500,
+                color: Colors.black54,
+                fontSize: group.readers.contains(_authBloc.userModel.id)
+                    ? 12.3
+                    : 12.8),
+          ),
+          SizedBox(
+            height: 8,
+          ),
         ],
       ),
     );

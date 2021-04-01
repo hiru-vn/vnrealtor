@@ -457,6 +457,11 @@ class _InboxChatState extends State<InboxChat> {
                   child: Text('Chặn tin nhắn'),
                   value: 'Chặn tin nhắn',
                 ),
+              if (!group.waitingBy.contains(AuthBloc.instance.userModel.id))
+                PopupMenuItem(
+                  child: Text(''),
+                  value: 'Đưa vào tin nhắn chờ',
+                )
             ],
             onSelected: (val) async {
               if (val == 'Gọi điện') {
@@ -482,6 +487,9 @@ class _InboxChatState extends State<InboxChat> {
                 }, navigatorKey: navigatorKey);
               }
               if (val == 'Video call') {
+                VideoCallPage.navigate(group.id, _fbUsers);
+              }
+              if (val == 'Đưa vào tin nhắn chờ') {
                 VideoCallPage.navigate(group.id, _fbUsers);
               }
             },

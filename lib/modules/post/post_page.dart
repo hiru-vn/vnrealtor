@@ -356,7 +356,8 @@ buildStoryWidget(PostModel postModel) {
                       child: CircleAvatar(
                         radius: 13,
                         backgroundColor: Colors.white,
-                        backgroundImage: postModel.user.avatar != null
+                        backgroundImage: postModel.user.avatar != null &&
+                                postModel.user.avatar != 'null'
                             ? CachedNetworkImageProvider(postModel.user.avatar)
                             : AssetImage('assets/image/default_avatar.png'),
                       ),
@@ -367,7 +368,7 @@ buildStoryWidget(PostModel postModel) {
                   ),
                   Expanded(
                     child: Text(
-                      postModel.user.name,
+                      postModel.user.name ?? '',
                       overflow: TextOverflow.fade,
                       style: ptTiny().copyWith(
                         color: Colors.white,

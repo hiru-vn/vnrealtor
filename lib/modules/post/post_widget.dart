@@ -74,11 +74,13 @@ class _PostWidgetState extends State<PostWidget> {
                       backgroundColor: Colors.white,
                       backgroundImage: widget.post?.user?.id ==
                               AuthBloc.instance?.userModel?.id
-                          ? (AuthBloc.instance.userModel.avatar != null
+                          ? ((AuthBloc.instance.userModel.avatar != null &&
+                                  AuthBloc.instance.userModel.avatar != 'null')
                               ? CachedNetworkImageProvider(
                                   AuthBloc.instance.userModel.avatar)
                               : AssetImage('assets/image/default_avatar.png'))
-                          : (widget.post?.user?.avatar != null
+                          : ((widget.post?.user?.avatar != null &&
+                                  widget.post?.user?.avatar != 'null')
                               ? CachedNetworkImageProvider(
                                   widget.post?.user?.avatar)
                               : AssetImage('assets/image/default_avatar.png')),
@@ -202,6 +204,7 @@ class _PostWidgetState extends State<PostWidget> {
                             if (val == 'Liên hệ') {
                               showSimpleLoadingDialog(context);
                               await InboxBloc.instance.navigateToChatWith(
+                                  context,
                                   widget.post.user.name,
                                   widget.post.user.avatar,
                                   DateTime.now(),

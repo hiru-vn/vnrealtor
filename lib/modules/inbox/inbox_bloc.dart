@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/share/import.dart';
 import 'package:flutter/material.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
@@ -30,6 +31,7 @@ class InboxBloc extends ChangeNotifier {
   }
 
   Future<void> navigateToChatWith(
+      BuildContext context,
       String lastUser, // the other user
       String lastAvatar,
       DateTime time,
@@ -37,6 +39,11 @@ class InboxBloc extends ChangeNotifier {
       List<String> userIds,
       List<String> userAvatars) async {
     userIds.sort();
+
+    // final res = await UserBloc.instance.checkChatAble(userIds[1]);
+    // if (!res.isSuccess || res.data == false) {
+    //   showToast(mes, context)
+    // }
 
     final snap = await firestore
         .collection(groupCollection)
@@ -126,6 +133,21 @@ class InboxBloc extends ChangeNotifier {
     }
   }
 
+  Future<void> setPendingGroup(String groupId) async {
+    final snapShot =
+        await firestore.collection(groupCollection).doc(groupId).get();
+    if (snapShot.exists) {
+      await getGroup(groupId).update({
+        'waitingBy': FieldValue.arrayUnion([AuthBloc.instance.userModel.id]),
+      });
+      groupInboxList
+          .firstWhere((element) => element.id == groupId)
+          .waitingBy
+          .add(AuthBloc.instance.userModel.id);
+      notifyListeners();
+    }
+  }
+
   Future<void> updateGroupOnMessage(
       String groupid,
       String lastUser,
@@ -144,7 +166,8 @@ class InboxBloc extends ChangeNotifier {
         'lastMessage': lastMessage,
         'image': image,
         'userAvatars': userAvatars,
-        'readers': readers
+        'readers': readers,
+        'waitingBy': FieldValue.arrayRemove([AuthBloc.instance.userModel.id])
       });
     }
   }
@@ -173,13 +196,18 @@ class InboxBloc extends ChangeNotifier {
       'avatar': avatar,
       'filePaths': filePaths == null ? [] : filePaths,
       'lat': location?.latitude,
-      'long': location?.longitude
+      'long': location?.longitude,
     });
+
     final userIds = (await getGroup(groupId).get()).data()['userIds'] as List;
+    final waitings =
+        groupInboxList.firstWhere((element) => element.id == groupId).waitingBy;
     NotificationBloc.instance.sendNotiMessage(
         userIds
             .cast<String>()
-            .where((element) => element != AuthBloc.instance.userModel.id)
+            .where((element) =>
+                element != AuthBloc.instance.userModel.id &&
+                !waitings.contains(element))
             .toList(),
         text);
   }

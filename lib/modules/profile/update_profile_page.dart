@@ -156,11 +156,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     child: Column(
                       children: [
                         _buildFormField(
-                            context, 'Tên gọi', _nameC, Icons.person_outlined),
+                            context, 'Tên gọi', _nameC, Icons.person_outlined,
+                            validator: TextFieldValidator.notEmptyValidator),
                         _buildFormField(context, 'Tên người dùng', _tagNameC,
                             Icons.tag_faces,
                             validator: TextFieldValidator.formalValidator,
-                            hint: '@tennguoidungs'),
+                            hint: '@tennguoidung'),
                         _buildFormField(
                           context,
                           'Email',

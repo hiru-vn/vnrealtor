@@ -78,7 +78,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
     showSimpleLoadingDialog(context);
 
     while (_images.length + _videos.length < _allVideoAndImage.length) {
-      await Future.delayed(Duration(milliseconds: 2000));
+      await Future.delayed(Duration(milliseconds: 1000));
     }
 
     final res = await _postBloc.updatePost(
@@ -90,6 +90,10 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         _pos?.longitude,
         _images,
         _videos);
+
+    // deplay for sv to handle resize image
+    await Future.delayed(Duration(milliseconds: 1000));
+
     await navigatorKey.currentState.maybePop();
     if (res.isSuccess) {
       final index =

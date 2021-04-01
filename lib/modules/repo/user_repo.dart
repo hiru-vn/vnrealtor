@@ -331,4 +331,12 @@ id
             'data { fromUser { ${userFragment.replaceAll('uid', '')} } }');
     return res['getFollowerIn7d'];
   }
+
+  Future checkChatAble(String userId) async {
+    final res = await UserSrv().mutate(
+      'checkChatAble',
+      'userId: "$userId"',
+    );
+    return res['checkChatAble'];
+  }
 }
