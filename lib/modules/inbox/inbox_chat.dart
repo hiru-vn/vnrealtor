@@ -457,11 +457,11 @@ class _InboxChatState extends State<InboxChat> {
                   child: Text('Chặn tin nhắn'),
                   value: 'Chặn tin nhắn',
                 ),
-              if (!group.waitingBy.contains(AuthBloc.instance.userModel.id))
-                PopupMenuItem(
-                  child: Text(''),
-                  value: 'Đưa vào tin nhắn chờ',
-                )
+              // if (!group.waitingBy.contains(AuthBloc.instance.userModel.id))
+              //   PopupMenuItem(
+              //     child: Text('Đưa vào tin nhắn chờ'),
+              //     value: 'Đưa vào tin nhắn chờ',
+              //   )
             ],
             onSelected: (val) async {
               if (val == 'Gọi điện') {

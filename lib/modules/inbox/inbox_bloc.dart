@@ -58,7 +58,10 @@ class InboxBloc extends ChangeNotifier {
             '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện',
         'image': image,
         'userIds': userIds,
-        'userAvatars': userAvatars
+        'userAvatars': userAvatars,
+        'waitingBy': userIds
+            .where((element) => element != AuthBloc.instance.userModel.id)
+            .toList(),
       });
     }
     userIds.forEach((uid) {
@@ -85,7 +88,10 @@ class InboxBloc extends ChangeNotifier {
             [],
             users,
             userIds,
-            userAvatars),
+            userAvatars,
+            waitingBy: userIds
+                .where((element) => element != AuthBloc.instance.userModel.id)
+                .toList()),
         lastUser);
 
     return;
