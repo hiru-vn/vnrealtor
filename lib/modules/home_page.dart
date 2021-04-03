@@ -30,14 +30,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
-    _pages.addAll([
-      PostPage(),
-      InboxList(),
-      NotificationPage(),
-      ProfilePage(),
-      SettingPage(),
-    ]);
-
     super.initState();
   }
 
@@ -51,6 +43,13 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    _pages.addAll([
+      PostPage(),
+      InboxList(),
+      NotificationPage(),
+      ProfilePage(),
+      SettingPage(),
+    ]);
     return WillPopScope(
       onWillPop: () async {
         final bool flag = await showConfirmDialog(context, 'Thoát ứng dụng?',

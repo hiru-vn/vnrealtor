@@ -86,7 +86,15 @@ class _InboxListState extends State<InboxList>
       if (e != AuthBloc.instance.userModel.avatar) return e;
     }).toList();
     listAvatar.remove(null);
-    if (listAvatar.length > 0) {
+    if (listAvatar.length > 1) {
+      return CircleAvatar(
+        radius: 21,
+        backgroundColor: Colors.white,
+        backgroundImage: listAvatar[1] != null
+            ? CachedNetworkImageProvider(listAvatar[1])
+            : AssetImage('assets/image/default_avatar.png'),
+      );
+    } else if (listAvatar.length > 0) {
       return CircleAvatar(
         radius: 21,
         backgroundColor: Colors.white,

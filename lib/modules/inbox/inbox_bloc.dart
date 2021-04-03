@@ -25,6 +25,8 @@ class InboxBloc extends ChangeNotifier {
   final messageCollection = 'messages';
 
   Future<void> init() async {
+    await createUser(AuthBloc.instance.userModel.id, AuthBloc.instance.userModel.name,
+        AuthBloc.instance.userModel.avatar, AuthBloc.instance.userModel.phone);
     final res = await getList20InboxGroup(AuthBloc.instance.userModel.id);
     groupInboxList = res;
     notifyListeners();

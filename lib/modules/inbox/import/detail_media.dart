@@ -84,7 +84,7 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
       maxHeight:
           0, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
     );
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override

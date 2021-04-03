@@ -27,7 +27,7 @@ class _SplashPageState extends State<SplashPage> {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
       Future.delayed(
-        Duration(milliseconds: 300),
+        Duration(milliseconds: 50),
         () async {
           final firstTime =
               (await SPref.instance.getBool('first_time')) ?? true;
@@ -43,12 +43,10 @@ class _SplashPageState extends State<SplashPage> {
           } else {
             final res = await _authBloc.getUserInfo();
             if (res.isSuccess) {
-              
               await Future.wait([
                 FcmService.instance.init(),
                 PostBloc.instance.init(),
                 UserBloc.instance.init(),
-                InboxBloc.instance.init(),
               ]);
               HomePage.navigate();
             } else

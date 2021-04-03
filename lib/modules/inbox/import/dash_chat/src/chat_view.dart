@@ -479,144 +479,153 @@ class DashChatState extends State<DashChat> {
         final maxHeight = constraints.maxWidth == double.infinity
             ? MediaQuery.of(context).size.height
             : constraints.maxHeight;
-        return Container(
-          height: widget.height != null ? widget.height : maxHeight,
-          width: widget.width != null ? widget.width : maxWidth,
-          child: Stack(
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: widget.shouldStartMessagesFromTop
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.end,
-                children: <Widget>[
-                  MessageListView(
-                      onTapNonKeyboard: widget.onTapNonKeyboard,
-                      avatarMaxSize: widget.avatarMaxSize,
-                      messagePaddingBuilder: widget.messagePaddingBuilder,
-                      constraints: constraints,
-                      shouldShowLoadEarlier: widget.shouldShowLoadEarlier,
-                      showLoadEarlierWidget: widget.showLoadEarlierWidget,
-                      onLoadEarlier: widget.onLoadEarlier,
-                      defaultLoadCallback: changeDefaultLoadMore,
-                      messageContainerPadding: widget.messageContainerPadding,
-                      scrollController: widget.scrollController != null
-                          ? widget.scrollController
-                          : scrollController,
-                      user: widget.user,
-                      messages: widget.messages,
-                      showuserAvatar: widget.showUserAvatar,
-                      dateFormat: widget.dateFormat,
-                      timeFormat: widget.timeFormat,
-                      inverted: widget.inverted,
-                      showAvatarForEverMessage:
-                          widget.showAvatarForEveryMessage,
-                      onLongPressAvatar: widget.onLongPressAvatar,
-                      onPressAvatar: widget.onPressAvatar,
-                      onLongPressMessage: widget.onLongPressMessage,
-                      avatarBuilder: widget.avatarBuilder,
-                      messageBuilder: widget.messageBuilder,
-                      messageTextBuilder: widget.messageTextBuilder,
-                      messageImageBuilder: widget.messageImageBuilder,
-                      messageTimeBuilder: widget.messageTimeBuilder,
-                      dateBuilder: widget.dateBuilder,
-                      messageContainerDecoration:
-                          widget.messageContainerDecoration,
-                      parsePatterns: widget.parsePatterns,
-                      changeVisible: changeVisible,
-                      visible: visible,
-                      showLoadMore: showLoadMore,
-                      messageButtonsBuilder: widget.messageButtonsBuilder,
-                      messageDecorationBuilder:
-                          widget.messageDecorationBuilder),
-                  if (widget.messages.length != 0 &&
-                      widget.messages.last.user.uid != widget.user.uid &&
-                      widget.messages.last.quickReplies != null)
-                    Container(
-                      padding: widget.quickReplyPadding,
-                      constraints: BoxConstraints(
-                          maxHeight: widget.quickReplyScroll ? 50.0 : 100.0),
-                      width: widget.quickReplyScroll ? null : maxWidth,
-                      child: widget.quickReplyScroll
-                          ? ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: widget.messages.last.quickReplies.values
-                                  .map(_mapReply)
-                                  .toList(),
-                            )
-                          : Wrap(
-                              children: <Widget>[
-                                ...widget.messages.last.quickReplies.values
-                                    .sublist(
-                                        0,
-                                        widget.messages.last.quickReplies.values
-                                                    .length <=
-                                                3
-                                            ? widget.messages.last.quickReplies
-                                                .values.length
-                                            : 3)
-                                    .map(_mapReply)
-                                    .toList(),
-                              ],
-                            ),
-                    ),
-                  if (widget.chatFooterBuilder != null)
-                    widget.chatFooterBuilder(),
-                  if (!widget.readOnly)
-                    ChatInputToolbar(
-                        key: inputKey,
-                        iconSendColor: widget.iconSendColor,
-                        sendOnEnter: widget.sendOnEnter,
-                        textInputAction: widget.textInputAction,
-                        inputToolbarPadding: widget.inputToolbarPadding,
-                        textDirection: widget.inputTextDirection,
-                        inputToolbarMargin: widget.inputToolbarMargin,
-                        showTraillingBeforeSend: widget.showTraillingBeforeSend,
-                        inputMaxLines: widget.inputMaxLines,
-                        controller: textController,
-                        inputDecoration: widget.inputDecoration,
-                        textCapitalization: widget.textCapitalization,
-                        onSend: widget.onSend,
-                        user: widget.user,
-                        messageIdGenerator: widget.messageIdGenerator,
-                        maxInputLength: widget.maxInputLength,
-                        sendButtonBuilder: widget.sendButtonBuilder,
-                        text: widget.text != null ? widget.text : _text,
-                        onTextChange: widget.onTextChange != null
-                            ? widget.onTextChange
-                            : onTextChange,
-                        inputDisabled: widget.inputDisabled,
-                        leading: widget.leading,
-                        trailling: widget.trailing,
-                        inputContainerStyle: widget.inputContainerStyle,
-                        inputTextStyle: widget.inputTextStyle,
-                        inputFooterBuilder: widget.inputFooterBuilder,
-                        inputCursorColor: widget.inputCursorColor,
-                        inputCursorWidth: widget.inputCursorWidth,
-                        showInputCursor: widget.showInputCursor,
-                        alwaysShowSend: widget.alwaysShowSend,
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+            if (widget.onTapNonKeyboard != null) widget.onTapNonKeyboard();
+          },
+          child: Container(
+            height: widget.height != null ? widget.height : maxHeight,
+            width: widget.width != null ? widget.width : maxWidth,
+            child: Stack(
+              children: <Widget>[
+                Column(
+                  mainAxisAlignment: widget.shouldStartMessagesFromTop
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.end,
+                  children: <Widget>[
+                    MessageListView(
+                        onTapNonKeyboard: widget.onTapNonKeyboard,
+                        avatarMaxSize: widget.avatarMaxSize,
+                        messagePaddingBuilder: widget.messagePaddingBuilder,
+                        constraints: constraints,
+                        shouldShowLoadEarlier: widget.shouldShowLoadEarlier,
+                        showLoadEarlierWidget: widget.showLoadEarlierWidget,
+                        onLoadEarlier: widget.onLoadEarlier,
+                        defaultLoadCallback: changeDefaultLoadMore,
+                        messageContainerPadding: widget.messageContainerPadding,
                         scrollController: widget.scrollController != null
                             ? widget.scrollController
                             : scrollController,
-                        focusNode: inputFocusNode,
-                        reverse: widget.inverted)
-                ],
-              ),
-              if (visible && !_initialLoad)
-                Positioned(
-                  right: widget.scrollToBottomStyle.right,
-                  left: widget.scrollToBottomStyle.left,
-                  bottom: widget.scrollToBottomStyle.bottom,
-                  top: widget.scrollToBottomStyle.top,
-                  child: widget.scrollToBottomWidget != null
-                      ? widget.scrollToBottomWidget()
-                      : ScrollToBottom(
-                          onScrollToBottomPress: widget.onScrollToBottomPress,
-                          scrollToBottomStyle: widget.scrollToBottomStyle,
-                          scrollController: scrollController,
-                          inverted: widget.inverted,
-                        ),
+                        user: widget.user,
+                        messages: widget.messages,
+                        showuserAvatar: widget.showUserAvatar,
+                        dateFormat: widget.dateFormat,
+                        timeFormat: widget.timeFormat,
+                        inverted: widget.inverted,
+                        showAvatarForEverMessage:
+                            widget.showAvatarForEveryMessage,
+                        onLongPressAvatar: widget.onLongPressAvatar,
+                        onPressAvatar: widget.onPressAvatar,
+                        onLongPressMessage: widget.onLongPressMessage,
+                        avatarBuilder: widget.avatarBuilder,
+                        messageBuilder: widget.messageBuilder,
+                        messageTextBuilder: widget.messageTextBuilder,
+                        messageImageBuilder: widget.messageImageBuilder,
+                        messageTimeBuilder: widget.messageTimeBuilder,
+                        dateBuilder: widget.dateBuilder,
+                        messageContainerDecoration:
+                            widget.messageContainerDecoration,
+                        parsePatterns: widget.parsePatterns,
+                        changeVisible: changeVisible,
+                        visible: visible,
+                        showLoadMore: showLoadMore,
+                        messageButtonsBuilder: widget.messageButtonsBuilder,
+                        messageDecorationBuilder:
+                            widget.messageDecorationBuilder),
+                    if (widget.messages.length != 0 &&
+                        widget.messages.last.user.uid != widget.user.uid &&
+                        widget.messages.last.quickReplies != null)
+                      Container(
+                        padding: widget.quickReplyPadding,
+                        constraints: BoxConstraints(
+                            maxHeight: widget.quickReplyScroll ? 50.0 : 100.0),
+                        width: widget.quickReplyScroll ? null : maxWidth,
+                        child: widget.quickReplyScroll
+                            ? ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: widget
+                                    .messages.last.quickReplies.values
+                                    .map(_mapReply)
+                                    .toList(),
+                              )
+                            : Wrap(
+                                children: <Widget>[
+                                  ...widget.messages.last.quickReplies.values
+                                      .sublist(
+                                          0,
+                                          widget.messages.last.quickReplies
+                                                      .values.length <=
+                                                  3
+                                              ? widget.messages.last
+                                                  .quickReplies.values.length
+                                              : 3)
+                                      .map(_mapReply)
+                                      .toList(),
+                                ],
+                              ),
+                      ),
+                    if (widget.chatFooterBuilder != null)
+                      widget.chatFooterBuilder(),
+                    if (!widget.readOnly)
+                      ChatInputToolbar(
+                          key: inputKey,
+                          iconSendColor: widget.iconSendColor,
+                          sendOnEnter: widget.sendOnEnter,
+                          textInputAction: widget.textInputAction,
+                          inputToolbarPadding: widget.inputToolbarPadding,
+                          textDirection: widget.inputTextDirection,
+                          inputToolbarMargin: widget.inputToolbarMargin,
+                          showTraillingBeforeSend:
+                              widget.showTraillingBeforeSend,
+                          inputMaxLines: widget.inputMaxLines,
+                          controller: textController,
+                          inputDecoration: widget.inputDecoration,
+                          textCapitalization: widget.textCapitalization,
+                          onSend: widget.onSend,
+                          user: widget.user,
+                          messageIdGenerator: widget.messageIdGenerator,
+                          maxInputLength: widget.maxInputLength,
+                          sendButtonBuilder: widget.sendButtonBuilder,
+                          text: widget.text != null ? widget.text : _text,
+                          onTextChange: widget.onTextChange != null
+                              ? widget.onTextChange
+                              : onTextChange,
+                          inputDisabled: widget.inputDisabled,
+                          leading: widget.leading,
+                          trailling: widget.trailing,
+                          inputContainerStyle: widget.inputContainerStyle,
+                          inputTextStyle: widget.inputTextStyle,
+                          inputFooterBuilder: widget.inputFooterBuilder,
+                          inputCursorColor: widget.inputCursorColor,
+                          inputCursorWidth: widget.inputCursorWidth,
+                          showInputCursor: widget.showInputCursor,
+                          alwaysShowSend: widget.alwaysShowSend,
+                          scrollController: widget.scrollController != null
+                              ? widget.scrollController
+                              : scrollController,
+                          focusNode: inputFocusNode,
+                          reverse: widget.inverted)
+                  ],
                 ),
-            ],
+                if (visible && !_initialLoad)
+                  Positioned(
+                    right: widget.scrollToBottomStyle.right,
+                    left: widget.scrollToBottomStyle.left,
+                    bottom: widget.scrollToBottomStyle.bottom,
+                    top: widget.scrollToBottomStyle.top,
+                    child: widget.scrollToBottomWidget != null
+                        ? widget.scrollToBottomWidget()
+                        : ScrollToBottom(
+                            onScrollToBottomPress: widget.onScrollToBottomPress,
+                            scrollToBottomStyle: widget.scrollToBottomStyle,
+                            scrollController: scrollController,
+                            inverted: widget.inverted,
+                          ),
+                  ),
+              ],
+            ),
           ),
         );
       },

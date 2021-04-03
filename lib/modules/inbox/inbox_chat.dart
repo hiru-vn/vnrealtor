@@ -23,7 +23,9 @@ import 'import/color.dart';
 import 'import/font.dart';
 import 'import/image_picker.dart';
 import 'import/image_view.dart';
+import 'import/media_picker.dart';
 import 'import/page_builder.dart';
+import 'import/skeleton.dart';
 import 'import/video_view.dart';
 import 'inbox_bloc.dart';
 import 'inbox_model.dart';
@@ -32,6 +34,7 @@ import 'voice_call_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './import/media_group.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
+import 'package:photo_manager/photo_manager.dart' as media;
 
 class InboxChat extends StatefulWidget {
   final FbInboxGroupModel group;
@@ -55,6 +58,8 @@ class _InboxChatState extends State<InboxChat> {
   final TextEditingController _chatC = TextEditingController();
   final userColor = HexColor('#4D94FF');
   FbInboxGroupModel group;
+  double keyboardHeight;
+  PageController _footerC = PageController();
 
   List<String> _files = [];
   InboxBloc _inboxBloc;
@@ -72,6 +77,8 @@ class _InboxChatState extends State<InboxChat> {
 
   var i = 0;
   bool showEmoj = false;
+  bool showMedia = false;
+  bool showCamera = false;
 
   @override
   void didChangeDependencies() {
@@ -88,20 +95,13 @@ class _InboxChatState extends State<InboxChat> {
   @override
   void initState() {
     group = widget.group;
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus)
-        setState(() {
-          showEmoj = false;
-        });
-    });
     for (final user in group.users) {
       _users.add(ChatUser(
-        uid: user.id,
-        name: user.name,
-        // containerColor: user.id == AuthBloc.instance.userModel.id
-        //     ? HexColor('#4D94FF')
-        //     : Colors.grey[200]
-      ));
+          uid: user.id,
+          name: user.name,
+          containerColor: user.id == AuthBloc.instance.userModel.id
+              ? userColor
+              : Colors.blue[50]));
     }
     super.initState();
   }
@@ -346,6 +346,8 @@ class _InboxChatState extends State<InboxChat> {
                 : null);
       });
     }
+
+    scrollToEnd();
   }
 
   _updateGroupPageText(String groupid, String lastUser, String lastMessage,
@@ -410,14 +412,120 @@ class _InboxChatState extends State<InboxChat> {
     }
   }
 
+  void _onSendMedia(List<String> paths) {
+    if (paths != null) {
+      setState(() {
+        _files.addAll(paths);
+        showMedia = false;
+      });
+
+      onSend(ChatMessage(
+          text: '',
+          user: _users.firstWhere(
+              (user) => user.uid == AuthBloc.instance.userModel.id)));
+    } else {
+      // User canceled the picker
+    }
+  }
+
+  void showMap() {
+    showModalBottomSheet(
+        useRootNavigator: true,
+        context: context,
+        builder: (context) {
+          return Container(
+            decoration: BoxDecoration(color: ptPrimaryColorLight(context)),
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+            child: Row(
+              children: [
+                ActionItem(
+                  img: 'assets/image/location.png',
+                  name: 'Gắn vị trí',
+                  onTap: () async {
+                    if (_files.length > 0) {
+                      final confirm = await showConfirmDialog(
+                          context, 'Xác nhận xóa các file đính kèm?',
+                          confirmTap: () {}, navigatorKey: navigatorKey);
+                      if (!confirm) return;
+                      setState(() {
+                        _files.clear();
+                      });
+                    }
+                    await navigatorKey.currentState.maybePop();
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    final res = await showGoogleMap(context);
+
+                    print(res);
+
+                    // res[0] is long lat, res[1] is image file
+                    if (res != null && res[0] != null && res[1] != null) {
+                      Map<String, dynamic> customProperties = {};
+                      customProperties['long'] = (res[0] as LatLng).longitude;
+                      customProperties['lat'] = (res[0] as LatLng).latitude;
+                      await _onFilePick((res[1] as File)?.path);
+                      onSend(ChatMessage(
+                          text:
+                              '${AuthBloc.instance.userModel.name} đã chia sẻ 1 địa điểm',
+                          user: _users.firstWhere((user) =>
+                              user.uid == AuthBloc.instance.userModel.id),
+                          customProperties: customProperties));
+                    }
+                  },
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 6 / 100,
+                ),
+                ActionItem(
+                  img: 'assets/image/invite_chat.jpg',
+                  name: 'Mới người khac',
+                  onTap: () async {
+                    showToast('Tính năng này chưa có', context);
+                    await navigatorKey.currentState.maybePop();
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  _getFooterPageIndex() {
+    if (showEmoj) return 0;
+    if (showMedia) return 1;
+    if (showCamera) return 2;
+    return 0;
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_inboxBloc.groupInboxList == null) return ListSkeleton();
+    _footerC = PageController(initialPage: _getFooterPageIndex());
+    Widget _footerWidget = PageView(
+      controller: _footerC,
+      children: [
+        EmojiKeyboard(
+          height: keyboardHeight ?? 260,
+          onEmojiSelected: (Emoji emoji) {
+            _chatC.text += emoji.text;
+          },
+        ),
+        MediaPickerWidget(
+          onMediaPick: _onSendMedia,
+        ),
+        Container(color: Colors.blue),
+      ],
+    );
+    if ((keyboardHeight ?? 0) < MediaQuery.of(context).viewInsets.bottom)
+      keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     group = _inboxBloc.groupInboxList.firstWhere(
         (element) => element.id == widget.group.id,
         orElse: () => null);
     if (group == null)
       return Container(color: Colors.white, child: kLoadingSpinner);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: MyAppBar(
         title: widget.title,
         automaticallyImplyLeading: true,
@@ -509,9 +617,11 @@ class _InboxChatState extends State<InboxChat> {
           Expanded(
             child: DashChat(
               onTapNonKeyboard: () {
-                if (showEmoj)
+                if (showEmoj || showCamera || showMedia)
                   setState(() {
                     showEmoj = false;
+                    showCamera = false;
+                    showMedia = false;
                   });
               },
               messageImageBuilder: (url, [messages]) {
@@ -604,17 +714,17 @@ class _InboxChatState extends State<InboxChat> {
                     fontWeight: FontWeight.w600, color: Colors.black38),
               ),
               inputToolbarPadding:
-                  EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                  EdgeInsets.symmetric(horizontal: 4, vertical: 2),
               inputDecoration: InputDecoration(
                   hintText: "Nhập tin nhắn...",
                   border: InputBorder.none,
                   filled: true,
                   isDense: true,
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 9, horizontal: 12),
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                   hintStyle:
                       ptBody().copyWith(color: Colors.black54, fontSize: 14),
-                  fillColor: Colors.grey[200]),
+                  fillColor: Colors.blue[50]),
               focusNode: _focusNode,
               dateFormat: DateFormat('d-M-yyyy'),
               timeFormat: DateFormat('HH:mm'),
@@ -707,7 +817,7 @@ class _InboxChatState extends State<InboxChat> {
                                   message.customProperties['files'].length >
                                       0)))
                       ? Colors.white
-                      : (isUser ? userColor : Colors.grey[200]),
+                      : (message.user.containerColor ?? Colors.blue[50]),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(topLeft),
                     topRight: Radius.circular(topRight),
@@ -737,155 +847,92 @@ class _InboxChatState extends State<InboxChat> {
                 else
                   return SizedBox.shrink();
               },
-              inputFooterBuilder: _buildFooter,
+              // inputFooterBuilder: _buildFooter,
               leading: [
                 Row(
                   children: [
                     GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onTap: () async {
-                        showModalBottomSheet(
-                            useRootNavigator: true,
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (context) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        color: ptPrimaryColorLight(context)),
-                                    width: MediaQuery.of(context).size.width,
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 20, horizontal: 25),
-                                    child: Row(
-                                      children: [
-                                        ActionItem(
-                                          img: 'assets/image/location.png',
-                                          name: 'Gắn vị trí',
-                                          onTap: () async {
-                                            if (_files.length > 0) {
-                                              final confirm =
-                                                  await showConfirmDialog(
-                                                      context,
-                                                      'Xác nhận xóa các file đính kèm?',
-                                                      confirmTap: () {},
-                                                      navigatorKey:
-                                                          navigatorKey);
-                                              if (!confirm) return;
-                                              setState(() {
-                                                _files.clear();
-                                              });
-                                            }
-                                            await navigatorKey.currentState
-                                                .maybePop();
-                                            FocusScope.of(context)
-                                                .requestFocus(FocusNode());
-                                            final res =
-                                                await showGoogleMap(context);
-
-                                            print(res);
-
-                                            // res[0] is long lat, res[1] is image file
-                                            if (res != null &&
-                                                res[0] != null &&
-                                                res[1] != null) {
-                                              Map<String, dynamic>
-                                                  customProperties = {};
-                                              customProperties['long'] =
-                                                  (res[0] as LatLng).longitude;
-                                              customProperties['lat'] =
-                                                  (res[0] as LatLng).latitude;
-                                              await _onFilePick(
-                                                  (res[1] as File)?.path);
-                                              onSend(ChatMessage(
-                                                  text:
-                                                      '${AuthBloc.instance.userModel.name} đã chia sẻ 1 địa điểm',
-                                                  user: _users.firstWhere(
-                                                      (user) =>
-                                                          user.uid ==
-                                                          AuthBloc.instance
-                                                              .userModel.id),
-                                                  customProperties:
-                                                      customProperties));
-                                            }
-                                          },
-                                        ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              6 /
-                                              100,
-                                        ),
-                                        ActionItem(
-                                          img: 'assets/image/invite_chat.jpg',
-                                          name: 'Mới người khac',
-                                          onTap: () async {
-                                            showToast('Tính năng này chưa có',
-                                                context);
-                                            await navigatorKey.currentState
-                                                .maybePop();
-                                            FocusScope.of(context)
-                                                .requestFocus(FocusNode());
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            });
-                      },
                       child: Padding(
                         padding: const EdgeInsets.only(
-                            top: 14, bottom: 14, left: 8, right: 4),
+                            top: 10, bottom: 10, left: 6, right: 0),
                         child: Icon(
-                          Icons.apps,
+                          Icons.emoji_emotions_outlined,
                           color: userColor,
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 14, bottom: 14, left: 4, right: 4),
-                        child: Icon(
-                          Icons.file_present,
-                          color: userColor,
+                          size: 27,
                         ),
                       ),
                       onTap: () async {
-                        imagePicker(context,
-                            onCameraPick: _onFilePick,
-                            onMultiImagePick: _onMultiFilePick,
-                            onVideoPick: _onFilePick);
+                        setState(() {
+                          showEmoj = true;
+                          showCamera = false;
+                          showMedia = false;
+                        });
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        Future.delayed(Duration(milliseconds: 50), () {
+                          if (_footerC.hasClients) _footerC.jumpToPage(0);
+                        });
                       },
                     ),
                   ],
                 ),
               ],
               trailing: <Widget>[
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 14, bottom: 14, left: 4, right: 4),
-                    child: Icon(
-                      Icons.emoji_emotions_rounded,
-                      color: userColor,
+                Row(
+                  children: [
+                    GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 10, bottom: 10, left: 3, right: 4),
+                        child: Icon(
+                          Icons.attach_file,
+                          color: userColor,
+                          size: 26,
+                        ),
+                      ),
+                      onTap: () async {
+                        // imagePicker(context,
+                        //     onCameraPick: _onFilePick,
+                        //     onMultiImagePick: _onMultiFilePick,
+                        //     onVideoPick: _onFilePick);
+                        setState(() {
+                          showEmoj = false;
+                          showCamera = false;
+                          showMedia = true;
+                        });
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        Future.delayed(Duration(milliseconds: 50), () {
+                          if (_footerC.hasClients) _footerC.jumpToPage(1);
+                        });
+                      },
                     ),
-                  ),
-                  onTap: () async {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    Future.delayed(
-                        Duration(milliseconds: 150),
-                        () => setState(() {
-                              showEmoj = true;
-                            }));
-                  },
+                    GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 10, bottom: 10, left: 8, right: 10),
+                        child: Icon(
+                          Icons.camera_alt_outlined,
+                          color: userColor,
+                          size: 26,
+                        ),
+                      ),
+                      onTap: () async {
+                        setState(() {
+                          showMedia = false;
+                          showEmoj = false;
+                          showCamera = true;
+                        });
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        Future.delayed(Duration(milliseconds: 50), () {
+                          if (_footerC.hasClients) _footerC.jumpToPage(2);
+                        });
+                      },
+                    ),
+                  ],
                 ),
+
                 // GestureDetector(
                 //   behavior: HitTestBehavior.translucent,
                 //   child: Padding(
@@ -920,15 +967,15 @@ class _InboxChatState extends State<InboxChat> {
                 ),
               ),
             ),
-          if (showEmoj)
-            EmojiKeyboard(
-              onEmojiSelected: (Emoji emoji) {
-                setState(() {
-                  _chatC.text += emoji.text;
-                  print(_chatC.text.trim() == '');
-                });
-              },
+          if (_focusNode.hasFocus)
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).viewInsets.bottom,
             )
+          else if (showEmoj || showMedia || showCamera)
+            Container(height: keyboardHeight ?? 260, child: _footerWidget)
+          else
+            Container(height: 0),
         ],
       ),
     );
