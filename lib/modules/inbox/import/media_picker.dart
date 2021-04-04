@@ -19,6 +19,7 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
   List<AssetEntity> recentAssets = [];
   List<AssetEntity> selectedAssets = [];
   bool isSending = false;
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -30,41 +31,61 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
     final permitted = await PhotoManager.requestPermission();
     if (!permitted) return;
     albums = await PhotoManager.getAssetPathList(onlyAll: true);
-    final recentAlbum = albums.first;
 
     // Now that we got the album, fetch all the assets it contains
-    recentAssets = await recentAlbum.getAssetListRange(
+    recentAssets = await albums.first.getAssetListRange(
       start: 0, // start at index 0
       end: 20, // end at a very big index (to get all the assets)
     );
     setState(() {});
   }
 
+  _onLoadMore() async {
+    final lastIndex = recentAssets.length;
+    final loadMoreAssets = await albums.first.getAssetListRange(
+      start: lastIndex, // start at index 0
+      end: lastIndex + 20, // end at a very big index (to get all the assets)
+    );
+    setState(() {
+      recentAssets.addAll(loadMoreAssets);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            // A grid view with 3 items per row
-            crossAxisCount: 4,
-          ),
-          itemCount: recentAssets.length,
-          itemBuilder: (_, index) {
-            return Padding(
-              padding: const EdgeInsets.all(0.5),
-              child: AssetThumbnail(
-                asset: recentAssets[index],
-                onTap: (val) {
-                  if (!selectedAssets.contains(val))
-                    selectedAssets.add(val);
-                  else
-                    selectedAssets.remove(val);
-                  setState(() {});
-                },
-              ),
-            );
+        NotificationListener<ScrollNotification>(
+          onNotification: (scrollInfo) {
+            if (scrollInfo is ScrollEndNotification &&
+                scrollController.position.extentAfter == 0) {
+              _onLoadMore();
+            }
+            return true;
           },
+          child: GridView.builder(
+            controller: scrollController,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              // A grid view with 3 items per row
+              crossAxisCount: 4,
+            ),
+            itemCount: recentAssets.length,
+            itemBuilder: (_, index) {
+              return Padding(
+                padding: const EdgeInsets.all(0.5),
+                child: AssetThumbnail(
+                  asset: recentAssets[index],
+                  onTap: (val) {
+                    if (!selectedAssets.contains(val))
+                      selectedAssets.add(val);
+                    else
+                      selectedAssets.remove(val);
+                    setState(() {});
+                  },
+                ),
+              );
+            },
+          ),
         ),
         if (selectedAssets.length > 0)
           Positioned(

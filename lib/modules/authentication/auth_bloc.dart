@@ -97,7 +97,7 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('token', res['token']);
       await SPref.instance.set('id', res['user']["id"]);
       userModel = UserModel.fromJson(res['user']);
-      loginFirebase(userModel);
+      await loginFirebase(userModel);
       UserBloc.instance.init();
       PostBloc.instance.init();
 
@@ -138,7 +138,7 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('token', loginRes['token']);
       await SPref.instance.set('id', loginRes['user']["id"]);
       userModel = UserModel.fromJson(loginRes['user']);
-      loginFirebase(userModel);
+      await loginFirebase(userModel);
 
       UserBloc.instance.init();
       PostBloc.instance.init();
@@ -165,7 +165,7 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('token', loginRes['token']);
       await SPref.instance.set('id', loginRes['user']["id"]);
       userModel = UserModel.fromJson(loginRes['user']);
-      loginFirebase(userModel);
+      await loginFirebase(userModel);
 
       UserBloc.instance.init();
       PostBloc.instance.init();

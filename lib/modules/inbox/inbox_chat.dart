@@ -361,15 +361,14 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   void scrollToEnd() {
-    if (_chatViewKey.currentState?.scrollController?.position?.pixels ??
-        0 <
+    if ((_chatViewKey.currentState?.scrollController?.position?.pixels ?? 0) <
             _chatViewKey
                 .currentState?.scrollController?.position?.maxScrollExtent ??
         1)
       _chatViewKey.currentState?.scrollController?.animateTo(
         _chatViewKey.currentState.scrollController.position.maxScrollExtent +
             30,
-        curve: Curves.easeOut,
+        curve: Curves.easeOut, 
         duration: const Duration(milliseconds: 250),
       );
   }
