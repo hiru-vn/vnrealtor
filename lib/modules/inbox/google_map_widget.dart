@@ -11,18 +11,19 @@ import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 Future showGoogleMap(BuildContext context, {double height}) {
   if (height == null)
     height = MediaQuery.of(context).size.height - kToolbarHeight;
-  return showDialog(
+  return showModalBottomSheet(
       context: context,
-      useRootNavigator: false,
+      isScrollControlled: true,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
       builder: (context) {
-        return SizedBox(
-            height: height,
-            width: deviceWidth(context),
-            child: GoogleMapWidget());
+        return Scaffold(
+            backgroundColor: Colors.transparent, body: GoogleMapWidget());
       });
 }
 
@@ -197,128 +198,126 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: _initPos,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-            onTap: _selectMarker,
-            markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        GoogleMap(
+          mapType: MapType.normal,
+          initialCameraPosition: _initPos,
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
+          onTap: _selectMarker,
+          markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
+        ),
+        // Positioned(
+        //   top: 20,
+        //   right: 12,
+        //   child: InkWell(
+        //     onTap: () => Navigator.of(context).maybePop(),
+        //     child: Container(
+        //       decoration: BoxDecoration(
+        //           color: Colors.black38,
+        //           borderRadius: BorderRadius.circular(20)),
+        //       width: 40,
+        //       height: 40,
+        //       child: Icon(
+        //         Icons.close,
+        //         color: Colors.white,
+        //       ),
+        //     ),
+        //   ),
+        // ),
+        Padding(
+          padding: const EdgeInsets.only(top: 25),
+          child: CustomFloatingSearchBar(
+            onSearch: _onSearch,
+            automaticallyImplyBackButton: true,
           ),
-          Positioned(
-            top: 20,
-            right: 12,
-            child: InkWell(
-              onTap: () => Navigator.of(context).maybePop(),
+        ),
+        // Positioned(
+        //   top: 20,
+        //   right: 12,
+        //   child: InkWell(
+        //     onTap: () => Navigator.of(context).maybePop(),
+        //     child: Container(
+        //       decoration: BoxDecoration(
+        //           color: Colors.black38,
+        //           borderRadius: BorderRadius.circular(20)),
+        //       width: 40,
+        //       height: 40,
+        //       child: Icon(
+        //         Icons.close,
+        //         color: Colors.white,
+        //       ),
+        //     ),
+        //   ),
+        // ),
+        Positioned(
+          bottom: 15,
+          left: 12,
+          child: InkWell(
+            onTap: () async {
+              if (selectedPoint == null) {
+                showToast('Chạm để chọn vị trí', context);
+                return;
+              }
+              final file =
+                  await FileUtil.writeToFile(pngBytes, 'map', 'jpeg', 360);
+              navigatorKey.currentState.maybePop([selectedPoint, file]);
+            },
+            child: Material(
+              borderRadius: BorderRadius.circular(20),
+              elevation: 4,
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.black38,
-                    borderRadius: BorderRadius.circular(20)),
-                width: 40,
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 height: 40,
-                child: Icon(
-                  Icons.close,
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.send,
+                      color: Colors.blue,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text('Gửi vị trí đến tin nhắn')
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 120,
+          right: 10,
+          child: Material(
+            borderRadius: BorderRadius.circular(21),
+            elevation: 4,
+            child: GestureDetector(
+              onTap: _selectMyLocation,
+              child: Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
                   color: Colors.white,
                 ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0),
-            child: CustomFloatingSearchBar(
-              onSearch: _onSearch,
-              automaticallyImplyBackButton: true,
-            ),
-          ),
-          // Positioned(
-          //   top: 20,
-          //   right: 12,
-          //   child: InkWell(
-          //     onTap: () => Navigator.of(context).maybePop(),
-          //     child: Container(
-          //       decoration: BoxDecoration(
-          //           color: Colors.black38,
-          //           borderRadius: BorderRadius.circular(20)),
-          //       width: 40,
-          //       height: 40,
-          //       child: Icon(
-          //         Icons.close,
-          //         color: Colors.white,
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          Positioned(
-            bottom: 15,
-            left: 12,
-            child: InkWell(
-              onTap: () async {
-                if (selectedPoint == null) {
-                  showToast('Chạm để chọn vị trí', context);
-                  return;
-                }
-                final file =
-                    await FileUtil.writeToFile(pngBytes, 'map', 'jpeg', 360);
-                navigatorKey.currentState.maybePop([selectedPoint, file]);
-              },
-              child: Material(
-                borderRadius: BorderRadius.circular(20),
-                elevation: 4,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  height: 40,
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.send,
-                        color: Colors.blue,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text('Gửi vị trí đến tin nhắn')
-                    ],
+                child: Center(
+                  child: Icon(
+                    Icons.my_location,
+                    color: ptPrimaryColor(context),
                   ),
                 ),
               ),
             ),
           ),
-          Positioned(
-            bottom: 120,
-            right: 10,
-            child: Material(
-              borderRadius: BorderRadius.circular(21),
-              elevation: 4,
-              child: GestureDetector(
-                onTap: _selectMyLocation,
-                child: Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.my_location,
-                      color: ptPrimaryColor(context),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

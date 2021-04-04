@@ -35,6 +35,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './import/media_group.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 import 'package:photo_manager/photo_manager.dart' as media;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:image_picker/image_picker.dart';
 
 class InboxChat extends StatefulWidget {
   final FbInboxGroupModel group;
@@ -368,7 +370,7 @@ class _InboxChatState extends State<InboxChat> {
       _chatViewKey.currentState?.scrollController?.animateTo(
         _chatViewKey.currentState.scrollController.position.maxScrollExtent +
             30,
-        curve: Curves.easeOut, 
+        curve: Curves.easeOut,
         duration: const Duration(milliseconds: 250),
       );
   }
@@ -411,6 +413,21 @@ class _InboxChatState extends State<InboxChat> {
     }
   }
 
+  _onCameraPick(String path) {
+    if (path != null) {
+      setState(() {
+        _files.add(path);
+      });
+
+      onSend(ChatMessage(
+          text: '',
+          user: _users.firstWhere(
+              (user) => user.uid == AuthBloc.instance.userModel.id)));
+    } else {
+      // User canceled the picker
+    }
+  }
+
   void _onSendMedia(List<String> paths) {
     if (paths != null) {
       setState(() {
@@ -427,67 +444,23 @@ class _InboxChatState extends State<InboxChat> {
     }
   }
 
-  void showMap() {
-    showModalBottomSheet(
-        useRootNavigator: true,
-        context: context,
-        builder: (context) {
-          return Container(
-            decoration: BoxDecoration(color: ptPrimaryColorLight(context)),
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-            child: Row(
-              children: [
-                ActionItem(
-                  img: 'assets/image/location.png',
-                  name: 'Gắn vị trí',
-                  onTap: () async {
-                    if (_files.length > 0) {
-                      final confirm = await showConfirmDialog(
-                          context, 'Xác nhận xóa các file đính kèm?',
-                          confirmTap: () {}, navigatorKey: navigatorKey);
-                      if (!confirm) return;
-                      setState(() {
-                        _files.clear();
-                      });
-                    }
-                    await navigatorKey.currentState.maybePop();
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    final res = await showGoogleMap(context);
+  void showMap() async {
+    final res = await showGoogleMap(context);
 
-                    print(res);
+    print(res);
 
-                    // res[0] is long lat, res[1] is image file
-                    if (res != null && res[0] != null && res[1] != null) {
-                      Map<String, dynamic> customProperties = {};
-                      customProperties['long'] = (res[0] as LatLng).longitude;
-                      customProperties['lat'] = (res[0] as LatLng).latitude;
-                      await _onFilePick((res[1] as File)?.path);
-                      onSend(ChatMessage(
-                          text:
-                              '${AuthBloc.instance.userModel.name} đã chia sẻ 1 địa điểm',
-                          user: _users.firstWhere((user) =>
-                              user.uid == AuthBloc.instance.userModel.id),
-                          customProperties: customProperties));
-                    }
-                  },
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 6 / 100,
-                ),
-                ActionItem(
-                  img: 'assets/image/invite_chat.jpg',
-                  name: 'Mới người khac',
-                  onTap: () async {
-                    showToast('Tính năng này chưa có', context);
-                    await navigatorKey.currentState.maybePop();
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                ),
-              ],
-            ),
-          );
-        });
+    // res[0] is long lat, res[1] is image file
+    if (res != null && res[0] != null && res[1] != null) {
+      Map<String, dynamic> customProperties = {};
+      customProperties['long'] = (res[0] as LatLng).longitude;
+      customProperties['lat'] = (res[0] as LatLng).latitude;
+      await _onFilePick((res[1] as File)?.path);
+      onSend(ChatMessage(
+          text: '${AuthBloc.instance.userModel.name} đã chia sẻ 1 địa điểm',
+          user: _users
+              .firstWhere((user) => user.uid == AuthBloc.instance.userModel.id),
+          customProperties: customProperties));
+    }
   }
 
   _getFooterPageIndex() {
@@ -513,7 +486,7 @@ class _InboxChatState extends State<InboxChat> {
         MediaPickerWidget(
           onMediaPick: _onSendMedia,
         ),
-        Container(color: Colors.blue),
+        // Container(color: Colors.blue),
       ],
     );
     if ((keyboardHeight ?? 0) < MediaQuery.of(context).viewInsets.bottom)
@@ -742,6 +715,7 @@ class _InboxChatState extends State<InboxChat> {
                 print("OnLongPressAvatar: ${user.name}");
               },
               inputMaxLines: 5,
+
               messageContainerPadding: EdgeInsets.only(left: 5, right: 10),
               alwaysShowSend: _files.length > 0,
               inputTextStyle: TextStyle(fontSize: 15.5),
@@ -906,29 +880,54 @@ class _InboxChatState extends State<InboxChat> {
                         });
                       },
                     ),
-                    GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 10, bottom: 10, left: 8, right: 10),
-                        child: Icon(
-                          Icons.camera_alt_outlined,
-                          color: userColor,
-                          size: 26,
+                    if (_chatC.text.trim() == '')
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 8, right: 6),
+                          child: Icon(
+                            Icons.camera_alt_outlined,
+                            color: userColor,
+                            size: 26,
+                          ),
                         ),
+                        onTap: () {
+                          // setState(() {
+                          //   showMedia = false;
+                          //   showEmoj = false;
+                          //   showCamera = true;
+                          // });
+                          // FocusScope.of(context).requestFocus(FocusNode());
+                          // Future.delayed(Duration(milliseconds: 50), () {
+                          //   if (_footerC.hasClients) _footerC.jumpToPage(2);
+                          // });
+                          onCustomPersionRequest(
+                              permission: Permission.camera,
+                              onGranted: () {
+                                ImagePicker.pickImage(
+                                        source: ImageSource.camera)
+                                    .then((value) {
+                                  if (value == null) return;
+                                  _onCameraPick(value.path);
+                                });
+                              });
+                        },
                       ),
-                      onTap: () async {
-                        setState(() {
-                          showMedia = false;
-                          showEmoj = false;
-                          showCamera = true;
-                        });
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        Future.delayed(Duration(milliseconds: 50), () {
-                          if (_footerC.hasClients) _footerC.jumpToPage(2);
-                        });
-                      },
-                    ),
+                    if (_chatC.text.trim() == '')
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 6, right: 0),
+                          child: Icon(
+                            Icons.map_outlined,
+                            color: userColor,
+                            size: 26,
+                          ),
+                        ),
+                        onTap: showMap,
+                      ),
                   ],
                 ),
 
