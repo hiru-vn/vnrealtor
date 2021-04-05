@@ -51,7 +51,7 @@ Future<bool> showConfirmDialog(BuildContext context, String errorMessage,
           content: new Text(errorMessage, style: TextStyle(fontSize: 15.0)),
           actions: <Widget>[
             FlatButton(
-                child: Text('cancel',
+                child: Text('Huỷ',
                     style: TextStyle(color: Theme.of(context).primaryColor)),
                 onPressed: () {
                   navigatorKey.currentState.pop(false);

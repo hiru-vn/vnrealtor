@@ -714,7 +714,7 @@ class _ReplyWidgetState extends State<ReplyWidget> {
         onLongPress: () {
           if (AuthBloc.instance.userModel == null) return;
           dynamic state = _menuKey.currentState;
-          state.showButtonMenu();
+          state?.showButtonMenu();
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -737,33 +737,36 @@ class _ReplyWidgetState extends State<ReplyWidget> {
             SizedBox(
               width: 10,
             ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () => ProfileOtherPage.navigate(widget.reply.user),
-                  child: Text(
-                    widget.reply.user?.name ?? '',
-                    style: ptBody().copyWith(fontWeight: FontWeight.w500),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () => ProfileOtherPage.navigate(widget.reply.user),
+                    child: Text(
+                      widget.reply.user?.name ?? '',
+                      style: ptBody().copyWith(fontWeight: FontWeight.w500),
+                    ),
                   ),
-                ),
-                Text.rich(TextSpan(children: [
-                  TextSpan(
-                    text: widget.reply.content ?? '',
-                    style: ptBody().copyWith(
-                        fontWeight: FontWeight.w500, color: Colors.black87),
+                  Text.rich(
+                    TextSpan(children: [
+                      TextSpan(
+                        text: widget.reply.content ?? '',
+                        style: ptBody().copyWith(
+                            fontWeight: FontWeight.w500, color: Colors.black87),
+                      ),
+                      TextSpan(
+                        text: '  ' +
+                            Formart.timeByDayViShort(
+                                DateTime.tryParse(widget.reply.updatedAt)),
+                        style: ptTiny().copyWith(color: Colors.black54),
+                      ),
+                    ]),
                   ),
-                  TextSpan(
-                    text: '  ' +
-                        Formart.timeByDayViShort(
-                            DateTime.tryParse(widget.reply.updatedAt)),
-                    style: ptTiny().copyWith(color: Colors.black54),
-                  ),
-                ])),
-              ],
+                ],
+              ),
             ),
-            Spacer(),
             PopupMenuButton(
                 child: SizedBox.shrink(),
                 itemBuilder: (_) => <PopupMenuItem<String>>[

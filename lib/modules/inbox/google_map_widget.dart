@@ -23,7 +23,9 @@ Future showGoogleMap(BuildContext context, {double height}) {
       backgroundColor: Colors.transparent,
       builder: (context) {
         return Scaffold(
-            backgroundColor: Colors.transparent, body: GoogleMapWidget());
+            resizeToAvoidBottomPadding: false,
+            backgroundColor: Colors.transparent,
+            body: GoogleMapWidget());
       });
 }
 

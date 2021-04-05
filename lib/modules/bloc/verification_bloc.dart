@@ -15,7 +15,6 @@ class VerificationBloc extends ChangeNotifier {
   String phone;
   String website;
   String socialNetwork;
-
   String taxCode;
   String phoneCom;
   String email;
