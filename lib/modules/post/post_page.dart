@@ -5,7 +5,6 @@ import 'package:datcao/modules/post/suggest_list.dart';
 import 'package:datcao/share/widget/load_more.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
-import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/create_post_page.dart';
 import 'package:datcao/modules/post/search_post_page.dart';
@@ -22,11 +21,12 @@ class _PostPageState extends State<PostPage> {
   bool showAppBar = true;
   PostBloc _postBloc;
   AuthBloc _authBloc;
-  ScrollController _controller = ScrollController();
+  // ScrollController _postBloc.feedScrollController = ScrollController();
+  // PageController _postBloc.pageController = PageController();
 
   @override
   void initState() {
-    _controller.addListener(appBarControll);
+    // _postBloc.feedScrollController.addListener(appBarControll);
     super.initState();
   }
 
@@ -35,26 +35,27 @@ class _PostPageState extends State<PostPage> {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
       _authBloc = Provider.of(context);
-      _postBloc.feedScrollController = _controller;
     }
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    _controller.removeListener(appBarControll);
+    // _postBloc.feedScrollController.removeListener(appBarControll);
     super.dispose();
   }
 
   void appBarControll() {
-    if (_controller.position.userScrollDirection == ScrollDirection.forward ||
-        _controller.offset == 0) {
+    if (_postBloc.feedScrollController.position.userScrollDirection ==
+            ScrollDirection.forward ||
+        _postBloc.feedScrollController.offset == 0) {
       if (!showAppBar)
         setState(() {
           showAppBar = !showAppBar;
         });
     } else {
-      if (showAppBar) if (_controller.offset > kToolbarHeight)
+      if (showAppBar) if (_postBloc.feedScrollController.offset >
+          kToolbarHeight)
         setState(() {
           showAppBar = !showAppBar;
         });
@@ -63,130 +64,127 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PageView.builder(
+    _postBloc.pageController = PageController();
+    _postBloc.feedScrollController = ScrollController();
+    return PageView(
         controller: _postBloc.pageController,
         physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          if (index == 0)
-            return Scaffold(
-              backgroundColor: ptBackgroundColor(context),
-              appBar: showAppBar
-                  ? PostPageAppBar(_authBloc.userModel.messNotiCount ?? 0)
-                  : null,
-              body: LoadMoreScrollView(
-                scrollController: _controller,
-                onLoadMore: () {
-                  _postBloc.loadMoreNewFeed();
+        children: [
+          Scaffold(
+            backgroundColor: ptBackgroundColor(context),
+            appBar: showAppBar
+                ? PostPageAppBar(_authBloc.userModel.messNotiCount ?? 0)
+                : null,
+            body: LoadMoreScrollView(
+              scrollController: _postBloc.feedScrollController,
+              onLoadMore: () {
+                _postBloc.loadMoreNewFeed();
+              },
+              list: RefreshIndicator(
+                color: ptPrimaryColor(context),
+                onRefresh: () async {
+                  await Future.wait([
+                    _postBloc.getNewFeed(
+                        filter:
+                            GraphqlFilter(limit: 10, order: "{updatedAt: -1}")),
+                    _postBloc.getStoryFollowing()
+                  ]);
+                  return;
                 },
-                list: RefreshIndicator(
-                  color: ptPrimaryColor(context),
-                  onRefresh: () async {
-                    await Future.wait([
-                      _postBloc.getNewFeed(
-                          filter: GraphqlFilter(
-                              limit: 10, order: "{updatedAt: -1}")),
-                      _postBloc.getStoryFollowing()
-                    ]);
-                    return;
-                  },
-                  child: SingleChildScrollView(
-                    controller: _controller,
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: (!showAppBar)
-                              ? MediaQuery.of(context).padding.top +
-                                  kToolbarHeight
-                              : 0,
-                        ),
-                        CreatePostCard(
-                          postBloc: _postBloc,
-                          pageController: _postBloc.pageController,
-                        ),
-                        if (_postBloc.isReloadFeed) PostSkeleton(),
-                        if (_postBloc.hasTags != null &&
-                            _postBloc.hasTags.length > 0)
-                          Container(
-                            width: deviceWidth(context),
-                            height: 30,
-                            margin: EdgeInsets.only(top: 8),
-                            // padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: ListView.separated(
-                              // shrinkWrap: true,
-                              padding: EdgeInsets.only(left: 15),
-                              separatorBuilder: (context, index) {
-                                return SizedBox(
-                                  width: 10,
-                                );
-                              },
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  borderRadius: BorderRadius.circular(15),
-                                  onTap: () {
-                                    SearchPostPage.navigate(
-                                        hashTag: _postBloc.hasTags[index]
-                                            ['value']);
-                                  },
-                                  child: Container(
-                                    height: 30,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    decoration: BoxDecoration(
-                                        color: ptSecondaryColor(context),
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    child: Center(
-                                      child: Text(
-                                        _postBloc.hasTags[index]['value']
-                                            .toString(),
-                                      ),
+                child: SingleChildScrollView(
+                  controller: _postBloc.feedScrollController,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: (!showAppBar)
+                            ? MediaQuery.of(context).padding.top +
+                                kToolbarHeight
+                            : 0,
+                      ),
+                      CreatePostCard(
+                        postBloc: _postBloc,
+                        pageController: _postBloc.pageController,
+                      ),
+                      if (_postBloc.isReloadFeed) PostSkeleton(),
+                      if (_postBloc.hasTags != null &&
+                          _postBloc.hasTags.length > 0)
+                        Container(
+                          width: deviceWidth(context),
+                          height: 30,
+                          margin: EdgeInsets.only(top: 8),
+                          // padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: ListView.separated(
+                            // shrinkWrap: true,
+                            padding: EdgeInsets.only(left: 15),
+                            separatorBuilder: (context, index) {
+                              return SizedBox(
+                                width: 10,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                borderRadius: BorderRadius.circular(15),
+                                onTap: () {
+                                  SearchPostPage.navigate(
+                                      hashTag: _postBloc.hasTags[index]
+                                          ['value']);
+                                },
+                                child: Container(
+                                  height: 30,
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                      color: ptSecondaryColor(context),
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Center(
+                                    child: Text(
+                                      _postBloc.hasTags[index]['value']
+                                          .toString(),
                                     ),
                                   ),
-                                );
-                              },
-                              itemCount: _postBloc.hasTags.length,
-                              scrollDirection: Axis.horizontal,
-                            ),
+                                ),
+                              );
+                            },
+                            itemCount: _postBloc.hasTags.length,
+                            scrollDirection: Axis.horizontal,
                           ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: _postBloc.feed.length,
-                          itemBuilder: (context, index) {
-                            final item = _postBloc.feed[index];
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (index == (AuthBloc.firstLogin ? 0 : 5) &&
-                                    UserBloc.instance.suggestFollowUsers !=
-                                        null &&
-                                    UserBloc.instance.suggestFollowUsers
-                                            .length >
-                                        0)
-                                  SuggestList(
-                                    users: UserBloc.instance.suggestFollowUsers,
-                                  ),
-                                PostWidget(item),
-                              ],
-                            );
-                          },
                         ),
-                        if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
-                          PostSkeleton(
-                            count: 1,
-                          ),
-                        SizedBox(
-                          height: 70,
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: _postBloc.feed.length,
+                        itemBuilder: (context, index) {
+                          final item = _postBloc.feed[index];
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (index == (AuthBloc.firstLogin ? 0 : 5) &&
+                                  UserBloc.instance.suggestFollowUsers !=
+                                      null &&
+                                  UserBloc.instance.suggestFollowUsers.length >
+                                      0)
+                                SuggestList(
+                                  users: UserBloc.instance.suggestFollowUsers,
+                                ),
+                              PostWidget(item),
+                            ],
+                          );
+                        },
+                      ),
+                      if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
+                        PostSkeleton(
+                          count: 1,
                         ),
-                      ],
-                    ),
+                      SizedBox(
+                        height: 70,
+                      ),
+                    ],
                   ),
                 ),
               ),
-            );
-          else
-            return CreatePostPage(_postBloc.pageController);
-        });
+            ),
+          ),
+          CreatePostPage(_postBloc.pageController)
+        ]);
   }
 }
 
