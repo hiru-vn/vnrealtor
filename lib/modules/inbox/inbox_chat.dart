@@ -76,6 +76,7 @@ class _InboxChatState extends State<InboxChat> {
       GlobalKey<State<StatefulWidget>>();
   FocusNode _focusNode = FocusNode();
   List<ChatMessage> messages = List<ChatMessage>();
+  String chatAbleStringStatus;
 
   var i = 0;
   bool showEmoj = false;
@@ -90,6 +91,7 @@ class _InboxChatState extends State<InboxChat> {
           context); // this just to get userId, avatar, name. you can replace this with your params
       loadUsers();
       loadFirst20Message();
+      checkChatable();
     }
     super.didChangeDependencies();
   }
@@ -113,6 +115,11 @@ class _InboxChatState extends State<InboxChat> {
     super.dispose();
     _incomingMessageListener?.cancel();
     _focusNode.dispose();
+  }
+
+  Future<void> checkChatable() async {
+    chatAbleStringStatus =
+        await _inboxBloc.checkChatable(context, _users[1].uid);
   }
 
   Future<void> loadUsers() async {
@@ -961,6 +968,18 @@ class _InboxChatState extends State<InboxChat> {
               child: Center(
                 child: Text(
                   'Cuộc hội thoại đã bị chặn',
+                  style: ptBody().copyWith(color: Colors.white),
+                ),
+              ),
+            ),
+          if (group.blockedBy.length == 0 && chatAbleStringStatus != null)
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 35,
+              color: Colors.black87,
+              child: Center(
+                child: Text(
+                  chatAbleStringStatus,
                   style: ptBody().copyWith(color: Colors.white),
                 ),
               ),

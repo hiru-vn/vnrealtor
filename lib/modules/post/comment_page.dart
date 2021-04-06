@@ -399,6 +399,9 @@ class _CommentWidgetState extends State<CommentWidget> {
       userReplyCache = widget.userReplyCache;
       isExpandReply = true;
     }
+    // if (replies.length < 3) {
+    //   isExpandReply = true;
+    // }
     super.didChangeDependencies();
   }
 

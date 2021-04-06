@@ -25,11 +25,23 @@ class InboxBloc extends ChangeNotifier {
   final messageCollection = 'messages';
 
   Future<void> init() async {
-    await createUser(AuthBloc.instance.userModel.id, AuthBloc.instance.userModel.name,
-        AuthBloc.instance.userModel.avatar, AuthBloc.instance.userModel.phone);
+    await createUser(
+        AuthBloc.instance.userModel.id,
+        AuthBloc.instance.userModel.name,
+        AuthBloc.instance.userModel.avatar,
+        AuthBloc.instance.userModel.phone);
     final res = await getList20InboxGroup(AuthBloc.instance.userModel.id);
     groupInboxList = res;
     notifyListeners();
+  }
+
+  Future<String> checkChatable(BuildContext context, String id) async {
+    final res = await UserBloc.instance.checkChatAble(id);
+    if (!res.isSuccess || res.data == false) {
+      showToast(res.errMessage, context);
+      return res.data;
+    }
+    return res.data;
   }
 
   Future<void> navigateToChatWith(
@@ -41,11 +53,6 @@ class InboxBloc extends ChangeNotifier {
       List<String> userIds,
       List<String> userAvatars) async {
     userIds.sort();
-
-    // final res = await UserBloc.instance.checkChatAble(userIds[1]);
-    // if (!res.isSuccess || res.data == false) {
-    //   showToast(mes, context)
-    // }
 
     final snap = await firestore
         .collection(groupCollection)
