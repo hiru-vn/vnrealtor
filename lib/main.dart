@@ -17,6 +17,7 @@ import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_callkeep/flutter_callkeep.dart';
 
+import 'modules/pages/blocs/create_page_bloc.dart';
 import 'share/widget/empty_widget.dart';
 
 final _sentry = SentryClient(
@@ -117,6 +118,9 @@ class _MyAppState extends State<MyApp> {
                   ),
                   ChangeNotifierProvider(
                     create: (context) => VerificationBloc.instance,
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => CreatePageBloc.instance,
                   ),
                 ],
                 child: isOffline

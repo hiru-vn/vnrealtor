@@ -1,3 +1,5 @@
+import 'package:datcao/modules/pages/blocs/create_page_bloc.dart';
+import 'package:datcao/modules/pages/models/pages_category_model.dart';
 import 'package:datcao/modules/pages/widget/listItemTags.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/share/function/function.dart';
@@ -17,8 +19,21 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameC = TextEditingController(text: '');
   TextEditingController _describeC = TextEditingController(text: '');
+  TextEditingController  _categoriesController = TextEditingController(text: '');
 
   PageController get _pageController => widget.pageController;
+
+  CreatePageBloc _createPageBloc;
+
+  @override
+  void didChangeDependencies() {
+    if (_createPageBloc == null) {
+      _createPageBloc = Provider.of<CreatePageBloc>(context);
+    }
+    super.didChangeDependencies();
+  }
+
+  _onAddCategory(String val) => _createPageBloc.addSelectedCategories(val);
 
   @override
   Widget build(BuildContext context) {
@@ -117,15 +132,21 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListItemTags(
-              title: "",
-              list: ["BDS", "Chung Cư", "Nhà Đất"],
-              isEnableRemove: true,
-              onClickAt: null,
-              alignment: WrapAlignment.end,
-            ),
-            heightSpace(10),
-            _itemAutoFillText()
+            if (_createPageBloc.listCategoriesSelected.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: ListItemTags(
+                  title: "",
+                  list: _createPageBloc.listCategoriesSelected,
+                  isEnableRemove: true,
+                  onClickAt: _createPageBloc.removeCategory,
+                  alignment: WrapAlignment.end,
+                ),
+              ),
+            _itemAutoFillText(
+                controller: _categoriesController,
+                hintText: 'Tìm kiếm hạng mục',
+                onSubmit: (val) => _onAddCategory(val))
           ],
         ),
       );
@@ -134,7 +155,6 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
     String hintText,
     List<String> items,
     OnChange onSubmit,
-    int groupId,
     TextEditingController controller,
     Function(String) onValidate,
   }) =>
@@ -145,7 +165,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
           validator: onValidate,
           onSuggestionSelected: (val) {
             onSubmit(val);
-            controller..text = "";
+            controller.clear();
           },
           noItemsFoundBuilder: (context) => _itemEmpty(),
           itemBuilder: (context, item) => ListTile(
@@ -154,8 +174,17 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
               style: ptBody(),
             ),
           ),
-          suggestionsCallback: (val) async {},
-          hideOnEmpty: true,
+          suggestionsCallback: (val) async {
+            List<String> list = [];
+            List<PagesCategoriesModel> res =
+                await _createPageBloc.getCategories(
+                    filter:
+                        GraphqlFilter(search: val, order: '{createdAt: -1}'));
+            res.forEach((element) {
+              list.add(element.name);
+            });
+            return list;
+          },
           keepSuggestionsOnSuggestionSelected: true,
           autoFlipDirection: true,
           textFieldConfiguration: TextFieldConfiguration(
@@ -173,13 +202,9 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
               isDense: true,
               counterText: "",
               errorStyle: typeError(),
-              hintText: 'Tìm kiếm hạng mục',
+              hintText: hintText,
               hintStyle: ptBigBody().copyWith(color: AppColors.greyHint),
             ),
-            onSubmitted: (val) {
-              onSubmit(val);
-              controller..text = "";
-            },
           ),
         ),
       );
