@@ -75,7 +75,9 @@ dev_dependencies:
   flutter_emoji_keyboard: ^0.1.3
   photo_manager: ^0.6.0
   sliding_up_panel: ^1.0.2
-
+  flutter_typeahead: ^2.0.0
+  flutter_tags: ^0.4.9+1
+  font_awesome_flutter: ^8.11.0
   # call
   flutter_callkeep: ^0.1.8
 

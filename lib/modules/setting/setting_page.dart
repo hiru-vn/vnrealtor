@@ -1,5 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/pages/pages/pages_page.dart';
 import 'package:datcao/modules/profile/update_profile_page.dart';
 import 'package:datcao/modules/profile/verify_account_page1.dart';
 import 'package:datcao/modules/profile/verify_company.dart';
@@ -85,7 +86,7 @@ class _SettingPageState extends State<SettingPage> {
         "name": "Trang",
         "img": "assets/image/page.png",
         "action": () {
-          showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
+          PagesPage.navigate();
         }
       },
       {
