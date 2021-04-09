@@ -80,6 +80,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               .toList());
 
       // deplay for sv to handle resize image
+      // warning: dont delete this line
       await Future.delayed(Duration(milliseconds: 1000));
 
       navigatorKey.currentState.maybePop();
@@ -89,6 +90,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         FocusScope.of(context).requestFocus(FocusNode());
         //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
         // _images.map((e) => FileUtil.deleteFileFireStorage(e));
+        // TODO: clean this
 
         _expirationDate = null;
         _contentC.clear();
@@ -96,6 +98,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
       } else {
         showToast(res.errMessage, context);
       }
+
+      // deplay for sv to handle resize image for story
+      // warning: dont delete this line
       await Future.delayed(
           Duration(seconds: 2), () => _postBloc?.notifyListeners());
     } catch (e) {
@@ -312,6 +317,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           builder: (context) {
                             return MediaPagePickerWidget(
                               onMediaPick: (list) {
+                                //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
+                                // _previewMedias.map((e) => FileUtil.deleteFileFireStorage(e));
+                                // TODO: clean this
                                 setState(() {
                                   _cacheMedias = list;
                                 });
