@@ -1,15 +1,23 @@
 import 'package:datcao/modules/pages/blocs/create_page_bloc.dart';
-import 'package:datcao/modules/pages/models/pages_category_model.dart';
 import 'package:datcao/modules/pages/widget/listItemTags.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/share/function/function.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/activity_indicator.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class InfoPageCreatePage extends StatefulWidget {
   final PageController pageController;
-  const InfoPageCreatePage({this.pageController});
+  final TextEditingController nameController;
+  final TextEditingController describeController;
+  final TextEditingController categoriesController;
+
+  const InfoPageCreatePage(
+      {this.pageController,
+      this.nameController,
+      this.describeController,
+      this.categoriesController});
 
   @override
   _InfoPageCreatePageState createState() => _InfoPageCreatePageState();
@@ -17,11 +25,12 @@ class InfoPageCreatePage extends StatefulWidget {
 
 class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameC = TextEditingController(text: '');
-  TextEditingController _describeC = TextEditingController(text: '');
-  TextEditingController  _categoriesController = TextEditingController(text: '');
 
   PageController get _pageController => widget.pageController;
+
+  TextEditingController get _nameC => widget.nameController;
+  TextEditingController get _describeC => widget.describeController;
+  TextEditingController get _categoriesC => widget.categoriesController;
 
   CreatePageBloc _createPageBloc;
 
@@ -29,41 +38,55 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
   void didChangeDependencies() {
     if (_createPageBloc == null) {
       _createPageBloc = Provider.of<CreatePageBloc>(context);
+      _initData();
     }
     super.didChangeDependencies();
   }
 
   _onAddCategory(String val) => _createPageBloc.addSelectedCategories(val);
 
+  _initData() async {
+    await _createPageBloc.getAllCategories();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Stack(
       children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
-          child: Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _itemInfoField(
-                    title: 'Nhập tên trang',
-                    controller: _nameC,
-                    hintText: 'Tên trang '),
-                heightSpace(20),
-                _itemInfoField(
-                    title: 'Nhập tên trang web',
-                    controller: _describeC,
-                    hintText: 'Mô tả trang '),
-                heightSpace(20),
-                _buildSelectCategory(),
-              ],
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+              child: Form(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _itemInfoField(
+                        title: 'Nhập tên trang',
+                        controller: _nameC,
+                        hintText: 'Tên trang '),
+                    heightSpace(20),
+                    _itemInfoField(
+                        title: 'Nhập tên trang web',
+                        controller: _describeC,
+                        hintText: 'Mô tả trang '),
+                    heightSpace(20),
+                    _buildSelectCategory(),
+                  ],
+                ),
+              ),
             ),
-          ),
+            heightSpace(15),
+            _itemButton(),
+            heightSpace(15),
+          ],
         ),
-        heightSpace(15),
-        _itemButton(),
-        heightSpace(15),
+        if (_createPageBloc.isLoading)
+          Container(
+            color: AppColors.backgroundColor.withOpacity(0.5),
+            child: ActivityIndicator(),
+          )
       ],
     );
   }
@@ -144,7 +167,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
                 ),
               ),
             _itemAutoFillText(
-                controller: _categoriesController,
+                controller: _categoriesC,
                 hintText: 'Tìm kiếm hạng mục',
                 onSubmit: (val) => _onAddCategory(val))
           ],
@@ -175,18 +198,16 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
             ),
           ),
           suggestionsCallback: (val) async {
-            List<String> list = [];
-            List<PagesCategoriesModel> res =
-                await _createPageBloc.getCategories(
-                    filter:
-                        GraphqlFilter(search: val, order: '{createdAt: -1}'));
-            res.forEach((element) {
-              list.add(element.name);
-            });
-            return list;
+            var list = [];
+            if (controller.text.isNotEmpty) {
+              list = await _createPageBloc.getCategoriesByKeyword(
+                  filter: GraphqlFilter(search: val, order: '{createdAt: -1}'));
+            }
+            return list.isNotEmpty ? list : [];
           },
-          keepSuggestionsOnSuggestionSelected: true,
+          hideOnEmpty: true,
           autoFlipDirection: true,
+          hideOnError: true,
           textFieldConfiguration: TextFieldConfiguration(
             maxLength: 255,
             controller: controller,

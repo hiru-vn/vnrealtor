@@ -15,9 +15,15 @@ class CreatePagePage extends StatefulWidget {
 class _CreatePagePageState extends State<CreatePagePage> {
   int pageInit = 0;
 
+  TextEditingController _nameC = TextEditingController(text: '');
+  TextEditingController _describeC = TextEditingController(text: '');
+  TextEditingController _categoriesController = TextEditingController(text: '');
+
   @override
   Widget build(BuildContext context) {
-    PageController _pageController = PageController(initialPage: pageInit);
+    PageController _pageController = PageController(
+      initialPage: pageInit,
+    );
     return Scaffold(
       appBar: AppBar1(
         bgColor: ptSecondaryColor(context),
@@ -27,11 +33,20 @@ class _CreatePagePageState extends State<CreatePagePage> {
         automaticallyImplyLeading: true,
       ),
       body: PageView(
-        physics:new NeverScrollableScrollPhysics(),
+        physics: new NeverScrollableScrollPhysics(),
         controller: _pageController,
         children: [
-          InfoPageCreatePage(pageController: _pageController,),
-          ChooseImageCreatePage()
+          InfoPageCreatePage(
+            pageController: _pageController,
+            nameController: _nameC,
+            describeController: _describeC,
+            categoriesController: _categoriesController,
+          ),
+          ChooseImageCreatePage(
+            nameController: _nameC,
+            describeController: _describeC,
+            categoriesController: _categoriesController,
+          )
         ],
       ),
     );

@@ -1,15 +1,115 @@
+import 'package:datcao/modules/pages/blocs/create_page_bloc.dart';
 import 'package:datcao/resources/styles/colors.dart';
-import 'package:datcao/resources/styles/images.dart';
+import 'dart:io';
+import 'package:datcao/utils/file_util.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 
 class ChooseImageCreatePage extends StatefulWidget {
+  final TextEditingController nameController;
+  final TextEditingController describeController;
+  final TextEditingController categoriesController;
+
+  const ChooseImageCreatePage(
+      {this.nameController,
+      this.describeController,
+      this.categoriesController});
+
   @override
   _ChooseImageCreatePageState createState() => _ChooseImageCreatePageState();
 }
 
 class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
+  bool uploadingCover = false;
+
+  TextEditingController get _nameC => widget.nameController;
+  TextEditingController get _describeC => widget.describeController;
+  TextEditingController get _categoriesC => widget.categoriesController;
+
+  CreatePageBloc _createPageBloc;
+
+  @override
+  void didChangeDependencies() {
+    if (_createPageBloc == null) {
+      _createPageBloc = Provider.of<CreatePageBloc>(context);
+    }
+    super.didChangeDependencies();
+  }
+
+  Future _createPost() async {
+    // if (isProcess) return;
+    try {
+      //  isProcess = true;
+      if (_createPageBloc.urlAvatar == null) {
+        showToast('Vui lòng chọn ảnh đại diện của trang', context);
+        return;
+      }
+      if (_createPageBloc.urlCover == null) {
+        showToast('Vui lòng chọn ảnh bìa của trang', context);
+        return;
+      }
+      showSimpleLoadingDialog(context, canDismiss: false);
+
+      final res = await _createPageBloc.createPage(
+          _nameC.text.trim(),
+          _describeC.text.trim(),
+          _createPageBloc.urlAvatar,
+          _createPageBloc.urlCover,
+          _createPageBloc.listCategoriesId);
+
+      // deplay for sv to handle resize image
+      await Future.delayed(Duration(milliseconds: 1000));
+
+      navigatorKey.currentState.maybePop();
+      if (res.isSuccess) {
+        //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
+
+      } else {
+        showToast(res.errMessage, context);
+      }
+      // await Future.delayed(
+      //     Duration(seconds: 2), () => _postBloc?.notifyListeners());
+    } catch (e) {} finally {
+      //  isProcess = false;
+    }
+  }
+
+  Future _updateCover(String filePath) async {
+    try {
+      _createPageBloc.isLoadingUploadCover = true;
+      final compressImage = await _compressedFile(filePath);
+      final uint8 = (await File(compressImage).readAsBytes());
+      final thumbnail = await FileUtil.resizeImage(uint8, 360);
+      final url = await FileUtil.uploadFireStorage(thumbnail?.path);
+      _createPageBloc.isLoadingUploadCover = false;
+      _createPageBloc.urlCover = url;
+    } catch (e) {
+      showToast(e.toString(), context);
+    }
+  }
+
+  Future _updateAvatar(String filePath) async {
+    try {
+      _createPageBloc.isLoadingUploadAvatar = true;
+      final compressImage = await _compressedFile(filePath);
+      final uint8 = (await File(compressImage).readAsBytes());
+      final thumbnail = await FileUtil.resizeImage(uint8, 120);
+      final url = await FileUtil.uploadFireStorage(thumbnail?.path);
+      _createPageBloc.isLoadingUploadAvatar = false;
+      _createPageBloc.urlAvatar = url;
+    } catch (e) {
+      showToast(e.toString(), context);
+    }
+  }
+
+  Future<String> _compressedFile(String path) async {
+    var compressedFile =
+        await FlutterNativeImage.compressImage(path, quality: 80);
+    return compressedFile.path;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,11 +151,153 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
         ),
       );
 
-  Widget _buildCoverImage() => Container(
-        child: Container(
-          color: AppColors.backgroundLightColor,
-          height: deviceWidth(context) / 1.5,
-          child: _itemIconTitle('Thêm ảnh bìa'),
+  Widget _buildCoverImage() => GestureDetector(
+        onTap: () {
+          imagePicker(context,
+              onImagePick: _updateCover, onCameraPick: _updateCover);
+        },
+        child: Builder(
+          builder: (BuildContext context) {
+            if (_createPageBloc.urlCover != null)
+              return Container(
+                height: deviceWidth(context) / 1.5,
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundLightColor,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(
+                        _createPageBloc.urlCover ?? ''),
+                  ),
+                ),
+              );
+            return Container(
+              color: AppColors.backgroundLightColor,
+              height: deviceWidth(context) / 1.5,
+              child: _createPageBloc.isLoadingUploadCover
+                  ? kLoadingSpinner
+                  : _itemIconTitle('Thêm ảnh bìa'),
+            );
+          },
+        ),
+      );
+
+  Widget _buildAvatarImage() => Positioned(
+        bottom: -70,
+        child: GestureDetector(
+          onTap: () {
+            imagePicker(context,
+                onImagePick: _updateAvatar, onCameraPick: _updateAvatar);
+          },
+          child: Builder(
+            builder: (context) {
+              if (_createPageBloc.urlAvatar != null) return _buildUrlAvatar();
+              return Center(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 155,
+                      height: 155,
+                      decoration: new BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        width: 145,
+                        height: 145,
+                        decoration: new BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                              color: AppColors.backgroundLightColor, width: 3),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        width: 130,
+                        height: 130,
+                        decoration: new BoxDecoration(
+                          color: AppColors.backgroundLightColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: _createPageBloc.isLoadingUploadAvatar
+                            ? kLoadingSpinner
+                            : Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    child: FaIcon(
+                                      FontAwesomeIcons.plus,
+                                      size: 15,
+                                      color: AppColors.mainColor,
+                                    ),
+                                  ),
+                                  widthSpace(10),
+                                  Container(
+                                    width: deviceWidth(context) * 0.2,
+                                    child: Text(
+                                      "Thêm ảnh đại diện ",
+                                      style: ptBigTitle().copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      );
+
+  Widget _buildUrlAvatar() => Center(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              width: 155,
+              height: 155,
+              decoration: new BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+            ),
+            Center(
+              child: Container(
+                width: 145,
+                height: 145,
+                decoration: new BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                      color: AppColors.backgroundLightColor, width: 3),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+            Center(
+              child: Container(
+                width: 130,
+                height: 130,
+                decoration: new BoxDecoration(
+                  color: AppColors.backgroundLightColor,
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(
+                        _createPageBloc.urlAvatar ?? ''),
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
       );
 
@@ -80,83 +322,16 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
         ],
       );
 
-  Widget _buildAvatarImage() => Positioned(
-        bottom: -50,
-        child: Center(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: 155,
-                height: 155,
-                decoration: new BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              Center(
-                child: Container(
-                  width: 145,
-                  height: 145,
-                  decoration: new BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                        color: AppColors.backgroundLightColor, width: 3),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-              Center(
-                child: Container(
-                  width: 130,
-                  height: 130,
-                  decoration: new BoxDecoration(
-                    color: AppColors.backgroundLightColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        child: FaIcon(
-                          FontAwesomeIcons.plus,
-                          size: 15,
-                          color: AppColors.mainColor,
-                        ),
-                      ),
-                      widthSpace(10),
-                      Container(
-                        width: deviceWidth(context) * 0.2,
-                        child: Text(
-                          "Thêm ảnh đại diện ",
-                          style: ptBigTitle().copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
+  Widget _itemButton() => Padding(
+        padding: const EdgeInsets.all(10),
+        child: ExpandBtn(
+          elevation: 0,
+          text: 'Hoàn tất',
+          borderRadius: 5,
+          onPress: () => _createPost,
+          color: AppColors.buttonPrimaryColor,
+          height: 45,
+          textColor: Colors.white,
         ),
       );
-
-
-  Widget _itemButton() => Padding(
-    padding: const EdgeInsets.all(10),
-    child: ExpandBtn(
-      elevation: 0,
-      text: 'Hoàn tất',
-      borderRadius: 5,
-      onPress: () {
-
-      },
-      color: AppColors.buttonPrimaryColor,
-      height: 45,
-      textColor: Colors.white,
-    ),
-  );
 }
