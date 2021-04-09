@@ -206,24 +206,6 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
-              padding: const EdgeInsets.all(15).copyWith(bottom: 5),
-              child: ImageButtonPicker(
-                _allVideoAndImageCache,
-                onUpdateListImg: (listImg) {},
-                onAddImg: _upload,
-                onAddMultiImg: _uploadMultiImage,
-                onRemoveImg: (file) {
-                  _images.remove(file);
-                  _videos.remove(file);
-                  _allVideoAndImage.remove(file);
-                  _allVideoAndImageCache.remove(file);
-                  setState(() {});
-
-                  // FileUtil.deleteFileFireStorage(file);
-                },
-              ),
-            ),
-            Padding(
               padding: const EdgeInsets.all(8.0).copyWith(top: 8, bottom: 3),
               child: Material(
                 borderRadius: BorderRadius.circular(10),
@@ -323,38 +305,39 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                 ),
               ),
             ),
-            Container(
-              color: Colors.white,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(height: 10),
-                  _buildForm(),
-                  SizedBox(
-                    height: 3.0,
-                  ),
-                  // Padding(
-                  //     padding: const EdgeInsets.all(15),
-                  //     child: Center(
-                  //       child: RoundedBtn(
-                  //         height: 45,
-                  //         text: 'Cập nhật',
-                  //         onPressed: _updatePost,
-                  //         width: 150,
-                  //         color: ptPrimaryColor(context),
-                  //         padding: EdgeInsets.symmetric(
-                  //           horizontal: 15,
-                  //           vertical: 8,
-                  //         ),
-                  //       ),
-                  //     )),
-                  SizedBox(
-                    height: _activityNode.hasFocus
-                        ? MediaQuery.of(context).viewInsets.bottom
-                        : 0,
-                  ),
-                ],
-              ),
+            SizedBox(
+              height: 15,
+            ),
+            Row(
+              children: [],
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            SizedBox(height: 10),
+            _buildForm(),
+            SizedBox(
+              height: 3.0,
+            ),
+            // Padding(
+            //     padding: const EdgeInsets.all(15),
+            //     child: Center(
+            //       child: RoundedBtn(
+            //         height: 45,
+            //         text: 'Cập nhật',
+            //         onPressed: _updatePost,
+            //         width: 150,
+            //         color: ptPrimaryColor(context),
+            //         padding: EdgeInsets.symmetric(
+            //           horizontal: 15,
+            //           vertical: 8,
+            //         ),
+            //       ),
+            //     )),
+            SizedBox(
+              height: _activityNode.hasFocus
+                  ? MediaQuery.of(context).viewInsets.bottom
+                  : 0,
             ),
             SizedBox(
               height: 60,

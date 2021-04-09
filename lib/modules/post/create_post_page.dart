@@ -10,6 +10,8 @@ import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/utils/file_util.dart';
 import 'package:hashtagable/hashtagable.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CreatePostPage extends StatefulWidget {
   final PageController pageController;
@@ -177,24 +179,101 @@ class _CreatePostPageState extends State<CreatePostPage> {
         body: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // Padding(
+            //   padding: const EdgeInsets.all(15).copyWith(bottom: 5),
+            //   child: ImageButtonPicker(
+            //     _allVideoAndImageCache,
+            //     onUpdateListImg: (listImg) {},
+            //     onAddImg: _upload,
+            //     onAddMultiImg: _uploadMultiImage,
+            //     onRemoveImg: (file) {
+            //       _images.remove(file);
+            //       _videos.remove(file);
+            //       _allVideoAndImage.remove(file);
+            //       _allVideoAndImageCache.remove(file);
+            //       FileUtil.deleteFileFireStorage(file);
+            //     },
+            //   ),
+            // ),
             Padding(
-              padding: const EdgeInsets.all(15).copyWith(bottom: 5),
-              child: ImageButtonPicker(
-                _allVideoAndImageCache,
-                onUpdateListImg: (listImg) {},
-                onAddImg: _upload,
-                onAddMultiImg: _uploadMultiImage,
-                onRemoveImg: (file) {
-                  _images.remove(file);
-                  _videos.remove(file);
-                  _allVideoAndImage.remove(file);
-                  _allVideoAndImageCache.remove(file);
-                  FileUtil.deleteFileFireStorage(file);
-                },
+              padding: EdgeInsets.all(12).copyWith(bottom: 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.white,
+                    backgroundImage:
+                        (AuthBloc.instance.userModel.avatar != null &&
+                                AuthBloc.instance.userModel.avatar != 'null')
+                            ? CachedNetworkImageProvider(
+                                AuthBloc.instance.userModel.avatar)
+                            : AssetImage('assets/image/default_avatar.png'),
+                    child: VerifiedIcon(AuthBloc.instance.userModel?.role, 10),
+                  ),
+                  SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AuthBloc.instance.userModel.name ?? '',
+                        style: ptTitle(),
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            Formart.formatToWeekTime(DateTime.now()),
+                            style: ptTiny().copyWith(color: Colors.black54),
+                          ),
+                          SizedBox(width: 12),
+                          GestureDetector(
+                            onTap: () {
+                              pickList(context, title: 'Chia sẻ với',
+                                  onPicked: (value) {
+                                setState(() {
+                                  _shareWith = value;
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
+                                });
+                              }, options: [
+                                PickListItem('public', 'Tất cả mọi người'),
+                                PickListItem(
+                                    'friend', 'Chỉ bạn bè mới nhìn thấy'),
+                              ], closeText: 'Xong');
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(color: Colors.black12)),
+                              padding: EdgeInsets.symmetric(
+                                      horizontal: 7, vertical: 2)
+                                  .copyWith(right: 0),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Bạn bè',
+                                    style: ptTiny()
+                                        .copyWith(color: Colors.black54),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.black54,
+                                    size: 15,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
+
             Padding(
-              padding: const EdgeInsets.all(8.0).copyWith(top: 8, bottom: 3),
+              padding: const EdgeInsets.all(8.0).copyWith(top: 0, bottom: 3),
               child: Material(
                 borderRadius: BorderRadius.circular(10),
                 // elevation: 5,
@@ -204,22 +283,23 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   child: Stack(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 5)
+                        padding: const EdgeInsets.symmetric(horizontal: 12)
                             .copyWith(bottom: 0),
                         child: HashTagTextField(
                           maxLength: 500,
                           maxLines: null,
-                          minLines: 4,
+                          minLines: 8,
                           controller: _contentC,
                           onChanged: (value) => setState(() {}),
                           basicStyle:
                               ptBigBody().copyWith(color: Colors.black54),
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: 'Nội dung bài viết',
-                            hintStyle: ptTitle().copyWith(
-                                color: Colors.black38, letterSpacing: 1),
+                            hintText: 'Nội dung bài viết...',
+                            hintStyle: ptBigTitle().copyWith(
+                                color: Colors.black38,
+                                letterSpacing: 1,
+                                fontWeight: FontWeight.w500),
                           ),
                         ),
                       ),
@@ -287,38 +367,112 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ),
               ),
             ),
-            Container(
-              color: Colors.white,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+            SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: 40,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
                 children: [
-                  SizedBox(height: 10),
-                  _buildForm(),
-                  SizedBox(
-                    height: 3.0,
+                  SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) {
+                            return MediaPagePickerWidget(
+                              onMediaPick: (list) {},
+                            );
+                          });
+                    },
+                    child: SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Image.asset('assets/icon/image.png'),
+                        )),
                   ),
-                  // Padding(
-                  //     padding: const EdgeInsets.all(15),
-                  //     child: Center(
-                  //       child: RoundedBtn(
-                  //         height: 45,
-                  //         text: 'Đăng bài',
-                  //         onPressed: _createPost,
-                  //         width: 150,
-                  //         color: ptPrimaryColor(context),
-                  //         padding: EdgeInsets.symmetric(
-                  //           horizontal: 15,
-                  //           vertical: 8,
-                  //         ),
-                  //       ),
-                  //     )),
-                  SizedBox(
-                    height: _activityNode.hasFocus
-                        ? MediaQuery.of(context).viewInsets.bottom
-                        : 0,
+                  SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () {
+                      onCustomPersionRequest(
+                          permission: Permission.camera,
+                          onGranted: () {
+                            ImagePicker.pickImage(source: ImageSource.camera)
+                                .then((value) {
+                              if (value == null) return;
+                              // _upload(value.path);
+                            });
+                          });
+                    },
+                    child: SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Image.asset('assets/icon/camera.png'),
+                        )),
+                  ),
+                  SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () {
+                      PickCoordinates.navigate().then((value) => setState(() {
+                            _pos = value;
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          }));
+                    },
+                    child: SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Image.asset('assets/icon/map.png'),
+                        )),
+                  ),
+                  SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () {},
+                    child: SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Image.asset('assets/icon/tag_friend.png'),
+                        )),
                   ),
                 ],
               ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            // _buildForm(),
+            SizedBox(
+              height: 3.0,
+            ),
+            // Padding(
+            //     padding: const EdgeInsets.all(15),
+            //     child: Center(
+            //       child: RoundedBtn(
+            //         height: 45,
+            //         text: 'Đăng bài',
+            //         onPressed: _createPost,
+            //         width: 150,
+            //         color: ptPrimaryColor(context),
+            //         padding: EdgeInsets.symmetric(
+            //           horizontal: 15,
+            //           vertical: 8,
+            //         ),
+            //       ),
+            //     )),
+            SizedBox(
+              height: _activityNode.hasFocus
+                  ? MediaQuery.of(context).viewInsets.bottom
+                  : 0,
             ),
             SizedBox(
               height: 60,
@@ -448,17 +602,18 @@ class CreatePostPageAppBar extends StatelessWidget
   final PageController controller;
   final Function createPost;
   final bool enableBtn;
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
   CreatePostPageAppBar(this.controller, this.createPost, this.enableBtn);
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Padding(
-        padding: const EdgeInsets.only(left: 0, top: 12, bottom: 10, right: 12),
+        padding: const EdgeInsets.only(left: 0, top: 12, bottom: 8, right: 10),
         child: Row(
           children: [
             BackButton(
+              color: Colors.black,
               onPressed: () {
                 controller.animateToPage(0,
                     duration: Duration(milliseconds: 300),
@@ -469,7 +624,10 @@ class CreatePostPageAppBar extends StatelessWidget
             SizedBox(
               width: 5,
             ),
-            Image.asset('assets/image/logo_full.png'),
+            Text(
+              'Bài viết mới',
+              style: ptBigTitle().copyWith(color: Colors.black),
+            ),
             Spacer(),
             FlatButton(
                 color: ptPrimaryColor(context),

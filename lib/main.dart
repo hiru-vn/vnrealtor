@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
 
     ConnectionStatusSingleton connectionStatus =
         ConnectionStatusSingleton.getInstance();
-    Future.delayed(Duration(seconds: 2), () { // prevent spash no internet when open app
+    Future.delayed(Duration(seconds: 2), () { // prevent splash no internet when open app
       _connectionChangeStream =
           connectionStatus.connectionChange.listen(connectionChanged);
     });

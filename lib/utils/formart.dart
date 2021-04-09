@@ -145,6 +145,17 @@ class Formart {
     return '${formatToDate(date)} ${formatToTime(date)}';
   }
 
+  static String formatToWeekTime(DateTime date) {
+    if (date == null) return null;
+    String weekDate;
+    if (date.weekday == 7)
+      weekDate = 'Chủ Nhật';
+    else
+      weekDate = 'Thứ ${date.weekday + 1}';
+
+    return '$weekDate, ${formatToTime(date)}';
+  }
+
   static String formatToDate(DateTime date, {String seperateChar = '/'}) {
     if (date == null) return null;
     return '${date.day}$seperateChar${date.month}$seperateChar${date.year}';

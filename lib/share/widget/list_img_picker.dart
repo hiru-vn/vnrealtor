@@ -7,7 +7,8 @@
 // WHEN IMAGE URL IS UPLOAD OR REMOVE - IMPLEMENT FROM FATHER WIDGET
 
 import 'dart:io';
-
+import 'package:photo_manager/photo_manager.dart';
+import 'dart:typed_data';
 import 'package:datcao/modules/inbox/import/detail_media.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/utils/file_util.dart';
@@ -298,6 +299,313 @@ class _ImageButtonPickerState extends State<ImageButtonPicker> {
             ),
           ),
       ],
+    );
+  }
+}
+
+class MediaPickerWidget extends StatefulWidget {
+  final Function(List<String>) onMediaPick;
+  final Function(List<String>) onCaptureImage;
+  final Function(List<String>) onGalleryPick;
+  MediaPickerWidget(
+      {Key key,
+      @required this.onMediaPick,
+      @required this.onCaptureImage,
+      @required this.onGalleryPick})
+      : super(key: key);
+
+  @override
+  _MediaPickerWidgetState createState() => _MediaPickerWidgetState();
+}
+
+class _MediaPickerWidgetState extends State<MediaPickerWidget> {
+  List<AssetPathEntity> albums = [];
+  List<AssetEntity> recentAssets = [];
+  List<AssetEntity> selectedAssets = [];
+  bool isSending = false;
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    getMedia();
+    super.initState();
+  }
+
+  Future<void> getMedia() async {
+    final permitted = await PhotoManager.requestPermission();
+    if (!permitted) return;
+    albums = await PhotoManager.getAssetPathList(onlyAll: true);
+
+    // Now that we got the album, fetch all the assets it contains
+    recentAssets = await albums.first.getAssetListRange(
+      start: 0, // start at index 0
+      end: 10, // end at a very big index (to get all the assets)
+    );
+    setState(() {});
+  }
+
+  _onLoadMore() async {
+    final lastIndex = recentAssets.length;
+    final loadMoreAssets = await albums.first.getAssetListRange(
+      start: lastIndex, // start at index 0
+      end: lastIndex + 10, // end at a very big index (to get all the assets)
+    );
+    setState(() {
+      recentAssets.addAll(loadMoreAssets);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: deviceWidth(context) / 5 + 5,
+      child: Stack(
+        children: [
+          NotificationListener<ScrollNotification>(
+            onNotification: (scrollInfo) {
+              if (scrollInfo is ScrollEndNotification &&
+                  scrollController.position.extentAfter == 0) {
+                _onLoadMore();
+              }
+              return true;
+            },
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              controller: scrollController,
+              itemCount: recentAssets.length + 2,
+              itemBuilder: (_, index) {
+                if (index == 0)
+                  return Padding(
+                    padding: const EdgeInsets.all(2.5),
+                    child: Container(
+                      width: deviceWidth(context) / 5 - 5,
+                      height: deviceWidth(context) / 5 - 5,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black12),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Icon(
+                        MdiIcons.camera,
+                        size: 40,
+                        color: ptPrimaryColor(context).withOpacity(0.2),
+                      ),
+                    ),
+                  );
+                if (index == 1)
+                  return Padding(
+                    padding: const EdgeInsets.all(2.5),
+                    child: Container(
+                      width: deviceWidth(context) / 5 - 5,
+                      height: deviceWidth(context) / 5 - 5,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black12),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Icon(
+                        MdiIcons.imageAlbum,
+                        size: 40,
+                        color: ptPrimaryColor(context).withOpacity(0.2),
+                      ),
+                    ),
+                  );
+                return Padding(
+                  padding: const EdgeInsets.all(2.5),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Container(
+                      width: deviceWidth(context) / 5 - 5,
+                      height: deviceWidth(context) / 5 - 5,
+                      decoration:
+                          BoxDecoration(borderRadius: BorderRadius.circular(8)),
+                      child: AssetThumbnail(
+                        asset: recentAssets[index - 2],
+                        onTap: (val) {
+                          if (!selectedAssets.contains(val))
+                            selectedAssets.add(val);
+                          else
+                            selectedAssets.remove(val);
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          if (isSending) kLoadingSpinner
+        ],
+      ),
+    );
+  }
+}
+
+class AssetThumbnail extends StatefulWidget {
+  final Function(AssetEntity) onTap;
+  const AssetThumbnail({
+    Key key,
+    @required this.asset,
+    @required this.onTap,
+  }) : super(key: key);
+
+  final AssetEntity asset;
+
+  @override
+  _AssetThumbnailState createState() => _AssetThumbnailState();
+}
+
+class _AssetThumbnailState extends State<AssetThumbnail> {
+  bool isSelected = false;
+  Uint8List data;
+
+  @override
+  void initState() {
+    widget.asset.thumbData.then((value) => setState(() {
+          data = value;
+        }));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // We're using a FutureBuilder since thumbData is a future
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isSelected = !isSelected;
+        });
+        widget.onTap(widget.asset);
+      },
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          data == null
+              ? Container(
+                  color: Colors.grey[100],
+                )
+              : Image.memory(data, fit: BoxFit.cover),
+          if (isSelected)
+            Center(
+                child: Container(
+              padding: EdgeInsets.all(4),
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: Colors.blue),
+              child: Icon(
+                Icons.check,
+                color: Colors.white,
+                size: 17,
+              ),
+            ))
+        ],
+      ),
+    );
+  }
+}
+
+class MediaPagePickerWidget extends StatefulWidget {
+  final Function(List<String>) onMediaPick;
+  MediaPagePickerWidget({
+    Key key,
+    @required this.onMediaPick,
+  }) : super(key: key);
+
+  @override
+  _MediaPagePickerWidgetState createState() => _MediaPagePickerWidgetState();
+}
+
+class _MediaPagePickerWidgetState extends State<MediaPagePickerWidget> {
+  List<AssetPathEntity> albums = [];
+  List<AssetEntity> recentAssets = [];
+  List<AssetEntity> selectedAssets = [];
+  bool isSending = false;
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    getMedia();
+    super.initState();
+  }
+
+  Future<void> getMedia() async {
+    final permitted = await PhotoManager.requestPermission();
+    if (!permitted) return;
+    albums = await PhotoManager.getAssetPathList(onlyAll: true);
+
+    // Now that we got the album, fetch all the assets it contains
+    recentAssets = await albums.first.getAssetListRange(
+      start: 0, // start at index 0
+      end: 21, // end at a very big index (to get all the assets)
+    );
+    setState(() {});
+  }
+
+  _onLoadMore() async {
+    final lastIndex = recentAssets.length;
+    final loadMoreAssets = await albums.first.getAssetListRange(
+      start: lastIndex, // start at index 0
+      end: lastIndex + 21, // end at a very big index (to get all the assets)
+    );
+    setState(() {
+      recentAssets.addAll(loadMoreAssets);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, AppBar().preferredSize.height, 0, 0),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          title:
+              Text('Gallery', style: ptBigBody().copyWith(color: Colors.black)),
+        ),
+        body: Container(
+          height: deviceWidth(context) / 3,
+          child: Stack(
+            children: [
+              NotificationListener<ScrollNotification>(
+                onNotification: (scrollInfo) {
+                  if (scrollInfo is ScrollEndNotification &&
+                      scrollController.position.extentAfter == 0) {
+                    _onLoadMore();
+                  }
+                  return true;
+                },
+                child: GridView.builder(
+                  controller: scrollController,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    // A grid view with 3 items per row
+                    crossAxisCount: 3,
+                  ),
+                  itemCount: recentAssets.length,
+                  itemBuilder: (_, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(0.5),
+                      child: Container(
+                        width: deviceWidth(context) / 3,
+                        height: deviceWidth(context) / 3,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(0)),
+                        child: AssetThumbnail(
+                          asset: recentAssets[index],
+                          onTap: (val) {
+                            if (!selectedAssets.contains(val))
+                              selectedAssets.add(val);
+                            else
+                              selectedAssets.remove(val);
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              if (isSending) kLoadingSpinner
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

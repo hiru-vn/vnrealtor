@@ -31,8 +31,9 @@ void pickList(BuildContext context,
               child: SingleChildScrollView(
                 child: SafeArea(
                   child: Container(
-                    decoration:
-                        BoxDecoration(color: ptPrimaryColorLight(context)),
+                    decoration: BoxDecoration(
+                        color: ptPrimaryColorLight(context),
+                        borderRadius: BorderRadius.circular(4)),
                     width: deviceWidth(context) - 30,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -71,6 +72,7 @@ void pickList(BuildContext context,
                 textColor: Colors.black,
                 text: 'Hủy',
                 height: 50,
+                borderRadius: 4,
                 onPress: () => navigatorKey.currentState.maybePop(),
               ),
             ),

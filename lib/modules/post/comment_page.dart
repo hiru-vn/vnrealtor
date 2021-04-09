@@ -269,8 +269,9 @@ class _CommentPageState extends State<CommentPage> {
                                   _focusNodeComment.requestFocus();
                                 });
                           },
-                          separatorBuilder: (context, index) =>
-                              SizedBox.shrink(),
+                          separatorBuilder: (context, index) => SizedBox(
+                            height: 5,
+                          ),
                         ),
                       )
                     : Expanded(child: ListSkeleton()),
@@ -402,7 +403,34 @@ class _CommentWidgetState extends State<CommentWidget> {
     // if (replies.length < 3) {
     //   isExpandReply = true;
     // }
+    _get2InitialReply();
+
     super.didChangeDependencies();
+  }
+
+  Future _get2InitialReply() async {
+    BaseResponse res;
+    if (AuthBloc.instance.userModel == null) {
+      res = await _postBloc.getAllReplyByCommentIdGuest(widget.comment.id,
+          filter: GraphqlFilter(limit: 2, order: "{updatedAt: 1}"));
+    } else {
+      res = await _postBloc.getAllReplyByCommentId(widget.comment.id,
+          filter: GraphqlFilter(limit: 2, order: "{updatedAt: 1}"));
+    }
+    if (mounted)
+      setState(() {
+        isLoadReply = false;
+      });
+    if (res == null) return;
+    if (res.isSuccess) {
+      if (mounted)
+        setState(() {
+          replies = res.data;
+          if (replies.length > 0) isExpandReply = true;
+        });
+    } else {
+      // showToast('Có lỗi khi lấy dữ liệu', context);
+    }
   }
 
   Future _getReply({GraphqlFilter filter}) async {
@@ -533,9 +561,6 @@ class _CommentWidgetState extends State<CommentWidget> {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 3,
-              ),
               Text.rich(TextSpan(children: [
                 TextSpan(
                   text: widget.comment.content ?? '',
