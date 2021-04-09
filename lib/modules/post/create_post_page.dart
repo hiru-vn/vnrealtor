@@ -27,10 +27,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
   DateTime _expirationDate;
   String _shareWith = 'public';
   TextEditingController _contentC = TextEditingController();
-  List<String> _videos = [];
-  List<String> _images = [];
-  List<String> _allVideoAndImage = [];
-  List<String> _allVideoAndImageCache = [];
   List<String> _cacheMedias = [];
   PostBloc _postBloc;
   bool isProcess = false;
@@ -62,9 +58,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
       }
       showSimpleLoadingDialog(context, canDismiss: false);
 
-      final listUrls = await Future.wait(
-          _cacheMedias.map((filePath) => FileUtil.uploadFireStorage(filePath, path: 'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
-      
+      final listUrls = await Future.wait(_cacheMedias.map((filePath) =>
+          FileUtil.uploadFireStorage(filePath,
+              path:
+                  'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
+
       final res = await _postBloc.createPost(
           _contentC.text.trim(),
           _expirationDate?.toIso8601String(),
@@ -113,8 +111,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       width: deviceWidth(context),
       height: deviceHeight(context),
       child: Scaffold(
-        appBar: CreatePostPageAppBar(widget.pageController, _createPost,
-            !_allVideoAndImage.contains(loadingGif)),
+        appBar: CreatePostPageAppBar(widget.pageController, _createPost, true),
         body: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
