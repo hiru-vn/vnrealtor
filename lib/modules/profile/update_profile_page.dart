@@ -54,7 +54,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       final thumbnail = await FileUtil.resizeImage(uint8, 120);
       final url = await FileUtil.uploadFireStorage(thumbnail?.path,
           path:
-              '75/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
+              '150/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
       setState(() {
         _authBloc.userModel.avatar = url;
         uploadingAvatar = false;

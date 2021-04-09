@@ -28,6 +28,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   String _shareWith = 'public';
   TextEditingController _contentC = TextEditingController();
   List<String> _cacheMedias = [];
+  List<String> _urlMedias = [];
   PostBloc _postBloc;
   bool isProcess = false;
 
@@ -58,10 +59,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
       }
       showSimpleLoadingDialog(context, canDismiss: false);
 
-      final listUrls = await Future.wait(_cacheMedias.map((filePath) =>
-          FileUtil.uploadFireStorage(filePath,
-              path:
-                  'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
+      while (_urlMedias.length < _cacheMedias.length) {
+        await Future.delayed(Duration(milliseconds: 500));
+      }
 
       final res = await _postBloc.createPost(
           _contentC.text.trim(),
@@ -69,19 +69,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
           _shareWith == 'public',
           _pos?.latitude,
           _pos?.longitude,
-          listUrls
+          _urlMedias
               .where((path) =>
                   FileUtil.getFbUrlFileType(path) == FileType.image ||
                   FileUtil.getFbUrlFileType(path) == FileType.gif)
               .toList(),
-          listUrls
+          _urlMedias
               .where(
                   (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
               .toList());
 
       // deplay for sv to handle resize image
       // warning: dont delete this line
-      await Future.delayed(Duration(milliseconds: 1000));
+      // await Future.delayed(Duration(milliseconds: 1000));
 
       navigatorKey.currentState.maybePop();
       if (res.isSuccess) {
@@ -101,8 +101,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
       // deplay for sv to handle resize image for story
       // warning: dont delete this line
-      await Future.delayed(
-          Duration(seconds: 2), () => _postBloc?.notifyListeners());
+      Future.delayed(Duration(seconds: 2), () => _postBloc?.notifyListeners());
     } catch (e) {
       showToast(e.toString(), context);
     } finally {
@@ -316,12 +315,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           context: context,
                           builder: (context) {
                             return MediaPagePickerWidget(
-                              onMediaPick: (list) {
-                                //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
-                                // _previewMedias.map((e) => FileUtil.deleteFileFireStorage(e));
-                                // TODO: clean this
+                              onMediaPick: (list) async {
                                 setState(() {
                                   _cacheMedias = list;
+                                });
+                                final listUrls = await Future.wait(list.map(
+                                    (filePath) => FileUtil.uploadFireStorage(
+                                        filePath,
+                                        path:
+                                            'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
+                                setState(() {
+                                  _urlMedias = listUrls;
                                 });
                               },
                               maxCount: 10,
@@ -343,10 +347,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           permission: Permission.camera,
                           onGranted: () {
                             ImagePicker.pickImage(source: ImageSource.camera)
-                                .then((value) {
+                                .then((value) async {
                               if (value == null) return;
                               setState(() {
                                 _cacheMedias.add(value.path);
+                              });
+
+                              final url = await FileUtil.uploadFireStorage(
+                                  value.path,
+                                  path:
+                                      'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
+                              setState(() {
+                                _urlMedias.add(url);
                               });
                             });
                           });
