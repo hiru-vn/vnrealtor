@@ -502,10 +502,9 @@ class _AssetThumbnailState extends State<AssetThumbnail> {
 
 class MediaPagePickerWidget extends StatefulWidget {
   final Function(List<String>) onMediaPick;
-  MediaPagePickerWidget({
-    Key key,
-    @required this.onMediaPick,
-  }) : super(key: key);
+  final int maxCount;
+  MediaPagePickerWidget({Key key, @required this.onMediaPick, this.maxCount})
+      : super(key: key);
 
   @override
   _MediaPagePickerWidgetState createState() => _MediaPagePickerWidgetState();
@@ -559,51 +558,85 @@ class _MediaPagePickerWidgetState extends State<MediaPagePickerWidget> {
           title:
               Text('Gallery', style: ptBigBody().copyWith(color: Colors.black)),
         ),
-        body: Container(
-          height: deviceWidth(context) / 3,
-          child: Stack(
-            children: [
-              NotificationListener<ScrollNotification>(
-                onNotification: (scrollInfo) {
-                  if (scrollInfo is ScrollEndNotification &&
-                      scrollController.position.extentAfter == 0) {
-                    _onLoadMore();
-                  }
-                  return true;
+        body: Stack(
+          children: [
+            NotificationListener<ScrollNotification>(
+              onNotification: (scrollInfo) {
+                if (scrollInfo is ScrollEndNotification &&
+                    scrollController.position.extentAfter == 0) {
+                  _onLoadMore();
+                }
+                return true;
+              },
+              child: GridView.builder(
+                controller: scrollController,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  // A grid view with 3 items per row
+                  crossAxisCount: 3,
+                ),
+                itemCount: recentAssets.length,
+                itemBuilder: (_, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(0.5),
+                    child: Container(
+                      width: deviceWidth(context) / 3,
+                      height: deviceWidth(context) / 3,
+                      decoration:
+                          BoxDecoration(borderRadius: BorderRadius.circular(0)),
+                      child: AssetThumbnail(
+                        asset: recentAssets[index],
+                        onTap: (val) {
+                          if (!selectedAssets.contains(val))
+                            selectedAssets.add(val);
+                          else
+                            selectedAssets.remove(val);
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                  );
                 },
-                child: GridView.builder(
-                  controller: scrollController,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    // A grid view with 3 items per row
-                    crossAxisCount: 3,
-                  ),
-                  itemCount: recentAssets.length,
-                  itemBuilder: (_, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(0.5),
+              ),
+            ),
+            if (selectedAssets.length > 0)
+              Positioned(
+                  bottom: 20,
+                  height: 60,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: () async {
+                        try {
+                          setState(() {
+                            isSending = true;
+                          });
+                          List<File> files = await Future.wait(
+                              selectedAssets.map((e) => e.file).toList());
+                          navigatorKey.currentState.pop();
+                          widget.onMediaPick(files.map((e) => e.path).toList());
+                        } catch (e) {} finally {
+                          setState(() {
+                            isSending = false;
+                          });
+                        }
+                      },
                       child: Container(
-                        width: deviceWidth(context) / 3,
-                        height: deviceWidth(context) / 3,
+                        width: deviceWidth(context) / 1.2,
+                        height: 44,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(0)),
-                        child: AssetThumbnail(
-                          asset: recentAssets[index],
-                          onTap: (val) {
-                            if (!selectedAssets.contains(val))
-                              selectedAssets.add(val);
-                            else
-                              selectedAssets.remove(val);
-                            setState(() {});
-                          },
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Center(
+                          child: Text(
+                            'Gửi ${selectedAssets.length} ảnh',
+                            style: ptBigTitle().copyWith(color: Colors.white),
+                          ),
                         ),
                       ),
-                    );
-                  },
-                ),
-              ),
-              if (isSending) kLoadingSpinner
-            ],
-          ),
+                    ),
+                  )),
+            if (isSending) kLoadingSpinner
+          ],
         ),
       ),
     );
