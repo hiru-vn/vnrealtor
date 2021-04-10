@@ -106,13 +106,10 @@ void imagePicker(BuildContext context,
                                   selectCircleStrokeColor: "#000000",
                                 ),
                               );
-                              print(
-                                  '1111111111111111111111111111111111111111111111');
                               final List<String> images = await Future.wait(
                                   assets.map(
                                       (e) => getImageFilePathFromAssets(e)));
-                              print(
-                                  '222222222222222222222222222222222222222222222');
+
                               onMultiImagePick(images);
                               return;
                             } on Exception catch (e) {

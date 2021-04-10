@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:path/path.dart' as Path;
 import 'package:datcao/modules/inbox/import/detail_media.dart';
 import 'package:datcao/modules/inbox/import/media_group.dart';
 import 'package:flutter/material.dart';
@@ -34,11 +34,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
   List<String> _urlMedias = [];
   PostBloc _postBloc;
   bool isProcess = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -210,21 +205,70 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   itemCount: [..._cacheMedias, ..._cachePic].length,
                   itemBuilder: (context, index) {
                     final list = [..._cacheMedias, ..._cachePic];
-                    return SizedBox(
-                      height: 75,
-                      width: 75,
-                      child: MediaWidgetCache(
-                          path: list[index],
-                          radius: 0,
-                          callBack: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (_) {
-                              return DetailMediaGroupWidgetCache(
-                                files: list,
-                                index: index,
-                              );
-                            }));
-                          }),
+                    return Stack(
+                      children: [
+                        SizedBox(
+                          height: 75,
+                          width: 75,
+                          child: MediaWidgetCache(
+                              path: list[index],
+                              radius: 0,
+                              callBack: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) {
+                                  return DetailMediaGroupWidgetCache(
+                                    files: list,
+                                    index: index,
+                                  );
+                                }));
+                              }),
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: InkWell(
+                            onTap: () {
+                              showConfirmDialog(
+                                  context, 'Xác nhận xóa file này?',
+                                  navigatorKey: navigatorKey, confirmTap: () {
+                                setState(() {
+                                  final url = _urlMedias.firstWhere(
+                                      (element) => element.contains(
+                                          FileUtil.changeImageToJpg(
+                                                  Path.basename(list[index]))
+                                              .replaceAll(
+                                                  new RegExp(r'(\?alt).*'), '')
+                                              .replaceAll(' ', '')),
+                                      orElse: () => null);
+                                  if (url != null) {
+                                    _cacheMedias.remove(list[index]);
+                                    _cachePic.remove(list[index]);
+                                    _urlMedias.remove(url);
+                                  } else {
+                                    showToast(
+                                        'File chưa được tải lên, hãy thử lại sau 5 giây',
+                                        context);
+                                  }
+                                });
+                              });
+                            },
+                            child: Container(
+                              height: 25,
+                              width: 25,
+                              decoration: BoxDecoration(
+                                color: ptPrimaryColor(context),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                  child: Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 16,
+                              )),
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   },
                   separatorBuilder: (_, __) => SizedBox(
