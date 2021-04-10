@@ -233,20 +233,25 @@ onCustomPersionRequest(
     Function onJustDeny,
     Function onAndroidPermanentDenied}) {
   permission.status.then((value) {
-    if (value.isUndetermined) {
-      Permission.camera.request().then((value) {
-        if (value.isDenied && onJustDeny != null) {
-          onJustDeny();
-        } else if (value.isGranted && onGranted != null) {
-          onGranted();
-        } else if (value.isPermanentlyDenied &&
-            onAndroidPermanentDenied != null) {
-          onAndroidPermanentDenied();
-        }
-      });
-    } else if (value.isDenied && onAlreadyDenied != null) {
-      onAlreadyDenied();
-    } else if (value.isGranted && onGranted != null) {
+    // if (value.isUndetermined) {
+    //   Permission.camera.request().then((value) {
+    //     if (value.isDenied && onJustDeny != null) {
+    //       onJustDeny();
+    //     } else if (value.isGranted && onGranted != null) {
+    //       onGranted();
+    //     } else if (value.isPermanentlyDenied &&
+    //         onAndroidPermanentDenied != null) {
+    //       onAndroidPermanentDenied();
+    //     }
+    //   });
+    // } else if (value.isDenied && onAlreadyDenied != null) {
+    //   onAlreadyDenied();
+    // } else if (value.isGranted && onGranted != null) {
+    //   onGranted();
+    // }
+    if (!value.isGranted) {
+      Permission.camera.request().then((value) => onGranted());
+    } else {
       onGranted();
     }
   });

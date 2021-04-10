@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:datcao/modules/inbox/import/detail_media.dart';
 import 'package:datcao/modules/inbox/import/media_group.dart';
 import 'package:flutter/material.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
@@ -24,10 +25,12 @@ class CreatePostPage extends StatefulWidget {
 class _CreatePostPageState extends State<CreatePostPage> {
   FocusNode _activityNode = FocusNode();
   LatLng _pos;
+  String _placeName;
   DateTime _expirationDate;
   String _shareWith = 'public';
   TextEditingController _contentC = TextEditingController();
   List<String> _cacheMedias = [];
+  List<String> _cachePic = [];
   List<String> _urlMedias = [];
   PostBloc _postBloc;
   bool isProcess = false;
@@ -53,13 +56,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
         showToast('Nội dung không được để trống', context);
         return;
       }
-      if (_cacheMedias.length == 0) {
+      if (_cacheMedias.length + _cachePic.length == 0) {
         showToast('Phải có ít nhất một hình ảnh hoặc video', context);
         return;
       }
       showSimpleLoadingDialog(context, canDismiss: false);
 
-      while (_urlMedias.length < _cacheMedias.length) {
+      while (_urlMedias.length < _cacheMedias.length + _cachePic.length) {
         await Future.delayed(Duration(milliseconds: 500));
       }
 
@@ -95,6 +98,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         _expirationDate = null;
         _contentC.clear();
         _cacheMedias.clear();
+        _cachePic.clear();
       } else {
         showToast(res.errMessage, context);
       }
@@ -197,6 +201,37 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ],
               ),
             ),
+            if (!(_cacheMedias.length == 0 && _cachePic.length == 0))
+              SizedBox(
+                height: 95,
+                child: ListView.separated(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: [..._cacheMedias, ..._cachePic].length,
+                  itemBuilder: (context, index) {
+                    final list = [..._cacheMedias, ..._cachePic];
+                    return SizedBox(
+                      height: 75,
+                      width: 75,
+                      child: MediaWidgetCache(
+                          path: list[index],
+                          radius: 0,
+                          callBack: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (_) {
+                              return DetailMediaGroupWidgetCache(
+                                files: list,
+                                index: index,
+                              );
+                            }));
+                          }),
+                    );
+                  },
+                  separatorBuilder: (_, __) => SizedBox(
+                    width: 2,
+                  ),
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.all(8.0).copyWith(top: 0, bottom: 3),
               child: Material(
@@ -294,13 +329,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
               ),
             ),
             SizedBox(
-              height: 5,
+              height: 10,
             ),
-            if (_cacheMedias.length > 0)
-              MediaGroupWidgetCache(paths: _cacheMedias),
-            SizedBox(
-              height: 5,
-            ),
+
             SizedBox(
               height: 40,
               child: ListView(
@@ -310,27 +341,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
-                          backgroundColor: Colors.transparent,
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (context) {
-                            return MediaPagePickerWidget(
-                              onMediaPick: (list) async {
-                                setState(() {
-                                  _cacheMedias = list;
-                                });
-                                final listUrls = await Future.wait(list.map(
-                                    (filePath) => FileUtil.uploadFireStorage(
-                                        filePath,
-                                        path:
-                                            'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
-                                setState(() {
-                                  _urlMedias = listUrls;
-                                });
-                              },
-                              maxCount: 10,
-                            );
-                          });
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) {
+                          return MediaPagePickerWidget(
+                            onMediaPick: (list) async {
+                              setState(() {
+                                _cacheMedias = list;
+                              });
+                              final listUrls = await Future.wait(list.map(
+                                  (filePath) => FileUtil.uploadFireStorage(
+                                      filePath,
+                                      path:
+                                          'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
+                              setState(() {
+                                _urlMedias = listUrls;
+                              });
+                            },
+                            maxCount: 10,
+                          );
+                        },
+                        backgroundColor: Colors.transparent,
+                      );
                     },
                     child: SizedBox(
                         height: 40,
@@ -350,7 +382,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {
-                                _cacheMedias.add(value.path);
+                                _cachePic.add(value.path);
                               });
 
                               final url = await FileUtil.uploadFireStorage(
@@ -375,7 +407,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   GestureDetector(
                     onTap: () {
                       PickCoordinates.navigate().then((value) => setState(() {
-                            _pos = value;
+                            _pos = value[0];
+                            _placeName = value[1];
                             FocusScope.of(context).requestFocus(FocusNode());
                           }));
                     },
@@ -408,6 +441,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
               height: 10,
             ),
             // _buildForm(),
+            if (_placeName != null && _placeName.trim() != '')
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Text.rich(TextSpan(children: [
+                  TextSpan(
+                      text: 'Địa điểm: ',
+                      style: ptSmall().copyWith(color: Colors.black)),
+                  TextSpan(
+                      text: '$_placeName',
+                      style: ptSmall().copyWith(fontStyle: FontStyle.italic))
+                ])),
+              ),
             SizedBox(
               height: 3.0,
             ),

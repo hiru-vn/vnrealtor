@@ -22,6 +22,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
     zoom: 5,
   );
   Marker selectedMarker;
+  String _placeName;
 
   void _selectMarker(LatLng point) {
     setState(() {
@@ -38,6 +39,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
     PostBloc.instance.getAddress(point.longitude, point.latitude).then((res) {
       if (res.isSuccess) {
         setState(() {
+          _placeName = res.data.address;
           selectedMarker = Marker(
             markerId: MarkerId(point.toString()),
             position: point,
@@ -168,7 +170,8 @@ class PickCoordinatesState extends State<PickCoordinates> {
                   showToast('Chạm để chọn vị trí', context);
                   return;
                 }
-                navigatorKey.currentState.maybePop(selectedMarker.position);
+                navigatorKey.currentState
+                    .maybePop([selectedMarker.position, _placeName]);
               },
               child: Material(
                 borderRadius: BorderRadius.circular(20),
