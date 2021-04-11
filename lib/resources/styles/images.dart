@@ -5,4 +5,6 @@ class AppImages {
   static String imageDemo = "${base_asset}image_demo.png";
   static String icPageFollow = "${base_asset}page_follow.png";
   static String icPageLike = "${base_asset}ic_page_like.png";
+  static String icPageMessage = "${base_asset}ic_message.png";
+
 }

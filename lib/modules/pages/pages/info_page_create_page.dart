@@ -49,6 +49,26 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
     await _createPageBloc.getAllCategories();
   }
 
+  void _nextPage() {
+    if (_nameC.text.trim() == '') {
+      showToast('Tên trang không được để trống', context);
+      return;
+    }
+
+    if (_describeC.text.trim() == '') {
+      showToast('Nội dung không được để trống', context);
+      return;
+    }
+
+    if (_createPageBloc.listCategoriesId.isEmpty) {
+      showToast('Vui lòng chọn hạng mục', context);
+      return;
+    }
+
+    _pageController.nextPage(
+        duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -84,7 +104,8 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
         ),
         if (_createPageBloc.isLoading)
           Container(
-            color: AppColors.backgroundColor.withOpacity(0.5),
+            height: deviceHeight(context),
+            color: ptSecondaryColor(context),
             child: ActivityIndicator(),
           )
       ],
@@ -240,10 +261,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
           elevation: 0,
           text: 'Tiếp theo',
           borderRadius: 5,
-          onPress: () {
-            _pageController.nextPage(
-                duration: Duration(milliseconds: 300), curve: Curves.easeIn);
-          },
+          onPress: () => _nextPage(),
           color: AppColors.buttonPrimaryColor,
           height: 45,
           textColor: Colors.white,

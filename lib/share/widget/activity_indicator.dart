@@ -1,7 +1,9 @@
+import 'package:datcao/resources/styles/colors.dart';
 import 'package:flutter/cupertino.dart';
 
-class ActivityIndicator extends StatelessWidget {
+import '../import.dart';
 
+class ActivityIndicator extends StatelessWidget {
   const ActivityIndicator();
 
   @override
@@ -12,10 +14,13 @@ class ActivityIndicator extends StatelessWidget {
         children: const <Widget>[
           Padding(
             padding: EdgeInsets.only(right: 8.0),
-            child: CupertinoActivityIndicator(),
-          ),
-          Text(
-            'Loading...',
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                  backgroundColor: Color(0xff05515e),
+              ),
+            ),
           ),
         ],
       ),

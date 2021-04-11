@@ -1,6 +1,9 @@
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/resources/styles/images.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/activity_indicator.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
 
 import 'create_page_page.dart';
@@ -15,6 +18,27 @@ class PagesPage extends StatefulWidget {
 }
 
 class _PagesPageState extends State<PagesPage> {
+  PagesBloc _pagesBloc;
+  AuthBloc _authBloc;
+
+  @override
+  void didChangeDependencies() {
+    if (_pagesBloc == null) {
+      _authBloc = Provider.of(context);
+      _pagesBloc = Provider.of<PagesBloc>(context);
+      if (AuthBloc.instance.userModel.role == 'COMPANY') _getAllPageCreated();
+    }
+    super.didChangeDependencies();
+  }
+
+  Future<void> _getAllPageCreated() async => await _pagesBloc.getPageCreate(
+        filter: GraphqlFilter(
+          filter: 'filter:{ ownerId: "${_authBloc.userModel.id}"}',
+          limit: 10,
+          order: "{updatedAt: -1}",
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,28 +49,72 @@ class _PagesPageState extends State<PagesPage> {
         centerTitle: true,
         automaticallyImplyLeading: true,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: AppColors.backgroundColor,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            _buildPageBodySection('Trang của bạn', AppImages.icOwnPage, [
-              _itemBodySectionOwnPage(AppImages.imageDemo, 'Dự án MeiLand ', 2)
-            ]),
-            _buildPageBodySection(
-                'Trang đã theo dõi ', AppImages.icPageFollow, [
-              _itemBodySectionPageFollow(AppImages.imageDemo, 'Dự án MeiLand ')
-            ]),
-            _buildPageBodySection(
-                'Lời mời thích trang ', AppImages.icPageLike, [
-              _itemBodySectionPageLike(AppImages.imageDemo, 'Dự án MeiLand ')
-            ]),
-          ],
-        ),
+      body: !_pagesBloc.isLoading
+          ? SingleChildScrollView(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundColor.withOpacity(0.5),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    if (AuthBloc.instance.userModel.role == 'COMPANY')
+                      _buildSectionOwnPage(),
+                    _buildPageBodySection(
+                        'Trang đã theo dõi ', AppImages.icPageFollow),
+                    _itemBodySectionPageFollow(
+                        AppImages.imageDemo, 'Dự án MeiLand '),
+                    _buildPageBodySection(
+                        'Lời mời thích trang ', AppImages.icPageLike),
+                    _itemBodySectionPageLike(
+                        AppImages.imageDemo, 'Dự án MeiLand ')
+                  ],
+                ),
+              ),
+            )
+          : Container(
+              height: deviceHeight(context),
+              color: ptSecondaryColor(context),
+              child: ActivityIndicator(),
+            ),
+    );
+  }
+
+  Widget _buildSectionOwnPage() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildPageBodySection('Trang của bạn', AppImages.icOwnPage),
+          _buildListPageCreate(),
+        ],
+      );
+
+  Widget _buildListPageCreate() {
+    List<Widget> _listWidget = [];
+    _pagesBloc.pageCreated.forEach(
+      (page) => _listWidget.add(
+        _itemBodySectionOwnPage(page.avartar, page.name, 2,
+            _pagesBloc.pageCreated.last == page ? true : false),
+      ),
+    );
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 17),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            spreadRadius: 40,
+            blurRadius: 40.0,
+            offset: Offset(0, 10),
+            color: Color.fromRGBO(0, 0, 0, 0.03),
+          )
+        ],
+      ),
+      child: Column(
+        children: _listWidget,
       ),
     );
   }
@@ -96,8 +164,7 @@ class _PagesPageState extends State<PagesPage> {
         ],
       );
 
-  Widget _buildPageBodySection(String title, String icon, List<Widget> body) =>
-      Container(
+  Widget _buildPageBodySection(String title, String icon) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
         child: Column(
           children: [
@@ -106,31 +173,28 @@ class _PagesPageState extends State<PagesPage> {
               child: _itemIconButtonTitle(icon, title, 32),
             ),
             heightSpace(10),
-            Column(
-              children: body,
-            )
           ],
         ),
       );
 
   Widget _itemBodySectionOwnPage(
-    String image,
-    String title,
-    int number,
-  ) =>
+          String image, String title, int number, bool isLast) =>
       Container(
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+        padding: const EdgeInsets.only(bottom: 19, top: 11),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              spreadRadius: 40,
-              blurRadius: 40.0,
-              offset: Offset(0, 10),
-              color: Color.fromRGBO(0, 0, 0, 0.03),
-            )
-          ],
+          border: !isLast
+              ? Border(
+                  bottom: BorderSide(
+                    color: AppColors.borderGrayColor.withOpacity(0.3),
+                    width: 0.5,
+                  ),
+                )
+              : Border(
+                  bottom: BorderSide(
+                    color: Colors.white,
+                    width: 0.5,
+                  ),
+                ),
         ),
         child: Row(
           children: [
@@ -141,9 +205,10 @@ class _PagesPageState extends State<PagesPage> {
                   child: SizedBox(
                     width: 45,
                     height: 45,
-                    child: Image.asset(
-                      image,
-                      fit: BoxFit.fitWidth,
+                    child: CachedNetworkImage(
+                      imageUrl: image.isNotEmpty
+                          ? image
+                          : 'https://i.ibb.co/Zcx1Ms8/error-image-generic.png',
                     ),
                   ),
                 ),
@@ -195,6 +260,7 @@ class _PagesPageState extends State<PagesPage> {
   ) =>
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 17),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.white,
@@ -251,6 +317,7 @@ class _PagesPageState extends State<PagesPage> {
   ) =>
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 17),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.white,

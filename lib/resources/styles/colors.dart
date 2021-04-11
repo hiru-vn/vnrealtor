@@ -9,6 +9,7 @@ class AppColors {
   static var buttonCancel = HexColor('#EDF1F2');
   static var greyHint = HexColor('#ABB4B6');
   static var buttonPrimaryColor = HexColor('#006E83');
+  static var borderGrayColor = HexColor('#000000');
 }
 
 // Parse hex to color.

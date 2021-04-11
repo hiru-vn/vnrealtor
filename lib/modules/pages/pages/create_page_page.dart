@@ -25,6 +25,8 @@ class _CreatePagePageState extends State<CreatePagePage> {
       initialPage: pageInit,
     );
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar1(
         bgColor: ptSecondaryColor(context),
         title: 'Tạo Trang',
@@ -45,7 +47,6 @@ class _CreatePagePageState extends State<CreatePagePage> {
           ChooseImageCreatePage(
             nameController: _nameC,
             describeController: _describeC,
-            categoriesController: _categoriesController,
           )
         ],
       ),

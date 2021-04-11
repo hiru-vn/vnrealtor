@@ -1,4 +1,5 @@
 import 'package:datcao/modules/pages/blocs/create_page_bloc.dart';
+import 'package:datcao/modules/pages/pages/page_detail.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'dart:io';
 import 'package:datcao/utils/file_util.dart';
@@ -10,12 +11,8 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 class ChooseImageCreatePage extends StatefulWidget {
   final TextEditingController nameController;
   final TextEditingController describeController;
-  final TextEditingController categoriesController;
 
-  const ChooseImageCreatePage(
-      {this.nameController,
-      this.describeController,
-      this.categoriesController});
+  const ChooseImageCreatePage({this.nameController, this.describeController});
 
   @override
   _ChooseImageCreatePageState createState() => _ChooseImageCreatePageState();
@@ -26,7 +23,6 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
 
   TextEditingController get _nameC => widget.nameController;
   TextEditingController get _describeC => widget.describeController;
-  TextEditingController get _categoriesC => widget.categoriesController;
 
   CreatePageBloc _createPageBloc;
 
@@ -38,42 +34,44 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
     super.didChangeDependencies();
   }
 
-  Future _createPost() async {
-    // if (isProcess) return;
-    try {
-      //  isProcess = true;
-      if (_createPageBloc.urlAvatar == null) {
-        showToast('Vui lòng chọn ảnh đại diện của trang', context);
-        return;
-      }
-      if (_createPageBloc.urlCover == null) {
-        showToast('Vui lòng chọn ảnh bìa của trang', context);
-        return;
-      }
-      showSimpleLoadingDialog(context, canDismiss: false);
+  Future _createPage() async {
+    PageDetail.navigate();
+    // // if (isProcess) return;
+    // try {
+    //   //  isProcess = true;
+    //   // if (_createPageBloc.urlAvatar == null) {
+    //   //   showToast('Vui lòng chọn ảnh đại diện của trang', context);
+    //   //   return;
+    //   // }
+    //   // if (_createPageBloc.urlCover == null) {
+    //   //   showToast('Vui lòng chọn ảnh bìa của trang', context);
+    //   //   return;
+    //   // }
+    //   // showSimpleLoadingDialog(context, canDismiss: false);
+    //
+    //   final res = await _createPageBloc.createPage(
+    //       _nameC.text.trim(),
+    //       _describeC.text.trim(),
+    //       _createPageBloc.urlAvatar,
+    //       _createPageBloc.urlCover,
+    //       _createPageBloc.listCategoriesId);
+    //
+    //   // deplay for sv to handle resize image
+    //  // await Future.delayed(Duration(milliseconds: 1000));
+    //
+    //   //navigatorKey.currentState.maybePop();
+    //   if (res.isSuccess) {
+    //     //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
+    //
+    //   } else {
+    //     showToast(res.errMessage, context);
+    //   }
+    //   // await Future.delayed(
+    //   //     Duration(seconds: 2), () => _postBloc?.notifyListeners());
+    // } catch (e) {} finally {
+    //   //  isProcess = false;
+    // }
 
-      final res = await _createPageBloc.createPage(
-          _nameC.text.trim(),
-          _describeC.text.trim(),
-          _createPageBloc.urlAvatar,
-          _createPageBloc.urlCover,
-          _createPageBloc.listCategoriesId);
-
-      // deplay for sv to handle resize image
-      await Future.delayed(Duration(milliseconds: 1000));
-
-      navigatorKey.currentState.maybePop();
-      if (res.isSuccess) {
-        //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
-
-      } else {
-        showToast(res.errMessage, context);
-      }
-      // await Future.delayed(
-      //     Duration(seconds: 2), () => _postBloc?.notifyListeners());
-    } catch (e) {} finally {
-      //  isProcess = false;
-    }
   }
 
   Future _updateCover(String filePath) async {
@@ -328,7 +326,7 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
           elevation: 0,
           text: 'Hoàn tất',
           borderRadius: 5,
-          onPress: () => _createPost,
+          onPress: _createPage,
           color: AppColors.buttonPrimaryColor,
           height: 45,
           textColor: Colors.white,

@@ -20,10 +20,10 @@ $categoriesPageFragment
   Future createPage(String name, String description, String avatar,
       String coverImage, List<String> categoryIds) async {
     String data = '''
-name: $name
-description: $description,
-avatar: $avatar,
-coverImage: $coverImage,
+name: "$name"
+description: "$description"
+avartar: "$avatar"
+coverImage: "$coverImage"
 categoryIds: ${GraphqlHelper.listStringToGraphqlString(categoryIds)}
     ''';
 

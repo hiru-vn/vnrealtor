@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/setting/connectivity.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry/sentry.dart';
@@ -121,6 +122,9 @@ class _MyAppState extends State<MyApp> {
                   ),
                   ChangeNotifierProvider(
                     create: (context) => CreatePageBloc.instance,
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => PagesBloc.instance,
                   ),
                 ],
                 child: isOffline
