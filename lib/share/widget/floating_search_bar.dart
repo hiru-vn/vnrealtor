@@ -9,9 +9,10 @@ import 'package:dio/dio.dart';
 class CustomFloatingSearchBar extends StatefulWidget {
   final Function(double lat, double long, String name) onSearch;
   final bool automaticallyImplyBackButton;
+  final List<Widget> actions;
 
   const CustomFloatingSearchBar(
-      {Key key, this.onSearch, this.automaticallyImplyBackButton = false})
+      {Key key, this.onSearch, this.automaticallyImplyBackButton = false, this.actions})
       : super(key: key);
 
   @override
@@ -40,6 +41,7 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
       axisAlignment: 0.0,
       openAxisAlignment: 0.0,
       debounceDelay: const Duration(milliseconds: 500),
+      
 
       onQueryChanged: (query) async {
         if (query.trim() == '') {
@@ -78,6 +80,7 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
         FloatingSearchBarAction.searchToClear(
           showIfClosed: false,
         ),
+        if (widget.actions!=null) ...widget.actions
       ],
       builder: (context, transition) {
         return _autoCompletePlaces.length == 0 || !_isFocus
