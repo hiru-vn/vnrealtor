@@ -206,6 +206,24 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
+              padding: const EdgeInsets.all(15).copyWith(bottom: 5),
+              child: ImageButtonPicker(
+                _allVideoAndImageCache,
+                onUpdateListImg: (listImg) {},
+                onAddImg: _upload,
+                onAddMultiImg: _uploadMultiImage,
+                onRemoveImg: (file) {
+                  _images.remove(file);
+                  _videos.remove(file);
+                  _allVideoAndImage.remove(file);
+                  _allVideoAndImageCache.remove(file);
+                  setState(() {});
+
+                  // FileUtil.deleteFileFireStorage(file);
+                },
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.all(8.0).copyWith(top: 8, bottom: 3),
               child: Material(
                 borderRadius: BorderRadius.circular(10),

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-
+import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,6 +22,8 @@ class PickCoordinatesState extends State<PickCoordinates> {
     zoom: 5,
   );
   Marker selectedMarker;
+  String _placeName;
+  String _mode = 'point';
 
   void _selectMarker(LatLng point) {
     setState(() {
@@ -38,6 +40,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
     PostBloc.instance.getAddress(point.longitude, point.latitude).then((res) {
       if (res.isSuccess) {
         setState(() {
+          _placeName = res.data.address;
           selectedMarker = Marker(
             markerId: MarkerId(point.toString()),
             position: point,
@@ -158,6 +161,49 @@ class PickCoordinatesState extends State<PickCoordinates> {
           CustomFloatingSearchBar(
             onSearch: _onSearch,
             automaticallyImplyBackButton: true,
+            actions: [
+              FloatingSearchBarAction(
+                showIfOpened: false,
+                child: PopupMenuButton(
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (_) => <PopupMenuItem<String>>[
+                    PopupMenuItem(
+                      height: 36,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Đánh vị trí'),
+                          if (_mode == 'point') Icon(Icons.check),
+                        ],
+                      ),
+                      value: 'point',
+                    ),
+                    PopupMenuItem(
+                      height: 36,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Mô phỏng diện tích'),
+                          if (_mode == 'poligon') Icon(Icons.check),
+                        ],
+                      ),
+                      value: 'poligon',
+                    )
+                  ],
+                  onSelected: (val) {
+                    if (_mode != val)
+                      setState(() {
+                        _mode = val;
+                      });
+                  },
+                  child: SizedBox(
+                    child: const Icon(Icons.more_vert),
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+              ),
+            ],
           ),
           Positioned(
             bottom: 15,
@@ -168,7 +214,8 @@ class PickCoordinatesState extends State<PickCoordinates> {
                   showToast('Chạm để chọn vị trí', context);
                   return;
                 }
-                navigatorKey.currentState.maybePop(selectedMarker.position);
+                navigatorKey.currentState
+                    .maybePop([selectedMarker.position, _placeName]);
               },
               child: Material(
                 borderRadius: BorderRadius.circular(20),
@@ -189,7 +236,10 @@ class PickCoordinatesState extends State<PickCoordinates> {
                       SizedBox(
                         width: 8,
                       ),
-                      Text('Chọn địa điểm')
+                      Text('Lưu vị trí này'),
+                      SizedBox(
+                        width: 3,
+                      ),
                     ],
                   ),
                 ),

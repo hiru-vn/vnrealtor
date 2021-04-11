@@ -160,7 +160,6 @@ class ImageButtonPicker extends StatefulWidget {
 class _ImageButtonPickerState extends State<ImageButtonPicker> {
   @override
   Widget build(BuildContext context) {
-    print('reloadddddddddddddddddddddddddddd');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -550,7 +549,7 @@ class _MediaPagePickerWidgetState extends State<MediaPagePickerWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, AppBar().preferredSize.height, 0, 0),
+      padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,

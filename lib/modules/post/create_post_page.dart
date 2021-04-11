@@ -1,8 +1,13 @@
+import 'dart:io';
+import 'package:path/path.dart' as Path;
+import 'package:datcao/modules/inbox/import/detail_media.dart';
 import 'package:datcao/modules/inbox/import/media_group.dart';
 import 'package:flutter/material.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:datcao/modules/post/pick_coordinates.dart';
+import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/utils/file_util.dart';
@@ -20,18 +25,15 @@ class CreatePostPage extends StatefulWidget {
 class _CreatePostPageState extends State<CreatePostPage> {
   FocusNode _activityNode = FocusNode();
   LatLng _pos;
+  String _placeName;
   DateTime _expirationDate;
   String _shareWith = 'public';
   TextEditingController _contentC = TextEditingController();
   List<String> _cacheMedias = [];
+  List<String> _cachePic = [];
   List<String> _urlMedias = [];
   PostBloc _postBloc;
   bool isProcess = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -49,13 +51,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
         showToast('Nội dung không được để trống', context);
         return;
       }
-      if (_cacheMedias.length == 0) {
+      if (_cacheMedias.length + _cachePic.length == 0) {
         showToast('Phải có ít nhất một hình ảnh hoặc video', context);
         return;
       }
       showSimpleLoadingDialog(context, canDismiss: false);
 
-      while (_urlMedias.length < _cacheMedias.length) {
+      while (_urlMedias.length < _cacheMedias.length + _cachePic.length) {
         await Future.delayed(Duration(milliseconds: 500));
       }
 
@@ -86,10 +88,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
         FocusScope.of(context).requestFocus(FocusNode());
         //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
         // _images.map((e) => FileUtil.deleteFileFireStorage(e));
+        // TODO: clean this
 
         _expirationDate = null;
         _contentC.clear();
         _cacheMedias.clear();
+        _cachePic.clear();
       } else {
         showToast(res.errMessage, context);
       }
@@ -192,6 +196,86 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ],
               ),
             ),
+            if (!(_cacheMedias.length == 0 && _cachePic.length == 0))
+              SizedBox(
+                height: 95,
+                child: ListView.separated(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: [..._cacheMedias, ..._cachePic].length,
+                  itemBuilder: (context, index) {
+                    final list = [..._cacheMedias, ..._cachePic];
+                    return Stack(
+                      children: [
+                        SizedBox(
+                          height: 75,
+                          width: 75,
+                          child: MediaWidgetCache(
+                              path: list[index],
+                              radius: 0,
+                              callBack: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) {
+                                  return DetailMediaGroupWidgetCache(
+                                    files: list,
+                                    index: index,
+                                  );
+                                }));
+                              }),
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: InkWell(
+                            onTap: () {
+                              showConfirmDialog(
+                                  context, 'Xác nhận xóa file này?',
+                                  navigatorKey: navigatorKey, confirmTap: () {
+                                setState(() {
+                                  final url = _urlMedias.firstWhere(
+                                      (element) => element.contains(
+                                          FileUtil.changeImageToJpg(
+                                                  Path.basename(list[index]))
+                                              .replaceAll(
+                                                  new RegExp(r'(\?alt).*'), '')
+                                              .replaceAll(' ', '')),
+                                      orElse: () => null);
+                                  if (url != null) {
+                                    _cacheMedias.remove(list[index]);
+                                    _cachePic.remove(list[index]);
+                                    _urlMedias.remove(url);
+                                  } else {
+                                    showToast(
+                                        'File chưa được tải lên, hãy thử lại sau 5 giây',
+                                        context);
+                                  }
+                                });
+                              });
+                            },
+                            child: Container(
+                              height: 25,
+                              width: 25,
+                              decoration: BoxDecoration(
+                                color: ptPrimaryColor(context),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                  child: Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 16,
+                              )),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                  separatorBuilder: (_, __) => SizedBox(
+                    width: 2,
+                  ),
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.all(8.0).copyWith(top: 0, bottom: 3),
               child: Material(
@@ -289,13 +373,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
               ),
             ),
             SizedBox(
-              height: 5,
+              height: 10,
             ),
-            if (_cacheMedias.length > 0)
-              MediaGroupWidgetCache(paths: _cacheMedias),
-            SizedBox(
-              height: 5,
-            ),
+
             SizedBox(
               height: 40,
               child: ListView(
@@ -305,27 +385,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
-                          backgroundColor: Colors.transparent,
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (context) {
-                            return MediaPagePickerWidget(
-                              onMediaPick: (list) async {
-                                setState(() {
-                                  _cacheMedias = list;
-                                });
-                                final listUrls = await Future.wait(list.map(
-                                    (filePath) => FileUtil.uploadFireStorage(
-                                        filePath,
-                                        path:
-                                            'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
-                                setState(() {
-                                  _urlMedias = listUrls;
-                                });
-                              },
-                              maxCount: 10,
-                            );
-                          });
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) {
+                          return MediaPagePickerWidget(
+                            onMediaPick: (list) async {
+                              setState(() {
+                                _cacheMedias = list;
+                              });
+                              final listUrls = await Future.wait(list.map(
+                                  (filePath) => FileUtil.uploadFireStorage(
+                                      filePath,
+                                      path:
+                                          'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
+                              setState(() {
+                                _urlMedias = listUrls;
+                              });
+                            },
+                            maxCount: 10,
+                          );
+                        },
+                        backgroundColor: Colors.transparent,
+                      );
                     },
                     child: SizedBox(
                         height: 40,
@@ -345,7 +426,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {
-                                _cacheMedias.add(value.path);
+                                _cachePic.add(value.path);
                               });
 
                               final url = await FileUtil.uploadFireStorage(
@@ -370,7 +451,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   GestureDetector(
                     onTap: () {
                       PickCoordinates.navigate().then((value) => setState(() {
-                            _pos = value;
+                            _pos = value[0];
+                            _placeName = value[1];
                             FocusScope.of(context).requestFocus(FocusNode());
                           }));
                     },
@@ -403,6 +485,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
               height: 10,
             ),
             // _buildForm(),
+            if (_placeName != null && _placeName.trim() != '')
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Text.rich(TextSpan(children: [
+                  TextSpan(
+                      text: 'Địa điểm: ',
+                      style: ptSmall().copyWith(color: Colors.black)),
+                  TextSpan(
+                      text: '$_placeName',
+                      style: ptSmall().copyWith(fontStyle: FontStyle.italic))
+                ])),
+              ),
             SizedBox(
               height: 3.0,
             ),

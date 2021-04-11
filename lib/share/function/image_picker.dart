@@ -106,13 +106,10 @@ void imagePicker(BuildContext context,
                                   selectCircleStrokeColor: "#000000",
                                 ),
                               );
-                              print(
-                                  '1111111111111111111111111111111111111111111111');
                               final List<String> images = await Future.wait(
                                   assets.map(
                                       (e) => getImageFilePathFromAssets(e)));
-                              print(
-                                  '222222222222222222222222222222222222222222222');
+
                               onMultiImagePick(images);
                               return;
                             } on Exception catch (e) {
@@ -233,20 +230,25 @@ onCustomPersionRequest(
     Function onJustDeny,
     Function onAndroidPermanentDenied}) {
   permission.status.then((value) {
-    if (value.isUndetermined) {
-      Permission.camera.request().then((value) {
-        if (value.isDenied && onJustDeny != null) {
-          onJustDeny();
-        } else if (value.isGranted && onGranted != null) {
-          onGranted();
-        } else if (value.isPermanentlyDenied &&
-            onAndroidPermanentDenied != null) {
-          onAndroidPermanentDenied();
-        }
-      });
-    } else if (value.isDenied && onAlreadyDenied != null) {
-      onAlreadyDenied();
-    } else if (value.isGranted && onGranted != null) {
+    // if (value.isUndetermined) {
+    //   Permission.camera.request().then((value) {
+    //     if (value.isDenied && onJustDeny != null) {
+    //       onJustDeny();
+    //     } else if (value.isGranted && onGranted != null) {
+    //       onGranted();
+    //     } else if (value.isPermanentlyDenied &&
+    //         onAndroidPermanentDenied != null) {
+    //       onAndroidPermanentDenied();
+    //     }
+    //   });
+    // } else if (value.isDenied && onAlreadyDenied != null) {
+    //   onAlreadyDenied();
+    // } else if (value.isGranted && onGranted != null) {
+    //   onGranted();
+    // }
+    if (!value.isGranted) {
+      Permission.camera.request().then((value) => onGranted());
+    } else {
       onGranted();
     }
   });

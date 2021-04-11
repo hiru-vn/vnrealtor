@@ -144,8 +144,10 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
 class MediaWidgetCache extends StatefulWidget {
   final String path;
   final Function callBack;
+  final double radius;
 
-  const MediaWidgetCache({Key key, this.path, this.callBack}) : super(key: key);
+  const MediaWidgetCache({Key key, this.path, this.callBack, this.radius})
+      : super(key: key);
 
   @override
   _MediaWidgetCacheState createState() => _MediaWidgetCacheState();
@@ -177,7 +179,7 @@ class _MediaWidgetCacheState extends State<MediaWidgetCache> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          widget.callBack();
+          if (widget.callBack != null) widget.callBack();
 
           FocusScope.of(context).requestFocus(FocusNode());
         },
@@ -187,7 +189,7 @@ class _MediaWidgetCacheState extends State<MediaWidgetCache> {
   Widget _getWidget(FileType type) {
     if (type == FileType.image || type == FileType.gif)
       return ClipRRect(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(widget.radius ?? 5),
         child: Image.file(
           File(widget.path),
           fit: BoxFit.cover,
@@ -197,7 +199,7 @@ class _MediaWidgetCacheState extends State<MediaWidgetCache> {
     else if (type == FileType.video)
       return thumbnailPath == null
           ? ClipRRect(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(widget.radius ?? 5),
               child: Image.asset(
                 'assets/image/video_holder.png',
                 fit: BoxFit.cover,
@@ -208,7 +210,7 @@ class _MediaWidgetCacheState extends State<MediaWidgetCache> {
               fit: StackFit.expand,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(widget.radius ?? 5),
                   child: Image.file(
                     File(thumbnailPath),
                     fit: BoxFit.cover,
