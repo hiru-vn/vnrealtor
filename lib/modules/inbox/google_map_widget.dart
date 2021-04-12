@@ -11,7 +11,6 @@ import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 Future showGoogleMap(BuildContext context, {double height}) {
   if (height == null)
@@ -180,24 +179,6 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
         }));
   }
 
-  // _share() {
-  //   Share.share(
-  //       'https://www.google.com/maps/search/?api=1&query=${86.8},${86.8}');
-  // }
-
-  // _launchMap(LatLng pos) async {
-  //   if (pos == null) {
-  //     showToast('Chưa chọn toạ độ', context);
-  //     return;
-  //   }
-  //   var mapSchema = 'geo:${pos.latitude},${pos.longitude}';
-  //   if (await canLaunch(mapSchema)) {
-  //     await launch(mapSchema);
-  //   } else {
-  //     throw 'Could not launch $mapSchema';
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -212,24 +193,6 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
           onTap: _selectMarker,
           markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
         ),
-        // Positioned(
-        //   top: 20,
-        //   right: 12,
-        //   child: InkWell(
-        //     onTap: () => Navigator.of(context).maybePop(),
-        //     child: Container(
-        //       decoration: BoxDecoration(
-        //           color: Colors.black38,
-        //           borderRadius: BorderRadius.circular(20)),
-        //       width: 40,
-        //       height: 40,
-        //       child: Icon(
-        //         Icons.close,
-        //         color: Colors.white,
-        //       ),
-        //     ),
-        //   ),
-        // ),
         Padding(
           padding: const EdgeInsets.only(top: 25),
           child: CustomFloatingSearchBar(
@@ -237,24 +200,6 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
             automaticallyImplyBackButton: true,
           ),
         ),
-        // Positioned(
-        //   top: 20,
-        //   right: 12,
-        //   child: InkWell(
-        //     onTap: () => Navigator.of(context).maybePop(),
-        //     child: Container(
-        //       decoration: BoxDecoration(
-        //           color: Colors.black38,
-        //           borderRadius: BorderRadius.circular(20)),
-        //       width: 40,
-        //       height: 40,
-        //       child: Icon(
-        //         Icons.close,
-        //         color: Colors.white,
-        //       ),
-        //     ),
-        //   ),
-        // ),
         Positioned(
           bottom: 15,
           left: 12,

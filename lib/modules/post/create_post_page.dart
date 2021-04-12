@@ -77,10 +77,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
               .toList());
 
-      // deplay for sv to handle resize image
-      // warning: dont delete this line
-      // await Future.delayed(Duration(milliseconds: 1000));
-
       navigatorKey.currentState.maybePop();
       if (res.isSuccess) {
         await widget.pageController.animateToPage(0,
@@ -98,8 +94,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
         showToast(res.errMessage, context);
       }
 
-      // deplay for sv to handle resize image for story
-      // warning: dont delete this line
       Future.delayed(Duration(seconds: 2), () => _postBloc?.notifyListeners());
     } catch (e) {
       showToast(e.toString(), context);
@@ -375,7 +369,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
             SizedBox(
               height: 10,
             ),
-
             SizedBox(
               height: 40,
               child: ListView(
