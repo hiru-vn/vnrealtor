@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/setting/connectivity.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry/sentry.dart';
@@ -17,6 +18,7 @@ import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_callkeep/flutter_callkeep.dart';
 
+import 'modules/pages/blocs/create_page_bloc.dart';
 import 'share/widget/empty_widget.dart';
 
 final _sentry = SentryClient(
@@ -117,6 +119,12 @@ class _MyAppState extends State<MyApp> {
                   ),
                   ChangeNotifierProvider(
                     create: (context) => VerificationBloc.instance,
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => CreatePageBloc.instance,
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => PagesBloc.instance,
                   ),
                 ],
                 child: isOffline

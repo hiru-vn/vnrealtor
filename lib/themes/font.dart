@@ -41,3 +41,7 @@ TextStyle ptSmall() => GoogleFonts.nunito(
 
 TextStyle ptTiny() => GoogleFonts.nunito(
     fontSize: 11.5, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
+
+TextStyle typeError() {
+  return TextStyle(fontSize: 10.5, color: Colors.red);
+}
