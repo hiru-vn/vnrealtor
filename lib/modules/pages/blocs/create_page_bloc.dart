@@ -1,11 +1,13 @@
-import 'package:datcao/modules/pages/models/page_model.dart';
 import 'package:datcao/modules/pages/models/pages_category_model.dart';
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/repos/create_page_repo.dart';
 import 'package:datcao/share/import.dart';
 
 class CreatePageBloc extends ChangeNotifier {
   CreatePageBloc._privateConstructor();
   static final CreatePageBloc instance = CreatePageBloc._privateConstructor();
+
+  bool _isLoadingSubmitCreatePage = false;
 
   bool _isLoading = false;
 
@@ -27,6 +29,8 @@ class CreatePageBloc extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
+  bool get isLoadingSubmitCreatePage => _isLoadingSubmitCreatePage;
+
   bool get isLoadingUploadCover => _isLoadingUploadCover;
 
   bool get isLoadingUploadAvatar => _isLoadingUploadAvatar;
@@ -38,6 +42,16 @@ class CreatePageBloc extends ChangeNotifier {
   String get urlCover => _urlCover;
 
   String get urlAvatar => _urlAvatar;
+
+  set listCategoriesId(List<String> listCategoriesId) {
+    _listCategoriesId = _listCategoriesId;
+    notifyListeners();
+  }
+
+  set isLoadingSubmitCreatePage(bool isLoadingSubmitCreatePage) {
+    _isLoadingSubmitCreatePage = isLoadingSubmitCreatePage;
+    notifyListeners();
+  }
 
   set urlAvatar(String urlAvatar) {
     _urlAvatar = urlAvatar;
@@ -134,7 +148,7 @@ class CreatePageBloc extends ChangeNotifier {
     try {
       final res = await CreatePageRepo().createPage(
           name, description, avatar, coverImage, categoryIds);
-      return BaseResponse.success(MyPageModel.fromJson(res));
+      return BaseResponse.success(PagesCreate.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());
     } finally {

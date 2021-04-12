@@ -1,12 +1,19 @@
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
 
 class CardPost extends StatefulWidget {
+  final PagesCreate page;
+  const CardPost({this.page});
+
   @override
   _CardPostState createState() => _CardPostState();
 }
 
 class _CardPostState extends State<CardPost> {
+  PagesCreate get _pageState => widget.page;
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -81,7 +88,11 @@ class _CardPostState extends State<CardPost> {
           child: CircleAvatar(
             radius: 25,
             backgroundColor: Colors.white,
-            backgroundImage: AssetImage('assets/image/default_avatar.png',),
+            child: CachedNetworkImage(
+              imageUrl:_pageState.avartar != null
+                  ? _pageState.avartar
+                  : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
+            ),
           ),
         ),
       );

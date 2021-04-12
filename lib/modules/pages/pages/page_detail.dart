@@ -1,4 +1,5 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/widget/card_post.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/resources/styles/images.dart';
@@ -6,10 +7,18 @@ import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
 
 class PageDetail extends StatefulWidget {
-  static Future navigate() {
+  final PagesCreate page;
+  final bool isParamPageCreate;
+  const PageDetail({Key key, this.page, this.isParamPageCreate = false})
+      : super(key: key);
+
+  static Future navigate(PagesCreate page, {bool isParamPageCreate = false}) {
     return navigatorKey.currentState.push(
       pageBuilder(
-        PageDetail(),
+        PageDetail(
+          page: page,
+          isParamPageCreate: isParamPageCreate,
+        ),
       ),
     );
   }
@@ -21,6 +30,9 @@ class PageDetail extends StatefulWidget {
 class _PageDetailState extends State<PageDetail> {
   AuthBloc _authBloc;
 
+  PagesCreate get _pageState => widget.page;
+  bool get _isParamPageCreate => widget.isParamPageCreate;
+
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
@@ -29,6 +41,16 @@ class _PageDetailState extends State<PageDetail> {
     super.didChangeDependencies();
   }
 
+  Future popUntilStep(int step, [dynamic params]) async {
+    int count = 0;
+    Navigator.popUntil(
+      context,
+      (route) => count++ == step,
+    );
+  }
+
+  popScreen({dynamic params}) => Navigator.pop(context, params);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,10 +58,20 @@ class _PageDetailState extends State<PageDetail> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar1(
         bgColor: ptSecondaryColor(context),
-        title: 'Datcao Project',
+        title: _pageState.name,
         textColor: AppColors.mainColor,
         centerTitle: true,
         automaticallyImplyLeading: true,
+        leading: new IconButton(
+          icon: new Icon(Icons.arrow_back),
+          onPressed: () async {
+            if (_isParamPageCreate) {
+              await popUntilStep(2);
+            } else {
+              await popScreen();
+            }
+          },
+        ),
       ),
       body: Container(
         child: SingleChildScrollView(
@@ -64,10 +96,10 @@ class _PageDetailState extends State<PageDetail> {
         decoration: BoxDecoration(
           color: AppColors.backgroundLightColor,
           image: DecorationImage(
-            fit: BoxFit.cover,
-            image: CachedNetworkImageProvider(
-                'https://firebasestorage.googleapis.com/v0/b/vnrealtor-52b40.appspot.com/o/posts%2Fuser_606af2be34e84412a7dac18c%2F1617631434321%2Fthumb@119_2021-04-0521%3A03%3A54.324888tai-hinh-nen-nha-dep-cho-may-tinh-4.jpg?alt=media&token=70ba9498-0c2e-4785-89fb-80f3189c768f'),
-          ),
+              fit: BoxFit.cover,
+              image: CachedNetworkImageProvider(  _pageState.coverImage != null
+                  ? _pageState.coverImage
+                  : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png")),
         ),
       );
 
@@ -93,7 +125,11 @@ class _PageDetailState extends State<PageDetail> {
             child: CircleAvatar(
               radius: 25,
               backgroundColor: Colors.white,
-              backgroundImage: AssetImage('assets/image/default_avatar.png'),
+              child: CachedNetworkImage(
+                imageUrl: _pageState.avartar != null
+                    ? _pageState.avartar
+                    : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
+              ),
             ),
           ),
           SizedBox(width: 16),
@@ -104,7 +140,7 @@ class _PageDetailState extends State<PageDetail> {
               Row(
                 children: [
                   Text(
-                    'Name',
+                    _pageState.name,
                     style: ptTitle().copyWith(fontWeight: FontWeight.w900),
                   ),
                   SizedBox(width: 8),
@@ -165,5 +201,5 @@ class _PageDetailState extends State<PageDetail> {
         ],
       );
 
-  Widget _buildCardPost() => CardPost();
+  Widget _buildCardPost() => CardPost(page: _pageState,);
 }

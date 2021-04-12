@@ -122,8 +122,17 @@ class _PagesPageState extends State<PagesPage> {
   Widget _buildHeader() => Container(
         color: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 31, vertical: 18),
-        child: _itemIconButtonTitle(AppImages.icCreatePage, 'Tạo trang mới', 41,
-            action: () => CreatePagePage.navigate()),
+        child: _itemIconButtonTitle(
+          AppImages.icCreatePage,
+          'Tạo trang mới',
+          41,
+          action: () => CreatePagePage.navigate().then(
+            (value) {
+              if (AuthBloc.instance.userModel.role == 'COMPANY')
+                _getAllPageCreated();
+            },
+          ),
+        ),
       );
 
   Widget _itemIconButtonTitle(String image, String title, double iconSize,

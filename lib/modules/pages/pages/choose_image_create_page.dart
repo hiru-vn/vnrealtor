@@ -35,43 +35,37 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
   }
 
   Future _createPage() async {
-    PageDetail.navigate();
-    // // if (isProcess) return;
-    // try {
-    //   //  isProcess = true;
-    //   // if (_createPageBloc.urlAvatar == null) {
-    //   //   showToast('Vui lòng chọn ảnh đại diện của trang', context);
-    //   //   return;
-    //   // }
-    //   // if (_createPageBloc.urlCover == null) {
-    //   //   showToast('Vui lòng chọn ảnh bìa của trang', context);
-    //   //   return;
-    //   // }
-    //   // showSimpleLoadingDialog(context, canDismiss: false);
-    //
-    //   final res = await _createPageBloc.createPage(
-    //       _nameC.text.trim(),
-    //       _describeC.text.trim(),
-    //       _createPageBloc.urlAvatar,
-    //       _createPageBloc.urlCover,
-    //       _createPageBloc.listCategoriesId);
-    //
-    //   // deplay for sv to handle resize image
-    //  // await Future.delayed(Duration(milliseconds: 1000));
-    //
-    //   //navigatorKey.currentState.maybePop();
-    //   if (res.isSuccess) {
-    //     //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
-    //
-    //   } else {
-    //     showToast(res.errMessage, context);
-    //   }
-    //   // await Future.delayed(
-    //   //     Duration(seconds: 2), () => _postBloc?.notifyListeners());
-    // } catch (e) {} finally {
-    //   //  isProcess = false;
-    // }
+    try {
+      _createPageBloc.isLoadingSubmitCreatePage = true;
+      if (_createPageBloc.urlAvatar == null) {
+        showToast('Vui lòng chọn ảnh đại diện của trang', context);
+        return;
+      }
+      if (_createPageBloc.urlCover == null) {
+        showToast('Vui lòng chọn ảnh bìa của trang', context);
+        return;
+      }
 
+      final res = await _createPageBloc.createPage(
+          _nameC.text.trim(),
+          _describeC.text.trim(),
+          _createPageBloc.urlAvatar,
+          _createPageBloc.urlCover,
+          _createPageBloc.listCategoriesId);
+
+      if (res.isSuccess) {
+        _nameC.clear();
+        _describeC.clear();
+        _createPageBloc.urlAvatar = '';
+        _createPageBloc.urlCover = '';
+        _createPageBloc.listCategoriesId = [];
+        PageDetail.navigate(res.data, isParamPageCreate: true);
+      } else {
+        showToast(res.errMessage, context);
+      }
+    } catch (e) {} finally {
+      _createPageBloc.isLoadingSubmitCreatePage = false;
+    }
   }
 
   Future _updateCover(String filePath) async {
@@ -124,6 +118,7 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
               ),
             ],
           ),
+          heightSpace(10),
           _itemButton(),
           heightSpace(10),
         ],
@@ -150,10 +145,10 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
       );
 
   Widget _buildCoverImage() => GestureDetector(
-        onTap: () {
+        onTap: !_createPageBloc.isLoadingSubmitCreatePage ?  () {
           imagePicker(context,
               onImagePick: _updateCover, onCameraPick: _updateCover);
-        },
+        } : null,
         child: Builder(
           builder: (BuildContext context) {
             if (_createPageBloc.urlCover != null)
@@ -182,10 +177,10 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
   Widget _buildAvatarImage() => Positioned(
         bottom: -70,
         child: GestureDetector(
-          onTap: () {
+          onTap: !_createPageBloc.isLoadingSubmitCreatePage ?  () {
             imagePicker(context,
                 onImagePick: _updateAvatar, onCameraPick: _updateAvatar);
-          },
+          } : null,
           child: Builder(
             builder: (context) {
               if (_createPageBloc.urlAvatar != null) return _buildUrlAvatar();
@@ -327,6 +322,7 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
           text: 'Hoàn tất',
           borderRadius: 5,
           onPress: _createPage,
+          isLoading: _createPageBloc.isLoadingSubmitCreatePage,
           color: AppColors.buttonPrimaryColor,
           height: 45,
           textColor: Colors.white,
