@@ -24,6 +24,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
   Marker selectedMarker;
   String _placeName;
   String _mode = 'point';
+  Set<Polygon> polygons;
 
   void _selectMarker(LatLng point) {
     setState(() {
@@ -128,25 +129,6 @@ class PickCoordinatesState extends State<PickCoordinates> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar2(
-      //   'Nhấn để chọn điểm',
-      //   actions: [
-      //     GestureDetector(
-      //       onTap: () {
-      //         navigatorKey.currentState.maybePop(selectedMarker.position);
-      //       },
-      //       child: SizedBox(
-      //           width: 40,
-      //           height: 40,
-      //           child: Center(
-      //             child: Text(
-      //               'OK',
-      //               style: ptTitle().copyWith(color: Colors.white),
-      //             ),
-      //           )),
-      //     )
-      //   ],
-      // ),
       body: Stack(
         children: [
           GoogleMap(
