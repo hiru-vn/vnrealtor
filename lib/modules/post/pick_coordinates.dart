@@ -24,7 +24,14 @@ class PickCoordinatesState extends State<PickCoordinates> {
   Marker selectedMarker;
   String _placeName;
   String _mode = 'point';
-  Set<Polygon> polygons;
+  Polygon polygon = Polygon(
+    polygonId: PolygonId('id'),
+    points: <LatLng>[],
+    consumeTapEvents: true,
+    strokeColor: Colors.grey,
+    strokeWidth: 1,
+    fillColor: Colors.redAccent,
+  );
 
   void _selectMarker(LatLng point) {
     setState(() {
@@ -61,17 +68,36 @@ class PickCoordinatesState extends State<PickCoordinates> {
     });
   }
 
+  void _addMarkerPoligon(LatLng point) {
+    setState(() {
+      polygon.points.add(point);
+    });
+  }
+
+  void _redoMarkerPoligon(LatLng point) {
+    setState(() {
+      polygon.points.remove(polygon.points[polygon.points.length - 1]);
+    });
+  }
+
+  void _clearMarkerPoligon(LatLng point) {
+    setState(() {
+      polygon.points.remove(polygon.points[polygon.points.length - 1]);
+    });
+  }
+
   void _selectMyLocation() {
     getDevicePosition().then((value) => setState(() {
-          selectedMarker = Marker(
-            markerId: MarkerId(value.toString()),
-            position: LatLng(value.latitude, value.longitude),
-            infoWindow: InfoWindow(
-              title: 'Ví trí của tôi',
-            ),
-            icon:
-                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          );
+          if (_mode == 'point')
+            selectedMarker = Marker(
+              markerId: MarkerId(value.toString()),
+              position: LatLng(value.latitude, value.longitude),
+              infoWindow: InfoWindow(
+                title: 'Ví trí của tôi',
+              ),
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueRed),
+            );
           CameraPosition _curPos = CameraPosition(
               bearing: 0,
               target: LatLng(value.latitude, value.longitude),
@@ -137,8 +163,9 @@ class PickCoordinatesState extends State<PickCoordinates> {
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
             },
-            onTap: _selectMarker,
+            onTap: _mode == 'point' ? _selectMarker : _addMarkerPoligon,
             markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
+            polygons: <Polygon>{polygon},
           ),
           CustomFloatingSearchBar(
             onSearch: _onSearch,
