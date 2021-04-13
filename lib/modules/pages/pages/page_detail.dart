@@ -1,9 +1,11 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
-import 'package:datcao/modules/pages/widget/card_post.dart';
+import 'package:datcao/modules/pages/widget/custom_button.dart';
+import 'package:datcao/modules/pages/widget/item_info_page.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/resources/styles/images.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/activity_indicator.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
 
 class PageDetail extends StatefulWidget {
@@ -74,16 +76,18 @@ class _PageDetailState extends State<PageDetail> {
         ),
       ),
       body: Container(
+        height: deviceHeight(context),
+        decoration: BoxDecoration(
+          color: AppColors.backgroundColor.withOpacity(0.6),
+        ),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildBanner(),
               _buildHeader(),
-              heightSpace(25),
-              if (AuthBloc.instance.userModel.role != 'COMPANY')
-                _buildButtonMessage(),
-              if (AuthBloc.instance.userModel.role == 'COMPANY')
-                _buildCardPost()
+              if(AuthBloc.instance.userModel.role != 'COMPANY')
+                 _buildInfoPage(),
             ],
           ),
         ),
@@ -91,44 +95,101 @@ class _PageDetailState extends State<PageDetail> {
     );
   }
 
-  Widget _buildBanner() => Container(
-        height: deviceWidth(context) / 2,
-        decoration: BoxDecoration(
-          color: AppColors.backgroundLightColor,
-          image: DecorationImage(
-              fit: BoxFit.cover,
-              image: CachedNetworkImageProvider(  _pageState.coverImage != null
-                  ? _pageState.coverImage
-                  : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png")),
+  Widget _buildBanner() => CachedNetworkImage(
+        imageUrl: _pageState.coverImage != null
+            ? _pageState.coverImage
+            : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
+        imageBuilder: (context, imageProvider) => Container(
+          height: deviceWidth(context) / 2,
+          decoration: BoxDecoration(
+            color: AppColors.backgroundLightColor,
+            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+          ),
+        ),
+        placeholder: (context, url) => Container(
+          height: deviceWidth(context) / 2,
+          color: ptSecondaryColor(context),
+          child: Center(
+            child: ActivityIndicator(),
+          ),
+        ),
+        errorWidget: (context, url, error) => Container(
+          height: deviceWidth(context) / 2,
+          color: ptSecondaryColor(context),
+          child: Center(
+            child: Icon(
+              Icons.error,
+              color: AppColors.mainColor,
+            ),
+          ),
         ),
       );
 
   Widget _buildHeader() => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
           children: [
-            Flexible(
-              child: _itemHeaderInfo(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: _itemHeaderInfo(),
+                ),
+                if (AuthBloc.instance.userModel.role != 'COMPANY')
+                  Flexible(
+                    child: _itemButtonFollow(),
+                  )
+              ],
             ),
-            if (AuthBloc.instance.userModel.role != 'COMPANY')
-              Flexible(
-                child: _itemButtonFollow(),
-              )
+            heightSpace(25),
+            AuthBloc.instance.userModel.role != 'COMPANY'
+                ? _buildContainerButtonsToolMessage()
+                : _buildContainerButtonsToolCreatePost(),
+            heightSpace(10),
           ],
         ),
       );
 
   Widget _itemHeaderInfo() => Row(
         children: [
-          Center(
-            child: CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.white,
-              child: CachedNetworkImage(
-                imageUrl: _pageState.avartar != null
-                    ? _pageState.avartar
-                    : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
+          CachedNetworkImage(
+            imageUrl: _pageState.coverImage != null
+                ? _pageState.coverImage
+                : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
+            imageBuilder: (context, imageProvider) => Container(
+              width: 50.0,
+              height: 50.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+              ),
+            ),
+            placeholder: (context, url) => Container(
+              width: 50.0,
+              height: 50.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                color: ptSecondaryColor(context),
+              ),
+              child: Center(
+                child: ActivityIndicator(),
+              ),
+            ),
+            errorWidget: (context, url, error) => Container(
+              width: 50.0,
+              height: 50.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                color: ptSecondaryColor(context),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.error,
+                  color: AppColors.mainColor,
+                ),
               ),
             ),
           ),
@@ -148,7 +209,7 @@ class _PageDetailState extends State<PageDetail> {
               ),
               SizedBox(height: 3),
               Text(
-                'Cập nhật thông tin',
+                _pageState.category[0].name,
                 style: ptSmall().copyWith(color: ptPrimaryColor(context)),
               )
             ],
@@ -168,38 +229,80 @@ class _PageDetailState extends State<PageDetail> {
         ),
       );
 
-  Widget _buildButtonMessage() => Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            child: SizedBox(
-              width: double.infinity,
-              height: 45,
-              child: FlatButton(
-                // elevation: elevation?.toDouble() ?? 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7),
-                ),
-                color: AppColors.backgroundLightColor,
-                onPressed: () => {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(AppImages.icPageMessage),
-                    widthSpace(10),
-                    Text(
-                      "Nhắn tin",
-                      style: ptButton().copyWith(color: AppColors.mainColor),
-                    ),
-                  ],
-                ),
-              ),
+  Widget _buildContainerButtonsToolCreatePost() => Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: _buildButtonCreatePost(),
             ),
-          ),
-          heightSpace(20),
-        ],
+            widthSpace(20),
+            _buildButtonSetting()
+          ],
+        ),
       );
 
-  Widget _buildCardPost() => CardPost(page: _pageState,);
+  Widget _buildContainerButtonsToolMessage() => Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: _buildButtonMessage(),
+            ),
+            widthSpace(20),
+            _buildButtonBell()
+          ],
+        ),
+      );
+
+  Widget _buildButtonMessage() => CustomButton(
+        title: "Nhắn tin",
+        image: AppImages.icPageMessage,
+      );
+
+  Widget _buildButtonCreatePost() =>
+      CustomButton(title: "Tạo bài viết", image: AppImages.icCreatePost);
+
+  Widget _buildButtonSetting() => CustomButton(
+        image: AppImages.icSettingPage,
+        size: 45,
+      );
+
+  Widget _buildButtonBell() => CustomButton(
+        image: AppImages.icBellPage,
+        size: 45,
+      );
+
+  Widget _buildInfoPage() => Container(
+    margin: const EdgeInsets.only(top : 10),
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    decoration: BoxDecoration(
+      color: Colors.white,
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ItemInfoPage(
+          image: AppImages.icFollower,
+          title: '60 lượt follow',
+        ),
+        heightSpace(10),
+        ItemInfoPage(
+          image: AppImages.icLocation,
+          title: 'Thành phố Hồ Chí Minh',
+        ),
+        heightSpace(10),
+        ItemInfoPage(
+          image: AppImages.icPhone,
+          title: '+84989078790',
+        ),
+        heightSpace(10),
+        ItemInfoPage(
+          image: AppImages.icSocial,
+          title: 'datcaogroup.com',
+        )
+      ],
+    ),
+  );
+
 }

@@ -8,15 +8,15 @@ class PagesBloc extends ChangeNotifier {
 
   List<PagesCreate> _pageCreated = [];
 
-  bool _isLoading = false;
+  bool _isOwnPageLoading = false;
 
-  bool get isLoading => _isLoading;
+  bool get isOwnPageLoading => _isOwnPageLoading;
 
   List<PagesCreate> get pageCreated => _pageCreated;
 
   Future<BaseResponse> getPageCreate({GraphqlFilter filter}) async {
     try {
-      _isLoading = true;
+      _isOwnPageLoading = true;
       final res = await PagesRepo()
           .getPageCreate(filter: filter);
       final List listRaw = res['data'];
@@ -24,10 +24,10 @@ class PagesBloc extends ChangeNotifier {
       _pageCreated = list;
       return BaseResponse.success(list);
     } catch (e) {
-      _isLoading = false;
+      _isOwnPageLoading = false;
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
-      _isLoading = false;
+      _isOwnPageLoading = false;
       notifyListeners();
     }
   }
