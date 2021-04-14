@@ -62,9 +62,7 @@ class PostModel {
       this.rawContent,
       this.ward,
       this.halfImages,
-        this.page
-      });
-      this.halfImages,
+      this.page,
       this.polygonPoints});
 
   PostModel.fromJson(Map<String, dynamic> json) {
