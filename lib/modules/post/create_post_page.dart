@@ -34,6 +34,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   List<String> _urlMedias = [];
   PostBloc _postBloc;
   bool isProcess = false;
+  List<LatLng> _polygonPoints = [];
 
   @override
   void didChangeDependencies() {
@@ -75,7 +76,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
           _urlMedias
               .where(
                   (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
-              .toList());
+              .toList(),
+          _polygonPoints);
 
       navigatorKey.currentState.maybePop();
       if (res.isSuccess) {
@@ -446,6 +448,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       PickCoordinates.navigate().then((value) => setState(() {
                             _pos = value[0];
                             _placeName = value[1];
+                            _polygonPoints = value[2];
                             FocusScope.of(context).requestFocus(FocusNode());
                           }));
                     },

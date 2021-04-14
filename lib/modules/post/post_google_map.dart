@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:datcao/share/import.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future showGoogleMapPoint(BuildContext context, double lat, double long,
+Future showGoogleMapPoint(
+    BuildContext context, double lat, double long, List<LatLng> polygonPoints,
     {double height}) {
   if (height == null)
     height = MediaQuery.of(context).size.height - kToolbarHeight;
@@ -17,14 +18,17 @@ Future showGoogleMapPoint(BuildContext context, double lat, double long,
             child: GoogleMapWidget(
               lat: lat,
               long: long,
+              polygonPoints: polygonPoints,
             ));
       });
 }
 
 class GoogleMapWidget extends StatefulWidget {
   final double lat, long;
+  final List<LatLng> polygonPoints;
 
-  const GoogleMapWidget({Key key, this.lat, this.long}) : super(key: key);
+  const GoogleMapWidget({Key key, this.lat, this.long, this.polygonPoints})
+      : super(key: key);
   @override
   _GoogleMapWidgetState createState() => _GoogleMapWidgetState();
 }
@@ -104,6 +108,19 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
               _controller.complete(controller);
             },
             markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
+            polygons: (widget.polygonPoints != null &&
+                    (widget.polygonPoints.length > 0)
+                ? <Polygon>{
+                    Polygon(
+                      polygonId: PolygonId('PolygonId'),
+                      points: widget.polygonPoints,
+                      consumeTapEvents: true,
+                      strokeColor: Colors.redAccent,
+                      strokeWidth: 1,
+                      fillColor: Colors.redAccent.withOpacity(0.5),
+                    )
+                  }
+                : null),
           ),
           Positioned(
             top: 20,

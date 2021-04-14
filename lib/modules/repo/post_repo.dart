@@ -1,6 +1,7 @@
 import 'package:datcao/modules/services/comment_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/modules/services/reply_srv.dart';
+import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
 import 'package:datcao/modules/services/post_srv.dart';
 import 'package:datcao/modules/services/report_srv.dart';
@@ -153,8 +154,31 @@ $content
     return res;
   }
 
-  Future createPost(String content, String expirationDate, bool publicity,
-      double lat, double long, List<String> images, List<String> videos) async {
+  String cr(List<LatLng> polygon) {
+    String res = '';
+    if (polygon == null) return null;
+    res = '''polygon: {
+      paths: [
+        ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
+      ]
+    }''';
+    return res;
+  }
+
+  Future createPost(
+      String content,
+      String expirationDate,
+      bool publicity,
+      double lat,
+      double long,
+      List<String> images,
+      List<String> videos,
+      List<LatLng> polygon) async {
+    String polygonStr = '''{
+      paths: [
+        ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
+      ]
+    }''';
     String data = '''
 content: """
 ${content.toString()}
@@ -162,6 +186,7 @@ ${content.toString()}
 publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}
+polygon: $polygonStr
     ''';
 
     if (expirationDate != null) {
@@ -376,67 +401,76 @@ id
   }
 
   String postFragment = '''
-     id 
-        content
-        mediaPostIds
-        commentIds
-        userId
-        like
-        userLikeIds
-        share
-        userShareIds
-        locationLat
-        locationLong
-        expirationDate
-        publicity
-        isUserLike
-        isUserShare
-        hashTag
-        storyImages
-        user {
-          id 
-          uid 
-          name 
-          email 
-          phone 
-          role 
-          reputationScore 
-          createdAt 
-          updatedAt 
-          friendIds
-      avatar
-      totalPost
-          facebookUrl
-          description
-                }
-        rawContent
-        mediaPosts {
-            id
-            userId
-            type
-            like
-            userLikeIds
-            commentIds
-            halfUrl
-            description
-            url
-          locationLat
-            locationLong
-            expirationDate
-            publicity
-            createdAt
-            updatedAt
-        }
-        province
-        district
-        ward
-        createdAt
-        updatedAt
+id
+content
+mediaPostIds
+commentIds
+userId
+like
+userLikeIds
+share
+userShareIds
+locationLat
+locationLong
+province
+storyImages
+district
+ward
+hashTag
+expirationDate
+publicity
+rawContent
+polygon {
+  paths {
+    lat
+    lng
+  }
+}
+user {
+  id 
+  uid 
+  name 
+  email 
+  phone 
+  role 
+  reputationScore 
+  createdAt 
+  updatedAt 
+  avatar
+  totalPost
+  friendIds
+  facebookUrl
+  description
+  isVerify
+  followerIds 
+  followingIds
+}
+mediaPosts {
+id
+userId
+type
+like
+userLikeIds
+commentIds
+description
+url
+locationLat
+locationLong
+halfUrl
+expirationDate
+publicity
+createdAt
+updatedAt
+}
+isUserLike
+isUserShare
+createdAt
+updatedAt
 
-    page{
+  page{
       id
       name
       avartar
     } 
-     ''';
+  ''';
 }

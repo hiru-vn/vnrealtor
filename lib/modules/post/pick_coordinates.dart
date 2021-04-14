@@ -24,14 +24,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
   Marker selectedMarker;
   String _placeName;
   String _mode = 'point';
-  Polygon polygon = Polygon(
-    polygonId: PolygonId('id'),
-    points: <LatLng>[],
-    consumeTapEvents: true,
-    strokeColor: Colors.grey,
-    strokeWidth: 1,
-    fillColor: Colors.redAccent,
-  );
+  List<LatLng> polygonPoints = [];
 
   void _selectMarker(LatLng point) {
     setState(() {
@@ -70,19 +63,19 @@ class PickCoordinatesState extends State<PickCoordinates> {
 
   void _addMarkerPoligon(LatLng point) {
     setState(() {
-      polygon.points.add(point);
+      polygonPoints.add(point);
     });
   }
 
-  void _redoMarkerPoligon(LatLng point) {
+  void _redoMarkerPoligon() {
     setState(() {
-      polygon.points.remove(polygon.points[polygon.points.length - 1]);
+      polygonPoints.remove(polygonPoints[polygonPoints.length - 1]);
     });
   }
 
-  void _clearMarkerPoligon(LatLng point) {
+  void _clearMarkerPoligon() {
     setState(() {
-      polygon.points.remove(polygon.points[polygon.points.length - 1]);
+      polygonPoints.clear();
     });
   }
 
@@ -164,8 +157,28 @@ class PickCoordinatesState extends State<PickCoordinates> {
               _controller.complete(controller);
             },
             onTap: _mode == 'point' ? _selectMarker : _addMarkerPoligon,
-            markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
-            polygons: <Polygon>{polygon},
+            markers: _mode == 'point'
+                ? (selectedMarker != null ? <Marker>{selectedMarker} : null)
+                : (polygonPoints
+                    .map((e) => Marker(
+                          markerId: MarkerId(e.toString()),
+                          position: e,
+                          icon: BitmapDescriptor.defaultMarkerWithHue(
+                              BitmapDescriptor.hueGreen),
+                        ))
+                    .toSet()),
+            polygons: (_mode == 'polygon' && polygonPoints.length > 0)
+                ? <Polygon>{
+                    Polygon(
+                      polygonId: PolygonId('PolygonId'),
+                      points: polygonPoints,
+                      consumeTapEvents: true,
+                      strokeColor: Colors.redAccent,
+                      strokeWidth: 1,
+                      fillColor: Colors.redAccent.withOpacity(0.5),
+                    )
+                  }
+                : null,
           ),
           CustomFloatingSearchBar(
             onSearch: _onSearch,
@@ -193,10 +206,10 @@ class PickCoordinatesState extends State<PickCoordinates> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text('Mô phỏng diện tích'),
-                          if (_mode == 'poligon') Icon(Icons.check),
+                          if (_mode == 'polygon') Icon(Icons.check),
                         ],
                       ),
-                      value: 'poligon',
+                      value: 'polygon',
                     )
                   ],
                   onSelected: (val) {
@@ -223,8 +236,8 @@ class PickCoordinatesState extends State<PickCoordinates> {
                   showToast('Chạm để chọn vị trí', context);
                   return;
                 }
-                navigatorKey.currentState
-                    .maybePop([selectedMarker.position, _placeName]);
+                navigatorKey.currentState.maybePop(
+                    [selectedMarker.position, _placeName, polygonPoints]);
               },
               child: Material(
                 borderRadius: BorderRadius.circular(20),
@@ -278,7 +291,57 @@ class PickCoordinatesState extends State<PickCoordinates> {
                     ),
                   ),
                 ),
-              ))
+              )),
+          if (_mode == 'polygon' && polygonPoints.length > 0) ...[
+            Positioned(
+                top: 100,
+                right: 10,
+                child: Material(
+                  borderRadius: BorderRadius.circular(21),
+                  elevation: 4,
+                  child: GestureDetector(
+                    onTap: _clearMarkerPoligon,
+                    child: Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.clear,
+                          color: ptPrimaryColor(context),
+                        ),
+                      ),
+                    ),
+                  ),
+                )),
+            Positioned(
+                top: 160,
+                right: 10,
+                child: Material(
+                  borderRadius: BorderRadius.circular(21),
+                  elevation: 4,
+                  child: GestureDetector(
+                    onTap: _redoMarkerPoligon,
+                    child: Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.redo,
+                          color: ptPrimaryColor(context),
+                        ),
+                      ),
+                    ),
+                  ),
+                ))
+          ]
         ],
       ),
     );

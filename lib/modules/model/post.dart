@@ -1,4 +1,5 @@
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/share/import.dart';
 
 import 'media_post.dart';
 
@@ -30,6 +31,7 @@ class PostModel {
   List<String> hashTag;
   List<String> halfImages;
   List<String> storyImages;
+  List<LatLng> polygonPoints;
   Page page;
 
   PostModel(
@@ -62,6 +64,8 @@ class PostModel {
       this.halfImages,
         this.page
       });
+      this.halfImages,
+      this.polygonPoints});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -108,6 +112,11 @@ class PostModel {
     storyImages =
         json['storyImages'] != null ? json['storyImages'].cast<String>() : [];
     page = json['page'] != null ? new Page.fromJson(json['page']) : null;
+    if (json['polygon'] != null && json['polygon']["paths"] != null) {
+      polygonPoints = (json['polygon']["paths"] as List)
+          .map((e) => LatLng(e['lat'], e['lng']))
+          .toList();
+    }
   }
 
   Map<String, dynamic> toJson() {

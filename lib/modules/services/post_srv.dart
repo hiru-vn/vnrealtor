@@ -2,64 +2,69 @@ import 'base_graphql.dart';
 
 class PostSrv extends BaseService {
   PostSrv() : super(module: 'Post', fragment: ''' 
-     id 
-        content
-        mediaPostIds
-        commentIds
-        userId
-        like
-        userLikeIds
-        share
-        userShareIds
-        locationLat
-        locationLong
-        expirationDate
-        publicity
-        isUserLike
-        isUserShare
-        hashTag
-        storyImages
-        user {
-          id 
-          uid 
-          name 
-          email 
-          phone 
-          role 
-          reputationScore 
-          createdAt 
-          updatedAt 
-          friendIds
-      avatar
-      totalPost
-          facebookUrl
-          description
-                }
-        rawContent
-        mediaPosts {
-            id
-            userId
-            type
-            like
-            userLikeIds
-            commentIds
-            halfUrl
-            description
-            url
-          locationLat
-            locationLong
-            expirationDate
-            publicity
-            createdAt
-            updatedAt
-        }
-        province
-        district
-        ward
-        createdAt
-        updatedAt
-
-    page{
+id
+content
+mediaPostIds
+commentIds
+userId
+like
+userLikeIds
+share
+userShareIds
+locationLat
+locationLong
+expirationDate
+publicity
+isUserLike
+isUserShare
+hashTag
+storyImages
+polygon {
+  paths {
+    lat
+    lng
+  }
+}
+user {
+  id 
+  uid 
+  name 
+  email 
+  phone 
+  role 
+  reputationScore 
+  createdAt 
+  updatedAt 
+  friendIds
+  avatar
+  totalPost
+  facebookUrl
+  description
+}
+rawContent
+mediaPosts {
+id
+userId
+type
+like
+userLikeIds
+commentIds
+halfUrl
+description
+url
+locationLat
+locationLong
+expirationDate
+publicity
+createdAt
+updatedAt
+}
+province
+district
+ward
+createdAt
+updatedAt
+ page{
       id
       name
       avartar
