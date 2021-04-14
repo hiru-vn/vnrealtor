@@ -81,4 +81,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'androidx.browser:browser:1.2.0'
     implementation 'com.google.firebase:firebase-messaging:21.0.1'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
 }

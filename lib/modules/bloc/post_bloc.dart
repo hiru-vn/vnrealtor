@@ -317,10 +317,10 @@ class PostBloc extends ChangeNotifier {
       double lat,
       double long,
       List<String> images,
-      List<String> videos) async {
+      List<String> videos, List<LatLng> polygon) async {
     try {
       final res = await PostRepo().createPost(
-          content, expirationDate, publicity, lat, long, images, videos);
+          content, expirationDate, publicity, lat, long, images, videos, polygon);
       feed.insert(0, PostModel.fromJson(res));
       myPosts.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
