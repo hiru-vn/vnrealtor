@@ -64,6 +64,11 @@ district
 ward
 createdAt
 updatedAt
+ page{
+      id
+      name
+      avartar
+    }
   ''');
 }
 

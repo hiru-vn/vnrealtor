@@ -136,11 +136,13 @@ class _PostWidgetState extends State<PostWidget> {
                           ),
                           SizedBox(width: 1),
                           CustomTooltip(
-                              message: 'Điểm tương tác',
-                              child: SizedBox(
-                                  height: 13,
-                                  width: 13,
-                                  child: Image.asset('assets/image/ip.png'))),
+                            message: 'Điểm tương tác',
+                            child: SizedBox(
+                              height: 13,
+                              width: 13,
+                              child: Image.asset('assets/image/ip.png'),
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(height: 1),

@@ -466,5 +466,11 @@ isUserLike
 isUserShare
 createdAt
 updatedAt
+
+  page{
+      id
+      name
+      avartar
+    } 
   ''';
 }

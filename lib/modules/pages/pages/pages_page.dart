@@ -1,5 +1,7 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
+import 'package:datcao/modules/pages/pages/page_detail.dart';
+import 'package:datcao/modules/pages/widget/own_page_loading.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/resources/styles/images.dart';
 import 'package:datcao/share/import.dart';
@@ -26,7 +28,11 @@ class _PagesPageState extends State<PagesPage> {
     if (_pagesBloc == null) {
       _authBloc = Provider.of(context);
       _pagesBloc = Provider.of<PagesBloc>(context);
-      if (AuthBloc.instance.userModel.role == 'COMPANY') _getAllPageCreated();
+      if (AuthBloc.instance.userModel.role == 'COMPANY') {
+        _getAllPageCreated();
+        _pagesBloc.getAllHashTagTP();
+      }
+      ;
     }
     super.didChangeDependencies();
   }
@@ -49,36 +55,30 @@ class _PagesPageState extends State<PagesPage> {
         centerTitle: true,
         automaticallyImplyLeading: true,
       ),
-      body: !_pagesBloc.isLoading
-          ? SingleChildScrollView(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundColor.withOpacity(0.5),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    _buildHeader(),
-                    if (AuthBloc.instance.userModel.role == 'COMPANY')
-                      _buildSectionOwnPage(),
-                    _buildPageBodySection(
-                        'Trang đã theo dõi ', AppImages.icPageFollow),
-                    _itemBodySectionPageFollow(
-                        AppImages.imageDemo, 'Dự án MeiLand '),
-                    _buildPageBodySection(
-                        'Lời mời thích trang ', AppImages.icPageLike),
-                    _itemBodySectionPageLike(
-                        AppImages.imageDemo, 'Dự án MeiLand ')
-                  ],
-                ),
-              ),
-            )
-          : Container(
-              height: deviceHeight(context),
-              color: ptSecondaryColor(context),
-              child: ActivityIndicator(),
-            ),
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.backgroundColor.withOpacity(0.5),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              if (AuthBloc.instance.userModel.role == 'COMPANY') _buildHeader(),
+              if (AuthBloc.instance.userModel.role == 'COMPANY')
+                _buildSectionOwnPage(),
+              _buildPageBodySection(
+                  'Trang đã theo dõi ', AppImages.icPageFollow),
+              _itemBodySectionPageFollow(AppImages.imageDemo, 'Dự án MeiLand '),
+              heightSpace(10),
+              _buildPageBodySection(
+                  'Lời mời thích trang ', AppImages.icPageLike),
+              _itemBodySectionPageLike(AppImages.imageDemo, 'Dự án MeiLand '),
+              heightSpace(30),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -86,16 +86,41 @@ class _PagesPageState extends State<PagesPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildPageBodySection('Trang của bạn', AppImages.icOwnPage),
-          _buildListPageCreate(),
+          _pagesBloc.isOwnPageLoading
+              ? _buildOwnPageLoading()
+              : _buildListPageCreate(),
         ],
+      );
+
+  Widget _buildOwnPageLoading() => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 17),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              spreadRadius: 40,
+              blurRadius: 40.0,
+              offset: Offset(0, 10),
+              color: Color.fromRGBO(0, 0, 0, 0.03),
+            )
+          ],
+        ),
+        child: OwnPageLoading(),
       );
 
   Widget _buildListPageCreate() {
     List<Widget> _listWidget = [];
     _pagesBloc.pageCreated.forEach(
       (page) => _listWidget.add(
-        _itemBodySectionOwnPage(page.avartar, page.name, 2,
-            _pagesBloc.pageCreated.last == page ? true : false),
+        _itemBodySectionOwnPage(
+          page.avartar,
+          page.name,
+          2,
+          _pagesBloc.pageCreated.last == page ? true : false,
+          () => PageDetail.navigate(page),
+        ),
       ),
     );
     return Container(
@@ -174,92 +199,94 @@ class _PagesPageState extends State<PagesPage> {
       );
 
   Widget _buildPageBodySection(String title, String icon) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 13),
               child: _itemIconButtonTitle(icon, title, 32),
             ),
-            heightSpace(10),
           ],
         ),
       );
 
-  Widget _itemBodySectionOwnPage(
-          String image, String title, int number, bool isLast) =>
-      Container(
-        padding: const EdgeInsets.only(bottom: 19, top: 11),
-        decoration: BoxDecoration(
-          border: !isLast
-              ? Border(
-                  bottom: BorderSide(
-                    color: AppColors.borderGrayColor.withOpacity(0.3),
-                    width: 0.5,
+  Widget _itemBodySectionOwnPage(String image, String title, int number,
+          bool isLast, VoidCallback callback) =>
+      GestureDetector(
+        onTap: callback,
+        child: Container(
+          padding: const EdgeInsets.only(bottom: 19, top: 11),
+          decoration: BoxDecoration(
+            border: !isLast
+                ? Border(
+                    bottom: BorderSide(
+                      color: AppColors.borderGrayColor.withOpacity(0.3),
+                      width: 0.5,
+                    ),
+                  )
+                : Border(
+                    bottom: BorderSide(
+                      color: Colors.white,
+                      width: 0.5,
+                    ),
                   ),
-                )
-              : Border(
-                  bottom: BorderSide(
-                    color: Colors.white,
-                    width: 0.5,
-                  ),
-                ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100.0),
-                child: Center(
-                  child: SizedBox(
-                    width: 45,
-                    height: 45,
-                    child: CachedNetworkImage(
-                      imageUrl: image.isNotEmpty
-                          ? image
-                          : 'https://i.ibb.co/Zcx1Ms8/error-image-generic.png',
+          ),
+          child: Row(
+            children: [
+              Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100.0),
+                  child: Center(
+                    child: SizedBox(
+                      width: 45,
+                      height: 45,
+                      child: CachedNetworkImage(
+                        imageUrl: image.isNotEmpty
+                            ? image
+                            : 'https://i.ibb.co/Zcx1Ms8/error-image-generic.png',
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            widthSpace(13),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  child: Text(
-                    title,
-                    style: ptBigBody().copyWith(
-                      fontWeight: FontWeight.w600,
+              widthSpace(13),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    child: Text(
+                      title,
+                      style: ptBigBody().copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-                heightSpace(7),
-                Container(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: new BoxDecoration(
-                          color: AppColors.notifyColor,
-                          shape: BoxShape.circle,
+                  heightSpace(7),
+                  Container(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: new BoxDecoration(
+                            color: AppColors.notifyColor,
+                            shape: BoxShape.circle,
+                          ),
                         ),
-                      ),
-                      widthSpace(8),
-                      Text(
-                        number.toString() + ' mục mới',
-                        style: ptSmall(),
-                      )
-                    ],
+                        widthSpace(8),
+                        Text(
+                          number.toString() + ' mục mới',
+                          style: ptSmall(),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            )
-          ],
+                ],
+              )
+            ],
+          ),
         ),
       );
 

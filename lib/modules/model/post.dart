@@ -32,6 +32,7 @@ class PostModel {
   List<String> halfImages;
   List<String> storyImages;
   List<LatLng> polygonPoints;
+  Page page;
 
   PostModel(
       {this.id,
@@ -61,6 +62,7 @@ class PostModel {
       this.rawContent,
       this.ward,
       this.halfImages,
+      this.page,
       this.polygonPoints});
 
   PostModel.fromJson(Map<String, dynamic> json) {
@@ -107,6 +109,7 @@ class PostModel {
         json['halfImages'] != null ? json['halfImages'].cast<String>() : [];
     storyImages =
         json['storyImages'] != null ? json['storyImages'].cast<String>() : [];
+    page = json['page'] != null ? new Page.fromJson(json['page']) : null;
     if (json['polygon'] != null && json['polygon']["paths"] != null) {
       polygonPoints = (json['polygon']["paths"] as List)
           .map((e) => LatLng(e['lat'], e['lng']))
@@ -139,6 +142,31 @@ class PostModel {
     data['isUserLike'] = this.isUserLike;
     data['isUserShare'] = this.isUserShare;
     data['halfImages'] = this.halfImages;
+    if (this.page != null) {
+      data['page'] = this.page.toJson();
+    }
+    return data;
+  }
+}
+
+class Page {
+  String id;
+  String name;
+  String avartar;
+
+  Page({this.id, this.name, this.avartar});
+
+  Page.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    avartar = json['avartar'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['avartar'] = this.avartar;
     return data;
   }
 }
