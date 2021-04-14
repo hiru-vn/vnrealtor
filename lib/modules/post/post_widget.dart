@@ -333,7 +333,8 @@ class _PostWidgetState extends State<PostWidget> {
                             await showGoogleMapPoint(
                                 context,
                                 widget.post.locationLat,
-                                widget.post.locationLong);
+                                widget.post.locationLong,
+                                widget.post.polygonPoints);
                             FocusScope.of(context).requestFocus(FocusNode());
                           },
                           child: Text(

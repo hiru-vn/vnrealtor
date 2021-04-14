@@ -420,6 +420,12 @@ hashTag
 expirationDate
 publicity
 rawContent
+polygon {
+  paths {
+    lat
+    lng
+  }
+}
 user {
   id 
   uid 

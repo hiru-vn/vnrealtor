@@ -19,6 +19,12 @@ isUserLike
 isUserShare
 hashTag
 storyImages
+polygon {
+  paths {
+    lat
+    lng
+  }
+}
 user {
   id 
   uid 
