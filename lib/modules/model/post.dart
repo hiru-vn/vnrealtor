@@ -30,6 +30,7 @@ class PostModel {
   List<String> hashTag;
   List<String> halfImages;
   List<String> storyImages;
+  Page page;
 
   PostModel(
       {this.id,
@@ -58,7 +59,9 @@ class PostModel {
       this.hashTag,
       this.rawContent,
       this.ward,
-      this.halfImages});
+      this.halfImages,
+        this.page
+      });
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -104,6 +107,7 @@ class PostModel {
         json['halfImages'] != null ? json['halfImages'].cast<String>() : [];
     storyImages =
         json['storyImages'] != null ? json['storyImages'].cast<String>() : [];
+    page = json['page'] != null ? new Page.fromJson(json['page']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -131,6 +135,31 @@ class PostModel {
     data['isUserLike'] = this.isUserLike;
     data['isUserShare'] = this.isUserShare;
     data['halfImages'] = this.halfImages;
+    if (this.page != null) {
+      data['page'] = this.page.toJson();
+    }
+    return data;
+  }
+}
+
+class Page {
+  String id;
+  String name;
+  String avartar;
+
+  Page({this.id, this.name, this.avartar});
+
+  Page.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    avartar = json['avartar'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['avartar'] = this.avartar;
     return data;
   }
 }

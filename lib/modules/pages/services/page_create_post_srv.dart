@@ -1,8 +1,8 @@
-import 'base_graphql.dart';
+import 'package:datcao/modules/services/base_graphql.dart';
 
-class PostSrv extends BaseService {
-  PostSrv() : super(module: 'Post', fragment: ''' 
-     id 
+class PagesCreatePostSrv extends BaseService {
+  PagesCreatePostSrv() : super(module: 'PostCreate', fragment: ''' 
+   id
         content
         mediaPostIds
         commentIds
@@ -64,25 +64,5 @@ class PostSrv extends BaseService {
       name
       avartar
     }
-  ''');
-}
-
-class MediaPostSrv extends BaseService {
-  MediaPostSrv() : super(module: 'MediaPost', fragment: ''' 
-id
-userId
-type
-like
-userLikeIds
-commentIds
-description
-url
-locationLat
-locationLong
-expirationDate
-publicity
-createdAt
-halfUrl
-updatedAt
   ''');
 }

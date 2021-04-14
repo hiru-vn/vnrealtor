@@ -28,7 +28,11 @@ class _PagesPageState extends State<PagesPage> {
     if (_pagesBloc == null) {
       _authBloc = Provider.of(context);
       _pagesBloc = Provider.of<PagesBloc>(context);
-      if (AuthBloc.instance.userModel.role == 'COMPANY') _getAllPageCreated();
+      if (AuthBloc.instance.userModel.role == 'COMPANY') {
+        _getAllPageCreated();
+        _pagesBloc.getAllHashTagTP();
+      }
+      ;
     }
     super.didChangeDependencies();
   }
@@ -44,37 +48,38 @@ class _PagesPageState extends State<PagesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar1(
-          bgColor: ptSecondaryColor(context),
-          title: 'Trang',
-          textColor: AppColors.mainColor,
-          centerTitle: true,
-          automaticallyImplyLeading: true,
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.backgroundColor.withOpacity(0.5),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _buildHeader(),
-                if (AuthBloc.instance.userModel.role == 'COMPANY')
-                  _buildSectionOwnPage(),
-                _buildPageBodySection(
-                    'Trang đã theo dõi ', AppImages.icPageFollow),
-                _itemBodySectionPageFollow(
-                    AppImages.imageDemo, 'Dự án MeiLand '),
-                heightSpace(10),
-                _buildPageBodySection(
-                    'Lời mời thích trang ', AppImages.icPageLike),
-                _itemBodySectionPageLike(AppImages.imageDemo, 'Dự án MeiLand ')
-              ],
-            ),
+      appBar: AppBar1(
+        bgColor: ptSecondaryColor(context),
+        title: 'Trang',
+        textColor: AppColors.mainColor,
+        centerTitle: true,
+        automaticallyImplyLeading: true,
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.backgroundColor.withOpacity(0.5),
           ),
-        ));
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              if (AuthBloc.instance.userModel.role == 'COMPANY') _buildHeader(),
+              if (AuthBloc.instance.userModel.role == 'COMPANY')
+                _buildSectionOwnPage(),
+              _buildPageBodySection(
+                  'Trang đã theo dõi ', AppImages.icPageFollow),
+              _itemBodySectionPageFollow(AppImages.imageDemo, 'Dự án MeiLand '),
+              heightSpace(10),
+              _buildPageBodySection(
+                  'Lời mời thích trang ', AppImages.icPageLike),
+              _itemBodySectionPageLike(AppImages.imageDemo, 'Dự án MeiLand '),
+              heightSpace(30),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildSectionOwnPage() => Column(
@@ -87,22 +92,23 @@ class _PagesPageState extends State<PagesPage> {
         ],
       );
 
-  Widget _buildOwnPageLoading() =>Container(
-    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-    margin: const EdgeInsets.symmetric(horizontal: 17),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-          spreadRadius: 40,
-          blurRadius: 40.0,
-          offset: Offset(0, 10),
-          color: Color.fromRGBO(0, 0, 0, 0.03),
-        )
-      ],
-    ),
-    child: OwnPageLoading(),);
+  Widget _buildOwnPageLoading() => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 17),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              spreadRadius: 40,
+              blurRadius: 40.0,
+              offset: Offset(0, 10),
+              color: Color.fromRGBO(0, 0, 0, 0.03),
+            )
+          ],
+        ),
+        child: OwnPageLoading(),
+      );
 
   Widget _buildListPageCreate() {
     List<Widget> _listWidget = [];

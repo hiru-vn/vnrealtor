@@ -376,64 +376,67 @@ id
   }
 
   String postFragment = '''
-id
-content
-mediaPostIds
-commentIds
-userId
-like
-userLikeIds
-share
-userShareIds
-locationLat
-locationLong
-province
-storyImages
-district
-ward
-hashTag
-expirationDate
-publicity
-rawContent
-user {
-  id 
-  uid 
-  name 
-  email 
-  phone 
-  role 
-  reputationScore 
-  createdAt 
-  updatedAt 
-  avatar
-  totalPost
-  friendIds
-  facebookUrl
-  description
-  isVerify
-  followerIds 
-  followingIds
-}
-mediaPosts {
-id
-userId
-type
-like
-userLikeIds
-commentIds
-description
-url
-locationLat
-locationLong
-halfUrl
-expirationDate
-publicity
-createdAt
-updatedAt
-}
-isUserLike
-isUserShare
-createdAt
-updatedAt
-  ''';
+     id 
+        content
+        mediaPostIds
+        commentIds
+        userId
+        like
+        userLikeIds
+        share
+        userShareIds
+        locationLat
+        locationLong
+        expirationDate
+        publicity
+        isUserLike
+        isUserShare
+        hashTag
+        storyImages
+        user {
+          id 
+          uid 
+          name 
+          email 
+          phone 
+          role 
+          reputationScore 
+          createdAt 
+          updatedAt 
+          friendIds
+      avatar
+      totalPost
+          facebookUrl
+          description
+                }
+        rawContent
+        mediaPosts {
+            id
+            userId
+            type
+            like
+            userLikeIds
+            commentIds
+            halfUrl
+            description
+            url
+          locationLat
+            locationLong
+            expirationDate
+            publicity
+            createdAt
+            updatedAt
+        }
+        province
+        district
+        ward
+        createdAt
+        updatedAt
+
+    page{
+      id
+      name
+      avartar
+    } 
+     ''';
 }

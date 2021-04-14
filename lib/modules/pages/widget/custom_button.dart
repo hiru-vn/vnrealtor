@@ -18,17 +18,16 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SizedBox(
-        width: size ?? double.infinity,
-        height: size ?? 45,
-        child: FlatButton(
+    return SizedBox(
+      width: size ?? double.infinity,
+      height: size ?? 45,
+      child: FlatButton(
           // elevation: elevation?.toDouble() ?? 5,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(7),
           ),
           color: AppColors.backgroundLightColor,
-          onPressed: () => {},
+          onPressed: callback,
           child: isLoading
               ? SizedBox(
                   width: 20,
@@ -44,17 +43,12 @@ class CustomButton extends StatelessWidget {
                       width: 24,
                     ),
                     widthSpace(10),
-                    title != null
-                        ? Text(
-                            title,
-                            style:
-                                ptButton().copyWith(color: AppColors.mainColor),
-                          )
-                        : const SizedBox(),
+                    Text(
+                      title,
+                      style: ptButton().copyWith(color: AppColors.mainColor),
+                    )
                   ],
-                ),
-        ),
-      ),
+                )),
     );
   }
 }

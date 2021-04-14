@@ -1,12 +1,16 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
+import 'package:datcao/modules/pages/pages/page_create_post.dart';
 import 'package:datcao/modules/pages/widget/custom_button.dart';
 import 'package:datcao/modules/pages/widget/item_info_page.dart';
+import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/resources/styles/images.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/activity_indicator.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
+import 'package:datcao/share/widget/load_more.dart';
 
 class PageDetail extends StatefulWidget {
   final PagesCreate page;
@@ -31,17 +35,28 @@ class PageDetail extends StatefulWidget {
 
 class _PageDetailState extends State<PageDetail> {
   AuthBloc _authBloc;
+  PagesBloc _pagesBloc;
 
   PagesCreate get _pageState => widget.page;
   bool get _isParamPageCreate => widget.isParamPageCreate;
 
   @override
   void didChangeDependencies() {
-    if (_authBloc == null) {
-      _authBloc = Provider.of<AuthBloc>(context);
+    if (_pagesBloc == null) {
+      _authBloc = Provider.of(context);
+      _pagesBloc = Provider.of<PagesBloc>(context);
+      _getAllPostOfPage();
     }
     super.didChangeDependencies();
   }
+
+
+  Future<void> _getAllPostOfPage() async => await _pagesBloc.getPostsOfPage(
+        filter: GraphqlFilter(
+          filter: '{ pageId: "${_pageState.id}"}',
+          order: "{updatedAt: -1}",
+        ),
+      );
 
   Future popUntilStep(int step, [dynamic params]) async {
     int count = 0;
@@ -55,6 +70,7 @@ class _PageDetailState extends State<PageDetail> {
 
   @override
   Widget build(BuildContext context) {
+    _pagesBloc.pagePostsScrollController = ScrollController();
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
@@ -80,15 +96,35 @@ class _PageDetailState extends State<PageDetail> {
         decoration: BoxDecoration(
           color: AppColors.backgroundColor.withOpacity(0.6),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildBanner(),
-              _buildHeader(),
-              if(AuthBloc.instance.userModel.role != 'COMPANY')
-                 _buildInfoPage(),
-            ],
+        child: LoadMoreScrollView(
+          scrollController: _pagesBloc.pagePostsScrollController,
+          onLoadMore: () {
+            // _postBloc.loadMoreNewFeed();
+          },
+          list: RefreshIndicator(
+            color: ptPrimaryColor(context),
+            onRefresh: () async {
+              // await Future.wait([
+              //   _postBloc.getNewFeed(
+              //       filter:
+              //       GraphqlFilter(limit: 10, order: "{updatedAt: -1}")),
+              //   _postBloc.getStoryFollowing()
+              // ]);
+              return;
+            },
+            child: SingleChildScrollView(
+              controller: _pagesBloc.pagePostsScrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildBanner(),
+                  _buildHeader(),
+                  if (AuthBloc.instance.userModel.role != 'COMPANY')
+                    _buildInfoPage(),
+                  _buildListPostOfPage()
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -147,7 +183,7 @@ class _PageDetailState extends State<PageDetail> {
             heightSpace(25),
             AuthBloc.instance.userModel.role != 'COMPANY'
                 ? _buildContainerButtonsToolMessage()
-                : _buildContainerButtonsToolCreatePost(),
+                : _buildContainerButtonsToolCreatePost(_pageState.id),
             heightSpace(10),
           ],
         ),
@@ -229,12 +265,12 @@ class _PageDetailState extends State<PageDetail> {
         ),
       );
 
-  Widget _buildContainerButtonsToolCreatePost() => Container(
+  Widget _buildContainerButtonsToolCreatePost(String pageId) => Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
-              child: _buildButtonCreatePost(),
+              child: _buildButtonCreatePost(pageId),
             ),
             widthSpace(20),
             _buildButtonSetting()
@@ -250,7 +286,7 @@ class _PageDetailState extends State<PageDetail> {
               child: _buildButtonMessage(),
             ),
             widthSpace(20),
-            _buildButtonBell()
+            _buildButtonBell(),
           ],
         ),
       );
@@ -258,51 +294,102 @@ class _PageDetailState extends State<PageDetail> {
   Widget _buildButtonMessage() => CustomButton(
         title: "Nhắn tin",
         image: AppImages.icPageMessage,
+        callback: () => {},
       );
 
-  Widget _buildButtonCreatePost() =>
-      CustomButton(title: "Tạo bài viết", image: AppImages.icCreatePost);
-
-  Widget _buildButtonSetting() => CustomButton(
-        image: AppImages.icSettingPage,
-        size: 45,
+  Widget _buildButtonCreatePost(String pageId) => CustomButton(
+        title: "Tạo bài viết",
+        image: AppImages.icCreatePost,
+        callback: () => PageCreatePostPage.navigate(pageId),
       );
 
-  Widget _buildButtonBell() => CustomButton(
-        image: AppImages.icBellPage,
-        size: 45,
+  Widget _buildButtonSetting() => Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(7),
+          color: AppColors.backgroundLightColor,
+        ),
+        child: Image(
+          width: 25,
+          height: 25,
+          image: AssetImage(
+            AppImages.icSettingPage,
+          ),
+        ),
+      );
+
+  Widget _buildButtonBell() => Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(7),
+          color: AppColors.backgroundLightColor,
+        ),
+        child: Image(
+          width: 25,
+          height: 25,
+          image: AssetImage(
+            AppImages.icBellPage,
+          ),
+        ),
       );
 
   Widget _buildInfoPage() => Container(
-    margin: const EdgeInsets.only(top : 10),
-    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    decoration: BoxDecoration(
-      color: Colors.white,
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ItemInfoPage(
-          image: AppImages.icFollower,
-          title: '60 lượt follow',
+        margin: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
         ),
-        heightSpace(10),
-        ItemInfoPage(
-          image: AppImages.icLocation,
-          title: 'Thành phố Hồ Chí Minh',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ItemInfoPage(
+              image: AppImages.icFollower,
+              title: '60 lượt follow',
+            ),
+            heightSpace(10),
+            ItemInfoPage(
+              image: AppImages.icLocation,
+              title: 'Thành phố Hồ Chí Minh',
+            ),
+            heightSpace(10),
+            ItemInfoPage(
+              image: AppImages.icPhone,
+              title: '+84989078790',
+            ),
+            heightSpace(10),
+            ItemInfoPage(
+              image: AppImages.icSocial,
+              title: 'datcaogroup.com',
+            )
+          ],
         ),
-        heightSpace(10),
-        ItemInfoPage(
-          image: AppImages.icPhone,
-          title: '+84989078790',
-        ),
-        heightSpace(10),
-        ItemInfoPage(
-          image: AppImages.icSocial,
-          title: 'datcaogroup.com',
-        )
-      ],
-    ),
-  );
+      );
 
+  Widget _buildListPostOfPage() => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        child: Column(children: [
+          if (_pagesBloc.isGetPostPageLoading) PostSkeleton(),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: _pagesBloc.listPagePost.length,
+            itemBuilder: (context, index) {
+              final item = _pagesBloc.listPagePost[index];
+              return PostWidget(item);
+            },
+          ),
+          // if (_pagesBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
+          //   PostSkeleton(
+          //     count: 1,
+          //   ),
+          SizedBox(
+            height: 70,
+          ),
+        ]),
+      );
 }
