@@ -232,8 +232,8 @@ class PickCoordinatesState extends State<PickCoordinates> {
             left: 12,
             child: InkWell(
               onTap: () async {
-                if (selectedMarker == null) {
-                  showToast('Chạm để chọn vị trí', context);
+                if (selectedMarker == null && polygonPoints.length == 0) {
+                  showToast('Chạm để chọn vị trí hoặc diện tích', context);
                   return;
                 }
                 navigatorKey.currentState.maybePop(

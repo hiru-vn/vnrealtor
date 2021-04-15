@@ -112,7 +112,8 @@ class PostModel {
     page = json['page'] != null ? new Page.fromJson(json['page']) : null;
     if (json['polygon'] != null && json['polygon']["paths"] != null) {
       polygonPoints = (json['polygon']["paths"] as List)
-          .map((e) => LatLng(e['lat'], e['lng']))
+          .map((e) => LatLng(double.tryParse(e['lat'].toString()),
+              double.tryParse(e['lng'].toString())))
           .toList();
     }
   }
