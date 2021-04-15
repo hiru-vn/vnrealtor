@@ -116,8 +116,8 @@ class _PageDetailState extends State<PageDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildBanner(),
-                  _buildHeader(),
+                   _buildBanner(),
+                   _buildHeader(),
                   if (AuthBloc.instance.userModel.role != 'COMPANY')
                     _buildInfoPage(),
                   _buildListPostOfPage()
@@ -191,8 +191,8 @@ class _PageDetailState extends State<PageDetail> {
   Widget _itemHeaderInfo() => Row(
         children: [
           CachedNetworkImage(
-            imageUrl: _pageState.coverImage != null
-                ? _pageState.coverImage
+            imageUrl: _pageState.avartar != null
+                ? _pageState.avartar
                 : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
             imageBuilder: (context, imageProvider) => Container(
               width: 50.0,
@@ -244,7 +244,7 @@ class _PageDetailState extends State<PageDetail> {
               ),
               SizedBox(height: 3),
               Text(
-                _pageState.category[0].name,
+                _pageState.categoryIds[0],
                 style: ptSmall().copyWith(color: ptPrimaryColor(context)),
               )
             ],

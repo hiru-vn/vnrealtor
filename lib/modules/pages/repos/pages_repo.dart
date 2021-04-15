@@ -1,3 +1,4 @@
+import 'package:datcao/modules/pages/services/create_page_srv.dart';
 import 'package:datcao/modules/pages/services/follow_page_srv.dart';
 import 'package:datcao/modules/pages/services/page_create_post_srv.dart';
 import 'package:datcao/modules/pages/services/pages_srv.dart';
@@ -86,32 +87,72 @@ $followPageFragment
     ''');
     return res["unfollowPage"];
   }
+
+
+  Future getCategories(
+      {GraphqlFilter filter, String timestamp, String timeSort}) async {
+    if (filter?.filter == null) filter?.filter = "{}";
+    if (filter?.search == null) filter?.search = "";
+    final data = 'q:{search: "${filter?.search}"}';
+    final res = await CategoriesPageSrv()
+        .query('getAllCategoryPage', data, fragment: '''
+    data {
+$categoriesPageFragment
+}
+    ''');
+    return res['getAllCategoryPage'];
+  }
+
+  Future createPage(String name, String description, String avatar,
+      String coverImage, List<String> categoryIds,  String address,
+      String website,
+      String phone) async {
+    String data = '''
+name: "$name"
+description: "$description"
+avartar: "$avatar"
+coverImage: "$coverImage"
+website: "$website"
+address: "$address"
+phone: "$phone"
+categoryIds: ${GraphqlHelper.listStringToGraphqlString(categoryIds)}
+    ''';
+
+    final res = await CreatePageSrv()
+        .mutate('createPage', 'data: {$data}', fragment: '''
+$pageFragment
+    ''');
+    return res["createPage"];
+  }
 }
 
 String pagesFragment = '''
-   id
-      name
-      description
-            avartar
-            coverImage
-            followerIds
-            categoryIds
-            ownerId
-            followers{ 
-        id
-        name
-      }
-            owner{
-        id
-        name
-        avatar
-      }
-            category{
-        id
-        name
-      }
-            createdAt
-            updatedAt
+  id
+  name
+  description
+  avartar
+  coverImage
+  followerIds
+  categoryIds
+  ownerId
+  phone
+  address
+  website
+  followers{ 
+    id
+    name
+  }
+   owner{
+    id
+    name
+    avatar
+  }
+   category{
+    id
+    name
+  }
+  createdAt
+  updatedAt
   ''';
 
 String pageCreatePostFragment = '''
@@ -249,4 +290,39 @@ String followPageFragment = '''
       id
       name
     }
+  ''';
+
+
+String pageFragment = '''
+ id
+  name
+  description
+  avartar
+  coverImage
+  followerIds
+  categoryIds
+  ownerId
+  phone
+  address
+  website
+  followers{ 
+    id
+    name
+  }
+   owner{
+    id
+    name
+    avatar
+  }
+   category{
+    id
+    name
+  }
+  createdAt
+  updatedAt
+  ''';
+
+String categoriesPageFragment = '''
+id
+name
   ''';

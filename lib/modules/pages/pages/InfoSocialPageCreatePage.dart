@@ -1,11 +1,7 @@
-import 'package:datcao/modules/pages/blocs/create_page_bloc.dart';
-import 'package:datcao/modules/pages/widget/listItemTags.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/resources/styles/colors.dart';
-import 'package:datcao/share/function/function.dart';
 import 'package:datcao/share/import.dart';
-import 'package:datcao/share/widget/activity_indicator.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class InfoSocialPageCreatePage extends StatefulWidget {
   final PageController pageController;
@@ -24,28 +20,28 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
 
   PageController get _pageController => widget.pageController;
 
-  CreatePageBloc _createPageBloc;
+  PagesBloc _pagesBloc;
 
   @override
   void didChangeDependencies() {
-    if (_createPageBloc == null) {
-      _createPageBloc = Provider.of<CreatePageBloc>(context);
+    if (_pagesBloc == null) {
+      _pagesBloc = Provider.of<PagesBloc>(context);
     }
     super.didChangeDependencies();
   }
 
   void _nextPage() {
-    if (_createPageBloc.currentAddress == null) {
+    if (_pagesBloc.currentAddress == null) {
       showToast('Địa chỉ hiện tại không được để trống', context);
       return;
     }
 
-    if (_createPageBloc.phone == null) {
+    if (_pagesBloc.phone == null) {
       showToast('Số điện thoại không được để trống', context);
       return;
     }
 
-    if (_createPageBloc.website == null) {
+    if (_pagesBloc.website == null) {
       showToast('Email không được để trống', context);
       return;
     }
@@ -72,16 +68,16 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
                     children: [
                       _buildTextField(
                           'Địa chỉ hiện tại',
-                          _createPageBloc.currentAddress,
-                          (val) => _createPageBloc.currentAddress = val,
+                          _pagesBloc.currentAddress,
+                          (val) => _pagesBloc.currentAddress = val,
                           validator: TextFieldValidator.notEmptyValidator),
                       heightSpace(20),
-                      _buildTextField('Website', _createPageBloc.website,
-                          (val) => _createPageBloc.website = val,
+                      _buildTextField('Website', _pagesBloc.website,
+                          (val) => _pagesBloc.website = val,
                           validator: TextFieldValidator.notEmptyValidator),
                       heightSpace(20),
-                      _buildTextField('Số điện thoại', _createPageBloc.phone,
-                          (val) => _createPageBloc.phone = val,
+                      _buildTextField('Số điện thoại', _pagesBloc.phone,
+                          (val) => _pagesBloc.phone = val,
                           type: TextInputType.phone,
                           validator: TextFieldValidator.phoneValidator),
                       heightSpace(20),
