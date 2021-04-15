@@ -12,7 +12,11 @@ import 'create_page_page.dart';
 
 class PagesPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(PagesPage()));
+    return navigatorKey.currentState.push(
+      pageBuilder(
+        PagesPage(),
+      ),
+    );
   }
 
   @override

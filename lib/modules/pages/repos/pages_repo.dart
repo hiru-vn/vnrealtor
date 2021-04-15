@@ -1,3 +1,4 @@
+import 'package:datcao/modules/pages/services/follow_page_srv.dart';
 import 'package:datcao/modules/pages/services/page_create_post_srv.dart';
 import 'package:datcao/modules/pages/services/pages_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
@@ -60,6 +61,30 @@ $pagesPostFragment
 }
     ''');
     return res['getAllPost'];
+  }
+
+  Future followPage(String pageId) async {
+    String data = '''
+    pageId: "$pageId"
+    ''';
+
+    final res = await FollowPageSrv()
+        .mutate('followPage', 'data: {$data}', fragment: '''
+$followPageFragment
+    ''');
+    return res["followPage"];
+  }
+
+  Future unFollowPage(String pageId) async {
+    String data = '''
+    pageId: "$pageId"
+    ''';
+
+    final res = await FollowPageSrv()
+        .mutate('unfollowPage', 'data: {$data}', fragment: '''
+$followPageFragment
+    ''');
+    return res["unfollowPage"];
   }
 }
 
@@ -213,5 +238,15 @@ String pagesPostFragment = '''
       id
       name
       avartar
+    }
+  ''';
+
+String followPageFragment = '''
+   id
+    followerIds
+
+    followers{
+      id
+      name
     }
   ''';

@@ -46,6 +46,11 @@ ownerId
 categoryIds
 avartar
 coverImage
+phone
+address
+website
+createdAt
+updatedAt
 category{
   id
   name

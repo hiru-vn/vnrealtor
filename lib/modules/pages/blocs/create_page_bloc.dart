@@ -1,3 +1,4 @@
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_category_model.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/repos/create_page_repo.dart';
@@ -7,6 +8,7 @@ class CreatePageBloc extends ChangeNotifier {
   CreatePageBloc._privateConstructor();
   static final CreatePageBloc instance = CreatePageBloc._privateConstructor();
 
+  PagesBloc _pagesBloc;
   bool _isLoadingSubmitCreatePage = false;
 
   bool _isLoading = false;
@@ -54,6 +56,12 @@ class CreatePageBloc extends ChangeNotifier {
   String get urlCover => _urlCover;
 
   String get urlAvatar => _urlAvatar;
+
+  set listCategoriesSelected(List<String> listCategoriesSelected) {
+    _listCategoriesSelected = listCategoriesSelected;
+    notifyListeners();
+  }
+
 
   set phone(String phone) {
     _phone = phone;

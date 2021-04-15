@@ -89,7 +89,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
                           hintText: 'Tên trang '),
                       heightSpace(20),
                       _itemInfoField(
-                        title: 'Nhập tên trang ',
+                        title: 'Mô tả trang ',
                         controller: _describeC,
                         hintText: 'Mô tả trang ',
                       ),

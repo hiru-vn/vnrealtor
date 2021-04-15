@@ -1,4 +1,6 @@
 import 'package:datcao/modules/pages/blocs/create_page_bloc.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/pages/page_detail.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'dart:io';
@@ -25,6 +27,8 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
   TextEditingController get _describeC => widget.describeController;
 
   CreatePageBloc _createPageBloc;
+  PagesBloc _pagesBloc;
+
 
   @override
   void didChangeDependencies() {
@@ -59,14 +63,17 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
       if (res.isSuccess) {
         _nameC.clear();
         _describeC.clear();
-        _createPageBloc.urlAvatar = '';
-        _createPageBloc.urlCover = '';
-        _createPageBloc.currentAddress = '';
-        _createPageBloc.website = '';
-        _createPageBloc.phone = '';
+        _createPageBloc.urlAvatar = null;
+        _createPageBloc.urlCover = null;
+        _createPageBloc.currentAddress = null;
+        _createPageBloc.website = null;
+        _createPageBloc.phone = null;
         _createPageBloc.listCategoriesId = [];
+        _createPageBloc.listCategoriesSelected = [];
+        _pagesBloc.updateListPageCreate(res.data);
         PageDetail.navigate(res.data, isParamPageCreate: true);
       } else {
+        print(res.errMessage);
         showToast(res.errMessage, context);
       }
     } catch (e) {} finally {

@@ -1,4 +1,5 @@
 import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/pages/models/followModel.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/repos/pages_repo.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
@@ -7,8 +8,6 @@ import 'package:datcao/share/import.dart';
 class PagesBloc extends ChangeNotifier {
   PagesBloc._privateConstructor();
   static final PagesBloc instance = PagesBloc._privateConstructor();
-
-  // PostBloc _postBloc;
 
   DateTime _lastFetchPostPage;
 
@@ -21,6 +20,10 @@ class PagesBloc extends ChangeNotifier {
   bool _isGetPostPageLoading = false;
 
   bool _isEndPostPage = false;
+
+  bool _isFollowPageLoading = false;
+
+  bool _isUnFollowPageLoading = false;
 
   List<PagesCreate> _pageCreated = [];
 
@@ -40,11 +43,31 @@ class PagesBloc extends ChangeNotifier {
 
   bool get isEndPostPage => _isEndPostPage;
 
+  bool get isFollowPageLoading => _isFollowPageLoading;
+
+  bool get isUnFollowPageLoading => _isUnFollowPageLoading;
+
   ScrollController pagePostsScrollController;
 
 
   set isCreatePostLoading(bool isCreatePostLoading) {
     _isCreatePostLoading = isCreatePostLoading;
+    notifyListeners();
+  }
+
+  set isFollowPageLoading(bool isFollowPageLoading) {
+    _isFollowPageLoading = isFollowPageLoading;
+    notifyListeners();
+  }
+
+  set isUnFollowPageLoading(bool isUnFollowPageLoading) {
+    _isUnFollowPageLoading = isUnFollowPageLoading;
+    notifyListeners();
+  }
+
+
+  void updateListPageCreate(PagesCreate page) {
+    _pageCreated.add(page);
     notifyListeners();
   }
 
@@ -119,6 +142,34 @@ class PagesBloc extends ChangeNotifier {
     } finally {
       _isGetPostPageLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> followPage(
+      String pageId
+      ) async {
+    try {
+      final res = await PagesRepo().followPage(pageId);
+      return BaseResponse.success(FollowPagesModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      // wait to reload post
+      Future.delayed(Duration(seconds: 1), () => notifyListeners());
+    }
+  }
+
+  Future<BaseResponse> unFollowPage(
+      String pageId
+      ) async {
+    try {
+      final res = await PagesRepo().unFollowPage(pageId);
+      return BaseResponse.success(FollowPagesModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      // wait to reload post
+      Future.delayed(Duration(seconds: 1), () => notifyListeners());
     }
   }
 }

@@ -1,87 +1,73 @@
 class PagesCreate {
   String id;
   String name;
-  String description;
+  String ownerId;
+  List<String> categoryIds;
   String avartar;
   String coverImage;
-  List<String> categoryIds;
-  String ownerId;
-  Owner owner;
-  List<Category> category;
+  String phone;
+  String address;
+  String website;
   String createdAt;
   String updatedAt;
+  List<Category> category;
+  Owner owner;
 
   PagesCreate(
       {this.id,
         this.name,
-        this.description,
+        this.ownerId,
+        this.categoryIds,
         this.avartar,
         this.coverImage,
-        this.categoryIds,
-        this.ownerId,
-        this.owner,
-        this.category,
+        this.phone,
+        this.address,
+        this.website,
         this.createdAt,
-        this.updatedAt});
+        this.updatedAt,
+        this.category,
+        this.owner});
 
   PagesCreate.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    description = json['description'];
+    ownerId = json['ownerId'];
+    categoryIds = json['categoryIds'].cast<String>();
     avartar = json['avartar'];
     coverImage = json['coverImage'];
-    categoryIds = json['categoryIds'].cast<String>();
-    ownerId = json['ownerId'];
-    owner = json['owner'] != null ? new Owner.fromJson(json['owner']) : null;
+    phone = json['phone'];
+    address = json['address'];
+    website = json['website'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
     if (json['category'] != null) {
       category = new List<Category>();
       json['category'].forEach((v) {
         category.add(new Category.fromJson(v));
       });
     }
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
+    owner = json['owner'] != null ? new Owner.fromJson(json['owner']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
-    data['description'] = this.description;
+    data['ownerId'] = this.ownerId;
+    data['categoryIds'] = this.categoryIds;
     data['avartar'] = this.avartar;
     data['coverImage'] = this.coverImage;
-    data['categoryIds'] = this.categoryIds;
-    data['ownerId'] = this.ownerId;
-    if (this.owner != null) {
-      data['owner'] = this.owner.toJson();
-    }
+    data['phone'] = this.phone;
+    data['address'] = this.address;
+    data['website'] = this.website;
+    data['createdAt'] = this.createdAt;
+    data['updatedAt'] = this.updatedAt;
     if (this.category != null) {
       data['category'] = this.category.map((v) => v.toJson()).toList();
     }
-    data['createdAt'] = this.createdAt;
-    data['updatedAt'] = this.updatedAt;
-    return data;
-  }
-}
-
-class Owner {
-  String id;
-  String name;
-  String avatar;
-
-  Owner({this.id, this.name, this.avatar});
-
-  Owner.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    avatar = json['avatar'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['avatar'] = this.avatar;
+    if (this.owner != null) {
+      data['owner'] = this.owner.toJson();
+    }
     return data;
   }
 }
@@ -101,6 +87,28 @@ class Category {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
+    return data;
+  }
+}
+
+class Owner {
+  String id;
+  String name;
+  String email;
+
+  Owner({this.id, this.name, this.email});
+
+  Owner.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    email = json['email'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['email'] = this.email;
     return data;
   }
 }
