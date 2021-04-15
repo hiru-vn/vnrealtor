@@ -1,3 +1,4 @@
+import 'package:datcao/modules/pages/pages/InfoSocialPageCreatePage.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/share/import.dart';
 import 'choose_image_create_page.dart';
@@ -26,7 +27,6 @@ class _CreatePagePageState extends State<CreatePagePage> {
     );
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      resizeToAvoidBottomInset: false,
       appBar: AppBar1(
         bgColor: ptSecondaryColor(context),
         title: 'Tạo Trang',
@@ -43,6 +43,9 @@ class _CreatePagePageState extends State<CreatePagePage> {
             nameController: _nameC,
             describeController: _describeC,
             categoriesController: _categoriesController,
+          ),
+          InfoSocialPageCreatePage(
+            pageController: _pageController,
           ),
           ChooseImageCreatePage(
             nameController: _nameC,

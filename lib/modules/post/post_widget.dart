@@ -72,18 +72,26 @@ class _PostWidgetState extends State<PostWidget> {
                     child: CircleAvatar(
                       radius: 23,
                       backgroundColor: Colors.white,
-                      backgroundImage: widget.post?.user?.id ==
-                              AuthBloc.instance?.userModel?.id
-                          ? ((AuthBloc.instance.userModel.avatar != null &&
-                                  AuthBloc.instance.userModel.avatar != 'null')
+                      backgroundImage: widget.post.page != null
+                          ? widget.post.page.avartar != null
                               ? CachedNetworkImageProvider(
-                                  AuthBloc.instance.userModel.avatar)
-                              : AssetImage('assets/image/default_avatar.png'))
-                          : ((widget.post?.user?.avatar != null &&
-                                  widget.post?.user?.avatar != 'null')
-                              ? CachedNetworkImageProvider(
-                                  widget.post?.user?.avatar)
-                              : AssetImage('assets/image/default_avatar.png')),
+                                  widget.post.page.avartar)
+                              : AssetImage('assets/image/default_avatar.png')
+                          : widget.post?.user?.id ==
+                                  AuthBloc.instance?.userModel?.id
+                              ? ((AuthBloc.instance.userModel.avatar != null &&
+                                      AuthBloc.instance.userModel.avatar !=
+                                          'null')
+                                  ? CachedNetworkImageProvider(
+                                      AuthBloc.instance.userModel.avatar)
+                                  : AssetImage(
+                                      'assets/image/default_avatar.png'))
+                              : ((widget.post?.user?.avatar != null &&
+                                      widget.post?.user?.avatar != 'null')
+                                  ? CachedNetworkImageProvider(
+                                      widget.post?.user?.avatar)
+                                  : AssetImage(
+                                      'assets/image/default_avatar.png')),
                       child: VerifiedIcon(widget.post?.user?.role, 10),
                     ),
                   ),

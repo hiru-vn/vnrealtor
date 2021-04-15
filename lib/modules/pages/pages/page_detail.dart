@@ -50,7 +50,6 @@ class _PageDetailState extends State<PageDetail> {
     super.didChangeDependencies();
   }
 
-
   Future<void> _getAllPostOfPage() async => await _pagesBloc.getPostsOfPage(
         filter: GraphqlFilter(
           filter: '{ pageId: "${_pageState.id}"}',
@@ -368,12 +367,18 @@ class _PageDetailState extends State<PageDetail> {
       );
 
   Widget _buildListPostOfPage() => Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-        ),
-        margin: const EdgeInsets.symmetric(vertical: 10),
         child: Column(children: [
           if (_pagesBloc.isGetPostPageLoading) PostSkeleton(),
+          if (_pagesBloc.listPagePost.isEmpty)
+            Container(
+              margin: const EdgeInsets.only(top: 20),
+              child: Center(
+                child: Text(
+                  "Chưa có bài viết nào",
+                  style: ptTitle().copyWith(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),

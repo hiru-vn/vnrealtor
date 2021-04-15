@@ -23,9 +23,21 @@ class CreatePageBloc extends ChangeNotifier {
 
   List<String> _listCategoriesId = [];
 
+  String _phone;
+
   String _urlCover;
 
   String _urlAvatar;
+
+  String _currentAddress;
+
+  String _website;
+
+  String get phone => _phone;
+
+  String get currentAddress => _currentAddress;
+
+  String get website => _website;
 
   bool get isLoading => _isLoading;
 
@@ -42,6 +54,21 @@ class CreatePageBloc extends ChangeNotifier {
   String get urlCover => _urlCover;
 
   String get urlAvatar => _urlAvatar;
+
+  set phone(String phone) {
+    _phone = phone;
+    notifyListeners();
+  }
+
+  set website(String website) {
+    _website = website;
+    notifyListeners();
+  }
+
+  set currentAddress(String currentAddress) {
+    _currentAddress = currentAddress;
+    notifyListeners();
+  }
 
   set listCategoriesId(List<String> listCategoriesId) {
     _listCategoriesId = _listCategoriesId;
@@ -143,11 +170,14 @@ class CreatePageBloc extends ChangeNotifier {
       String description,
       String avatar,
       String coverImage,
-      List<String> categoryIds
+      List<String> categoryIds,
+      String address,
+      String website,
+      String phone
       ) async {
     try {
       final res = await CreatePageRepo().createPage(
-          name, description, avatar, coverImage, categoryIds);
+          name, description, avatar, coverImage, categoryIds, address, website, phone);
       return BaseResponse.success(PagesCreate.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());

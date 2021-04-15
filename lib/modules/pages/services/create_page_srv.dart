@@ -6,6 +6,8 @@ id
 name
 ownerId
 categoryIds
+avartar
+coverImage
 category{
   id
   name

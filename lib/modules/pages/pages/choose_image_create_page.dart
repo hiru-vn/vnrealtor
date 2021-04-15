@@ -51,13 +51,19 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
           _describeC.text.trim(),
           _createPageBloc.urlAvatar,
           _createPageBloc.urlCover,
-          _createPageBloc.listCategoriesId);
+          _createPageBloc.listCategoriesId,
+          _createPageBloc.currentAddress,
+          _createPageBloc.website,
+          _createPageBloc.phone);
 
       if (res.isSuccess) {
         _nameC.clear();
         _describeC.clear();
         _createPageBloc.urlAvatar = '';
         _createPageBloc.urlCover = '';
+        _createPageBloc.currentAddress = '';
+        _createPageBloc.website = '';
+        _createPageBloc.phone = '';
         _createPageBloc.listCategoriesId = [];
         PageDetail.navigate(res.data, isParamPageCreate: true);
       } else {
@@ -145,10 +151,12 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
       );
 
   Widget _buildCoverImage() => GestureDetector(
-        onTap: !_createPageBloc.isLoadingSubmitCreatePage ?  () {
-          imagePicker(context,
-              onImagePick: _updateCover, onCameraPick: _updateCover);
-        } : null,
+        onTap: !_createPageBloc.isLoadingSubmitCreatePage
+            ? () {
+                imagePicker(context,
+                    onImagePick: _updateCover, onCameraPick: _updateCover);
+              }
+            : null,
         child: Builder(
           builder: (BuildContext context) {
             if (_createPageBloc.urlCover != null)
@@ -177,10 +185,12 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
   Widget _buildAvatarImage() => Positioned(
         bottom: -70,
         child: GestureDetector(
-          onTap: !_createPageBloc.isLoadingSubmitCreatePage ?  () {
-            imagePicker(context,
-                onImagePick: _updateAvatar, onCameraPick: _updateAvatar);
-          } : null,
+          onTap: !_createPageBloc.isLoadingSubmitCreatePage
+              ? () {
+                  imagePicker(context,
+                      onImagePick: _updateAvatar, onCameraPick: _updateAvatar);
+                }
+              : null,
           child: Builder(
             builder: (context) {
               if (_createPageBloc.urlAvatar != null) return _buildUrlAvatar();

@@ -153,13 +153,25 @@ class Page {
   String id;
   String name;
   String avartar;
+  String phone;
+  String address;
+  String website;
 
-  Page({this.id, this.name, this.avartar});
+  Page(
+      {this.id,
+        this.name,
+        this.avartar,
+        this.phone,
+        this.address,
+        this.website});
 
   Page.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     avartar = json['avartar'];
+    phone = json['phone'];
+    address = json['address'];
+    website = json['website'];
   }
 
   Map<String, dynamic> toJson() {
@@ -167,6 +179,9 @@ class Page {
     data['id'] = this.id;
     data['name'] = this.name;
     data['avartar'] = this.avartar;
+    data['phone'] = this.phone;
+    data['address'] = this.address;
+    data['website'] = this.website;
     return data;
   }
 }
