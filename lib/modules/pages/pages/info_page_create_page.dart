@@ -1,4 +1,4 @@
-import 'package:datcao/modules/pages/blocs/create_page_bloc.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/widget/listItemTags.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/share/function/function.dart';
@@ -32,21 +32,21 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
   TextEditingController get _describeC => widget.describeController;
   TextEditingController get _categoriesC => widget.categoriesController;
 
-  CreatePageBloc _createPageBloc;
+  PagesBloc _pagesBloc;
 
   @override
   void didChangeDependencies() {
-    if (_createPageBloc == null) {
-      _createPageBloc = Provider.of<CreatePageBloc>(context);
+    if (_pagesBloc == null) {
+      _pagesBloc = Provider.of<PagesBloc>(context);
       _initData();
     }
     super.didChangeDependencies();
   }
 
-  _onAddCategory(String val) => _createPageBloc.addSelectedCategories(val);
+  _onAddCategory(String val) => _pagesBloc.addSelectedCategories(val);
 
   _initData() async {
-    await _createPageBloc.getAllCategories();
+    await _pagesBloc.getAllCategories();
   }
 
   void _nextPage() {
@@ -60,7 +60,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
       return;
     }
 
-    if (_createPageBloc.listCategoriesId.isEmpty) {
+    if (_pagesBloc.listCategoriesId.isEmpty) {
       showToast('Vui lòng chọn hạng mục', context);
       return;
     }
@@ -105,7 +105,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
             ],
           ),
         ),
-        if (_createPageBloc.isLoading)
+        if (_pagesBloc.isLoading)
           Container(
             height: deviceHeight(context),
             color: ptSecondaryColor(context),
@@ -179,14 +179,14 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_createPageBloc.listCategoriesSelected.isNotEmpty)
+            if (_pagesBloc.listCategoriesSelected.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: ListItemTags(
                   title: "",
-                  list: _createPageBloc.listCategoriesSelected,
+                  list: _pagesBloc.listCategoriesSelected,
                   isEnableRemove: true,
-                  onClickAt: _createPageBloc.removeCategory,
+                  onClickAt: _pagesBloc.removeCategory,
                   alignment: WrapAlignment.end,
                 ),
               ),
@@ -224,7 +224,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
           suggestionsCallback: (val) async {
             var list = [];
             if (controller.text.isNotEmpty) {
-              list = await _createPageBloc.getCategoriesByKeyword(
+              list = await _pagesBloc.getCategoriesByKeyword(
                   filter: GraphqlFilter(search: val, order: '{createdAt: -1}'));
             }
             return list.isNotEmpty ? list : [];

@@ -2,27 +2,32 @@ import 'package:datcao/modules/services/base_graphql.dart';
 
 class CreatePageSrv extends BaseService {
   CreatePageSrv() : super(module: 'CreatePage', fragment: ''' 
-id
-name
-ownerId
-categoryIds
-avartar
-coverImage
- phone
-address
-website
-createdAt
-updatedAt
-category{
-  id
+ id
   name
-}
-
-owner{
-  id
-  name
-  email
-}
+  description
+  avartar
+  coverImage
+  followerIds
+  categoryIds
+  ownerId
+  phone
+  address
+  website
+  followers{ 
+    id
+    name
+  }
+   owner{
+    id
+    name
+    avatar
+  }
+   category{
+    id
+    name
+  }
+  createdAt
+  updatedAt
   ''');
 }
 
