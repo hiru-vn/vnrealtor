@@ -412,14 +412,12 @@ share
 userShareIds
 locationLat
 locationLong
-province
-storyImages
-district
-ward
-hashTag
 expirationDate
 publicity
-rawContent
+isUserLike
+isUserShare
+hashTag
+storyImages
 polygon {
   paths {
     lat
@@ -436,15 +434,13 @@ user {
   reputationScore 
   createdAt 
   updatedAt 
+  friendIds
   avatar
   totalPost
-  friendIds
   facebookUrl
   description
-  isVerify
-  followerIds 
-  followingIds
 }
+rawContent
 mediaPosts {
 id
 userId
@@ -452,25 +448,44 @@ type
 like
 userLikeIds
 commentIds
+halfUrl
 description
 url
 locationLat
 locationLong
-halfUrl
 expirationDate
 publicity
 createdAt
 updatedAt
 }
-isUserLike
-isUserShare
+province
+district
+ward
 createdAt
 updatedAt
+   isPage
+    page{
+       	id
+        name
+        ownerId
+        categoryIds
+        avartar
+        coverImage
+        phone
+        address
+        website
+        createdAt
+        updatedAt
+        category{
+          id
+          name
+        }
 
-  page{
-      id
-      name
-      avartar
-    } 
+        owner{
+          id
+          name
+          email
+        }
+    }
   ''';
 }

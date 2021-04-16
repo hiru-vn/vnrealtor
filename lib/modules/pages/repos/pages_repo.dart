@@ -43,9 +43,9 @@ images: ${GraphqlHelper.listStringToGraphqlString(images)}
     if (lat != null && long != null) {
       data += '\nlocationLat: $lat\nlocationLong: $long';
     }
-    final res = await PagesCreatePostSrv()
+    final res = await PostSrv()
         .mutate('createPost', 'data: {$data}', fragment: '''
-$pageCreatePostFragment
+$pagesPostFragment
     ''');
     return res["createPost"];
   }
@@ -115,69 +115,7 @@ String pagesFragment = '''
   ''';
 
 String pageCreatePostFragment = '''
-  id
-content
-mediaPostIds
-commentIds
-userId
-like
-userLikeIds
-share
-userShareIds
-locationLat
-locationLong
-province
-storyImages
-district
-ward
-hashTag
-expirationDate
-publicity
-rawContent
-user {
-  id 
-  uid 
-  name 
-  email 
-  phone 
-  role 
-  reputationScore 
-  createdAt 
-  updatedAt 
-  avatar
-  totalPost
-  friendIds
-  facebookUrl
-  description
-  isVerify
-  followerIds 
-  followingIds
-}
-mediaPosts {
-id
-userId
-type
-like
-userLikeIds
-commentIds
-description
-url
-locationLat
-locationLong
-halfUrl
-expirationDate
-publicity
-createdAt
-updatedAt
-}
-isUserLike
-isUserShare
-createdAt
-updatedAt
-  ''';
-
-String pagesPostFragment = '''
-    id 
+        id 
         content
         mediaPostIds
         commentIds
@@ -238,6 +176,97 @@ String pagesPostFragment = '''
       id
       name
       avartar
+      phone
+      address
+      }
+  ''';
+
+String pagesPostFragment = '''
+   id
+content
+mediaPostIds
+commentIds
+userId
+like
+userLikeIds
+share
+userShareIds
+locationLat
+locationLong
+expirationDate
+publicity
+isUserLike
+isUserShare
+hashTag
+storyImages
+polygon {
+  paths {
+    lat
+    lng
+  }
+}
+user {
+  id 
+  uid 
+  name 
+  email 
+  phone 
+  role 
+  reputationScore 
+  createdAt 
+  updatedAt 
+  friendIds
+  avatar
+  totalPost
+  facebookUrl
+  description
+}
+rawContent
+mediaPosts {
+id
+userId
+type
+like
+userLikeIds
+commentIds
+halfUrl
+description
+url
+locationLat
+locationLong
+expirationDate
+publicity
+createdAt
+updatedAt
+}
+province
+district
+ward
+createdAt
+updatedAt
+   isPage
+    page{
+       	id
+        name
+        ownerId
+        categoryIds
+        avartar
+        coverImage
+        phone
+        address
+        website
+        createdAt
+        updatedAt
+        category{
+          id
+          name
+        }
+
+        owner{
+          id
+          name
+          email
+        }
     }
   ''';
 

@@ -64,10 +64,29 @@ district
 ward
 createdAt
 updatedAt
- page{
-      id
-      name
-      avartar
+   isPage
+    page{
+       	id
+        name
+        ownerId
+        categoryIds
+        avartar
+        coverImage
+        phone
+        address
+        website
+        createdAt
+        updatedAt
+        category{
+          id
+          name
+        }
+
+        owner{
+          id
+          name
+          email
+        }
     }
   ''');
 }

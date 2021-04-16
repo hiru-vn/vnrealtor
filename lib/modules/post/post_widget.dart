@@ -4,6 +4,7 @@ import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/pages/pages/page_detail.dart';
 import 'package:datcao/modules/post/media_post_widget.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/post/post_google_map.dart';
@@ -67,12 +68,15 @@ class _PostWidgetState extends State<PostWidget> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      ProfileOtherPage.navigate(widget.post?.user);
+                      widget.post.isPage
+                          ? PageDetail.navigate(widget.post?.page)
+                          : ProfileOtherPage.navigate(
+                          widget.post?.user);
                     },
                     child: CircleAvatar(
                       radius: 23,
                       backgroundColor: Colors.white,
-                      backgroundImage: widget.post.page != null
+                      backgroundImage: widget.post.isPage
                           ? widget.post.page.avartar != null
                               ? CachedNetworkImageProvider(
                                   widget.post.page.avartar)
@@ -106,10 +110,15 @@ class _PostWidgetState extends State<PostWidget> {
                           GestureDetector(
                             behavior: HitTestBehavior.translucent,
                             onTap: () {
-                              ProfileOtherPage.navigate(widget.post?.user);
+                              widget.post.isPage
+                                  ? PageDetail.navigate(widget.post?.page)
+                                  : ProfileOtherPage.navigate(
+                                      widget.post?.user);
                             },
                             child: Text(
-                              widget.post?.user?.name ?? '',
+                              widget.post.isPage
+                                  ? widget.post.page.name
+                                  : widget.post?.user?.name ?? '',
                               style: ptTitle(),
                             ),
                           ),
