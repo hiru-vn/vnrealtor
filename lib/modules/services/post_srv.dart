@@ -2,7 +2,7 @@ import 'base_graphql.dart';
 
 class PostSrv extends BaseService {
   PostSrv() : super(module: 'Post', fragment: ''' 
-id
+ id
 content
 mediaPostIds
 commentIds

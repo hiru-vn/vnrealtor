@@ -401,7 +401,7 @@ id
   }
 
   String postFragment = '''
-id
+ id
 content
 mediaPostIds
 commentIds
