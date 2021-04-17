@@ -186,7 +186,6 @@ ${content.toString()}
 publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}
-polygon: $polygonStr
     ''';
 
     if (expirationDate != null) {
@@ -194,6 +193,9 @@ polygon: $polygonStr
     }
     if (lat != null && long != null) {
       data += '\nlocationLat: $lat\nlocationLong: $long';
+    }
+    if (polygon != null && polygon.length > 0) {
+      data += '\npolygon: $polygonStr';
     }
     final res =
         await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''

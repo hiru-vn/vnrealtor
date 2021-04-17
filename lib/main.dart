@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
+import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/modules/setting/connectivity.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry/sentry.dart';
@@ -28,6 +29,7 @@ final _sentry = SentryClient(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FbdynamicLink.initDynamicLinks();
   // CallKeep.setup();
   ConnectionStatusSingleton.getInstance().initialize();
 
@@ -68,7 +70,8 @@ class _MyAppState extends State<MyApp> {
 
     ConnectionStatusSingleton connectionStatus =
         ConnectionStatusSingleton.getInstance();
-    Future.delayed(Duration(seconds: 2), () { // prevent splash no internet when open app
+    Future.delayed(Duration(seconds: 2), () {
+      // prevent splash no internet when open app
       _connectionChangeStream =
           connectionStatus.connectionChange.listen(connectionChanged);
     });
@@ -143,12 +146,13 @@ class _MyAppState extends State<MyApp> {
                         theme: ThemeProvider.of(context),
                         home: Material(
                           child: Center(
-                              child: EmptyWidget(
-                            assetImg: 'assets/image/no_internet.png',
-                            title: 'Không có kết nối mạng',
-                            content:
-                                'Ứng dụng đang chờ thiết bị kết nối mạng để hoạt động trở lại',
-                          ),),
+                            child: EmptyWidget(
+                              assetImg: 'assets/image/no_internet.png',
+                              title: 'Không có kết nối mạng',
+                              content:
+                                  'Ứng dụng đang chờ thiết bị kết nối mạng để hoạt động trở lại',
+                            ),
+                          ),
                         ),
                       )
                     : MaterialApp(

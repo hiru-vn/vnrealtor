@@ -25,6 +25,10 @@ polygon {
     lng
   }
 }
+dynamicLink {
+  shortLink
+  previewLink
+}
 user {
   id 
   uid 

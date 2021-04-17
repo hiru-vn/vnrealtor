@@ -27,7 +27,7 @@ class _SplashPageState extends State<SplashPage> {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
       Future.delayed(
-        Duration(milliseconds: 50),
+        Duration(milliseconds: 500),
         () async {
           final firstTime =
               (await SPref.instance.getBool('first_time')) ?? true;
