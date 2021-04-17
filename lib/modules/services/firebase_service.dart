@@ -77,18 +77,18 @@ class FcmService {
 }
 
 class FbdynamicLink {
-  static init() async {
+  static createLink(String postId, String pathString) async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
-      uriPrefix: 'https://abc123.app.goo.gl',
-      link: Uri.parse('https://example.com/'),
+      uriPrefix: 'https://datcao.page.link',
+      link: Uri.parse('https://datcao.page.link$pathString'),
       androidParameters: AndroidParameters(
-        packageName: 'com.example.android',
-        minimumVersion: 125,
+        packageName: 'com.datcao.mobile',
+        // minimumVersion: 125,
       ),
       iosParameters: IosParameters(
-        bundleId: 'com.example.ios',
-        minimumVersion: '1.0.1',
-        appStoreId: '123456789',
+        bundleId: 'com.datcao.mobile',
+        // minimumVersion: '1.0.3',
+        appStoreId: '1554414069',
       ),
       googleAnalyticsParameters: GoogleAnalyticsParameters(
         campaign: 'example-promo',
@@ -100,12 +100,14 @@ class FbdynamicLink {
         campaignToken: 'example-promo',
       ),
       socialMetaTagParameters: SocialMetaTagParameters(
-        title: 'Example of a Dynamic Link',
-        description: 'This link works whether app is installed or not!',
+        title: 'Chào mừng đến với DATCAO!',
+        imageUrl: Uri(path: 'https://firebasestorage.googleapis.com/v0/b/vnrealtor-52b40.appspot.com/o/datacao_promote.png?alt=media&token=b7d7db60-f108-46eb-8a50-22f003f2dc83'),
+        description: 'Mạng xã hội bất động sản của người Việt',
       ),
     );
 
     final Uri dynamicUrl = await parameters.buildUrl();
+    return dynamicUrl;
   }
 
   static void initDynamicLinks() async {

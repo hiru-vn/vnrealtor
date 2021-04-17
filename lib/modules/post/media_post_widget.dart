@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
+import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -589,7 +590,12 @@ class _DetailImagePostState extends State<DetailImagePost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => shareTo(context, image: [widget.post.url]),
+                      onTap: () async {
+                        String content =
+                            await FbdynamicLink.createLink(widget.post.id, '/media-post/${widget.post.id}');
+                        shareTo(context,
+                            image: [widget.post.url], content: content);
+                      },
                       child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -840,7 +846,12 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => shareTo(context, video: [_post.url]),
+                      onTap: () async {
+                        String content =
+                            await FbdynamicLink.createLink(widget.post.id, '/media-post/${widget.post.id}');
+                        shareTo(context,
+                            video: [widget.post.url], content: content);
+                      },
                       child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,

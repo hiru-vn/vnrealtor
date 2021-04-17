@@ -11,6 +11,7 @@ import 'package:datcao/modules/post/report_post_page.dart';
 import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/modules/post/update_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
@@ -468,16 +469,21 @@ class _PostWidgetState extends State<PostWidget> {
                   width: 10,
                 ),
                 GestureDetector(
-                  onTap: () => shareTo(context,
-                      content: widget.post.content,
-                      image: widget.post.mediaPosts
-                          .where((element) => element.type == 'PICTURE')
-                          .map((e) => e.url)
-                          .toList(),
-                      video: widget.post.mediaPosts
-                          .where((element) => element.type == 'VIDEO')
-                          .map((e) => e.url)
-                          .toList()),
+                  onTap: () async {
+                    String content = await FbdynamicLink.createLink(
+                        widget.post.id, '/post/${widget.post.id}');
+                    content = content + '\n' + widget.post.content;
+                    shareTo(context,
+                        content: widget.post.content,
+                        image: widget.post.mediaPosts
+                            .where((element) => element.type == 'PICTURE')
+                            .map((e) => e.url)
+                            .toList(),
+                        video: widget.post.mediaPosts
+                            .where((element) => element.type == 'VIDEO')
+                            .map((e) => e.url)
+                            .toList());
+                  },
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
