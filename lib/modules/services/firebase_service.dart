@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:datcao/modules/post/post_detail.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
@@ -111,21 +112,23 @@ class FbdynamicLink {
   }
 
   static void initDynamicLinks() async {
+    // when app in background
     FirebaseDynamicLinks.instance.onLink(
-      onSuccess: (PendingDynamicLinkData dynamicLink) async {
-        final Uri deepLink = dynamicLink?.link;
+        onSuccess: (PendingDynamicLinkData dynamicLink) async {
+      final Uri deepLink = dynamicLink?.link;
 
-        if (deepLink != null) {
-          // Navigator.pushNamed(context, deepLink.path);
-        }
-      },
-      onError: (OnLinkErrorException e) async {
-        print('onLinkError');
-        print(e.message);
+      if (deepLink != null) {
+        // PostDetail.navigate(null, postId: deepLink.path);
+        print(deepLink.path);
       }
-    );
-    
-    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+    }, onError: (OnLinkErrorException e) async {
+      print('onLinkError');
+      print(e.message);
+    });
+
+    // when app not in background
+    final PendingDynamicLinkData data =
+        await FirebaseDynamicLinks.instance.getInitialLink();
     final Uri deepLink = data?.link;
 
     if (deepLink != null) {
