@@ -57,7 +57,7 @@ class _SettingPageState extends State<SettingPage> {
                 'https://firebasestorage.googleapis.com/v0/b/vnrealtor-52b40.appspot.com/o/datacao_promote.png?alt=media&token=b7d7db60-f108-46eb-8a50-22f003f2dc83'
               ],
               content:
-                  'Tải về ứng dụng Datcao: mạng xã hội bất động sản dành cho người Việt');
+                  'Tải về ứng dụng Datcao: mạng xã hội bất động sản dành cho người Việt tại https://datcao.page.link/iGuj');
         }
       },
       // {

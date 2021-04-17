@@ -112,7 +112,7 @@ class AuthBloc extends ChangeNotifier {
       final res = await _userRepo.loginFirebase(user.uid);
       await SPref.instance.set('FBtoken', res);
       final fbAuth = await FirebaseAuth.instance.signInWithCustomToken(res);
-      print(fbAuth);
+      authCredential = fbAuth.credential;
 
       await InboxBloc.instance.init();
 

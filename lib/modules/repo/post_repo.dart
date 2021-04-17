@@ -430,6 +430,10 @@ hashTag
 expirationDate
 publicity
 rawContent
+dynamicLink {
+  shortLink
+  previewLink
+}
 polygon {
   paths {
     lat
@@ -471,6 +475,10 @@ expirationDate
 publicity
 createdAt
 updatedAt
+dynamicLink {
+  shortLink
+  previewLink
+}
 }
 isUserLike
 isUserShare

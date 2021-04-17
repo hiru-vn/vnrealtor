@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/import.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 enum FcmType { message, like, comment, share, system, new_post }
 
@@ -90,8 +92,22 @@ class FbdynamicLink {
         List<String> paths = deepLink.path.split('/');
         paths.removeWhere((element) => element.trim() == '');
         if (paths.length >= 2 && paths[0] == 'post') {
-          Future.delayed(Duration(seconds: 2),
-              () => PostDetail.navigate(null, postId: paths[1]));
+          final token = await SPref.instance.get('token');
+          if (token == null) {
+            print('case 1');
+            Future.delayed(Duration(milliseconds: 1000),
+                () => PostDetail.navigate(null, postId: paths[1]));
+          } else {
+            if (AuthBloc.instance.userModel != null &&
+                FirebaseAuth.instance.currentUser != null) {
+              print('case 2');
+              PostDetail.navigate(null, postId: paths[1]);
+            } else {
+              print('case 3');
+              Future.delayed(Duration(milliseconds: 1000),
+                  () => PostDetail.navigate(null, postId: paths[1]));
+            }
+          }
         }
       }
     }, onError: (OnLinkErrorException e) async {
@@ -105,7 +121,23 @@ class FbdynamicLink {
     final Uri deepLink = data?.link;
 
     if (deepLink != null) {
-      // Navigator.pushNamed(context, deepLink.path);
+      print(deepLink.path);
+      List<String> paths = deepLink.path.split('/');
+      paths.removeWhere((element) => element.trim() == '');
+      if (paths.length >= 2 && paths[0] == 'post') {
+        final token = await SPref.instance.get('token');
+        if (token == null) {
+          Future.delayed(Duration(milliseconds: 2000),
+              () => PostDetail.navigate(null, postId: paths[1]));
+        } else {
+          while (AuthBloc.instance.userModel == null ||
+              FirebaseAuth.instance.currentUser == null) {
+            await Future.delayed(Duration(milliseconds: 500));
+          }
+          Future.delayed(Duration(milliseconds: 1500),
+                  () => PostDetail.navigate(null, postId: paths[1]));
+        }
+      }
     }
   }
 }

@@ -93,5 +93,9 @@ publicity
 createdAt
 halfUrl
 updatedAt
+dynamicLink {
+  shortLink
+  previewLink
+}
   ''');
 }
