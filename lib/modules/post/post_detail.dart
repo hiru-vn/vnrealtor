@@ -132,7 +132,12 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   Future _getPost() async {
-    final res = await _postBloc.getOnePost(widget.postId);
+    var res;
+    if (AuthBloc.instance.userModel != null) {
+      res = await _postBloc.getOnePost(widget.postId);
+    } else {
+      res = await _postBloc.getOnePostGuest(widget.postId);
+    }
     if (res.isSuccess) {
       setState(() {
         _post = res.data;

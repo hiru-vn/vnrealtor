@@ -100,6 +100,14 @@ ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').re
     return res;
   }
 
+  Future getOnePostGuest(String id) async {
+    final res =
+        await PostSrv().query('getOnePostByGuest', 'id: "$id"', fragment: '''
+${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').replaceAll('\n', ' ') + ' _id'}
+    ''');
+    return res['getOnePostByGuest'];
+  }
+
   Future getOneMediaPost(String id) async {
     final res = await MediaPostSrv().getItem(id);
     return res;

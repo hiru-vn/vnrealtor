@@ -78,37 +78,6 @@ class FcmService {
 }
 
 class FbdynamicLink {
-  static init() async {
-    final DynamicLinkParameters parameters = DynamicLinkParameters(
-      uriPrefix: 'https://abc123.app.goo.gl',
-      link: Uri.parse('https://example.com/'),
-      androidParameters: AndroidParameters(
-        packageName: 'com.example.android',
-        minimumVersion: 125,
-      ),
-      iosParameters: IosParameters(
-        bundleId: 'com.example.ios',
-        minimumVersion: '1.0.1',
-        appStoreId: '123456789',
-      ),
-      googleAnalyticsParameters: GoogleAnalyticsParameters(
-        campaign: 'example-promo',
-        medium: 'social',
-        source: 'orkut',
-      ),
-      itunesConnectAnalyticsParameters: ItunesConnectAnalyticsParameters(
-        providerToken: '123456',
-        campaignToken: 'example-promo',
-      ),
-      socialMetaTagParameters: SocialMetaTagParameters(
-        title: 'Example of a Dynamic Link',
-        description: 'This link works whether app is installed or not!',
-      ),
-    );
-
-    final Uri dynamicUrl = await parameters.buildUrl();
-  }
-
   static void initDynamicLinks() async {
     // when app in background
     FirebaseDynamicLinks.instance.onLink(
@@ -118,6 +87,12 @@ class FbdynamicLink {
       if (deepLink != null) {
         // PostDetail.navigate(null, postId: deepLink.path);
         print(deepLink.path);
+        List<String> paths = deepLink.path.split('/');
+        paths.removeWhere((element) => element.trim() == '');
+        if (paths.length >= 2 && paths[0] == 'post') {
+          Future.delayed(Duration(seconds: 2),
+              () => PostDetail.navigate(null, postId: paths[1]));
+        }
       }
     }, onError: (OnLinkErrorException e) async {
       print('onLinkError');

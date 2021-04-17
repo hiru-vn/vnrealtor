@@ -592,6 +592,19 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getOnePostGuest(String id) async {
+    try {
+      final res = await PostRepo().getOnePostGuest(id);
+      if (res == null)
+        return BaseResponse.fail('Bài viết không tồn tại hoặc đã bị xóa');
+      return BaseResponse.success(PostModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> getOneMediaPost(String id) async {
     try {
       final res = await PostRepo().getOneMediaPost(id);
