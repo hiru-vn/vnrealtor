@@ -33,6 +33,7 @@ class PostModel {
   List<String> halfImages;
   List<String> storyImages;
   List<LatLng> polygonPoints;
+  DynamicLink dynamicLink;
   bool isPage;
   PagesCreate page;
 
@@ -66,7 +67,9 @@ class PostModel {
       this.halfImages,
       this.page,
       this.polygonPoints,
-      this.isPage});
+      this.dynamicLink,
+        this.isPage
+      });
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -119,6 +122,7 @@ class PostModel {
               double.tryParse(e['lng'].toString())))
           .toList();
     }
+    dynamicLink = json['dynamicLink']==null? null: DynamicLink.fromJson(json['dynamicLink']) ;
     isPage = json['isPage'];
   }
 

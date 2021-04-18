@@ -100,6 +100,14 @@ ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').re
     return res;
   }
 
+  Future getOnePostGuest(String id) async {
+    final res =
+        await PostSrv().query('getOnePostByGuest', 'id: "$id"', fragment: '''
+${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').replaceAll('\n', ' ') + ' _id'}
+    ''');
+    return res['getOnePostByGuest'];
+  }
+
   Future getOneMediaPost(String id) async {
     final res = await MediaPostSrv().getItem(id);
     return res;
@@ -186,7 +194,6 @@ ${content.toString()}
 publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}
-polygon: $polygonStr
     ''';
 
     if (expirationDate != null) {
@@ -194,6 +201,9 @@ polygon: $polygonStr
     }
     if (lat != null && long != null) {
       data += '\nlocationLat: $lat\nlocationLong: $long';
+    }
+    if (polygon != null && polygon.length > 0) {
+      data += '\npolygon: $polygonStr';
     }
     final res =
         await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''
@@ -414,6 +424,11 @@ locationLat
 locationLong
 expirationDate
 publicity
+rawContent
+dynamicLink {
+  shortLink
+  previewLink
+}
 isUserLike
 isUserShare
 hashTag
@@ -457,6 +472,10 @@ expirationDate
 publicity
 createdAt
 updatedAt
+dynamicLink {
+  shortLink
+  previewLink
+}
 }
 province
 district

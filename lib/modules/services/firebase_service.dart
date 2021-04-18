@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/post/post_detail.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/import.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 enum FcmType { message, like, comment, share, system, new_post }
 
@@ -77,57 +80,64 @@ class FcmService {
 }
 
 class FbdynamicLink {
-  static init() async {
-    final DynamicLinkParameters parameters = DynamicLinkParameters(
-      uriPrefix: 'https://abc123.app.goo.gl',
-      link: Uri.parse('https://example.com/'),
-      androidParameters: AndroidParameters(
-        packageName: 'com.example.android',
-        minimumVersion: 125,
-      ),
-      iosParameters: IosParameters(
-        bundleId: 'com.example.ios',
-        minimumVersion: '1.0.1',
-        appStoreId: '123456789',
-      ),
-      googleAnalyticsParameters: GoogleAnalyticsParameters(
-        campaign: 'example-promo',
-        medium: 'social',
-        source: 'orkut',
-      ),
-      itunesConnectAnalyticsParameters: ItunesConnectAnalyticsParameters(
-        providerToken: '123456',
-        campaignToken: 'example-promo',
-      ),
-      socialMetaTagParameters: SocialMetaTagParameters(
-        title: 'Example of a Dynamic Link',
-        description: 'This link works whether app is installed or not!',
-      ),
-    );
-
-    final Uri dynamicUrl = await parameters.buildUrl();
-  }
-
   static void initDynamicLinks() async {
+    // when app in background
     FirebaseDynamicLinks.instance.onLink(
-      onSuccess: (PendingDynamicLinkData dynamicLink) async {
-        final Uri deepLink = dynamicLink?.link;
+        onSuccess: (PendingDynamicLinkData dynamicLink) async {
+      final Uri deepLink = dynamicLink?.link;
 
-        if (deepLink != null) {
-          // Navigator.pushNamed(context, deepLink.path);
+      if (deepLink != null) {
+        // PostDetail.navigate(null, postId: deepLink.path);
+        print(deepLink.path);
+        List<String> paths = deepLink.path.split('/');
+        paths.removeWhere((element) => element.trim() == '');
+        if (paths.length >= 2 && paths[0] == 'post') {
+          final token = await SPref.instance.get('token');
+          if (token == null) {
+            print('case 1');
+            Future.delayed(Duration(milliseconds: 1000),
+                () => PostDetail.navigate(null, postId: paths[1]));
+          } else {
+            if (AuthBloc.instance.userModel != null &&
+                FirebaseAuth.instance.currentUser != null) {
+              print('case 2');
+              PostDetail.navigate(null, postId: paths[1]);
+            } else {
+              print('case 3');
+              Future.delayed(Duration(milliseconds: 1000),
+                  () => PostDetail.navigate(null, postId: paths[1]));
+            }
+          }
         }
-      },
-      onError: (OnLinkErrorException e) async {
-        print('onLinkError');
-        print(e.message);
       }
-    );
-    
-    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+    }, onError: (OnLinkErrorException e) async {
+      print('onLinkError');
+      print(e.message);
+    });
+
+    // when app not in background
+    final PendingDynamicLinkData data =
+        await FirebaseDynamicLinks.instance.getInitialLink();
     final Uri deepLink = data?.link;
 
     if (deepLink != null) {
-      // Navigator.pushNamed(context, deepLink.path);
+      print(deepLink.path);
+      List<String> paths = deepLink.path.split('/');
+      paths.removeWhere((element) => element.trim() == '');
+      if (paths.length >= 2 && paths[0] == 'post') {
+        final token = await SPref.instance.get('token');
+        if (token == null) {
+          Future.delayed(Duration(milliseconds: 2000),
+              () => PostDetail.navigate(null, postId: paths[1]));
+        } else {
+          while (AuthBloc.instance.userModel == null ||
+              FirebaseAuth.instance.currentUser == null) {
+            await Future.delayed(Duration(milliseconds: 500));
+          }
+          Future.delayed(Duration(milliseconds: 1500),
+                  () => PostDetail.navigate(null, postId: paths[1]));
+        }
+      }
     }
   }
 }

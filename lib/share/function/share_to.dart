@@ -24,6 +24,14 @@ void shareTo(BuildContext context,
   }
 }
 
+void shareStringTo(BuildContext context, String text) {
+  try {
+    Share.share(text);
+  } catch (e) {
+    showToast('Lỗi: $e', context);
+  }
+}
+
 // void shareTo(BuildContext context,
 //     {String content = '', List<String> image, List<String> video}) {
 //   showModalBottomSheet(

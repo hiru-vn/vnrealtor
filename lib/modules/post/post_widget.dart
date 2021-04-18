@@ -12,9 +12,11 @@ import 'package:datcao/modules/post/report_post_page.dart';
 import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/modules/post/update_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
+import 'package:flutter/services.dart';
 import 'package:readmore/readmore.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -183,6 +185,17 @@ class _PostWidgetState extends State<PostWidget> {
                     ],
                   ),
                   Spacer(),
+                  GestureDetector(
+                      onTap: () {
+                        showToast('Đã copy link bài viết', context,
+                            isSuccess: true);
+                        Clipboard.setData(
+                          new ClipboardData(
+                              text: widget.post.dynamicLink.shortLink),
+                        );
+                      },
+                      child:
+                          SizedBox(width: 30, child: Icon(MdiIcons.fileLink))),
                   if (AuthBloc.instance.userModel != null)
                     Center(
                       child: PopupMenuButton(
@@ -485,16 +498,21 @@ class _PostWidgetState extends State<PostWidget> {
                   width: 10,
                 ),
                 GestureDetector(
-                  onTap: () => shareTo(context,
-                      content: widget.post.content,
-                      image: widget.post.mediaPosts
-                          .where((element) => element.type == 'PICTURE')
-                          .map((e) => e.url)
-                          .toList(),
-                      video: widget.post.mediaPosts
-                          .where((element) => element.type == 'VIDEO')
-                          .map((e) => e.url)
-                          .toList()),
+                  onTap: () {
+                    String content = widget.post.dynamicLink?.shortLink ?? '';
+                    content = content + '\n' + widget.post.content;
+                    shareTo(context,
+                        content: content,
+                        image: widget.post.mediaPosts
+                            .where((element) => element.type == 'PICTURE')
+                            .map((e) => e.url)
+                            .toList(),
+                        video: widget.post.mediaPosts
+                            .where((element) => element.type == 'VIDEO')
+                            .map((e) => e.url)
+                            .toList());
+                    // shareStringTo(context, content);
+                  },
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,

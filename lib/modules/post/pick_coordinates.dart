@@ -237,7 +237,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
                   return;
                 }
                 navigatorKey.currentState.maybePop(
-                    [selectedMarker.position, _placeName, polygonPoints]);
+                    [selectedMarker?.position, _placeName, polygonPoints]);
               },
               child: Material(
                 borderRadius: BorderRadius.circular(20),

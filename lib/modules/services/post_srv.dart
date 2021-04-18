@@ -25,6 +25,10 @@ polygon {
     lng
   }
 }
+dynamicLink {
+  shortLink
+  previewLink
+}
 user {
   id 
   uid 
@@ -113,5 +117,9 @@ publicity
 createdAt
 halfUrl
 updatedAt
+dynamicLink {
+  shortLink
+  previewLink
+}
   ''');
 }

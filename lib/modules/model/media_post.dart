@@ -14,6 +14,7 @@ class MediaPost {
   String createdAt;
   String updatedAt;
   String halfUrl;
+  DynamicLink dynamicLink;
 
   MediaPost(
       {this.id,
@@ -29,7 +30,9 @@ class MediaPost {
       this.expirationDate,
       this.publicity,
       this.createdAt,
-      this.updatedAt, this.halfUrl});
+      this.updatedAt,
+      this.halfUrl,
+      this.dynamicLink});
 
   MediaPost.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -51,6 +54,7 @@ class MediaPost {
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     halfUrl = json['halfUrl'];
+    dynamicLink = json['dynamicLink']==null? null: DynamicLink.fromJson(json['dynamicLink']) ;
   }
 
   Map<String, dynamic> toJson() {
@@ -69,6 +73,25 @@ class MediaPost {
     data['publicity'] = this.publicity;
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
+    return data;
+  }
+}
+
+class DynamicLink {
+  String shortLink;
+  String previewLink;
+
+  DynamicLink({this.shortLink, this.previewLink});
+
+  DynamicLink.fromJson(Map<String, dynamic> json) {
+    shortLink = json['shortLink'];
+    previewLink = json['previewLink'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['shortLink'] = this.shortLink;
+    data['previewLink'] = this.previewLink;
     return data;
   }
 }
