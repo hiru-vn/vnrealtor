@@ -116,10 +116,9 @@ class _PageDetailState extends State<PageDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   _buildBanner(),
-                   _buildHeader(),
-                  if (AuthBloc.instance.userModel.role != 'COMPANY')
-                    _buildInfoPage(),
+                  _buildBanner(),
+                  _buildHeader(),
+                  _buildInfoPage(),
                   _buildListPostOfPage()
                 ],
               ),
@@ -244,7 +243,7 @@ class _PageDetailState extends State<PageDetail> {
               ),
               SizedBox(height: 3),
               Text(
-                _pageState.categoryIds[0],
+                _pageState.category[0].name,
                 style: ptSmall().copyWith(color: ptPrimaryColor(context)),
               )
             ],
@@ -252,15 +251,34 @@ class _PageDetailState extends State<PageDetail> {
         ],
       );
 
-  Widget _itemButtonFollow() => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
-        decoration: BoxDecoration(
-          color: AppColors.buttonPrimaryColor,
-          borderRadius: BorderRadius.circular(7),
-        ),
-        child: Text(
-          "Theo dõi",
-          style: ptButton(),
+  Widget _itemButtonFollow() => GestureDetector(
+        onTap: () async {
+          if(_pagesBloc.isFollowed) {
+                _pagesBloc.isFollowPageLoading = true;
+                await _pagesBloc.unFollowPage(_pageState.id);
+                _pagesBloc.isFollowPageLoading = false;
+           } else {
+            _pagesBloc.isFollowPageLoading = true;
+            await _pagesBloc.followPage(_pageState.id);
+            _pagesBloc.isFollowPageLoading = false;
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+          decoration: BoxDecoration(
+            color: AppColors.buttonPrimaryColor,
+            borderRadius: BorderRadius.circular(7),
+          ),
+          child: _pagesBloc.isFollowPageLoading
+              ? SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(),
+                )
+              : Text(
+            _pagesBloc.isFollowed ?  "Bỏ theo dõi" : "Theo dõi",
+                  style: ptButton(),
+                ),
         ),
       );
 
@@ -343,25 +361,26 @@ class _PageDetailState extends State<PageDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ItemInfoPage(
-              image: AppImages.icFollower,
-              title: '60 lượt follow',
-            ),
-            heightSpace(10),
-            ItemInfoPage(
-              image: AppImages.icLocation,
-              title: 'Thành phố Hồ Chí Minh',
-            ),
-            heightSpace(10),
-            ItemInfoPage(
-              image: AppImages.icPhone,
-              title: '+84989078790',
-            ),
-            heightSpace(10),
-            ItemInfoPage(
-              image: AppImages.icSocial,
-              title: 'datcaogroup.com',
-            )
+            if (_pageState.followers.length > 0)
+              ItemInfoPage(
+                image: AppImages.icFollower,
+                title: '${_pageState.followers.length} lượt follow',
+              ),
+            if (_pageState.address != null)
+              ItemInfoPage(
+                image: AppImages.icLocation,
+                title: _pageState.address,
+              ),
+            if (_pageState.phone != null)
+              ItemInfoPage(
+                image: AppImages.icPhone,
+                title: _pageState.phone,
+              ),
+            if (_pageState.website != null)
+              ItemInfoPage(
+                image: AppImages.icSocial,
+                title: _pageState.website,
+              )
           ],
         ),
       );

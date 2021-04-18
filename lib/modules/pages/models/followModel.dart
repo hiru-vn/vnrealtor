@@ -1,31 +1,11 @@
 class FollowPagesModel {
-  FollowPage followPage;
-
-  FollowPagesModel({this.followPage});
-
-  FollowPagesModel.fromJson(Map<String, dynamic> json) {
-    followPage = json['followPage'] != null
-        ? new FollowPage.fromJson(json['followPage'])
-        : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.followPage != null) {
-      data['followPage'] = this.followPage.toJson();
-    }
-    return data;
-  }
-}
-
-class FollowPage {
   String id;
   List<String> followerIds;
   List<Followers> followers;
 
-  FollowPage({this.id, this.followerIds, this.followers});
+  FollowPagesModel({this.id, this.followerIds, this.followers});
 
-  FollowPage.fromJson(Map<String, dynamic> json) {
+  FollowPagesModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     followerIds = json['followerIds'].cast<String>();
     if (json['followers'] != null) {

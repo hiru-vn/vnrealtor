@@ -80,7 +80,7 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
   Future _updateCover(String filePath) async {
     try {
       _pagesBloc.isLoadingUploadCover = true;
-     // final compressImage = await _compressedFile(filePath);
+      //final compressImage = await _compressedFile(filePath);
       final uint8 = (await File(filePath).readAsBytes());
       final thumbnail = await FileUtil.resizeImage(uint8, 360);
       final url = await FileUtil.uploadFireStorage(thumbnail?.path,
@@ -110,7 +110,7 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
 
   Future<String> _compressedFile(String path) async {
     var compressedFile =
-        await FlutterNativeImage.compressImage(path, quality: 80);
+        await FlutterNativeImage.compressImage(path, quality: 90);
     return compressedFile.path;
   }
 

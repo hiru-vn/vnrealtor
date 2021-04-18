@@ -70,7 +70,7 @@ $pagesPostFragment
     ''';
 
     final res = await FollowPageSrv()
-        .mutate('followPage', 'data: {$data}', fragment: '''
+        .mutate('followPage', '$data', fragment: '''
 $followPageFragment
     ''');
     return res["followPage"];
@@ -82,7 +82,7 @@ $followPageFragment
     ''';
 
     final res = await FollowPageSrv()
-        .mutate('unfollowPage', 'data: {$data}', fragment: '''
+        .mutate('unfollowPage', '$data', fragment: '''
 $followPageFragment
     ''');
     return res["unfollowPage"];
@@ -298,6 +298,11 @@ updatedAt
         website
         createdAt
         updatedAt
+        followerIds
+        followers{
+          id
+          name
+        }
         category{
           id
           name

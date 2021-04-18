@@ -24,7 +24,7 @@ class PagesBloc extends ChangeNotifier {
 
   bool _isFollowPageLoading = false;
 
-  bool _isUnFollowPageLoading = false;
+  bool _isFollowed = false;
 
   List<PagesCreate> _pageCreated = [];
 
@@ -46,7 +46,8 @@ class PagesBloc extends ChangeNotifier {
 
   bool get isFollowPageLoading => _isFollowPageLoading;
 
-  bool get isUnFollowPageLoading => _isUnFollowPageLoading;
+  bool get isFollowed => _isFollowed;
+
 
   ScrollController pagePostsScrollController;
 
@@ -160,16 +161,11 @@ class PagesBloc extends ChangeNotifier {
     notifyListeners();
   }
 
+
   set isFollowPageLoading(bool isFollowPageLoading) {
     _isFollowPageLoading = isFollowPageLoading;
     notifyListeners();
   }
-
-  set isUnFollowPageLoading(bool isUnFollowPageLoading) {
-    _isUnFollowPageLoading = isUnFollowPageLoading;
-    notifyListeners();
-  }
-
 
   Future<BaseResponse> getAllPage({GraphqlFilter filter}) async {
     try {
@@ -253,11 +249,12 @@ class PagesBloc extends ChangeNotifier {
       ) async {
     try {
       final res = await PagesRepo().followPage(pageId);
+      notifyListeners();
       return BaseResponse.success(FollowPagesModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());
     } finally {
-      // wait to reload post
+      _isFollowed = true;
       Future.delayed(Duration(seconds: 1), () => notifyListeners());
     }
   }
@@ -267,11 +264,12 @@ class PagesBloc extends ChangeNotifier {
       ) async {
     try {
       final res = await PagesRepo().unFollowPage(pageId);
+      notifyListeners();
       return BaseResponse.success(FollowPagesModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());
     } finally {
-      // wait to reload post
+      _isFollowed = false;
       Future.delayed(Duration(seconds: 1), () => notifyListeners());
     }
   }
@@ -360,5 +358,6 @@ class PagesBloc extends ChangeNotifier {
       Future.delayed(Duration(seconds: 1), () => notifyListeners());
     }
   }
+
 
 }

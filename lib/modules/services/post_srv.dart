@@ -77,6 +77,11 @@ updatedAt
         website
         createdAt
         updatedAt
+       followerIds
+        followers{
+          id
+          name
+        }
         category{
           id
           name
