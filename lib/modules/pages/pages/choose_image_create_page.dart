@@ -1,4 +1,5 @@
-import 'package:datcao/modules/pages/blocs/create_page_bloc.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/pages/page_detail.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'dart:io';
@@ -24,59 +25,69 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
   TextEditingController get _nameC => widget.nameController;
   TextEditingController get _describeC => widget.describeController;
 
-  CreatePageBloc _createPageBloc;
+  PagesBloc _pagesBloc;
 
   @override
   void didChangeDependencies() {
-    if (_createPageBloc == null) {
-      _createPageBloc = Provider.of<CreatePageBloc>(context);
+    if (_pagesBloc == null) {
+      _pagesBloc = Provider.of<PagesBloc>(context);
     }
     super.didChangeDependencies();
   }
 
   Future _createPage() async {
     try {
-      _createPageBloc.isLoadingSubmitCreatePage = true;
-      if (_createPageBloc.urlAvatar == null) {
+      _pagesBloc.isLoadingSubmitCreatePage = true;
+      if (_pagesBloc.urlAvatar == null) {
         showToast('Vui lòng chọn ảnh đại diện của trang', context);
         return;
       }
-      if (_createPageBloc.urlCover == null) {
+      if (_pagesBloc.urlCover == null) {
         showToast('Vui lòng chọn ảnh bìa của trang', context);
         return;
       }
 
-      final res = await _createPageBloc.createPage(
+      final res = await _pagesBloc.createPage(
           _nameC.text.trim(),
           _describeC.text.trim(),
-          _createPageBloc.urlAvatar,
-          _createPageBloc.urlCover,
-          _createPageBloc.listCategoriesId);
+          _pagesBloc.urlAvatar,
+          _pagesBloc.urlCover,
+          _pagesBloc.listCategoriesId,
+          _pagesBloc.currentAddress,
+          _pagesBloc.website,
+          _pagesBloc.phone);
 
       if (res.isSuccess) {
         _nameC.clear();
         _describeC.clear();
-        _createPageBloc.urlAvatar = '';
-        _createPageBloc.urlCover = '';
-        _createPageBloc.listCategoriesId = [];
+        _pagesBloc.urlAvatar = null;
+        _pagesBloc.urlCover = null;
+        _pagesBloc.currentAddress = null;
+        _pagesBloc.website = null;
+        _pagesBloc.phone = null;
+        _pagesBloc.listCategoriesId = [];
+        _pagesBloc.listCategoriesSelected = [];
         PageDetail.navigate(res.data, isParamPageCreate: true);
       } else {
+        print(res.errMessage);
         showToast(res.errMessage, context);
       }
     } catch (e) {} finally {
-      _createPageBloc.isLoadingSubmitCreatePage = false;
+      _pagesBloc.isLoadingSubmitCreatePage = false;
     }
   }
 
   Future _updateCover(String filePath) async {
     try {
-      _createPageBloc.isLoadingUploadCover = true;
-      final compressImage = await _compressedFile(filePath);
-      final uint8 = (await File(compressImage).readAsBytes());
+      _pagesBloc.isLoadingUploadCover = true;
+      //final compressImage = await _compressedFile(filePath);
+      final uint8 = (await File(filePath).readAsBytes());
       final thumbnail = await FileUtil.resizeImage(uint8, 360);
-      final url = await FileUtil.uploadFireStorage(thumbnail?.path);
-      _createPageBloc.isLoadingUploadCover = false;
-      _createPageBloc.urlCover = url;
+      final url = await FileUtil.uploadFireStorage(thumbnail?.path,
+          path:
+              "pages/coverImage_user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}");
+      _pagesBloc.isLoadingUploadCover = false;
+      _pagesBloc.urlCover = url;
     } catch (e) {
       showToast(e.toString(), context);
     }
@@ -84,13 +95,14 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
 
   Future _updateAvatar(String filePath) async {
     try {
-      _createPageBloc.isLoadingUploadAvatar = true;
-      final compressImage = await _compressedFile(filePath);
-      final uint8 = (await File(compressImage).readAsBytes());
+      _pagesBloc.isLoadingUploadAvatar = true;
+     // final compressImage = await _compressedFile(filePath);
+      final uint8 = (await File(filePath).readAsBytes());
       final thumbnail = await FileUtil.resizeImage(uint8, 120);
-      final url = await FileUtil.uploadFireStorage(thumbnail?.path);
-      _createPageBloc.isLoadingUploadAvatar = false;
-      _createPageBloc.urlAvatar = url;
+      final url = await FileUtil.uploadFireStorage(thumbnail?.path,  path:
+      "pages/avatar_user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}");
+      _pagesBloc.isLoadingUploadAvatar = false;
+      _pagesBloc.urlAvatar = url;
     } catch (e) {
       showToast(e.toString(), context);
     }
@@ -98,7 +110,7 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
 
   Future<String> _compressedFile(String path) async {
     var compressedFile =
-        await FlutterNativeImage.compressImage(path, quality: 80);
+        await FlutterNativeImage.compressImage(path, quality: 90);
     return compressedFile.path;
   }
 
@@ -145,13 +157,15 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
       );
 
   Widget _buildCoverImage() => GestureDetector(
-        onTap: !_createPageBloc.isLoadingSubmitCreatePage ?  () {
-          imagePicker(context,
-              onImagePick: _updateCover, onCameraPick: _updateCover);
-        } : null,
+        onTap: !_pagesBloc.isLoadingSubmitCreatePage
+            ? () {
+                imagePicker(context,
+                    onImagePick: _updateCover, onCameraPick: _updateCover);
+              }
+            : null,
         child: Builder(
           builder: (BuildContext context) {
-            if (_createPageBloc.urlCover != null)
+            if (_pagesBloc.urlCover != null)
               return Container(
                 height: deviceWidth(context) / 1.5,
                 decoration: BoxDecoration(
@@ -159,14 +173,14 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
                   image: DecorationImage(
                     fit: BoxFit.cover,
                     image: CachedNetworkImageProvider(
-                        _createPageBloc.urlCover ?? ''),
+                        _pagesBloc.urlCover ?? ''),
                   ),
                 ),
               );
             return Container(
               color: AppColors.backgroundLightColor,
               height: deviceWidth(context) / 1.5,
-              child: _createPageBloc.isLoadingUploadCover
+              child: _pagesBloc.isLoadingUploadCover
                   ? kLoadingSpinner
                   : _itemIconTitle('Thêm ảnh bìa'),
             );
@@ -177,13 +191,15 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
   Widget _buildAvatarImage() => Positioned(
         bottom: -70,
         child: GestureDetector(
-          onTap: !_createPageBloc.isLoadingSubmitCreatePage ?  () {
-            imagePicker(context,
-                onImagePick: _updateAvatar, onCameraPick: _updateAvatar);
-          } : null,
+          onTap: !_pagesBloc.isLoadingSubmitCreatePage
+              ? () {
+                  imagePicker(context,
+                      onImagePick: _updateAvatar, onCameraPick: _updateAvatar);
+                }
+              : null,
           child: Builder(
             builder: (context) {
-              if (_createPageBloc.urlAvatar != null) return _buildUrlAvatar();
+              if (_pagesBloc.urlAvatar != null) return _buildUrlAvatar();
               return Center(
                 child: Stack(
                   alignment: Alignment.center,
@@ -216,7 +232,7 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
                           color: AppColors.backgroundLightColor,
                           shape: BoxShape.circle,
                         ),
-                        child: _createPageBloc.isLoadingUploadAvatar
+                        child: _pagesBloc.isLoadingUploadAvatar
                             ? kLoadingSpinner
                             : Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -285,7 +301,7 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
                   image: DecorationImage(
                     fit: BoxFit.cover,
                     image: CachedNetworkImageProvider(
-                        _createPageBloc.urlAvatar ?? ''),
+                        _pagesBloc.urlAvatar ?? ''),
                   ),
                 ),
               ),
@@ -322,7 +338,7 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
           text: 'Hoàn tất',
           borderRadius: 5,
           onPress: _createPage,
-          isLoading: _createPageBloc.isLoadingSubmitCreatePage,
+          isLoading: _pagesBloc.isLoadingSubmitCreatePage,
           color: AppColors.buttonPrimaryColor,
           height: 45,
           textColor: Colors.white,

@@ -2,7 +2,7 @@ import 'package:datcao/modules/services/base_graphql.dart';
 
 class PagesCreatePostSrv extends BaseService {
   PagesCreatePostSrv() : super(module: 'PostCreate', fragment: ''' 
-   id
+          id 
         content
         mediaPostIds
         commentIds
@@ -63,6 +63,8 @@ class PagesCreatePostSrv extends BaseService {
       id
       name
       avartar
-    }
+      phone
+      address
+     }
   ''');
 }

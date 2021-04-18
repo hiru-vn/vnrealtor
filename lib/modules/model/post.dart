@@ -1,4 +1,5 @@
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/share/import.dart';
 
 import 'media_post.dart';
@@ -32,8 +33,9 @@ class PostModel {
   List<String> halfImages;
   List<String> storyImages;
   List<LatLng> polygonPoints;
-  Page page;
   DynamicLink dynamicLink;
+  bool isPage;
+  PagesCreate page;
 
   PostModel(
       {this.id,
@@ -65,7 +67,9 @@ class PostModel {
       this.halfImages,
       this.page,
       this.polygonPoints,
-      this.dynamicLink});
+      this.dynamicLink,
+        this.isPage
+      });
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -111,7 +115,7 @@ class PostModel {
         json['halfImages'] != null ? json['halfImages'].cast<String>() : [];
     storyImages =
         json['storyImages'] != null ? json['storyImages'].cast<String>() : [];
-    page = json['page'] != null ? new Page.fromJson(json['page']) : null;
+    page = json['page'] != null ? new PagesCreate.fromJson(json['page']) : null;
     if (json['polygon'] != null && json['polygon']["paths"] != null) {
       polygonPoints = (json['polygon']["paths"] as List)
           .map((e) => LatLng(double.tryParse(e['lat'].toString()),
@@ -119,6 +123,7 @@ class PostModel {
           .toList();
     }
     dynamicLink = json['dynamicLink']==null? null: DynamicLink.fromJson(json['dynamicLink']) ;
+    isPage = json['isPage'];
   }
 
   Map<String, dynamic> toJson() {
@@ -149,28 +154,8 @@ class PostModel {
     if (this.page != null) {
       data['page'] = this.page.toJson();
     }
+    data['isPage'] = this.isPage;
     return data;
   }
 }
 
-class Page {
-  String id;
-  String name;
-  String avartar;
-
-  Page({this.id, this.name, this.avartar});
-
-  Page.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    avartar = json['avartar'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['avartar'] = this.avartar;
-    return data;
-  }
-}

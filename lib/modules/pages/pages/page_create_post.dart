@@ -57,9 +57,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
     }
     super.didChangeDependencies();
   }
-
-  popScreen({dynamic params}) => Navigator.pop(context, params);
-
+  
 
   Future _createPagePost() async {
     if (_pagesBloc.isCreatePostLoading) return;
@@ -95,13 +93,14 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
               .where(
                   (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
               .toList());
+      navigatorKey.currentState.maybePop();
       if (res.isSuccess) {
+        navigatorKey.currentState.pop();
         FocusScope.of(context).requestFocus(FocusNode());
         _expirationDate = null;
         _contentC.clear();
         _cacheMedias.clear();
         _cachePic.clear();
-        popScreen();
       } else {
         showToast(res.errMessage, context);
       }

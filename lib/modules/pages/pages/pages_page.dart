@@ -12,7 +12,11 @@ import 'create_page_page.dart';
 
 class PagesPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(PagesPage()));
+    return navigatorKey.currentState.push(
+      pageBuilder(
+        PagesPage(),
+      ),
+    );
   }
 
   @override
@@ -37,10 +41,9 @@ class _PagesPageState extends State<PagesPage> {
     super.didChangeDependencies();
   }
 
-  Future<void> _getAllPageCreated() async => await _pagesBloc.getPageCreate(
+  Future<void> _getAllPageCreated() async => await _pagesBloc.getAllPage(
         filter: GraphqlFilter(
           filter: 'filter:{ ownerId: "${_authBloc.userModel.id}"}',
-          limit: 10,
           order: "{updatedAt: -1}",
         ),
       );
@@ -123,7 +126,7 @@ class _PagesPageState extends State<PagesPage> {
         ),
       ),
     );
-    return Container(
+    return _listWidget.length > 0 ? Container(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       margin: const EdgeInsets.symmetric(horizontal: 17),
       decoration: BoxDecoration(
@@ -141,7 +144,7 @@ class _PagesPageState extends State<PagesPage> {
       child: Column(
         children: _listWidget,
       ),
-    );
+    ) : const SizedBox();
   }
 
   Widget _buildHeader() => Container(
@@ -151,12 +154,7 @@ class _PagesPageState extends State<PagesPage> {
           AppImages.icCreatePage,
           'Tạo trang mới',
           41,
-          action: () => CreatePagePage.navigate().then(
-            (value) {
-              if (AuthBloc.instance.userModel.role == 'COMPANY')
-                _getAllPageCreated();
-            },
-          ),
+          action: () => CreatePagePage.navigate(),
         ),
       );
 

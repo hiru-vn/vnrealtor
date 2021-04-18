@@ -2,7 +2,7 @@ import 'base_graphql.dart';
 
 class PostSrv extends BaseService {
   PostSrv() : super(module: 'Post', fragment: ''' 
-id
+ id
 content
 mediaPostIds
 commentIds
@@ -68,10 +68,34 @@ district
 ward
 createdAt
 updatedAt
- page{
-      id
-      name
-      avartar
+   isPage
+    page{
+       	id
+        name
+        ownerId
+        categoryIds
+        avartar
+        coverImage
+        phone
+        address
+        website
+        createdAt
+        updatedAt
+       followerIds
+        followers{
+          id
+          name
+        }
+        category{
+          id
+          name
+        }
+
+        owner{
+          id
+          name
+          email
+        }
     }
   ''');
 }

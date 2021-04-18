@@ -50,7 +50,6 @@ class _PageDetailState extends State<PageDetail> {
     super.didChangeDependencies();
   }
 
-
   Future<void> _getAllPostOfPage() async => await _pagesBloc.getPostsOfPage(
         filter: GraphqlFilter(
           filter: '{ pageId: "${_pageState.id}"}',
@@ -119,8 +118,7 @@ class _PageDetailState extends State<PageDetail> {
                 children: [
                   _buildBanner(),
                   _buildHeader(),
-                  if (AuthBloc.instance.userModel.role != 'COMPANY')
-                    _buildInfoPage(),
+                  _buildInfoPage(),
                   _buildListPostOfPage()
                 ],
               ),
@@ -192,8 +190,8 @@ class _PageDetailState extends State<PageDetail> {
   Widget _itemHeaderInfo() => Row(
         children: [
           CachedNetworkImage(
-            imageUrl: _pageState.coverImage != null
-                ? _pageState.coverImage
+            imageUrl: _pageState.avartar != null
+                ? _pageState.avartar
                 : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
             imageBuilder: (context, imageProvider) => Container(
               width: 50.0,
@@ -253,15 +251,34 @@ class _PageDetailState extends State<PageDetail> {
         ],
       );
 
-  Widget _itemButtonFollow() => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
-        decoration: BoxDecoration(
-          color: AppColors.buttonPrimaryColor,
-          borderRadius: BorderRadius.circular(7),
-        ),
-        child: Text(
-          "Theo dõi",
-          style: ptButton(),
+  Widget _itemButtonFollow() => GestureDetector(
+        onTap: () async {
+          if(_pagesBloc.isFollowed) {
+                _pagesBloc.isFollowPageLoading = true;
+                await _pagesBloc.unFollowPage(_pageState.id);
+                _pagesBloc.isFollowPageLoading = false;
+           } else {
+            _pagesBloc.isFollowPageLoading = true;
+            await _pagesBloc.followPage(_pageState.id);
+            _pagesBloc.isFollowPageLoading = false;
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+          decoration: BoxDecoration(
+            color: AppColors.buttonPrimaryColor,
+            borderRadius: BorderRadius.circular(7),
+          ),
+          child: _pagesBloc.isFollowPageLoading
+              ? SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(),
+                )
+              : Text(
+            _pagesBloc.isFollowed ?  "Bỏ theo dõi" : "Theo dõi",
+                  style: ptButton(),
+                ),
         ),
       );
 
@@ -344,36 +361,43 @@ class _PageDetailState extends State<PageDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ItemInfoPage(
-              image: AppImages.icFollower,
-              title: '60 lượt follow',
-            ),
-            heightSpace(10),
-            ItemInfoPage(
-              image: AppImages.icLocation,
-              title: 'Thành phố Hồ Chí Minh',
-            ),
-            heightSpace(10),
-            ItemInfoPage(
-              image: AppImages.icPhone,
-              title: '+84989078790',
-            ),
-            heightSpace(10),
-            ItemInfoPage(
-              image: AppImages.icSocial,
-              title: 'datcaogroup.com',
-            )
+            if (_pageState.followers.length > 0)
+              ItemInfoPage(
+                image: AppImages.icFollower,
+                title: '${_pageState.followers.length} lượt follow',
+              ),
+            if (_pageState.address != null)
+              ItemInfoPage(
+                image: AppImages.icLocation,
+                title: _pageState.address,
+              ),
+            if (_pageState.phone != null)
+              ItemInfoPage(
+                image: AppImages.icPhone,
+                title: _pageState.phone,
+              ),
+            if (_pageState.website != null)
+              ItemInfoPage(
+                image: AppImages.icSocial,
+                title: _pageState.website,
+              )
           ],
         ),
       );
 
   Widget _buildListPostOfPage() => Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-        ),
-        margin: const EdgeInsets.symmetric(vertical: 10),
         child: Column(children: [
           if (_pagesBloc.isGetPostPageLoading) PostSkeleton(),
+          if (_pagesBloc.listPagePost.isEmpty)
+            Container(
+              margin: const EdgeInsets.only(top: 20),
+              child: Center(
+                child: Text(
+                  "Chưa có bài viết nào",
+                  style: ptTitle().copyWith(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),

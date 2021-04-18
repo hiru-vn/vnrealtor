@@ -418,7 +418,6 @@ class PostBloc extends ChangeNotifier {
     try {
       int likeCount = postModel.like + 1;
       postModel.like = likeCount;
-
       setLikePostLocal(postModel.id, likeCount, true);
       notifyListeners();
       final res = await PostRepo().increaseLikePost(postId: postModel.id);
