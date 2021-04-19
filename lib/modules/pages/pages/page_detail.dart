@@ -157,8 +157,8 @@ class _PageDetailState extends State<PageDetail> {
       );
 
   Widget _buildBanner() => CachedNetworkImage(
-        imageUrl:  _pagesBloc.pageDetail.coverImage != null
-            ?  _pagesBloc.pageDetail.coverImage
+        imageUrl: _pagesBloc.pageDetail.coverImage != null
+            ? _pagesBloc.pageDetail.coverImage
             : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
         imageBuilder: (context, imageProvider) => Container(
           height: deviceWidth(context) / 2,
@@ -217,8 +217,8 @@ class _PageDetailState extends State<PageDetail> {
   Widget _itemHeaderInfo() => Row(
         children: [
           CachedNetworkImage(
-            imageUrl:  _pagesBloc.pageDetail.avartar != null
-                ?  _pagesBloc.pageDetail.avartar
+            imageUrl: _pagesBloc.pageDetail.avartar != null
+                ? _pagesBloc.pageDetail.avartar
                 : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
             imageBuilder: (context, imageProvider) => Container(
               width: 50.0,
@@ -282,11 +282,27 @@ class _PageDetailState extends State<PageDetail> {
         onTap: () async {
           if (_pagesBloc.isFollowed) {
             _pagesBloc.isFollowPageLoading = true;
-            await _pagesBloc.unFollowPage(_pageState.id);
+            final res = await _pagesBloc.unFollowPage(_pageState.id);
+
+            if (res.isSuccess) {
+              _pagesBloc.removeItemOutOfListFollowPage(_pageState);
+            } else {
+              _pagesBloc.isFollowPageLoading = false;
+              showToast(res.errMessage, context);
+            }
+
             _pagesBloc.isFollowPageLoading = false;
           } else {
             _pagesBloc.isFollowPageLoading = true;
-            await _pagesBloc.followPage(_pageState.id);
+            final res = await _pagesBloc.followPage(_pageState.id);
+
+            if (res.isSuccess) {
+              _pagesBloc.addItemToListFollowPage(_pageState);
+            } else {
+              _pagesBloc.isFollowPageLoading = false;
+              showToast(res.errMessage, context);
+            }
+
             _pagesBloc.isFollowPageLoading = false;
           }
         },
@@ -303,7 +319,7 @@ class _PageDetailState extends State<PageDetail> {
                   child: CircularProgressIndicator(),
                 )
               : Text(
-                _pagesBloc.isFollowed  ? "Bỏ theo dõi" : "Theo dõi",
+                  _pagesBloc.isFollowed ? "Bỏ theo dõi" : "Theo dõi",
                   style: ptButton(),
                 ),
         ),
@@ -388,25 +404,25 @@ class _PageDetailState extends State<PageDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if ( _pagesBloc.pageDetail.followers.length > 0)
+            if (_pagesBloc.pageDetail.followers.length > 0)
               ItemInfoPage(
                 image: AppImages.icFollower,
-                title: '${ _pagesBloc.pageDetail.followers.length} lượt follow',
+                title: '${_pagesBloc.pageDetail.followers.length} lượt follow',
               ),
-            if ( _pagesBloc.pageDetail.address != null)
+            if (_pagesBloc.pageDetail.address != null)
               ItemInfoPage(
                 image: AppImages.icLocation,
-                title:  _pagesBloc.pageDetail.address,
+                title: _pagesBloc.pageDetail.address,
               ),
-            if ( _pagesBloc.pageDetail.phone != null)
+            if (_pagesBloc.pageDetail.phone != null)
               ItemInfoPage(
                 image: AppImages.icPhone,
-                title:  _pagesBloc.pageDetail.phone,
+                title: _pagesBloc.pageDetail.phone,
               ),
-            if ( _pagesBloc.pageDetail.website != null)
+            if (_pagesBloc.pageDetail.website != null)
               ItemInfoPage(
                 image: AppImages.icSocial,
-                title:  _pagesBloc.pageDetail.website,
+                title: _pagesBloc.pageDetail.website,
               )
           ],
         ),

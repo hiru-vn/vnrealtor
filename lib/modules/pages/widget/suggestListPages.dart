@@ -2,6 +2,8 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
+import 'package:datcao/modules/pages/pages/page_detail.dart';
+import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/share/import.dart';
 
 class SuggestListPages extends StatefulWidget {
@@ -31,7 +33,7 @@ class _SuggestListPagesState extends State<SuggestListPages> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: Container(
+      child: widget.suggest.length > 0 ? Container(
           width: deviceWidth(context),
           color: Colors.white,
           padding: const EdgeInsets.only(top: 15, bottom: 18),
@@ -85,7 +87,7 @@ class _SuggestListPagesState extends State<SuggestListPages> {
                                 height: 12,
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () => PageDetail.navigate(widget.suggest[index]),
                                 child: CircleAvatar(
                                   radius: 30,
                                   backgroundColor: Colors.white,
@@ -103,7 +105,7 @@ class _SuggestListPagesState extends State<SuggestListPages> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () => PageDetail.navigate(widget.suggest[index]),
                                     child: Text(
                                       widget.suggest[index].name,
                                       style: ptBody().copyWith(
@@ -115,40 +117,58 @@ class _SuggestListPagesState extends State<SuggestListPages> {
                               )),
                               GestureDetector(
                                 onTap: () async {
-                                  pagesBloc.isFollowPageLoading = true;
-                                  await pagesBloc.followPage(widget.suggest[index].id);
-                                  pagesBloc.isFollowPageLoading = false;
+                                  pagesBloc.addToListFollowPageIds(
+                                      widget.suggest[index].id);
+                                  pagesBloc.isSuggestFollowLoading = true;
+                                  final res = await pagesBloc
+                                      .followPage(widget.suggest[index].id);
+                                  if (res.isSuccess) {
+                                    pagesBloc.isSuggestFollowLoading = false;
+                                    pagesBloc.suggestFollowPage.forEach((element) {
+                                      if(element.id == widget.suggest[index].id) {
+                                        pagesBloc.suggestFollowPage.remove(element);
+                                        pagesBloc.listPageFollow.add(element);
+                                      }
+                                    });
+                                  } else {
+                                    pagesBloc.isSuggestFollowLoading = false;
+                                    showToast(res.errMessage, context);
+                                    setState(() {});
+                                  }
+
+                                  pagesBloc.isSuggestFollowLoading = false;
                                 },
                                 child: Container(
                                   width: 90,
                                   padding: EdgeInsets.symmetric(vertical: 6),
                                   decoration: BoxDecoration(
-                                    border: (AuthBloc.instance.userModel
-                                                ?.followingIds
-                                                ?.contains(
-                                                    widget.suggest[index].id) ==
-                                            true)
-                                        ? Border.all(color: Colors.black12)
-                                        : Border.all(
-                                            color: ptPrimaryColor(context)
-                                                .withOpacity(0.2)),
-                                    color: (AuthBloc.instance.userModel
-                                                ?.followingIds
-                                                ?.contains(
-                                                    widget.suggest[index].id) ==
-                                            true)
-                                        ? Colors.transparent
-                                        : ptSecondaryColor(context),
+                                    border: Border.all(
+                                        color: ptPrimaryColor(context)
+                                            .withOpacity(0.2)),
+                                    color: ptSecondaryColor(context),
                                     borderRadius: BorderRadius.circular(3),
                                   ),
-                                  child: Center(
-                                    child: Text('Theo dõi',
-                                      style: ptSmall().copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        color: ptPrimaryColor(context),
-                                      ),
-                                    ),
-                                  ),
+                                  child: pagesBloc.isSuggestFollowLoading &&
+                                          pagesBloc.followingPageIds.contains(
+                                              widget.suggest[index].id)
+                                      ? Center(
+                                        child: Container(
+                                          height: 15,
+                                          width: 15,
+                                          child: CircularProgressIndicator(
+                                            valueColor:AlwaysStoppedAnimation<Color>(AppColors.mainColor),
+                                          ),
+                                        ),
+                                      )
+                                      : Center(
+                                          child: Text(
+                                            'Theo dõi',
+                                            style: ptSmall().copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              color: ptPrimaryColor(context),
+                                            ),
+                                          ),
+                                        ),
                                 ),
                               ),
                               SizedBox(
@@ -165,7 +185,7 @@ class _SuggestListPagesState extends State<SuggestListPages> {
                     itemCount: widget.suggest.length),
               )
             ],
-          )),
+          )) : const SizedBox(),
     );
   }
 }

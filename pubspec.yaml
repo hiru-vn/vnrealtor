@@ -78,6 +78,7 @@ dev_dependencies:
   flutter_typeahead: ^2.0.0
   flutter_tags: ^0.4.9+1
   font_awesome_flutter: ^8.11.0
+  flutter_statusbar_text_color: ^0.1.2
 
   # call
   flutter_callkeep: ^0.1.8

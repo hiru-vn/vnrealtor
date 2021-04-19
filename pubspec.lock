@@ -403,6 +403,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.3"
+  flutter_statusbar_text_color:
+    dependency: "direct dev"
+    description:
+      name: flutter_statusbar_text_color
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   flutter_tags:
     dependency: "direct dev"
     description:

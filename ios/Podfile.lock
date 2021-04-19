@@ -343,6 +343,8 @@ PODS:
     - Flutter
   - flutter_native_image (0.0.1):
     - Flutter
+  - flutter_statusbar_text_color (0.0.1):
+    - Flutter
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
@@ -477,6 +479,7 @@ DEPENDENCIES:
   - flutter_callkeep (from `.symlinks/plugins/flutter_callkeep/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_native_image (from `.symlinks/plugins/flutter_native_image/ios`)
+  - flutter_statusbar_text_color (from `.symlinks/plugins/flutter_statusbar_text_color/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
@@ -558,6 +561,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_native_image:
     :path: ".symlinks/plugins/flutter_native_image/ios"
+  flutter_statusbar_text_color:
+    :path: ".symlinks/plugins/flutter_statusbar_text_color/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   geolocator:
@@ -625,6 +630,7 @@ SPEC CHECKSUMS:
   flutter_callkeep: 340717a2440e2a54dda6f61faa34491b6a419c3f
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_native_image: 9c0b7451838484458e5b0fae007b86a4c2d4bdfe
+  flutter_statusbar_text_color: bfeb27e69d90920ed6ebe0cbe83466011c75c4f4
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator: 057a0c63a43e9c5296d8ad845a3ac8e6df23d899
@@ -659,4 +665,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 1a5cb0e81863c8f6ffffbb29a1fdd3f9396f5eb6
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.10.0

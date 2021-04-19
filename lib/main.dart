@@ -18,6 +18,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:flutter/services.dart';
 import 'share/widget/empty_widget.dart';
+import 'package:flutter_statusbar_text_color/flutter_statusbar_text_color.dart';
 
 final _sentry = SentryClient(
     dsn:
@@ -26,6 +27,7 @@ final _sentry = SentryClient(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FlutterStatusbarTextColor.setTextColor(FlutterStatusbarTextColor.dark);
   FbdynamicLink.initDynamicLinks();
   // CallKeep.setup();
   ConnectionStatusSingleton.getInstance().initialize();

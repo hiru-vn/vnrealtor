@@ -35,7 +35,11 @@ class PagesBloc extends ChangeNotifier {
 
   bool _isSuggestFollowPage = false;
 
+  bool _isSuggestFollowLoading = false;
+
   List<PagesCreate> _pageCreated = [];
+
+  List<String> _followingPageIds = [];
 
   List<PagesCreate> get pageCreated => _pageCreated;
 
@@ -66,6 +70,11 @@ class PagesBloc extends ChangeNotifier {
   bool get isFollowed => _isFollowed;
 
   bool get isSuggestFollowPage => _isSuggestFollowPage;
+
+  bool get isSuggestFollowLoading => _isSuggestFollowLoading;
+
+  List<String> get followingPageIds => _followingPageIds;
+
 
   ScrollController pagePostsScrollController;
 
@@ -124,6 +133,10 @@ class PagesBloc extends ChangeNotifier {
 
   PagesCreate get pageDetail => _pageDetail;
 
+  set isSuggestFollowLoading(bool isSuggestFollowLoading) {
+    _isSuggestFollowLoading = isSuggestFollowLoading;
+    notifyListeners();
+  }
 
   set isSuggestFollowPage(bool isSuggestFollowPage) {
     _isSuggestFollowPage = isSuggestFollowPage;
@@ -208,6 +221,22 @@ class PagesBloc extends ChangeNotifier {
     } else {
       _isFollowed = false;
     }
+    notifyListeners();
+  }
+
+  void addToListFollowPageIds(String pageId) {
+    _followingPageIds.add(pageId);
+    notifyListeners();
+  }
+
+
+  void addItemToListFollowPage(PagesCreate page) {
+    _listPageFollow.add(page);
+    notifyListeners();
+  }
+
+  void removeItemOutOfListFollowPage(PagesCreate page) {
+    _listPageFollow.remove(page);
     notifyListeners();
   }
 
@@ -309,12 +338,6 @@ class PagesBloc extends ChangeNotifier {
       String pageId
       ) async {
     try {
-      _suggestFollowPage.forEach((element) {
-        if(element.id == pageId) {
-          _suggestFollowPage.remove(element);
-          _listPageFollow.add(element);
-        }
-      });
       final res = await PagesRepo().followPage(pageId);
       notifyListeners();
       return BaseResponse.success(FollowPagesModel.fromJson(res));
@@ -325,6 +348,7 @@ class PagesBloc extends ChangeNotifier {
       Future.delayed(Duration(seconds: 1), () => notifyListeners());
     }
   }
+
 
   Future<BaseResponse> unFollowPage(
       String pageId
