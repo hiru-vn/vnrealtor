@@ -4,6 +4,7 @@ import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/pages/page_create_post.dart';
 import 'package:datcao/modules/pages/widget/custom_button.dart';
 import 'package:datcao/modules/pages/widget/item_info_page.dart';
+import 'package:datcao/modules/pages/widget/page_Detail_loading.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/resources/styles/images.dart';
@@ -46,8 +47,25 @@ class _PageDetailState extends State<PageDetail> {
       _authBloc = Provider.of(context);
       _pagesBloc = Provider.of<PagesBloc>(context);
       _getAllPostOfPage();
+      _getPageDetail();
     }
     super.didChangeDependencies();
+  }
+
+  Future _getPageDetail() async {
+    var res;
+    if (AuthBloc.instance.userModel != null) {
+      res = await _pagesBloc.getOnePage(_pageState.id);
+    } else {
+      // res = await _postBloc.getOnePostGuest(widget.postId);
+    }
+    if (res.isSuccess) {
+      _pagesBloc.pageDetail = res.data;
+      _pagesBloc.updatePageFollowed(_authBloc.userModel.id);
+    } else {
+      navigatorKey.currentState.maybePop();
+      showToast(res.errMessage, context);
+    }
   }
 
   Future<void> _getAllPostOfPage() async => await _pagesBloc.getPostsOfPage(
@@ -116,9 +134,9 @@ class _PageDetailState extends State<PageDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildBanner(),
-                  _buildHeader(),
-                  _buildInfoPage(),
+                  _pagesBloc.pageDetail != null
+                      ? _buildHasData()
+                      : PageDetailLoading(),
                   _buildListPostOfPage()
                 ],
               ),
@@ -129,9 +147,18 @@ class _PageDetailState extends State<PageDetail> {
     );
   }
 
+  Widget _buildHasData() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildBanner(),
+          _buildHeader(),
+          _buildInfoPage(),
+        ],
+      );
+
   Widget _buildBanner() => CachedNetworkImage(
-        imageUrl: _pageState.coverImage != null
-            ? _pageState.coverImage
+        imageUrl: _pagesBloc.pageDetail.coverImage != null
+            ? _pagesBloc.pageDetail.coverImage
             : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
         imageBuilder: (context, imageProvider) => Container(
           height: deviceWidth(context) / 2,
@@ -190,8 +217,8 @@ class _PageDetailState extends State<PageDetail> {
   Widget _itemHeaderInfo() => Row(
         children: [
           CachedNetworkImage(
-            imageUrl: _pageState.avartar != null
-                ? _pageState.avartar
+            imageUrl: _pagesBloc.pageDetail.avartar != null
+                ? _pagesBloc.pageDetail.avartar
                 : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
             imageBuilder: (context, imageProvider) => Container(
               width: 50.0,
@@ -235,7 +262,7 @@ class _PageDetailState extends State<PageDetail> {
               Row(
                 children: [
                   Text(
-                    _pageState.name,
+                    _pagesBloc.pageDetail.name,
                     style: ptTitle().copyWith(fontWeight: FontWeight.w900),
                   ),
                   SizedBox(width: 8),
@@ -243,7 +270,7 @@ class _PageDetailState extends State<PageDetail> {
               ),
               SizedBox(height: 3),
               Text(
-                _pageState.category[0].name,
+                _pagesBloc.pageDetail.category[0].name,
                 style: ptSmall().copyWith(color: ptPrimaryColor(context)),
               )
             ],
@@ -255,11 +282,27 @@ class _PageDetailState extends State<PageDetail> {
         onTap: () async {
           if (_pagesBloc.isFollowed) {
             _pagesBloc.isFollowPageLoading = true;
-            await _pagesBloc.unFollowPage(_pageState.id);
+            final res = await _pagesBloc.unFollowPage(_pageState.id);
+
+            if (res.isSuccess) {
+              _pagesBloc.removeItemOutOfListFollowPage(_pageState);
+            } else {
+              _pagesBloc.isFollowPageLoading = false;
+              showToast(res.errMessage, context);
+            }
+
             _pagesBloc.isFollowPageLoading = false;
           } else {
             _pagesBloc.isFollowPageLoading = true;
-            await _pagesBloc.followPage(_pageState.id);
+            final res = await _pagesBloc.followPage(_pageState.id);
+
+            if (res.isSuccess) {
+              _pagesBloc.addItemToListFollowPage(_pageState);
+            } else {
+              _pagesBloc.isFollowPageLoading = false;
+              showToast(res.errMessage, context);
+            }
+
             _pagesBloc.isFollowPageLoading = false;
           }
         },
@@ -361,25 +404,25 @@ class _PageDetailState extends State<PageDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_pageState.followers.length > 0)
+            if (_pagesBloc.pageDetail.followers.length > 0)
               ItemInfoPage(
                 image: AppImages.icFollower,
-                title: '${_pageState.followers.length} lượt follow',
+                title: '${_pagesBloc.pageDetail.followers.length} lượt follow',
               ),
-            if (_pageState.address != null)
+            if (_pagesBloc.pageDetail.address != null)
               ItemInfoPage(
                 image: AppImages.icLocation,
-                title: _pageState.address,
+                title: _pagesBloc.pageDetail.address,
               ),
-            if (_pageState.phone != null)
+            if (_pagesBloc.pageDetail.phone != null)
               ItemInfoPage(
                 image: AppImages.icPhone,
-                title: _pageState.phone,
+                title: _pagesBloc.pageDetail.phone,
               ),
-            if (_pageState.website != null)
+            if (_pagesBloc.pageDetail.website != null)
               ItemInfoPage(
                 image: AppImages.icSocial,
-                title: _pageState.website,
+                title: _pagesBloc.pageDetail.website,
               )
           ],
         ),

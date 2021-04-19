@@ -2,6 +2,7 @@ import 'package:datcao/modules/pages/services/create_page_srv.dart';
 import 'package:datcao/modules/pages/services/follow_page_srv.dart';
 import 'package:datcao/modules/pages/services/page_create_post_srv.dart';
 import 'package:datcao/modules/pages/services/pages_srv.dart';
+import 'package:datcao/modules/pages/services/suggest_follow_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/modules/services/post_srv.dart';
 import 'package:datcao/share/import.dart';
@@ -44,8 +45,8 @@ images: ${GraphqlHelper.listStringToGraphqlString(images)}
     if (lat != null && long != null) {
       data += '\nlocationLat: $lat\nlocationLong: $long';
     }
-    final res = await PostSrv()
-        .mutate('createPost', 'data: {$data}', fragment: '''
+    final res =
+        await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''
 $pagesPostFragment
     ''');
     return res["createPost"];
@@ -69,8 +70,8 @@ $pagesPostFragment
     pageId: "$pageId"
     ''';
 
-    final res = await FollowPageSrv()
-        .mutate('followPage', '$data', fragment: '''
+    final res =
+        await FollowPageSrv().mutate('followPage', '$data', fragment: '''
 $followPageFragment
     ''');
     return res["followPage"];
@@ -81,13 +82,12 @@ $followPageFragment
     pageId: "$pageId"
     ''';
 
-    final res = await FollowPageSrv()
-        .mutate('unfollowPage', '$data', fragment: '''
+    final res =
+        await FollowPageSrv().mutate('unfollowPage', '$data', fragment: '''
 $followPageFragment
     ''');
     return res["unfollowPage"];
   }
-
 
   Future getCategories(
       {GraphqlFilter filter, String timestamp, String timeSort}) async {
@@ -103,8 +103,13 @@ $categoriesPageFragment
     return res['getAllCategoryPage'];
   }
 
-  Future createPage(String name, String description, String avatar,
-      String coverImage, List<String> categoryIds,  String address,
+  Future createPage(
+      String name,
+      String description,
+      String avatar,
+      String coverImage,
+      List<String> categoryIds,
+      String address,
       String website,
       String phone) async {
     String data = '''
@@ -124,6 +129,36 @@ $pageFragment
     ''');
     return res["createPage"];
   }
+
+  Future getOnePage(String pageId) async {
+    final data = 'id: "$pageId"';
+    final res = await PagesSrv().query('getOnePage', data, fragment: '''
+    $pagesFragment
+    ''');
+    return res['getOnePage'];
+  }
+
+  Future getPostFollower(
+      {GraphqlFilter filter, String userId}) async {
+    if (filter?.filter == null) filter?.filter = "{}";
+    if (filter?.search == null) filter?.search = "";
+    final data =
+        'limit: ${filter?.limit}, Page: ${filter?.page ?? 1}, userId: "$userId"';
+    final res = await PagesSrv().query('getListFollowPage', data, fragment: '''
+    data {
+$pagesFragment
+}
+    ''');
+    return res['getListFollowPage'];
+  }
+
+
+  Future suggestFollowPage() async {
+    final res = await PagesSrv().query('suggestFollowPage', '',
+        fragment: ' $pagesFragment ', removeData: true);
+    return res['suggestFollowPage'];
+  }
+
 }
 
 String pagesFragment = '''
@@ -326,7 +361,6 @@ String followPageFragment = '''
     }
   ''';
 
-
 String pageFragment = '''
  id
   name
@@ -359,4 +393,25 @@ String pageFragment = '''
 String categoriesPageFragment = '''
 id
 name
+  ''';
+
+String suggestFollowFragment = '''
+ id
+    name
+    avartar
+    coverImage
+    description
+    address
+    phone
+    email
+    website
+    followerIds
+    followers{
+      id
+      name
+    }
+    owner{
+      id
+      name
+    }
   ''';

@@ -2,6 +2,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/pages/page_detail.dart';
 import 'package:datcao/modules/pages/widget/own_page_loading.dart';
+import 'package:datcao/modules/pages/widget/suggestListPages.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/resources/styles/images.dart';
 import 'package:datcao/share/import.dart';
@@ -35,8 +36,10 @@ class _PagesPageState extends State<PagesPage> {
       if (AuthBloc.instance.userModel.role == 'COMPANY') {
         _getAllPageCreated();
         _pagesBloc.getAllHashTagTP();
+      } else {
+        _getAllPageFollow();
+        _pagesBloc.suggestFollow();
       }
-      ;
     }
     super.didChangeDependencies();
   }
@@ -47,6 +50,14 @@ class _PagesPageState extends State<PagesPage> {
           order: "{updatedAt: -1}",
         ),
       );
+
+  Future<void> _getAllPageFollow() async {
+    _pagesBloc.isFollowPageLoading = true;
+    await _pagesBloc.getPagesFollow(
+        filter: GraphqlFilter(limit: 15, page: 1),
+        userId: _authBloc.userModel.id);
+    _pagesBloc.isFollowPageLoading = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +71,7 @@ class _PagesPageState extends State<PagesPage> {
       ),
       body: SingleChildScrollView(
         child: Container(
+          height: deviceHeight(context),
           decoration: BoxDecoration(
             color: AppColors.backgroundColor.withOpacity(0.5),
           ),
@@ -67,16 +79,17 @@ class _PagesPageState extends State<PagesPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              _itemSuggestList(),
               if (AuthBloc.instance.userModel.role == 'COMPANY') _buildHeader(),
               if (AuthBloc.instance.userModel.role == 'COMPANY')
                 _buildSectionOwnPage(),
               _buildPageBodySection(
-                  'Trang đã theo dõi ', AppImages.icPageFollow),
-              _itemBodySectionPageFollow(AppImages.imageDemo, 'Dự án MeiLand '),
-              heightSpace(10),
-              _buildPageBodySection(
-                  'Lời mời thích trang ', AppImages.icPageLike),
-              _itemBodySectionPageLike(AppImages.imageDemo, 'Dự án MeiLand '),
+                  'Trang đã theo dõi', AppImages.icPageFollow),
+              _buildSectionPageFollow(),
+              // heightSpace(10),
+              // _buildPageBodySection(
+              //     'Lời mời thích trang ', AppImages.icPageLike),
+              // _itemBodySectionPageLike(AppImages.imageDemo, 'Dự án MeiLand '),
               heightSpace(30),
             ],
           ),
@@ -126,26 +139,73 @@ class _PagesPageState extends State<PagesPage> {
         ),
       ),
     );
-    return _listWidget.length > 0 ? Container(
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-      margin: const EdgeInsets.symmetric(horizontal: 17),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            spreadRadius: 40,
-            blurRadius: 40.0,
-            offset: Offset(0, 10),
-            color: Color.fromRGBO(0, 0, 0, 0.03),
+    return _listWidget.length > 0
+        ? Container(
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+            margin: const EdgeInsets.symmetric(horizontal: 17),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  spreadRadius: 40,
+                  blurRadius: 40.0,
+                  offset: Offset(0, 10),
+                  color: Color.fromRGBO(0, 0, 0, 0.03),
+                )
+              ],
+            ),
+            child: Column(
+              children: _listWidget,
+            ),
           )
-        ],
-      ),
-      child: Column(
-        children: _listWidget,
-      ),
-    ) : const SizedBox();
+        : const SizedBox();
   }
+
+  Widget _buildListPageFollow() {
+    List<Widget> _listWidget = [];
+    _pagesBloc.listPageFollow.forEach(
+      (page) => _listWidget.add(
+        _itemBodySectionPageFollow(
+          page.avartar,
+          page.name,
+          2,
+          _pagesBloc.listPageFollow.last == page ? true : false,
+          () => PageDetail.navigate(page),
+        ),
+      ),
+    );
+    return _listWidget.length > 0
+        ? Container(
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+            margin: const EdgeInsets.symmetric(horizontal: 17),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  spreadRadius: 40,
+                  blurRadius: 40.0,
+                  offset: Offset(0, 10),
+                  color: Color.fromRGBO(0, 0, 0, 0.03),
+                )
+              ],
+            ),
+            child: Column(
+              children: _listWidget.isNotEmpty ? _listWidget : Container(),
+            ),
+          )
+        : const SizedBox();
+  }
+
+  Widget _buildSectionPageFollow() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _pagesBloc.isFollowPageLoading
+              ? _buildOwnPageLoading()
+              : _buildListPageFollow(),
+        ],
+      );
 
   Widget _buildHeader() => Container(
         color: Colors.white,
@@ -288,60 +348,64 @@ class _PagesPageState extends State<PagesPage> {
         ),
       );
 
-  Widget _itemBodySectionPageFollow(
-    String image,
-    String title,
-  ) =>
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-        margin: const EdgeInsets.symmetric(horizontal: 17),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              spreadRadius: 40,
-              blurRadius: 40.0,
-              offset: Offset(0, 10),
-              color: Color.fromRGBO(0, 0, 0, 0.03),
-            )
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100.0),
-                child: Center(
-                  child: SizedBox(
-                    width: 45,
-                    height: 45,
-                    child: Image.asset(
-                      image,
-                      fit: BoxFit.fitWidth,
+  Widget _itemBodySectionPageFollow(String image, String title, int number,
+          bool isLast, VoidCallback callback) =>
+      GestureDetector(
+        onTap: callback,
+        child: Container(
+            padding: const EdgeInsets.only(bottom: 19, top: 11),
+            decoration: BoxDecoration(
+              border: !isLast
+                  ? Border(
+                bottom: BorderSide(
+                  color: AppColors.borderGrayColor.withOpacity(0.3),
+                  width: 0.5,
+                ),
+              )
+                  : Border(
+                bottom: BorderSide(
+                  color: Colors.white,
+                  width: 0.5,
+                ),
+              ),
+            ),
+          child: Row(
+            children: [
+              Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100.0),
+                  child: Center(
+                    child: SizedBox(
+                      width: 45,
+                      height: 45,
+                      child: CachedNetworkImage(
+                        imageUrl: image.isNotEmpty
+                            ? image
+                            : 'https://i.ibb.co/Zcx1Ms8/error-image-generic.png',
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            widthSpace(13),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  child: Text(
-                    title,
-                    style: ptBigBody().copyWith(
-                      fontWeight: FontWeight.w600,
+              widthSpace(13),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    child: Text(
+                      title,
+                      style: ptBigBody().copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-                heightSpace(7),
-                _itemButton('Đã theo dõi', isApprove: true, icon: Icons.check)
-              ],
-            )
-          ],
+                  heightSpace(7),
+                  _itemButton('Đã theo dõi', isApprove: true, icon: Icons.check)
+                ],
+              )
+            ],
+          ),
         ),
       );
 
@@ -436,4 +500,8 @@ class _PagesPageState extends State<PagesPage> {
           ],
         ),
       );
+
+  Widget _itemSuggestList() => !_pagesBloc.isSuggestFollowPage ? SuggestListPages(
+    suggest: _pagesBloc.suggestFollowPage,
+  ) : Container();
 }
