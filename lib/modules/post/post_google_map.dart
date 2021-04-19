@@ -118,7 +118,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                       strokeColor: Colors.redAccent,
                       strokeWidth: 1,
                       fillColor: Colors.redAccent.withOpacity(0.5),
-                    )
+                    ),
                   }
                 : null),
           ),

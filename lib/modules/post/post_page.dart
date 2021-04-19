@@ -21,6 +21,8 @@ class _PostPageState extends State<PostPage> {
   bool showAppBar = true;
   PostBloc _postBloc;
   AuthBloc _authBloc;
+  bool isFilterDistance = false;
+  int distance = 20;
   // ScrollController _postBloc.feedScrollController = ScrollController();
   // PageController _postBloc.pageController = PageController();
 
@@ -62,6 +64,13 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
+  _getPostLocal() async {
+    final res = await _postBloc.getPostLocal(distance.toDouble());
+    if (!res.isSuccess) {
+      showToast(res.errMessage, context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _postBloc.pageController = PageController();
@@ -83,12 +92,16 @@ class _PostPageState extends State<PostPage> {
               list: RefreshIndicator(
                 color: ptPrimaryColor(context),
                 onRefresh: () async {
+                  setState(() {
+                    isFilterDistance = false;
+                  });
                   await Future.wait([
                     _postBloc.getNewFeed(
                         filter:
                             GraphqlFilter(limit: 10, order: "{updatedAt: -1}")),
                     _postBloc.getStoryFollowing()
                   ]);
+
                   return;
                 },
                 child: SingleChildScrollView(
@@ -122,11 +135,49 @@ class _PostPageState extends State<PostPage> {
                               );
                             },
                             itemBuilder: (context, index) {
+                              if (index == 0) {
+                                return InkWell(
+                                  borderRadius: BorderRadius.circular(15),
+                                  onTap: () {
+                                    setState(() {
+                                      isFilterDistance = !isFilterDistance;
+                                    });
+                                    if (isFilterDistance == false) {
+                                      _postBloc.getNewFeed(
+                                          filter: GraphqlFilter(
+                                              limit: 10,
+                                              order: "{updatedAt: -1}"));
+                                    } else {
+                                      _getPostLocal();
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 30,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                        color: isFilterDistance
+                                            ? ptPrimaryColor(context)
+                                            : ptSecondaryColor(context),
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: Center(
+                                      child: Text(
+                                        'Dự án gần đây',
+                                        style: TextStyle(
+                                            color: isFilterDistance
+                                                ? Colors.white
+                                                : ptPrimaryColor(context)),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
                               return InkWell(
                                 borderRadius: BorderRadius.circular(15),
                                 onTap: () {
                                   SearchPostPage.navigate(
-                                      hashTag: _postBloc.hasTags[index]
+                                      hashTag: _postBloc.hasTags[index - 1]
                                           ['value']);
                                 },
                                 child: Container(
@@ -137,7 +188,7 @@ class _PostPageState extends State<PostPage> {
                                       borderRadius: BorderRadius.circular(15)),
                                   child: Center(
                                     child: Text(
-                                      _postBloc.hasTags[index]['value']
+                                      _postBloc.hasTags[index - 1]['value']
                                           .toString(),
                                     ),
                                   ),
@@ -146,6 +197,48 @@ class _PostPageState extends State<PostPage> {
                             },
                             itemCount: _postBloc.hasTags.length,
                             scrollDirection: Axis.horizontal,
+                          ),
+                        ),
+                      if (isFilterDistance)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                                top: 2, bottom: 2, left: 7, right: 1),
+                            margin: EdgeInsets.only(right: 8, top: 8),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(color: Colors.black12)),
+                            child: DropdownButton(
+                                value: distance,
+                                isDense: true,
+                                style: ptBody().copyWith(color: Colors.black87),
+                                items: [
+                                  DropdownMenuItem(
+                                    child: Text('Bán kính 10 km',
+                                        style: ptSmall()
+                                            .copyWith(color: Colors.black87)),
+                                    value: 10,
+                                  ),
+                                  DropdownMenuItem(
+                                    child: Text('Bán kính 20 km',
+                                        style: ptSmall()
+                                            .copyWith(color: Colors.black87)),
+                                    value: 20,
+                                  ),
+                                  DropdownMenuItem(
+                                    child: Text('Bán kính 50 km',
+                                        style: ptSmall()
+                                            .copyWith(color: Colors.black87)),
+                                    value: 50,
+                                  ),
+                                ],
+                                underline: SizedBox.shrink(),
+                                onChanged: (val) {
+                                  setState(() {
+                                    distance = val;
+                                  });
+                                }),
                           ),
                         ),
                       ListView.builder(
