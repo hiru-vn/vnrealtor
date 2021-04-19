@@ -99,6 +99,23 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getPostLocal(double distance) async {
+    try {
+      final pos = await getDevicePosition();
+      isReloadFeed = true;
+      notifyListeners();
+      final res =
+          await searchPostWithLocation(pos.longitude, pos.latitude, distance);
+      feed = res.data;
+      return res;
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      isReloadFeed = false;
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> searchPostByHashTag(String hashTags) async {
     try {
       final res = await PostRepo().searchPostByHashTag(hashTags);
@@ -317,10 +334,11 @@ class PostBloc extends ChangeNotifier {
       double lat,
       double long,
       List<String> images,
-      List<String> videos, List<LatLng> polygon) async {
+      List<String> videos,
+      List<LatLng> polygon) async {
     try {
-      final res = await PostRepo().createPost(
-          content, expirationDate, publicity, lat, long, images, videos, polygon);
+      final res = await PostRepo().createPost(content, expirationDate,
+          publicity, lat, long, images, videos, polygon);
       feed.insert(0, PostModel.fromJson(res));
       myPosts.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));

@@ -253,11 +253,11 @@ class _PageDetailState extends State<PageDetail> {
 
   Widget _itemButtonFollow() => GestureDetector(
         onTap: () async {
-          if(_pagesBloc.isFollowed) {
-                _pagesBloc.isFollowPageLoading = true;
-                await _pagesBloc.unFollowPage(_pageState.id);
-                _pagesBloc.isFollowPageLoading = false;
-           } else {
+          if (_pagesBloc.isFollowed) {
+            _pagesBloc.isFollowPageLoading = true;
+            await _pagesBloc.unFollowPage(_pageState.id);
+            _pagesBloc.isFollowPageLoading = false;
+          } else {
             _pagesBloc.isFollowPageLoading = true;
             await _pagesBloc.followPage(_pageState.id);
             _pagesBloc.isFollowPageLoading = false;
@@ -276,7 +276,7 @@ class _PageDetailState extends State<PageDetail> {
                   child: CircularProgressIndicator(),
                 )
               : Text(
-            _pagesBloc.isFollowed ?  "Bỏ theo dõi" : "Theo dõi",
+                  _pagesBloc.isFollowed ? "Bỏ theo dõi" : "Theo dõi",
                   style: ptButton(),
                 ),
         ),

@@ -207,7 +207,7 @@ images: ${GraphqlHelper.listStringToGraphqlString(images)}
     }
     final res =
         await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''
-$postFragment
+${postFragment.replaceAll('\n', ' ')}
     ''');
     return res["createPost"];
   }
@@ -504,7 +504,6 @@ updatedAt
           id
           name
         }
-
         owner{
           id
           name
