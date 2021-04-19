@@ -2,6 +2,7 @@ import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/pages/models/followModel.dart';
 import 'package:datcao/modules/pages/models/pages_category_model.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
+import 'package:datcao/modules/pages/models/suggestModel.dart';
 import 'package:datcao/modules/pages/repos/pages_repo.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/share/import.dart';
@@ -12,9 +13,15 @@ class PagesBloc extends ChangeNotifier {
 
   DateTime _lastFetchPostPage;
 
+  DateTime _lastFetchPageFollow;
+
   int _postPage = 1;
 
+  int _pageFollow = 1;
+
   bool _isOwnPageLoading = false;
+
+  bool _isPageFollowLoading = false;
 
   bool _isCreatePostLoading = false;
 
@@ -26,17 +33,27 @@ class PagesBloc extends ChangeNotifier {
 
   bool _isFollowed = false;
 
+  bool _isSuggestFollowPage = false;
+
   List<PagesCreate> _pageCreated = [];
 
   List<PagesCreate> get pageCreated => _pageCreated;
 
   List<PostModel> _listPagePost = [];
 
+  List<PagesCreate> _listPageFollow = [];
+
   List<dynamic> hasTags = [];
 
   List<PostModel> get listPagePost => _listPagePost;
 
+  List<PagesCreate> get listPageFollow => _listPageFollow;
+
+  List<PagesCreate> _suggestFollowPage = [];
+
   bool get isOwnPageLoading => _isOwnPageLoading;
+
+  bool get isPageFollowLoading => _isPageFollowLoading;
 
   bool get isCreatePostLoading => _isCreatePostLoading;
 
@@ -48,6 +65,7 @@ class PagesBloc extends ChangeNotifier {
 
   bool get isFollowed => _isFollowed;
 
+  bool get isSuggestFollowPage => _isSuggestFollowPage;
 
   ScrollController pagePostsScrollController;
 
@@ -96,15 +114,31 @@ class PagesBloc extends ChangeNotifier {
 
   List<String> get listCategoriesSelected => _listCategoriesSelected;
 
+  List<PagesCreate> get suggestFollowPage => _suggestFollowPage;
+
   String get urlCover => _urlCover;
 
   String get urlAvatar => _urlAvatar;
+
+  PagesCreate _pageDetail;
+
+  PagesCreate get pageDetail => _pageDetail;
+
+
+  set isSuggestFollowPage(bool isSuggestFollowPage) {
+    _isSuggestFollowPage = isSuggestFollowPage;
+    notifyListeners();
+  }
+
+  set pageDetail(PagesCreate pageDetail) {
+    _pageDetail = pageDetail;
+    notifyListeners();
+  }
 
   set listCategoriesSelected(List<String> listCategoriesSelected) {
     _listCategoriesSelected = listCategoriesSelected;
     notifyListeners();
   }
-
 
   set phone(String phone) {
     _phone = phone;
@@ -167,6 +201,16 @@ class PagesBloc extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  void updatePageFollowed(String userId) {
+    if(_pageDetail.followerIds.contains(userId)){
+      _isFollowed = true;
+    } else {
+      _isFollowed = false;
+    }
+    notifyListeners();
+  }
+
   Future<BaseResponse> getAllPage({GraphqlFilter filter}) async {
     try {
       _pageCreated = [];
@@ -184,6 +228,23 @@ class PagesBloc extends ChangeNotifier {
     } finally {
       _isOwnPageLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getPagesFollow({GraphqlFilter filter, String userId}) async {
+    try {
+      _listPageFollow = [];
+      final res = await PagesRepo().getPostFollower(filter: filter, userId: userId);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PagesCreate.fromJson(e)).toList();
+      // if (list.length < filter.limit) _isEndPostPage = true;
+      _listPageFollow = list;
+      _lastFetchPageFollow = DateTime.now();
+      _pageFollow = 1;
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
     }
   }
 
@@ -248,6 +309,12 @@ class PagesBloc extends ChangeNotifier {
       String pageId
       ) async {
     try {
+      _suggestFollowPage.forEach((element) {
+        if(element.id == pageId) {
+          _suggestFollowPage.remove(element);
+          _listPageFollow.add(element);
+        }
+      });
       final res = await PagesRepo().followPage(pageId);
       notifyListeners();
       return BaseResponse.success(FollowPagesModel.fromJson(res));
@@ -359,5 +426,35 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getOnePage(String pageId) async {
+    try {
+      final res = await PagesRepo().getOnePage(pageId);
+      if (res == null)
+        return BaseResponse.fail('Trang không tồn tại hoặc đã bị xóa');
+      return BaseResponse.success(PagesCreate.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+
+  Future<BaseResponse> suggestFollow() async {
+    try {
+      final res = await PagesRepo().suggestFollowPage();
+      final listRaw = res;
+      List<PagesCreate> listModel =
+      (listRaw.map((e) => PagesCreate.fromJson(e)).toList() as List)
+          .cast<PagesCreate>();
+      _suggestFollowPage = listModel;
+      notifyListeners();
+      return BaseResponse.success(_suggestFollowPage);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
 
 }
