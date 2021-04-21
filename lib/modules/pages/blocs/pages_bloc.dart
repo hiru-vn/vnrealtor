@@ -1,3 +1,4 @@
+import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/pages/models/followModel.dart';
 import 'package:datcao/modules/pages/models/pages_category_model.dart';
@@ -75,9 +76,7 @@ class PagesBloc extends ChangeNotifier {
 
   List<String> get followingPageIds => _followingPageIds;
 
-
   ScrollController pagePostsScrollController;
-
 
   bool _isLoadingSubmitCreatePage = false;
 
@@ -132,6 +131,14 @@ class PagesBloc extends ChangeNotifier {
   PagesCreate _pageDetail;
 
   PagesCreate get pageDetail => _pageDetail;
+
+  Future init() async {
+    final token = await SPref.instance.get('token');
+    final id = await SPref.instance.get('id');
+    if (token != null && id != null) {
+      suggestFollow();
+    }
+  }
 
   set isSuggestFollowLoading(bool isSuggestFollowLoading) {
     _isSuggestFollowLoading = isSuggestFollowLoading;
@@ -208,15 +215,13 @@ class PagesBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-
   set isFollowPageLoading(bool isFollowPageLoading) {
     _isFollowPageLoading = isFollowPageLoading;
     notifyListeners();
   }
 
-
   void updatePageFollowed(String userId) {
-    if(_pageDetail.followerIds.contains(userId)){
+    if (_pageDetail.followerIds.contains(userId)) {
       _isFollowed = true;
     } else {
       _isFollowed = false;
@@ -229,7 +234,6 @@ class PagesBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void addItemToListFollowPage(PagesCreate page) {
     _listPageFollow.add(page);
     notifyListeners();
@@ -240,11 +244,28 @@ class PagesBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<BaseResponse> getAllPage({GraphqlFilter filter}) async {
+  Future<BaseResponse> getListPage({GraphqlFilter filter}) async {
+    try {
+      final res = await PagesRepo().getListPage(filter: filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PagesCreate.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getMyPage() async {
     try {
       _pageCreated = [];
       _isOwnPageLoading = true;
-      final res = await PagesRepo().getPageCreate(filter: filter);
+      final res = await PagesRepo().getPageCreate(
+          filter: GraphqlFilter(
+        filter: 'filter:{ ownerId: "${AuthBloc.instance.userModel.id}"}',
+        order: "{updatedAt: -1}",
+      ));
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PagesCreate.fromJson(e)).toList();
       _pageCreated = list;
@@ -260,10 +281,12 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getPagesFollow({GraphqlFilter filter, String userId}) async {
+  Future<BaseResponse> getPagesFollow(
+      {GraphqlFilter filter, String userId}) async {
     try {
       _listPageFollow = [];
-      final res = await PagesRepo().getPostFollower(filter: filter, userId: userId);
+      final res =
+          await PagesRepo().getPostFollower(filter: filter, userId: userId);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PagesCreate.fromJson(e)).toList();
       // if (list.length < filter.limit) _isEndPostPage = true;
@@ -273,8 +296,7 @@ class PagesBloc extends ChangeNotifier {
       return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
-    } finally {
-    }
+    } finally {}
   }
 
   Future<BaseResponse> createPagePost(
@@ -299,7 +321,6 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
-
   Future<BaseResponse> getAllHashTagTP() async {
     try {
       final res = await PostRepo().getAllHashTagTP();
@@ -318,7 +339,7 @@ class PagesBloc extends ChangeNotifier {
       final res = await PagesRepo().getPostOfPage(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
-     // if (list.length < filter.limit) _isEndPostPage = true;
+      // if (list.length < filter.limit) _isEndPostPage = true;
       _listPagePost = list;
       _lastFetchPostPage = DateTime.now();
       _postPage = 1;
@@ -334,10 +355,10 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> followPage(
-      String pageId
-      ) async {
+  Future<BaseResponse> followPage(String pageId) async {
     try {
+      addToListFollowPageIds(pageId);
+      isSuggestFollowLoading = true;
       final res = await PagesRepo().followPage(pageId);
       notifyListeners();
       return BaseResponse.success(FollowPagesModel.fromJson(res));
@@ -345,14 +366,12 @@ class PagesBloc extends ChangeNotifier {
       return BaseResponse.fail(e?.toString());
     } finally {
       _isFollowed = true;
+      isSuggestFollowLoading = false;
       Future.delayed(Duration(seconds: 1), () => notifyListeners());
     }
   }
 
-
-  Future<BaseResponse> unFollowPage(
-      String pageId
-      ) async {
+  Future<BaseResponse> unFollowPage(String pageId) async {
     try {
       final res = await PagesRepo().unFollowPage(pageId);
       notifyListeners();
@@ -365,19 +384,18 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
-
   removeCategory(int index) {
     _listCategoriesId.removeAt(index);
     notifyListeners();
   }
 
   void addSelectedCategories(String val) => _handleAddCategoriesGroup(
-    val: val,
-    listFull: _listCategories,
-    listSelected: _listCategoriesSelected,
-    listModel: _listModelCategories,
-    listId: _listCategoriesId,
-  );
+        val: val,
+        listFull: _listCategories,
+        listSelected: _listCategoriesSelected,
+        listModel: _listModelCategories,
+        listId: _listCategoriesId,
+      );
 
   void _handleAddCategoriesGroup({
     String val,
@@ -406,7 +424,7 @@ class PagesBloc extends ChangeNotifier {
     final res = await PagesRepo().getCategories(filter: filter);
     final List listRaw = res['data'];
     List<PagesCategoriesModel> listModel =
-    listRaw.map((e) => PagesCategoriesModel.fromJson(e)).toList();
+        listRaw.map((e) => PagesCategoriesModel.fromJson(e)).toList();
     listModel.forEach((element) => _listTmp.add(element.name));
     return _listTmp;
   }
@@ -418,7 +436,7 @@ class PagesBloc extends ChangeNotifier {
         filter: GraphqlFilter(search: '', order: '{createdAt: -1}'));
     final List listRaw = res['data'];
     List<PagesCategoriesModel> listModel =
-    listRaw.map((e) => PagesCategoriesModel.fromJson(e)).toList();
+        listRaw.map((e) => PagesCategoriesModel.fromJson(e)).toList();
     listModel.forEach((element) => _listTmp.add(element.name));
     _listCategories = _listTmp;
     _listModelCategories = listModel;
@@ -434,11 +452,10 @@ class PagesBloc extends ChangeNotifier {
       List<String> categoryIds,
       String address,
       String website,
-      String phone
-      ) async {
+      String phone) async {
     try {
-      final res = await PagesRepo().createPage(
-          name, description, avatar, coverImage, categoryIds, address, website, phone);
+      final res = await PagesRepo().createPage(name, description, avatar,
+          coverImage, categoryIds, address, website, phone);
       _pageCreated.add(PagesCreate.fromJson(res));
       notifyListeners();
       return BaseResponse.success(PagesCreate.fromJson(res));
@@ -463,14 +480,13 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
-
   Future<BaseResponse> suggestFollow() async {
     try {
       final res = await PagesRepo().suggestFollowPage();
       final listRaw = res;
       List<PagesCreate> listModel =
-      (listRaw.map((e) => PagesCreate.fromJson(e)).toList() as List)
-          .cast<PagesCreate>();
+          (listRaw.map((e) => PagesCreate.fromJson(e)).toList() as List)
+              .cast<PagesCreate>();
       _suggestFollowPage = listModel;
       notifyListeners();
       return BaseResponse.success(_suggestFollowPage);
@@ -480,5 +496,4 @@ class PagesBloc extends ChangeNotifier {
       notifyListeners();
     }
   }
-
 }

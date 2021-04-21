@@ -1,7 +1,7 @@
 import 'package:datcao/modules/services/base_graphql.dart';
 
 class PagesSrv extends BaseService {
-  PagesSrv() : super(module: 'getPageCreate', fragment: ''' 
+  PagesSrv() : super(module: 'Page', fragment: ''' 
    id
   name
   description

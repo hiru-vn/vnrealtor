@@ -2,6 +2,9 @@ import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
+import 'package:datcao/modules/pages/widget/suggestListPages.dart';
 import 'package:datcao/modules/post/post_map.dart';
 import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/modules/post/post_widget.dart';
@@ -25,15 +28,17 @@ class _SearchPostPageState extends State<SearchPostPage>
     with SingleTickerProviderStateMixin {
   UserBloc _userBloc;
   PostBloc _postBloc;
+  PagesBloc _pagesBloc;
   TabController _tabController;
   TextEditingController _searchC = TextEditingController();
   List<UserModel> users = [];
   List<PostModel> posts = [];
+  List<PagesCreate> pages = [];
   bool isLoading = false;
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
 
     super.initState();
   }
@@ -44,6 +49,7 @@ class _SearchPostPageState extends State<SearchPostPage>
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
       _postBloc = Provider.of<PostBloc>(context);
+      _pagesBloc = Provider.of<PagesBloc>(context);
       if (widget.hashTag != null) {
         isLoading = true;
         _searchC.text = widget.hashTag;
@@ -67,7 +73,8 @@ class _SearchPostPageState extends State<SearchPostPage>
       });
       await Future.wait([_searchUser(text), _searchPostByHashTag(hashTags[0])]);
     } else {
-      await Future.wait([_searchUser(text), _searchPost(text)]);
+      await Future.wait(
+          [_searchUser(text), _searchPost(text), _searchPage(text)]);
     }
     setState(() {
       isLoading = false;
@@ -86,6 +93,22 @@ class _SearchPostPageState extends State<SearchPostPage>
       showToast(res.errMessage, context);
       setState(() {
         users = [];
+      });
+    }
+  }
+
+  Future _searchPage(String text) async {
+    final res =
+        await _pagesBloc.getListPage(filter: GraphqlFilter(search: text));
+    if (res.isSuccess) {
+      setState(() {
+        pages = res.data;
+      });
+    } else {
+      // showToast('Có lỗi xảy ra trong quá trình tìm kiếm', context);
+      showToast(res.errMessage, context);
+      setState(() {
+        pages = [];
       });
     }
   }
@@ -192,7 +215,7 @@ class _SearchPostPageState extends State<SearchPostPage>
                 tabs: [
                   SizedBox(height: 36, child: Tab(text: 'Bài viết')),
                   SizedBox(height: 36, child: Tab(text: 'Người dùng')),
-                  //Tab(text: 'Ảnh/video'),
+                  SizedBox(height: 36, child: Tab(text: 'Trang')),
                   SizedBox(height: 36, child: Tab(text: 'Bản đồ')),
                 ]),
           ),
@@ -201,23 +224,154 @@ class _SearchPostPageState extends State<SearchPostPage>
             physics: NeverScrollableScrollPhysics(),
             controller: _tabController,
             children: [
-              ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: posts.length,
-                  itemBuilder: (context, index) {
-                    return PostWidget(posts[index]);
-                  }),
-              ListView.builder(
-                padding: EdgeInsets.only(top: 5),
-                itemCount: users.length,
-                itemBuilder: (context, index) => PeopleWidget(users[index]),
-              ),
+              _buildPostTab(),
+              _buildUserTab(),
+              _buildPageTab(),
               PostMap(),
             ],
           ),
         ),
         if (isLoading) SearchingWidget(),
       ],
+    );
+  }
+
+  _buildPostTab() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (posts.length == 0 && _searchC.text.trim() != '')
+            Padding(
+                padding: const EdgeInsets.only(left: 15, top: 10),
+                child: Text(
+                  'Không có tìm thấy kết quả cho: ${_searchC.text.trim()}',
+                  style: ptSmall().copyWith(
+                    color: Colors.black54,
+                  ),
+                )),
+          if (posts.length > 0 && _searchC.text.trim() != '')
+            Padding(
+                padding: const EdgeInsets.only(left: 15, top: 10),
+                child: Text(
+                  'Kết quả tìm kiếm cho: ${_searchC.text.trim()}',
+                  style: ptSmall().copyWith(
+                    color: Colors.black54,
+                  ),
+                )),
+          ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                return PostWidget(posts[index]);
+              }),
+        ],
+      ),
+    );
+  }
+
+  _buildUserTab() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (users.length == 0 && _searchC.text.trim() == '')
+            Padding(
+                padding: const EdgeInsets.only(left: 12, top: 12),
+                child: Text(
+                  'Gợi ý kết bạn',
+                  style: ptSmall().copyWith(
+                    color: Colors.black54,
+                  ),
+                )),
+          if (users.length > 0 && _searchC.text.trim() != '')
+            Padding(
+                padding: const EdgeInsets.only(left: 15, top: 10),
+                child: Text(
+                  'Kết quả tìm kiếm cho: ${_searchC.text.trim()}',
+                  style: ptSmall().copyWith(
+                    color: Colors.black54,
+                  ),
+                )),
+          if (users.length == 0 && _searchC.text.trim() != '')
+            Padding(
+                padding: const EdgeInsets.only(left: 15, top: 10),
+                child: Text(
+                  'Không có tìm thấy kết quả cho: ${_searchC.text.trim()}',
+                  style: ptSmall().copyWith(
+                    color: Colors.black54,
+                  ),
+                )),
+          (users.length == 0 && _searchC.text.trim() == '')
+              ? ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: _userBloc.suggestFollowUsers.length,
+                  itemBuilder: (context, index) =>
+                      PeopleWidget(_userBloc.suggestFollowUsers[index]),
+                )
+              : ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: users.length,
+                  itemBuilder: (context, index) => PeopleWidget(users[index]),
+                ),
+        ],
+      ),
+    );
+  }
+
+  _buildPageTab() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (pages.length == 0 && _searchC.text.trim() == '')
+            Padding(
+                padding: const EdgeInsets.only(left: 12, top: 12),
+                child: Text(
+                  'Gợi ý trang phù hợp ',
+                  style: ptSmall().copyWith(
+                    color: Colors.black54,
+                  ),
+                )),
+          if (pages.length > 0 && _searchC.text.trim() != '')
+            Padding(
+                padding: const EdgeInsets.only(left: 15, top: 10),
+                child: Text(
+                  'Kết quả tìm kiếm cho: ${_searchC.text.trim()}',
+                  style: ptSmall().copyWith(
+                    color: Colors.black54,
+                  ),
+                )),
+          if (pages.length == 0 && _searchC.text.trim() != '')
+            Padding(
+                padding: const EdgeInsets.only(left: 15, top: 10),
+                child: Text(
+                  'Không có tìm thấy kết quả cho: ${_searchC.text.trim()}',
+                  style: ptSmall().copyWith(
+                    color: Colors.black54,
+                  ),
+                )),
+          (pages.length == 0 && _searchC.text.trim() == '')
+              ? ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: _pagesBloc.suggestFollowPage.length,
+                  itemBuilder: (context, index) => PageWidget(
+                      _pagesBloc.suggestFollowPage[index], _pagesBloc),
+                )
+              : ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: pages.length,
+                  itemBuilder: (context, index) =>
+                      PageWidget(pages[index], _pagesBloc),
+                ),
+        ],
+      ),
     );
   }
 }

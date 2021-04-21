@@ -44,12 +44,7 @@ class _PagesPageState extends State<PagesPage> {
     super.didChangeDependencies();
   }
 
-  Future<void> _getAllPageCreated() async => await _pagesBloc.getAllPage(
-        filter: GraphqlFilter(
-          filter: 'filter:{ ownerId: "${_authBloc.userModel.id}"}',
-          order: "{updatedAt: -1}",
-        ),
-      );
+  Future<void> _getAllPageCreated() async => await _pagesBloc.getMyPage();
 
   Future<void> _getAllPageFollow() async {
     _pagesBloc.isFollowPageLoading = true;

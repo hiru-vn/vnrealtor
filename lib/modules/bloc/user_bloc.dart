@@ -2,6 +2,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/model/friendship.dart';
 import 'package:datcao/modules/model/setting.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
 
@@ -70,6 +71,7 @@ class UserBloc extends ChangeNotifier {
       setUserlocation();
       suggestFollow();
       getListFriendIds();
+      PagesBloc.instance.init();
     }
   }
 
@@ -174,8 +176,8 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> updateSetting(SettingModel setting) async {
     try {
-      final res = await UserRepo().updateSetting(
-          setting.likeNoti, setting.commentNoti, setting.shareNoti, setting.postNoti);
+      final res = await UserRepo().updateSetting(setting.likeNoti,
+          setting.commentNoti, setting.shareNoti, setting.postNoti);
 
       return BaseResponse.success(res);
     } catch (e) {
