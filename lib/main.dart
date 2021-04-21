@@ -27,7 +27,12 @@ final _sentry = SentryClient(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await FlutterStatusbarTextColor.setTextColor(FlutterStatusbarTextColor.dark);
+  try {
+    await FlutterStatusbarTextColor.setTextColor(
+        FlutterStatusbarTextColor.dark);
+  } catch (e) {
+    // not always work}
+  }
   FbdynamicLink.initDynamicLinks();
   // CallKeep.setup();
   ConnectionStatusSingleton.getInstance().initialize();
