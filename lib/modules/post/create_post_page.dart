@@ -461,19 +461,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         )),
                   ),
                   SizedBox(width: 12),
-                  GestureDetector(
-                    onTap: () {
-                      showAlertDialog(context, 'Đang phát triển',
-                          navigatorKey: navigatorKey);
-                    },
-                    child: SizedBox(
-                        height: 40,
-                        width: 40,
-                        child: Padding(
-                          padding: const EdgeInsets.all(6),
-                          child: Image.asset('assets/icon/tag_friend.png'),
-                        )),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     showAlertDialog(context, 'Đang phát triển',
+                  //         navigatorKey: navigatorKey);
+                  //   },
+                  //   child: SizedBox(
+                  //       height: 40,
+                  //       width: 40,
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.all(6),
+                  //         child: Image.asset('assets/icon/tag_friend.png'),
+                  //       )),
+                  // ),
                 ],
               ),
             ),
