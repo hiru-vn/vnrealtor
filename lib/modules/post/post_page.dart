@@ -2,6 +2,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/post/suggest_list.dart';
+import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:datcao/share/widget/load_more.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -105,6 +106,9 @@ class _PostPageState extends State<PostPage> {
                   return;
                 },
                 child: SingleChildScrollView(
+                  // physics: const BouncingScrollPhysics(
+                  //     parent: AlwaysScrollableScrollPhysics()),
+                  physics: const AlwaysScrollableScrollPhysics(),
                   controller: _postBloc.feedScrollController,
                   child: Column(
                     children: [
@@ -136,40 +140,53 @@ class _PostPageState extends State<PostPage> {
                             },
                             itemBuilder: (context, index) {
                               if (index == 0) {
-                                return InkWell(
-                                  borderRadius: BorderRadius.circular(15),
-                                  onTap: () {
-                                    setState(() {
-                                      isFilterDistance = !isFilterDistance;
-                                    });
-                                    if (isFilterDistance == false) {
-                                      _postBloc.getNewFeed(
-                                          filter: GraphqlFilter(
-                                              limit: 10,
-                                              order: "{updatedAt: -1}"));
-                                    } else {
-                                      _getPostLocal();
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 30,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    decoration: BoxDecoration(
-                                        color: isFilterDistance
-                                            ? ptPrimaryColor(context)
-                                            : ptSecondaryColor(context),
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    child: Center(
-                                      child: Text(
-                                        'Dự án gần đây',
-                                        style: TextStyle(
-                                            color: isFilterDistance
-                                                ? Colors.white
-                                                : ptPrimaryColor(context)),
+                                return PopupMenuButton(
+                                  itemBuilder: (_) => <PopupMenuItem<int>>[
+                                    PopupMenuItem(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text('Bán kính 10 km'),
+                                          if (distance == 10)
+                                            Icon(Icons.check, size: 18)
+                                        ],
                                       ),
+                                      value: 10,
                                     ),
+                                    PopupMenuItem(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text('Bán kính 20 km'),
+                                            if (distance == 20)
+                                              Icon(Icons.check, size: 18)
+                                          ],
+                                        ),
+                                        value: 20),
+                                    PopupMenuItem(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text('Bán kính 50 km'),
+                                            if (distance == 50)
+                                              Icon(Icons.check, size: 18)
+                                          ],
+                                        ),
+                                        value: 50),
+                                  ],
+                                  onSelected: (val) async {
+                                    setState(() {
+                                      isFilterDistance = true;
+                                      distance = val;
+                                    });
+                                    _getPostLocal();
+                                  },
+                                  padding: EdgeInsets.zero,
+                                  child: Center(
+                                    child: Icon(Icons.my_location,
+                                        color: !isFilterDistance
+                                            ? Colors.black54
+                                            : ptPrimaryColor(context)),
                                   ),
                                 );
                               }
@@ -199,70 +216,79 @@ class _PostPageState extends State<PostPage> {
                             scrollDirection: Axis.horizontal,
                           ),
                         ),
-                      if (isFilterDistance)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Container(
-                            padding: const EdgeInsets.only(
-                                top: 2, bottom: 2, left: 7, right: 1),
-                            margin: EdgeInsets.only(right: 8, top: 8),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(color: Colors.black12)),
-                            child: DropdownButton(
-                                value: distance,
-                                isDense: true,
-                                style: ptBody().copyWith(color: Colors.black87),
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('Bán kính 10 km',
-                                        style: ptSmall()
-                                            .copyWith(color: Colors.black87)),
-                                    value: 10,
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Bán kính 20 km',
-                                        style: ptSmall()
-                                            .copyWith(color: Colors.black87)),
-                                    value: 20,
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Bán kính 50 km',
-                                        style: ptSmall()
-                                            .copyWith(color: Colors.black87)),
-                                    value: 50,
-                                  ),
-                                ],
-                                underline: SizedBox.shrink(),
-                                onChanged: (val) {
-                                  setState(() {
-                                    distance = val;
-                                  });
-                                }),
-                          ),
-                        ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: _postBloc.feed.length,
-                        itemBuilder: (context, index) {
-                          final item = _postBloc.feed[index];
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (index == (AuthBloc.firstLogin ? 0 : 5) &&
-                                  UserBloc.instance.suggestFollowUsers !=
-                                      null &&
-                                  UserBloc.instance.suggestFollowUsers.length >
-                                      0)
-                                SuggestList(
-                                  users: UserBloc.instance.suggestFollowUsers,
-                                ),
-                              PostWidget(item),
-                            ],
-                          );
-                        },
-                      ),
+                      // if (isFilterDistance)
+                      //   Align(
+                      //     alignment: Alignment.centerRight,
+                      //     child: Container(
+                      //       padding: const EdgeInsets.only(
+                      //           top: 2, bottom: 2, left: 7, right: 1),
+                      //       margin: EdgeInsets.only(right: 8, top: 8),
+                      //       decoration: BoxDecoration(
+                      //           borderRadius: BorderRadius.circular(5),
+                      //           border: Border.all(color: Colors.black12)),
+                      //       child: DropdownButton(
+                      //           value: distance,
+                      //           isDense: true,
+                      //           style: ptBody().copyWith(color: Colors.black87),
+                      //           items: [
+                      //             DropdownMenuItem(
+                      //               child: Text('Bán kính 10 km',
+                      //                   style: ptSmall()
+                      //                       .copyWith(color: Colors.black87)),
+                      //               value: 10,
+                      //             ),
+                      //             DropdownMenuItem(
+                      //               child: Text('Bán kính 20 km',
+                      //                   style: ptSmall()
+                      //                       .copyWith(color: Colors.black87)),
+                      //               value: 20,
+                      //             ),
+                      //             DropdownMenuItem(
+                      //               child: Text('Bán kính 50 km',
+                      //                   style: ptSmall()
+                      //                       .copyWith(color: Colors.black87)),
+                      //               value: 50,
+                      //             ),
+                      //           ],
+                      //           underline: SizedBox.shrink(),
+                      //           onChanged: (val) {
+                      //             setState(() {
+                      //               distance = val;
+                      //             });
+                      //             _getPostLocal();
+                      //           }),
+                      //     ),
+                      //   ),
+                      _postBloc.feed.length == 0
+                          ? EmptyWidget(
+                              assetImg: 'assets/image/no_post.png',
+                              title: 'Không tìm thấy bài đăng',
+                            )
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: _postBloc.feed.length,
+                              itemBuilder: (context, index) {
+                                final item = _postBloc.feed[index];
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (index ==
+                                            (AuthBloc.firstLogin ? 0 : 5) &&
+                                        UserBloc.instance.suggestFollowUsers !=
+                                            null &&
+                                        UserBloc.instance.suggestFollowUsers
+                                                .length >
+                                            0)
+                                      SuggestList(
+                                        users: UserBloc
+                                            .instance.suggestFollowUsers,
+                                      ),
+                                    PostWidget(item),
+                                  ],
+                                );
+                              },
+                            ),
                       if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
                         PostSkeleton(
                           count: 1,

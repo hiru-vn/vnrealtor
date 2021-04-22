@@ -13,7 +13,7 @@ class PostBloc extends ChangeNotifier {
   static final PostBloc instance = PostBloc._privateConstructor();
 
   PageController pageController = PageController();
-  ScrollController feedScrollController;
+  ScrollController feedScrollController = ScrollController();
 
   bool isReloadFeed = true;
   bool isLoadMoreFeed = true;

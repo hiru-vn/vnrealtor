@@ -8,6 +8,16 @@ import 'package:datcao/modules/services/post_srv.dart';
 import 'package:datcao/share/import.dart';
 
 class PagesRepo {
+  Future getListPage({GraphqlFilter filter}) async {
+    final res = await PagesSrv().getList(
+        limit: filter?.limit,
+        offset: filter?.offset,
+        search: filter?.search,
+        page: filter?.page,
+        order: filter?.order);
+    return res;
+  }
+
   Future getPageCreate({GraphqlFilter filter}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
@@ -138,8 +148,7 @@ $pageFragment
     return res['getOnePage'];
   }
 
-  Future getPostFollower(
-      {GraphqlFilter filter, String userId}) async {
+  Future getPostFollower({GraphqlFilter filter, String userId}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
     final data =
@@ -152,13 +161,11 @@ $pagesFragment
     return res['getListFollowPage'];
   }
 
-
   Future suggestFollowPage() async {
     final res = await PagesSrv().query('suggestFollowPage', '',
         fragment: ' $pagesFragment ', removeData: true);
     return res['suggestFollowPage'];
   }
-
 }
 
 String pagesFragment = '''
