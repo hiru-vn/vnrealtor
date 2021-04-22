@@ -143,14 +143,35 @@ class _PostPageState extends State<PostPage> {
                                 return PopupMenuButton(
                                   itemBuilder: (_) => <PopupMenuItem<int>>[
                                     PopupMenuItem(
-                                      child: Text('Bán kính 10 km'),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text('Bán kính 10 km'),
+                                          if (distance == 10)
+                                            Icon(Icons.check, size: 18)
+                                        ],
+                                      ),
                                       value: 10,
                                     ),
                                     PopupMenuItem(
-                                        child: Text('Bán kính 20 km'),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text('Bán kính 20 km'),
+                                            if (distance == 20)
+                                              Icon(Icons.check, size: 18)
+                                          ],
+                                        ),
                                         value: 20),
                                     PopupMenuItem(
-                                        child: Text('Bán kính 50 km'),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text('Bán kính 50 km'),
+                                            if (distance == 50)
+                                              Icon(Icons.check, size: 18)
+                                          ],
+                                        ),
                                         value: 50),
                                   ],
                                   onSelected: (val) async {
