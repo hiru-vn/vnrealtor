@@ -30,6 +30,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: elevation.toDouble(),
       automaticallyImplyLeading: automaticallyImplyLeading,
       leading: leading,
+      brightness: Brightness.light,
       centerTitle: centerTitle,
       title: Row(
         mainAxisSize: centerTitle ? MainAxisSize.min : MainAxisSize.max,

@@ -199,7 +199,7 @@ class _ProfileCardState extends State<ProfileCard> {
   Widget build(BuildContext context) {
     return Padding(
       padding:
-          const EdgeInsets.symmetric(vertical: 8).copyWith(top: 0, bottom: 0),
+          const EdgeInsets.symmetric(vertical: 8).copyWith(top: 100, bottom: 0),
       child: Material(
           borderRadius: BorderRadius.circular(5),
           // elevation: 3,

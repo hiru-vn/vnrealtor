@@ -27,6 +27,7 @@ class AppBar1 extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       automaticallyImplyLeading: automaticallyImplyLeading,
       leading: leading,
+      brightness: Brightness.light,
       centerTitle: centerTitle,
       title: Text(
         title ?? 'Datcao',
