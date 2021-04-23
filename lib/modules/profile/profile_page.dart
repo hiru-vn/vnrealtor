@@ -197,289 +197,284 @@ class _ProfileCardState extends State<ProfileCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:
-          const EdgeInsets.symmetric(vertical: 8).copyWith(top: 100, bottom: 0),
-      child: Material(
-          borderRadius: BorderRadius.circular(5),
-          // elevation: 3,
-          child: Container(
-            width: deviceWidth(context),
-            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 14)
-                .copyWith(bottom: 0, right: 20),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 84,
-                        height: 84,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          // border: Border.all(
-                          //     width: 2.5, color: ptPrimaryColor(context)),
-                        ),
-                        child: Center(
-                          child: CircleAvatar(
-                            radius: 37.5,
-                            backgroundColor: Colors.white,
-                            backgroundImage: widget.user?.avatar != null
-                                ? CachedNetworkImageProvider(widget.user.avatar)
-                                : AssetImage('assets/image/default_avatar.png'),
-                            child: VerifiedIcon(widget.user?.role, 14),
-                          ),
+    return Material(
+        borderRadius: BorderRadius.circular(5),
+        // elevation: 3,
+        child: Container(
+          width: deviceWidth(context),
+          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 14)
+              .copyWith(bottom: 0, right: 20),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 84,
+                      height: 84,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        // border: Border.all(
+                        //     width: 2.5, color: ptPrimaryColor(context)),
+                      ),
+                      child: Center(
+                        child: CircleAvatar(
+                          radius: 37.5,
+                          backgroundColor: Colors.white,
+                          backgroundImage: widget.user?.avatar != null
+                              ? CachedNetworkImageProvider(widget.user.avatar)
+                              : AssetImage('assets/image/default_avatar.png'),
+                          child: VerifiedIcon(widget.user?.role, 14),
                         ),
                       ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 6),
-                            Row(
-                              children: [
-                                SizedBox(width: 15),
-                                Icon(
-                                  Icons.star_outline,
-                                  color: Colors.deepOrange,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 6),
+                          Row(
+                            children: [
+                              SizedBox(width: 15),
+                              Icon(
+                                Icons.star_outline,
+                                color: Colors.deepOrange,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              ...[
+                                Text(
+                                  widget.user.name ?? '',
+                                  style: ptBigTitle(),
                                 ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                ...[
-                                  Text(
-                                    widget.user.name ?? '',
-                                    style: ptBigTitle(),
-                                  ),
-                                  SizedBox(width: 8),
-                                  if ([UserRole.agent, UserRole.company]
-                                      .contains(UserBloc.getRole(widget.user)))
-                                    CustomTooltip(
-                                      margin: EdgeInsets.only(top: 0),
-                                      message: 'Tài khoản xác thực',
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.blue[600],
-                                        ),
-                                        padding: EdgeInsets.all(1.3),
-                                        child: Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                          size: 11,
-                                        ),
+                                SizedBox(width: 8),
+                                if ([UserRole.agent, UserRole.company]
+                                    .contains(UserBloc.getRole(widget.user)))
+                                  CustomTooltip(
+                                    margin: EdgeInsets.only(top: 0),
+                                    message: 'Tài khoản xác thực',
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.blue[600],
                                       ),
-                                    )
-                                ]
-                              ],
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
+                                      padding: EdgeInsets.all(1.3),
+                                      child: Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 11,
+                                      ),
+                                    ),
+                                  )
+                              ]
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      AuthBloc.instance.userModel.totalPost
+                                          .toString(),
+                                      style: ptBigTitle(),
+                                    ),
+                                    SizedBox(height: 3),
+                                    Text(
+                                      'Thích',
+                                      style: ptSmall(),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              VerticalDivider(
+                                width: 4,
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    FollowPage.navigate(widget.user, 0);
+                                  },
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        AuthBloc.instance.userModel.totalPost
+                                        AuthBloc.instance.userModel.followerIds
+                                            .length
                                             .toString(),
                                         style: ptBigTitle(),
                                       ),
                                       SizedBox(height: 3),
+                                      FittedBox(
+                                        child: Text(
+                                          'Follower',
+                                          style: ptSmall(),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              VerticalDivider(
+                                width: 4,
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    FollowPage.navigate(widget.user, 1);
+                                  },
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
                                       Text(
-                                        'Thích',
-                                        style: ptSmall(),
-                                        textAlign: TextAlign.center,
+                                        AuthBloc.instance.userModel.followingIds
+                                            .length
+                                            .toString(),
+                                        style: ptBigTitle(),
+                                      ),
+                                      SizedBox(height: 3),
+                                      FittedBox(
+                                        child: Text(
+                                          'Đang Follow',
+                                          style: ptSmall(),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                VerticalDivider(
-                                  width: 4,
-                                ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      FollowPage.navigate(widget.user, 0);
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          AuthBloc.instance.userModel
-                                              .followerIds.length
-                                              .toString(),
-                                          style: ptBigTitle(),
-                                        ),
-                                        SizedBox(height: 3),
-                                        FittedBox(
-                                          child: Text(
-                                            'Follower',
-                                            style: ptSmall(),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                VerticalDivider(
-                                  width: 4,
-                                ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      FollowPage.navigate(widget.user, 1);
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          AuthBloc.instance.userModel
-                                              .followingIds.length
-                                              .toString(),
-                                          style: ptBigTitle(),
-                                        ),
-                                        SizedBox(height: 3),
-                                        FittedBox(
-                                          child: Text(
-                                            'Đang Follow',
-                                            style: ptSmall(),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
+                              )
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  (_authBloc.userModel.description == null ||
-                          _authBloc.userModel.description.trim().isEmpty)
-                      ? SizedBox(height: 3)
-                      : SizedBox(height: 12),
+                    ),
+                  ],
+                ),
+                (_authBloc.userModel.description == null ||
+                        _authBloc.userModel.description.trim().isEmpty)
+                    ? SizedBox(height: 3)
+                    : SizedBox(height: 12),
 
-                  if (_authBloc.userModel.description != null &&
-                      _authBloc.userModel.description.trim().isNotEmpty)
-                    Text(_authBloc.userModel.description),
-                  SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text(
-                        'Điểm tương tác: ${widget.user.reputationScore.toString()}',
-                        style: ptBody().copyWith(color: Colors.black54),
-                      ),
-                      SizedBox(width: 5),
-                      SizedBox(
-                          height: 13,
-                          width: 13,
-                          child: Image.asset('assets/image/ip.png')),
-                      Spacer(),
-                      if (widget.user.facebookUrl != null)
-                        FutureBuilder(
-                            future: canLaunch(widget.user.facebookUrl),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) return SizedBox.shrink();
-                              if (snapshot.data == false)
-                                return SizedBox.shrink();
-                              if (snapshot.data == true)
-                                return GestureDetector(
-                                  onTap: () {
-                                    launch(widget.user.facebookUrl);
-                                  },
-                                  child: SizedBox(
-                                      width: 23,
-                                      height: 23,
-                                      child: Image.asset(
-                                          'assets/image/facebook_icon.png')),
-                                );
+                if (_authBloc.userModel.description != null &&
+                    _authBloc.userModel.description.trim().isNotEmpty)
+                  Text(_authBloc.userModel.description),
+                SizedBox(height: 5),
+                Row(
+                  children: [
+                    Text(
+                      'Điểm tương tác: ${widget.user.reputationScore.toString()}',
+                      style: ptBody().copyWith(color: Colors.black54),
+                    ),
+                    SizedBox(width: 5),
+                    SizedBox(
+                        height: 13,
+                        width: 13,
+                        child: Image.asset('assets/image/ip.png')),
+                    Spacer(),
+                    if (widget.user.facebookUrl != null)
+                      FutureBuilder(
+                          future: canLaunch(widget.user.facebookUrl),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) return SizedBox.shrink();
+                            if (snapshot.data == false)
                               return SizedBox.shrink();
-                            }),
-                      SizedBox(width: 12),
-                      if (widget.user.email != null)
-                        GestureDetector(
-                          onTap: () {
-                            launch(_emailLaunchUri.toString());
-                          },
-                          child: SizedBox(
-                              width: 26,
-                              height: 26,
-                              child:
-                                  Image.asset('assets/image/gmail_icon.png')),
+                            if (snapshot.data == true)
+                              return GestureDetector(
+                                onTap: () {
+                                  launch(widget.user.facebookUrl);
+                                },
+                                child: SizedBox(
+                                    width: 23,
+                                    height: 23,
+                                    child: Image.asset(
+                                        'assets/image/facebook_icon.png')),
+                              );
+                            return SizedBox.shrink();
+                          }),
+                    SizedBox(width: 12),
+                    if (widget.user.email != null)
+                      GestureDetector(
+                        onTap: () {
+                          launch(_emailLaunchUri.toString());
+                        },
+                        child: SizedBox(
+                            width: 26,
+                            height: 26,
+                            child: Image.asset('assets/image/gmail_icon.png')),
+                      ),
+                  ],
+                ),
+                SizedBox(height: 15),
+                // Row(children: [
+                //   Expanded(
+                //     child: GestureDetector(
+                //       onTap: () {
+                //         UpdateProfilePage.navigate();
+                //       },
+                //       child: Container(
+                //         padding: EdgeInsets.all(6),
+                //         decoration: BoxDecoration(
+                //             borderRadius: BorderRadius.circular(6),
+                //             border:
+                //                 Border.all(color: ptPrimaryColor(context))),
+                //         child: Center(
+                //           child: Text(
+                //             'Sửa thông tin cá nhân',
+                //             style: ptTitle(),
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // SizedBox(height: 10),
+                Center(
+                  child: TabBar(
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicatorWeight: 4,
+                      indicatorColor: ptPrimaryColor(context),
+                      controller: widget.tabC,
+                      isScrollable: true,
+                      labelColor: Colors.black87,
+                      unselectedLabelStyle: ptTitle(),
+                      labelStyle: ptTitle(),
+                      tabs: [
+                        SizedBox(
+                          height: 35,
+                          width: deviceWidth(context) / 2 - 60,
+                          child: Tab(
+                            child: Icon(
+                              MdiIcons.postOutline,
+                              color: ptPrimaryColor(context),
+                            ),
+                          ),
                         ),
-                    ],
-                  ),
-                  SizedBox(height: 15),
-                  // Row(children: [
-                  //   Expanded(
-                  //     child: GestureDetector(
-                  //       onTap: () {
-                  //         UpdateProfilePage.navigate();
-                  //       },
-                  //       child: Container(
-                  //         padding: EdgeInsets.all(6),
-                  //         decoration: BoxDecoration(
-                  //             borderRadius: BorderRadius.circular(6),
-                  //             border:
-                  //                 Border.all(color: ptPrimaryColor(context))),
-                  //         child: Center(
-                  //           child: Text(
-                  //             'Sửa thông tin cá nhân',
-                  //             style: ptTitle(),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // SizedBox(height: 10),
-                  Center(
-                    child: TabBar(
-                        indicatorSize: TabBarIndicatorSize.label,
-                        indicatorWeight: 4,
-                        indicatorColor: ptPrimaryColor(context),
-                        controller: widget.tabC,
-                        isScrollable: true,
-                        labelColor: Colors.black87,
-                        unselectedLabelStyle: ptTitle(),
-                        labelStyle: ptTitle(),
-                        tabs: [
-                          SizedBox(
-                            height: 35,
-                            width: deviceWidth(context) / 2 - 60,
-                            child: Tab(
-                              child: Icon(
-                                MdiIcons.postOutline,
-                                color: ptPrimaryColor(context),
-                              ),
+                        SizedBox(
+                          height: 35,
+                          width: deviceWidth(context) / 2 - 60,
+                          child: Tab(
+                            child: Icon(
+                              MdiIcons.bookmarkOutline,
+                              color: ptPrimaryColor(context),
                             ),
                           ),
-                          SizedBox(
-                            height: 35,
-                            width: deviceWidth(context) / 2 - 60,
-                            child: Tab(
-                              child: Icon(
-                                MdiIcons.bookmarkOutline,
-                                color: ptPrimaryColor(context),
-                              ),
-                            ),
-                          ),
-                        ]),
-                  ),
-                ]),
-          )),
-    );
+                        ),
+                      ]),
+                ),
+              ]),
+        ));
   }
 }
 
