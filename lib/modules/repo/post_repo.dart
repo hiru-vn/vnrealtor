@@ -17,6 +17,7 @@ class PostRepo {
     final res = await PostSrv().query('getNewsFeed', data, fragment: '''
     data {
 $postFragment
+distance
 }
     ''');
     return res['getNewsFeed'];

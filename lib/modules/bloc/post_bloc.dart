@@ -1,10 +1,12 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/address.dart';
 import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/media_post.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
+import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
 
@@ -43,6 +45,9 @@ class PostBloc extends ChangeNotifier {
 
   Future<BaseResponse> getNewFeed({GraphqlFilter filter}) async {
     try {
+      // update user position
+      UserBloc.instance.setUserlocation();
+
       isEndFeed = false;
       isReloadFeed = true;
       notifyListeners();

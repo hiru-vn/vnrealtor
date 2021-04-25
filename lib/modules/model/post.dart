@@ -36,6 +36,7 @@ class PostModel {
   DynamicLink dynamicLink;
   bool isPage;
   PagesCreate page;
+  double distance;
 
   PostModel(
       {this.id,
@@ -68,8 +69,8 @@ class PostModel {
       this.page,
       this.polygonPoints,
       this.dynamicLink,
-        this.isPage
-      });
+      this.isPage,
+      this.distance});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -122,8 +123,11 @@ class PostModel {
               double.tryParse(e['lng'].toString())))
           .toList();
     }
-    dynamicLink = json['dynamicLink']==null? null: DynamicLink.fromJson(json['dynamicLink']) ;
+    dynamicLink = json['dynamicLink'] == null
+        ? null
+        : DynamicLink.fromJson(json['dynamicLink']);
     isPage = json['isPage'];
+    distance = double.tryParse(json['distance'].toString());
   }
 
   Map<String, dynamic> toJson() {
@@ -158,4 +162,3 @@ class PostModel {
     return data;
   }
 }
-

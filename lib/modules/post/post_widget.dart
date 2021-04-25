@@ -72,8 +72,7 @@ class _PostWidgetState extends State<PostWidget> {
                     onTap: () {
                       widget.post.isPage
                           ? PageDetail.navigate(widget.post?.page)
-                          : ProfileOtherPage.navigate(
-                          widget.post?.user);
+                          : ProfileOtherPage.navigate(widget.post?.user);
                     },
                     child: CircleAvatar(
                       radius: 23,
@@ -179,7 +178,20 @@ class _PostWidgetState extends State<PostWidget> {
                                     DateTime.tryParse(widget.post?.createdAt)),
                             style: ptTiny().copyWith(color: Colors.black54),
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(width: 5),
+                          if (widget.post.distance != null) ...[
+                            Container(
+                                height: 4,
+                                width: 4,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.black26)),
+                            SizedBox(width: 5),
+                            Text(
+                              widget.post.distance.toStringAsFixed(1) + ' km',
+                              style: ptTiny().copyWith(color: Colors.black54),
+                            ),
+                          ]
                         ],
                       ),
                     ],
