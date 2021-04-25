@@ -1,19 +1,24 @@
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/share/import.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import './keep_keyboard_popup_menu/keep_keyboard_popup_menu.dart';
 
 class TagUserField extends StatefulWidget {
   final TextEditingController controller;
-  final List<String> users;
   final FocusNode focusNode;
   final Function(String) onSubmitted;
   final InputDecoration decoration;
+  final double keyboardPadding;
 
   TagUserField(
       {this.controller,
-      this.users,
       this.focusNode,
       this.onSubmitted,
-      this.decoration});
+      this.decoration,
+      this.keyboardPadding = 0});
 
   @override
   _TagUserFieldState createState() => _TagUserFieldState();
@@ -23,50 +28,138 @@ class _TagUserFieldState extends State<TagUserField> {
   List<String> words = [];
   List<String> comments = [];
   String str = '';
+  String err;
+  String lastText = '';
+
+  static List<UserModel> tagablePeople;
+
+  @override
+  void initState() {
+    super.initState();
+    _getTagable();
+  }
+
+  Future _getTagable() async {
+    final res = await UserBloc.instance.getListUserIn([
+      ...AuthBloc.instance.userModel.friendIds,
+      ...AuthBloc.instance.userModel.followingIds
+    ].toSet().toList());
+    if (res.isSuccess) {
+      setState(() {
+        tagablePeople = res.data;
+        err = null;
+      });
+    } else {
+      setState(() {
+        err = 'Không thể lấy danh sách';
+      });
+    }
+    return;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisSize: MainAxisSize.min, children: [
-      TextField(
-          focusNode: widget.focusNode,
-          controller: widget.controller,
-          onSubmitted: widget.onSubmitted,
-          maxLines: null,
-          decoration: widget.decoration,
-          style: TextStyle(
-            color: Colors.black,
-          ),
-          onChanged: (val) {
-            setState(() {
-              words = val.split(' ');
-              str = words.length > 0 && words[words.length - 1].startsWith('@')
-                  ? words[words.length - 1]
-                  : '';
-            });
-          }),
-      str.length > 1
-          ? ListView(
-              shrinkWrap: true,
-              children: widget.users.map((s) {
-                if (('@' + s).contains(str))
-                  return ListTile(
-                      title: Text(
-                        s,
-                        style: TextStyle(color: Colors.black),
-                      ),
+      WithKeepKeyboardPopupMenu(
+        menuBuilder: tagablePeople != null
+            ? null
+            : (context, closePopup) => Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: kLoadingSpinner,
+                ),
+        menuItemBuilder: tagablePeople == null
+            ? null
+            : (context, closePopup) => tagablePeople
+                .map((e) => e.name)
+                .where((s) => ('@' + s).toLowerCase().contains(str))
+                .map((e) => KeepKeyboardPopupMenuItem(
+                    child: GestureDetector(
                       onTap: () {
-                        String tmp = str.substring(1, str.length);
                         setState(() {
-                          str = '';
-                          widget.controller.text += s
-                              .substring(s.indexOf(tmp) + tmp.length, s.length)
-                              .replaceAll(' ', '_');
+                          widget.controller
+                              .text = widget.controller.text.substring(0,
+                                  widget.controller.text.length - str.length) +
+                              '@' +
+                              e;
+                          widget.controller.selection =
+                              TextSelection.fromPosition(TextPosition(
+                                  offset: widget.controller.text.length));
                         });
-                      });
-                else
-                  return SizedBox();
-              }).toList())
-          : SizedBox(),
+
+                        closePopup();
+                      },
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                              radius: 17,
+                              backgroundColor: Colors.white,
+                              backgroundImage: AssetImage(
+                                  'assets/image/default_avatar.png')),
+                          SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                e,
+                                style: ptBody().copyWith(color: Colors.black),
+                              ),
+                              Text(
+                                'Bạn bè',
+                                style: ptTiny().copyWith(color: Colors.black54),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    onTap: () {}))
+                .toList(),
+        childBuilder: (context, openPopup, closePopup) => TextField(
+            focusNode: widget.focusNode,
+            controller: widget.controller,
+            onSubmitted: widget.onSubmitted,
+            maxLines: null,
+            decoration: widget.decoration,
+            style: TextStyle(
+              color: Colors.black,
+            ),
+            onChanged: (val) {
+              setState(() {
+                words = val.split(' ');
+                str =
+                    words.length > 0 && words[words.length - 1].startsWith('@')
+                        ? words[words.length - 1].toLowerCase()
+                        : '';
+              });
+              if (str.replaceAll('@', '').trim() != '' &&
+                  tagablePeople != null &&
+                  tagablePeople
+                          .map((e) => e.name)
+                          .where((s) => ('@' + s).toLowerCase().contains(str))
+                          .length >
+                      0) {
+                closePopup().then(
+                    (value) => Future.delayed(Duration(milliseconds: 100), () {
+                          if (val.length > lastText.length) openPopup();
+                          lastText = val;
+                        }));
+              } else {
+                closePopup();
+                lastText = val;
+              }
+            }),
+        calculatePopupPosition:
+            (Size menuSize, Rect overlayRect, Rect buttonRect) {
+          print(overlayRect);
+          print(buttonRect);
+          return Offset(
+              buttonRect.left,
+              deviceHeight(context) -
+                  widget.keyboardPadding -
+                  menuSize.height -
+                  64);
+        },
+      ),
       comments.length > 0
           ? ListView.builder(
               shrinkWrap: true,

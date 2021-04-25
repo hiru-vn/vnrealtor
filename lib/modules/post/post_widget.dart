@@ -613,8 +613,8 @@ class _PostWidgetState extends State<PostWidget> {
           return SizedBox(
               height: deviceHeight(context) - kToolbarHeight - 15,
               child: CommentPage(
-                post: postModel,
-              ));
+                  post: postModel,
+                  keyboardPadding: MediaQuery.of(context).viewInsets.bottom));
         });
   }
 }
@@ -792,6 +792,7 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
               height: deviceHeight(context) - kToolbarHeight - 15,
               child: CommentPage(
                 post: postModel,
+                keyboardPadding: MediaQuery.of(context).viewInsets.bottom
               ));
         });
   }

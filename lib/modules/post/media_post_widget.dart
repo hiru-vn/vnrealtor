@@ -952,6 +952,7 @@ showComment(MediaPost postModel, BuildContext context) {
             height: deviceHeight(context) - kToolbarHeight,
             child: CommentPage(
               mediaPost: postModel,
+              keyboardPadding: MediaQuery.of(context).viewInsets.bottom
             ));
       });
 }

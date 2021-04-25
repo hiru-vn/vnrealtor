@@ -17,8 +17,11 @@ import 'package:graphql/client.dart';
 class CommentPage extends StatefulWidget {
   final PostModel post;
   final MediaPost mediaPost;
+  final double keyboardPadding;
 
-  const CommentPage({Key key, this.post, this.mediaPost}) : super(key: key);
+  const CommentPage(
+      {Key key, this.post, this.mediaPost, this.keyboardPadding = 0})
+      : super(key: key);
 
   static Future navigate(PostModel post, MediaPost mediaPost) {
     return navigatorKey.currentState.push(pageBuilder(CommentPage(
@@ -300,6 +303,7 @@ class _CommentPageState extends State<CommentPage> {
                             focusNode: _focusNodeComment,
                             controller: _commentC,
                             onSubmitted: _comment,
+                            keyboardPadding: widget.keyboardPadding,
                             decoration: InputDecoration(
                               suffixIcon: GestureDetector(
                                   behavior: HitTestBehavior.translucent,
