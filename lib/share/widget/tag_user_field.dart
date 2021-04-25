@@ -12,9 +12,11 @@ class TagUserField extends StatefulWidget {
   final Function(String) onSubmitted;
   final InputDecoration decoration;
   final double keyboardPadding;
+  final Function onTap;
 
   TagUserField(
       {this.controller,
+      this.onTap,
       this.focusNode,
       this.onSubmitted,
       this.decoration,
@@ -115,6 +117,7 @@ class _TagUserFieldState extends State<TagUserField> {
                     onTap: () {}))
                 .toList(),
         childBuilder: (context, openPopup, closePopup) => TextField(
+            onTap: widget.onTap,
             focusNode: widget.focusNode,
             controller: widget.controller,
             onSubmitted: widget.onSubmitted,
@@ -150,8 +153,6 @@ class _TagUserFieldState extends State<TagUserField> {
             }),
         calculatePopupPosition:
             (Size menuSize, Rect overlayRect, Rect buttonRect) {
-          print(overlayRect);
-          print(buttonRect);
           return Offset(
               buttonRect.left,
               deviceHeight(context) -

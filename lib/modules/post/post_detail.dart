@@ -9,6 +9,7 @@ import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
 import 'dart:async';
+import 'package:datcao/share/widget/tag_user_field.dart';
 
 class PostDetail extends StatefulWidget {
   final PostModel postModel;
@@ -279,9 +280,11 @@ class _PostDetailState extends State<PostDetail> {
                       width: 7,
                     ),
                     Expanded(
-                      child: TextField(
+                      child: TagUserField(
                         controller: _commentC,
-                        maxLines: null,
+                        focusNode: _focusNodeComment,
+                        keyboardPadding:
+                            MediaQuery.of(context).viewInsets.bottom,
                         onTap: () {
                           if (AuthBloc.instance.userModel == null) {
                             LoginPage.navigatePush();
@@ -290,7 +293,6 @@ class _PostDetailState extends State<PostDetail> {
                         },
                         // maxLength: 200,
                         onSubmitted: _comment,
-                        focusNode: _focusNodeComment,
                         decoration: InputDecoration(
                           suffixIcon: GestureDetector(
                               behavior: HitTestBehavior.translucent,
