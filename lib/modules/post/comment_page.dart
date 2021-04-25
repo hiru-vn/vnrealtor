@@ -4,6 +4,7 @@ import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/share/widget/tag_user_field.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -295,11 +296,9 @@ class _CommentPageState extends State<CommentPage> {
                           width: 7,
                         ),
                         Expanded(
-                          child: TextField(
+                          child: TagUserField(
                             focusNode: _focusNodeComment,
                             controller: _commentC,
-                            maxLines: null,
-                            // maxLength: 200,
                             onSubmitted: _comment,
                             decoration: InputDecoration(
                               suffixIcon: GestureDetector(
@@ -395,6 +394,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
+      _get2InitialReply();
     }
     if (userReplyCache != widget.userReplyCache) {
       userReplyCache = widget.userReplyCache;
@@ -403,7 +403,6 @@ class _CommentWidgetState extends State<CommentWidget> {
     // if (replies.length < 3) {
     //   isExpandReply = true;
     // }
-    _get2InitialReply();
 
     super.didChangeDependencies();
   }
@@ -414,8 +413,9 @@ class _CommentWidgetState extends State<CommentWidget> {
       res = await _postBloc.getAllReplyByCommentIdGuest(widget.comment.id,
           filter: GraphqlFilter(limit: 2, order: "{updatedAt: 1}"));
     } else {
-      res = await _postBloc.getAllReplyByCommentId(widget.comment.id,
-          filter: GraphqlFilter(limit: 2, order: "{updatedAt: 1}"));
+      if (widget.comment.id != null)
+        res = await _postBloc.getAllReplyByCommentId(widget.comment.id,
+            filter: GraphqlFilter(limit: 2, order: "{updatedAt: 1}"));
     }
     if (mounted)
       setState(() {
@@ -797,6 +797,7 @@ class _ReplyWidgetState extends State<ReplyWidget> {
             ),
             PopupMenuButton(
                 child: SizedBox.shrink(),
+                key: _menuKey,
                 itemBuilder: (_) => <PopupMenuItem<String>>[
                       if (AuthBloc.instance.userModel?.id ==
                           widget.reply.userId)

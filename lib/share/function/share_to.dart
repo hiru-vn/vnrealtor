@@ -3,22 +3,33 @@ import 'package:share/share.dart';
 import 'package:mime/mime.dart';
 import 'down_load_url_file.dart';
 
+// void shareTo(BuildContext context,
+//     {String content = '', List<String> image, List<String> video}) async {
+//   try {
+//     if (image == null) image = [];
+//     if (video == null) video = [];
+//     showSimpleLoadingDialog(context);
+//     final files = await Future.wait([
+//       ...image.map((e) => downLoadUrlFile(e)),
+//       ...video.map((e) => downLoadUrlFile(e))
+//     ]);
+//     navigatorKey.currentState.maybePop();
+//     Share.shareFiles(files.map((e) => e.path).toList(),
+//         subject: 'Bài viết từ ứng dụng Datcao',
+//         text: content,
+//         mimeTypes: files.map((e) => lookupMimeType(e.path)).toList());
+//     navigatorKey.currentState.maybePop();
+//   } catch (e) {
+//     showToast('Lỗi: $e', context);
+//   }
+// }
+
 void shareTo(BuildContext context,
     {String content = '', List<String> image, List<String> video}) async {
   try {
     if (image == null) image = [];
     if (video == null) video = [];
-    showSimpleLoadingDialog(context);
-    final files = await Future.wait([
-      ...image.map((e) => downLoadUrlFile(e)),
-      ...video.map((e) => downLoadUrlFile(e))
-    ]);
-    navigatorKey.currentState.maybePop();
-    Share.shareFiles(files.map((e) => e.path).toList(),
-        subject: 'Bài viết từ ứng dụng Datcao',
-        text: content,
-        mimeTypes: files.map((e) => lookupMimeType(e.path)).toList());
-    navigatorKey.currentState.maybePop();
+    Share.share(content, subject: 'Bài viết từ ứng dụng Datcao');
   } catch (e) {
     showToast('Lỗi: $e', context);
   }
