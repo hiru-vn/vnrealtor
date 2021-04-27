@@ -47,6 +47,7 @@ class _CommentPageState extends State<CommentPage> {
   FocusNode _focusNodeComment = FocusNode();
   CommentModel replyComment;
   List<ReplyModel> localReplies = [];
+  List<String> tagUserIds = [];
 
   @override
   void initState() {
@@ -96,7 +97,9 @@ class _CommentPageState extends State<CommentPage> {
     setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text,
-        postId: widget.post?.id, mediaPostId: widget.mediaPost?.id);
+        postId: widget.post?.id,
+        mediaPostId: widget.mediaPost?.id,
+        tagUserIds: tagUserIds);
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
@@ -300,6 +303,9 @@ class _CommentPageState extends State<CommentPage> {
                         ),
                         Expanded(
                           child: TagUserField(
+                            onUpdateTags: (userIds) {
+                              tagUserIds = userIds;
+                            },
                             focusNode: _focusNodeComment,
                             controller: _commentC,
                             onSubmitted: _comment,
@@ -382,6 +388,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   bool isExpandReply = false;
   List<ReplyModel> userReplyCache;
   final GlobalKey _menuKey = new GlobalKey();
+  List<String> contentSplit;
 
   @override
   void initState() {
@@ -390,6 +397,15 @@ class _CommentWidgetState extends State<CommentWidget> {
       _isLike = widget.comment.userLikeIds
               ?.contains(AuthBloc.instance.userModel?.id ?? '') ??
           false;
+    String content = '';
+    if (widget.comment.userTags != null) {
+      widget.comment.userTags.forEach((key, value) {
+        content = widget.comment.content
+            .replaceAll('@' + value, '<tag>$key<tag>');
+      });
+      
+      contentSplit.removeWhere((element) => element.trim() == '');
+    }
 
     super.initState();
   }
@@ -442,6 +458,7 @@ class _CommentWidgetState extends State<CommentWidget> {
     setState(() {
       isLoadReply = true;
     });
+
     if (AuthBloc.instance.userModel == null) {
       res = await _postBloc.getAllReplyByCommentIdGuest(widget.comment.id,
           filter: filter);
@@ -566,11 +583,28 @@ class _CommentWidgetState extends State<CommentWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text.rich(TextSpan(children: [
-                TextSpan(
-                  text: widget.comment.content ?? '',
-                  style: ptBody().copyWith(
-                      fontWeight: FontWeight.w500, color: Colors.black87),
-                ),
+                if ((contentSplit?.length??0) < 2)
+                  TextSpan(
+                    text: (widget.comment.content ?? ''),
+                    style: ptBody().copyWith(
+                        fontWeight: FontWeight.w500, color: Colors.black87),
+                  )
+                else
+                  ...contentSplit.map((e) {
+                    print(contentSplit);
+                    if (widget.comment.userTags.containsKey(e)) {
+                      return TextSpan(
+                        text: widget.comment.userTags[e],
+                        style: ptBody().copyWith(
+                            fontWeight: FontWeight.w500, color: Colors.blue),
+                      );
+                    }
+                    return TextSpan(
+                      text: (widget.comment.content ?? ''),
+                      style: ptBody().copyWith(
+                          fontWeight: FontWeight.w500, color: Colors.black87),
+                    );
+                  }).toList(),
                 TextSpan(
                   text: '  ' +
                       Formart.timeByDayViShort(

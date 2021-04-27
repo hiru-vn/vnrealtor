@@ -13,6 +13,7 @@ class TagUserField extends StatefulWidget {
   final InputDecoration decoration;
   final double keyboardPadding;
   final Function onTap;
+  final Function(List<String>) onUpdateTags;
 
   TagUserField(
       {this.controller,
@@ -20,7 +21,8 @@ class TagUserField extends StatefulWidget {
       this.focusNode,
       this.onSubmitted,
       this.decoration,
-      this.keyboardPadding = 0});
+      this.keyboardPadding = 0,
+      this.onUpdateTags});
 
   @override
   _TagUserFieldState createState() => _TagUserFieldState();
@@ -32,6 +34,7 @@ class _TagUserFieldState extends State<TagUserField> {
   String str = '';
   String err;
   String lastText = '';
+  List<UserModel> tagUsers = [];
 
   static List<UserModel> tagablePeople;
 
@@ -72,8 +75,7 @@ class _TagUserFieldState extends State<TagUserField> {
         menuItemBuilder: tagablePeople == null
             ? null
             : (context, closePopup) => tagablePeople
-                .map((e) => e.name)
-                .where((s) => ('@' + s).toLowerCase().contains(str))
+                .where((s) => ('@' + s.name).toLowerCase().contains(str))
                 .map((e) => KeepKeyboardPopupMenuItem(
                     child: GestureDetector(
                       onTap: () {
@@ -82,13 +84,15 @@ class _TagUserFieldState extends State<TagUserField> {
                               .text = widget.controller.text.substring(0,
                                   widget.controller.text.length - str.length) +
                               '@' +
-                              e;
+                              e.name;
                           widget.controller.selection =
                               TextSelection.fromPosition(TextPosition(
                                   offset: widget.controller.text.length));
                         });
 
                         closePopup();
+                        tagUsers.add(e);
+                        widget.onUpdateTags(tagUsers.map((e) => e.id).toList());
                       },
                       child: Row(
                         children: [
@@ -102,7 +106,7 @@ class _TagUserFieldState extends State<TagUserField> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                e,
+                                e.name,
                                 style: ptBody().copyWith(color: Colors.black),
                               ),
                               Text(

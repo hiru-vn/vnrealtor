@@ -3,6 +3,7 @@ import 'base_graphql.dart';
 class CommentSrv extends BaseService {
   CommentSrv() : super(module: 'Comment', fragment: '''
 id: String
+userTags
 userId: ID
 postId: ID
 mediaPostId: ID
@@ -31,6 +32,5 @@ user {
 }
 createdAt: DateTime
 updatedAt: DateTime
-userLikeIds
   ''');
 }
