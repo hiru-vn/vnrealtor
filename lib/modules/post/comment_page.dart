@@ -4,7 +4,9 @@ import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/share/widget/tag_user_field.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -400,10 +402,11 @@ class _CommentWidgetState extends State<CommentWidget> {
     String content = '';
     if (widget.comment.userTags != null) {
       widget.comment.userTags.forEach((key, value) {
-        content = widget.comment.content
-            .replaceAll('@' + value, '<tag>$key<tag>');
+        content =
+            widget.comment.content.replaceAll('@' + value, '<tag>$key<tag>');
       });
-      
+
+      contentSplit = content.split('<tag>');
       contentSplit.removeWhere((element) => element.trim() == '');
     }
 
@@ -583,7 +586,7 @@ class _CommentWidgetState extends State<CommentWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text.rich(TextSpan(children: [
-                if ((contentSplit?.length??0) < 2)
+                if ((contentSplit?.length ?? 0) < 2)
                   TextSpan(
                     text: (widget.comment.content ?? ''),
                     style: ptBody().copyWith(
@@ -594,16 +597,19 @@ class _CommentWidgetState extends State<CommentWidget> {
                     print(contentSplit);
                     if (widget.comment.userTags.containsKey(e)) {
                       return TextSpan(
-                        text: widget.comment.userTags[e],
+                          text: widget.comment.userTags[e],
+                          style: ptBody().copyWith(
+                              fontWeight: FontWeight.w500, color: Colors.blue),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              ProfileOtherPage.navigate(null, userId: e);
+                            });
+                    } else
+                      return TextSpan(
+                        text: (e),
                         style: ptBody().copyWith(
-                            fontWeight: FontWeight.w500, color: Colors.blue),
+                            fontWeight: FontWeight.w500, color: Colors.black87),
                       );
-                    }
-                    return TextSpan(
-                      text: (widget.comment.content ?? ''),
-                      style: ptBody().copyWith(
-                          fontWeight: FontWeight.w500, color: Colors.black87),
-                    );
                   }).toList(),
                 TextSpan(
                   text: '  ' +
