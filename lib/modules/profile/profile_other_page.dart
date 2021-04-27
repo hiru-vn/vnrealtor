@@ -20,7 +20,7 @@ class ProfileOtherPage extends StatefulWidget {
 
   const ProfileOtherPage(this.user, {this.userId});
   static Future navigate(UserModel user, {String userId}) {
-    if (user.id == AuthBloc.instance.userModel?.id) {
+    if (user?.id == AuthBloc.instance.userModel?.id) {
       return navigatorKey.currentState.push(pageBuilder(ProfilePage()));
     }
     return navigatorKey.currentState.push(pageBuilder(ProfileOtherPage(user, userId: userId)));
@@ -67,8 +67,8 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
 
   Future _loadPost() async {
     final res = AuthBloc.instance.userModel != null
-        ? await _postBloc.getUserPost(_user.id)
-        : await _postBloc.getUserPostGuest(_user.id);
+        ? await _postBloc.getUserPost(_user?.id??widget.userId)
+        : await _postBloc.getUserPostGuest(_user?.id??widget.userId);
     if (!res.isSuccess)
       showToast(res.errMessage, context);
     else {

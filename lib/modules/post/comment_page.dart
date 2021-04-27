@@ -399,11 +399,10 @@ class _CommentWidgetState extends State<CommentWidget> {
       _isLike = widget.comment.userLikeIds
               ?.contains(AuthBloc.instance.userModel?.id ?? '') ??
           false;
-    String content = '';
+    String content = widget.comment.content;
     if (widget.comment.userTags != null) {
       widget.comment.userTags.forEach((key, value) {
-        content =
-            widget.comment.content.replaceAll('@' + value, '<tag>$key<tag>');
+        content = content.replaceAll('@' + value, '<tag>$key<tag>');
       });
 
       contentSplit = content.split('<tag>');
@@ -597,7 +596,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                     print(contentSplit);
                     if (widget.comment.userTags.containsKey(e)) {
                       return TextSpan(
-                          text: widget.comment.userTags[e],
+                          text: ' ' + widget.comment.userTags[e] + ' ',
                           style: ptBody().copyWith(
                               fontWeight: FontWeight.w500, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
