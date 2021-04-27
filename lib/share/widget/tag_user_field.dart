@@ -99,8 +99,11 @@ class _TagUserFieldState extends State<TagUserField> {
                           CircleAvatar(
                               radius: 17,
                               backgroundColor: Colors.white,
-                              backgroundImage: AssetImage(
-                                  'assets/image/default_avatar.png')),
+                              backgroundImage:
+                                  e.avatar != null && e.avatar.trim() != ''
+                                      ? NetworkImage(e.avatar)
+                                      : AssetImage(
+                                          'assets/image/default_avatar.png')),
                           SizedBox(width: 12),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +141,7 @@ class _TagUserFieldState extends State<TagUserField> {
                         ? words[words.length - 1].toLowerCase()
                         : '';
               });
-              if (str.replaceAll('@', '').trim() != '' &&
+              if (str.trim() != '' &&
                   tagablePeople != null &&
                   tagablePeople
                           .map((e) => e.name)
@@ -147,7 +150,7 @@ class _TagUserFieldState extends State<TagUserField> {
                       0) {
                 closePopup().then(
                     (value) => Future.delayed(Duration(milliseconds: 100), () {
-                          if (val.length > lastText.length) openPopup();
+                          openPopup();
                           lastText = val;
                         }));
               } else {
@@ -162,7 +165,7 @@ class _TagUserFieldState extends State<TagUserField> {
               deviceHeight(context) -
                   widget.keyboardPadding -
                   menuSize.height -
-                  64);
+                  62);
         },
       ),
       comments.length > 0

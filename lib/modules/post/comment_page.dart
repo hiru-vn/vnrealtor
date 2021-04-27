@@ -96,7 +96,6 @@ class _CommentPageState extends State<CommentPage> {
         userId: AuthBloc.instance.userModel.id,
         user: AuthBloc.instance.userModel,
         updatedAt: DateTime.now().toIso8601String()));
-    setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text,
         postId: widget.post?.id,
@@ -113,6 +112,7 @@ class _CommentPageState extends State<CommentPage> {
       if (index >= 0)
         setState(() {
           comments[index] = resComment;
+          tagUserIds = [];
         });
     }
   }
@@ -585,7 +585,7 @@ class _CommentWidgetState extends State<CommentWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text.rich(TextSpan(children: [
-                if ((contentSplit?.length ?? 0) < 2)
+                if ((contentSplit?.length ?? 0) < 1)
                   TextSpan(
                     text: (widget.comment.content ?? ''),
                     style: ptBody().copyWith(
@@ -596,7 +596,12 @@ class _CommentWidgetState extends State<CommentWidget> {
                     print(contentSplit);
                     if (widget.comment.userTags.containsKey(e)) {
                       return TextSpan(
-                          text: ' ' + widget.comment.userTags[e] + ' ',
+                          text: (contentSplit.indexOf(e) == 0 ? '' : ' ') +
+                              widget.comment.userTags[e] +
+                              (contentSplit.indexOf(e) ==
+                                      contentSplit.length - 1
+                                  ? ''
+                                  : ' '),
                           style: ptBody().copyWith(
                               fontWeight: FontWeight.w500, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
