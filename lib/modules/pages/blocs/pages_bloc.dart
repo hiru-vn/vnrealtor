@@ -431,15 +431,17 @@ class PagesBloc extends ChangeNotifier {
 
   Future<void> getAllCategories() async {
     _isLoading = true;
-    List<String> _listTmp = [];
+    List<String> _listTmpName = [];
     final res = await PagesRepo().getCategories(
         filter: GraphqlFilter(search: '', order: '{createdAt: -1}'));
     final List listRaw = res['data'];
     List<PagesCategoriesModel> listModel =
         listRaw.map((e) => PagesCategoriesModel.fromJson(e)).toList();
-    listModel.forEach((element) => _listTmp.add(element.name));
-    _listCategories = _listTmp;
+    listModel.forEach((element) => _listTmpName.add(element.name));
+    _listCategories = _listTmpName;
     _listModelCategories = listModel;
+    _listCategoriesSelected.addAll([listModel[0].name, listModel[1].name]);
+    _listCategoriesId.addAll([listModel[0].id, listModel[1].id]);
     _isLoading = false;
     notifyListeners();
   }
