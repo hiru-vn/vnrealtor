@@ -13,6 +13,7 @@ class TagUserField extends StatefulWidget {
   final InputDecoration decoration;
   final double keyboardPadding;
   final Function onTap;
+  final Function(List<String>) onUpdateTags;
 
   TagUserField(
       {this.controller,
@@ -20,7 +21,8 @@ class TagUserField extends StatefulWidget {
       this.focusNode,
       this.onSubmitted,
       this.decoration,
-      this.keyboardPadding = 0});
+      this.keyboardPadding = 0,
+      this.onUpdateTags});
 
   @override
   _TagUserFieldState createState() => _TagUserFieldState();
@@ -32,6 +34,7 @@ class _TagUserFieldState extends State<TagUserField> {
   String str = '';
   String err;
   String lastText = '';
+  List<UserModel> tagUsers = [];
 
   static List<UserModel> tagablePeople;
 
@@ -72,8 +75,7 @@ class _TagUserFieldState extends State<TagUserField> {
         menuItemBuilder: tagablePeople == null
             ? null
             : (context, closePopup) => tagablePeople
-                .map((e) => e.name)
-                .where((s) => ('@' + s).toLowerCase().contains(str))
+                .where((s) => ('@' + s.name).toLowerCase().contains(str))
                 .map((e) => KeepKeyboardPopupMenuItem(
                     child: GestureDetector(
                       onTap: () {
@@ -82,27 +84,32 @@ class _TagUserFieldState extends State<TagUserField> {
                               .text = widget.controller.text.substring(0,
                                   widget.controller.text.length - str.length) +
                               '@' +
-                              e;
+                              e.name;
                           widget.controller.selection =
                               TextSelection.fromPosition(TextPosition(
                                   offset: widget.controller.text.length));
                         });
 
                         closePopup();
+                        tagUsers.add(e);
+                        widget.onUpdateTags(tagUsers.map((e) => e.id).toList());
                       },
                       child: Row(
                         children: [
                           CircleAvatar(
                               radius: 17,
                               backgroundColor: Colors.white,
-                              backgroundImage: AssetImage(
-                                  'assets/image/default_avatar.png')),
+                              backgroundImage:
+                                  e.avatar != null && e.avatar.trim() != ''
+                                      ? NetworkImage(e.avatar)
+                                      : AssetImage(
+                                          'assets/image/default_avatar.png')),
                           SizedBox(width: 12),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                e,
+                                e.name,
                                 style: ptBody().copyWith(color: Colors.black),
                               ),
                               Text(
@@ -134,7 +141,7 @@ class _TagUserFieldState extends State<TagUserField> {
                         ? words[words.length - 1].toLowerCase()
                         : '';
               });
-              if (str.replaceAll('@', '').trim() != '' &&
+              if (str.trim() != '' &&
                   tagablePeople != null &&
                   tagablePeople
                           .map((e) => e.name)
@@ -143,7 +150,7 @@ class _TagUserFieldState extends State<TagUserField> {
                       0) {
                 closePopup().then(
                     (value) => Future.delayed(Duration(milliseconds: 100), () {
-                          if (val.length > lastText.length) openPopup();
+                          openPopup();
                           lastText = val;
                         }));
               } else {
@@ -158,7 +165,7 @@ class _TagUserFieldState extends State<TagUserField> {
               deviceHeight(context) -
                   widget.keyboardPadding -
                   menuSize.height -
-                  64);
+                  62);
         },
       ),
       comments.length > 0

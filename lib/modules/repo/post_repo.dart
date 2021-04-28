@@ -132,12 +132,13 @@ ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').re
   }
 
   Future createComment(
-      {String postId, String mediaPostId, String content}) async {
+      {String postId, String mediaPostId, String content, List<String> tagUserIds}) async {
     String data = '''
 content: """
 $content
 """
 like: 0
+tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     ''';
     if (mediaPostId != null) {
       data += '\nmediaPostId: "$mediaPostId"';

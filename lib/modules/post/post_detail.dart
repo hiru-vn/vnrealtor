@@ -37,6 +37,7 @@ class _PostDetailState extends State<PostDetail> {
   FocusNode _focusNodeComment = FocusNode();
   CommentModel replyComment;
   List<ReplyModel> localReplies = [];
+  List<String> tagUserIds = [];
 
   @override
   void initState() {
@@ -178,9 +179,9 @@ class _PostDetailState extends State<PostDetail> {
         updatedAt: DateTime.now().toIso8601String(),
       ),
     );
-    setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
-    BaseResponse res = await _postBloc.createComment(text, postId: _post?.id);
+    BaseResponse res = await _postBloc.createComment(text,
+        postId: _post?.id, tagUserIds: tagUserIds);
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
@@ -191,6 +192,7 @@ class _PostDetailState extends State<PostDetail> {
       if (index >= 0)
         setState(() {
           comments[index] = resComment;
+          tagUserIds = [];
         });
     }
   }
@@ -233,7 +235,7 @@ class _PostDetailState extends State<PostDetail> {
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             final comment = comments[index];
-                            return new CommentWidget(
+                            return CommentWidget(
                                 comment: comment,
                                 userReplyCache: localReplies,
                                 shouldExpand:
@@ -281,6 +283,9 @@ class _PostDetailState extends State<PostDetail> {
                     ),
                     Expanded(
                       child: TagUserField(
+                        onUpdateTags: (userIds) {
+                          tagUserIds = userIds;
+                        },
                         controller: _commentC,
                         focusNode: _focusNodeComment,
                         keyboardPadding:

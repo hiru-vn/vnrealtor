@@ -377,10 +377,13 @@ class PostBloc extends ChangeNotifier {
   }
 
   Future<BaseResponse> createComment(String content,
-      {String postId, String mediaPostId}) async {
+      {String postId, String mediaPostId, List<String> tagUserIds}) async {
     try {
       final res = await PostRepo().createComment(
-          postId: postId, mediaPostId: mediaPostId, content: content);
+          postId: postId,
+          mediaPostId: mediaPostId,
+          content: content,
+          tagUserIds: tagUserIds);
       return BaseResponse.success(CommentModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());

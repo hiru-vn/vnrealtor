@@ -13,6 +13,7 @@ class CommentModel {
   bool isLike = false;
   List<String> userLikeIds = [];
   List<String> replyIds = [];
+  Map userTags;
 
   CommentModel(
       {this.id,
@@ -24,7 +25,7 @@ class CommentModel {
       this.user,
       this.createdAt,
       this.updatedAt,
-      this.userLikeIds, this.replyIds});
+      this.userLikeIds, this.replyIds, this.userTags});
 
   CommentModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -39,6 +40,9 @@ class CommentModel {
     userLikeIds =
         json['userLikeIds'] != null ? json['userLikeIds'].cast<String>() : [];
         replyIds = json['replyIds'] != null ? json['replyIds'].cast<String>() : [];
+    if (json['userTags'] != null) {
+      userTags = json['userTags'];
+    }
   }
 
   Map<String, dynamic> toJson() {

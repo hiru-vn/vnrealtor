@@ -16,13 +16,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ProfileOtherPage extends StatefulWidget {
   final UserModel user;
+  final String userId;
 
-  const ProfileOtherPage(this.user);
-  static Future navigate(UserModel user) {
-    if (user.id == AuthBloc.instance.userModel?.id) {
+  const ProfileOtherPage(this.user, {this.userId});
+  static Future navigate(UserModel user, {String userId}) {
+    if (user?.id == AuthBloc.instance.userModel?.id) {
       return navigatorKey.currentState.push(pageBuilder(ProfilePage()));
     }
-    return navigatorKey.currentState.push(pageBuilder(ProfileOtherPage(user)));
+    return navigatorKey.currentState.push(pageBuilder(ProfileOtherPage(user, userId: userId)));
   }
 
   @override
@@ -32,20 +33,42 @@ class ProfileOtherPage extends StatefulWidget {
 class _ProfileOtherPageState extends State<ProfileOtherPage> {
   PostBloc _postBloc;
   List<PostModel> _posts;
+  UserModel _user;
+
+  @override
+  void initState() {
+    _user = widget.user;
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
+      if (_user == null) {
+        _loadUser();
+      }
       _loadPost();
     }
     super.didChangeDependencies();
   }
 
+  _loadUser() async {
+    final res = await UserBloc.instance.getListUserIn([widget.userId]);
+    if (res.isSuccess) {
+      setState(() {
+        _user = res.data[0];
+      });
+    }
+    else {
+      showToast('Có lỗi khi load dữ liệu', context);
+    }
+  }
+
   Future _loadPost() async {
     final res = AuthBloc.instance.userModel != null
-        ? await _postBloc.getUserPost(widget.user.id)
-        : await _postBloc.getUserPostGuest(widget.user.id);
+        ? await _postBloc.getUserPost(_user?.id??widget.userId)
+        : await _postBloc.getUserPostGuest(_user?.id??widget.userId);
     if (!res.isSuccess)
       showToast(res.errMessage, context);
     else {
@@ -65,7 +88,7 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
       appBar: AppBar1(
-        title: widget.user.name,
+        title: _user?.name??'',
         automaticallyImplyLeading: true,
         actions: [
           if ([
@@ -98,7 +121,7 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
               onSelected: (val) async {
                 if (val == 'lock') {
                   final res =
-                      await UserBloc.instance.blockUserByAdmin(widget.user.id);
+                      await UserBloc.instance.blockUserByAdmin(_user?.id);
                   if (res.isSuccess)
                     showToast('Đã khoá tài khoản người dùng này', context,
                         isSuccess: true);
@@ -125,9 +148,10 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
         headerSliverBuilder: (context, value) {
           return [
             SliverToBoxAdapter(
-              child: ProfileCard(
-                user: widget.user,
-              ),
+              child: 
+              _user !=null? ProfileCard(
+                user: _user,
+              ) : Container(),
             ),
           ];
         },
@@ -146,13 +170,14 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
                     )
                   : EmptyWidget(
                       assetImg: 'assets/image/no_post.png',
-                      content: widget.user.name + ' chưa có bài đăng nào.',
+                      content: _user?.name??'' + ' chưa có bài đăng nào.',
                     )),
         ),
       ),
     );
   }
 }
+
 
 // class ProfileOtherPageAppBar extends StatelessWidget
 //     implements PreferredSizeWidget {

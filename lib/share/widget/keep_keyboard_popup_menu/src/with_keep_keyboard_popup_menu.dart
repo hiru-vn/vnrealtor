@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:datcao/utils/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -215,9 +216,10 @@ class WithKeepKeyboardPopupMenuState extends State<WithKeepKeyboardPopupMenu> {
                   openMenuCompleter.complete();
                 },
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(
+                  constraints: BoxConstraints(
                     minWidth: _kMenuMinWidth,
                     maxWidth: _kMenuMaxWidth,
+                    maxHeight: deviceHeight(context) / 2.4,
                   ),
                   child: SingleChildScrollView(
                     child: IntrinsicWidth(
