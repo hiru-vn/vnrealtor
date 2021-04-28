@@ -218,7 +218,7 @@ class _NotificationTabState extends State<NotificationTab> {
                               _notificationBloc.seenNoti(list[index].id);
                               list[index].seen = true;
                             }
-                            if (['LIKE', 'COMMENT', 'SHARE', 'NEW_POST']
+                            if (['LIKE', 'COMMENT', 'SHARE', 'NEW_POST', 'TAG_COMMENT', 'TAG_REPLY', 'TAG_POST']
                                 .contains(list[index].type.toUpperCase())) {
                               PostDetail.navigate(null,
                                   postId: list[index].data['modelId']);

@@ -8,7 +8,17 @@ import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/import.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-enum FcmType { message, like, comment, share, system, new_post }
+enum FcmType {
+  message,
+  like,
+  comment,
+  share,
+  system,
+  new_post,
+  tag_post,
+  tag_comment,
+  tag_reply
+}
 
 class FcmService {
   FcmService._();
@@ -25,53 +35,118 @@ class FcmService {
     if (type.toLowerCase() == 'Share'.toLowerCase()) return FcmType.share;
     if (type.toLowerCase() == 'System'.toLowerCase()) return FcmType.system;
     if (type.toLowerCase() == 'NEW_POST'.toLowerCase()) return FcmType.new_post;
+    if (type.toLowerCase() == 'TAG_COMMENT'.toLowerCase())
+      return FcmType.tag_comment;
+    if (type.toLowerCase() == 'TAG_REPLY'.toLowerCase())
+      return FcmType.tag_reply;
+    if (type.toLowerCase() == 'TAG_POST'.toLowerCase()) return FcmType.tag_post;
     return null;
+  }
+
+  void handleMessageLive(RemoteMessage message) {
+    print('Message data: ${message.data}');
+    final type = getType(message.data['type']);
+
+    if (type == FcmType.message) {
+      // final type = ModalRoute.of(navigatorKey.currentState.overlay.context)
+      //     .settings
+      //     .runtimeType;
+      // print(type);
+      // if (type == InboxList) return;
+      showToastNoContext('Tin nhắn mới');
+    }
+
+    if (type == FcmType.share) {
+      showToastNoContext('Bạn có 1 lượt chia sẻ mới');
+    }
+
+    if (type == FcmType.like) {
+      showToastNoContext('${message.notification.body}');
+    }
+
+    if (type == FcmType.comment) {
+      showToastNoContext('Bạn có comment bài viết mới');
+    }
+
+    if (type == FcmType.system) {
+      showToastNoContext('${message.notification.body}');
+    }
+
+    if (type == FcmType.new_post) {
+      showToastNoContext('${message.notification.body}');
+    }
+
+    NotificationBloc.instance
+        .getListNotification(filter: GraphqlFilter(order: '{createdAt: -1}'));
+
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification}');
+    }
+  }
+
+  void handleMessageBackground(RemoteMessage message) {
+    print('Message data: ${message.data}');
+    final type = getType(message.data['type']);
+
+    if (type == FcmType.message) {}
+
+    if ([
+      FcmType.new_post,
+      FcmType.like,
+      FcmType.share,
+      FcmType.comment,
+      FcmType.tag_comment,
+      FcmType.tag_post,
+      FcmType.tag_reply
+    ].contains(type)) {
+      PostDetail.navigate(null, postId: message.data['modelId']);
+    }
+
+    if (type == FcmType.system) {}
+
+    NotificationBloc.instance
+        .getListNotification(filter: GraphqlFilter(order: '{createdAt: -1}'));
+
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification}');
+    }
   }
 
   Future init() async {
     await FirebaseMessaging.instance.requestPermission();
     await FirebaseMessaging.instance.getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-      final type = getType(message.data['type']);
-
-      if (type == FcmType.message) {
-        // final type = ModalRoute.of(navigatorKey.currentState.overlay.context)
-        //     .settings
-        //     .runtimeType;
-        // print(type);
-        // if (type == InboxList) return;
-        showToastNoContext('Tin nhắn mới');
-      }
-
-      if (type == FcmType.share) {
-        showToastNoContext('Bạn có 1 lượt chia sẻ mới');
-      }
-
-      if (type == FcmType.like) {
-        showToastNoContext('${message.notification.body}');
-      }
-
-      if (type == FcmType.comment) {
-        showToastNoContext('Bạn có comment bài viết mới');
-      }
-
-      if (type == FcmType.system) {
-        showToastNoContext('${message.notification.body}');
-      }
-
-      if (type == FcmType.new_post) {
-        showToastNoContext('${message.notification.body}');
-      }
-
-      NotificationBloc.instance
-          .getListNotification(filter: GraphqlFilter(order: '{createdAt: -1}'));
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
+      handleMessageLive(message);
+    }, onError: (e) async {
+      print(e?.message);
     });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      handleMessageBackground(message);
+    }, onError: (e) async {
+      print(e?.message);
+    });
+
+    // when app terminated
+    final RemoteMessage message =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    // when app is terminated
+    if (message != null) {
+      final type = getType(message.data['type']);
+      if ([
+        FcmType.new_post,
+        FcmType.like,
+        FcmType.share,
+        FcmType.comment,
+        FcmType.tag_comment,
+        FcmType.tag_post,
+        FcmType.tag_reply
+      ].contains(type)) {
+        NotificationBloc.initActions.insert(
+            0, InitAction(ACTION_TYPE.OPEN_POST, message.data['modelId']));
+      }
+    }
   }
 
   Future<String> getDeviceToken() {
@@ -127,15 +202,11 @@ class FbdynamicLink {
       if (paths.length >= 2 && paths[0] == 'post') {
         final token = await SPref.instance.get('token');
         if (token == null) {
-          Future.delayed(Duration(milliseconds: 2000),
-              () => PostDetail.navigate(null, postId: paths[1]));
+          NotificationBloc.initActions
+              .insert(0, InitAction(ACTION_TYPE.OPEN_POST, paths[1]));
         } else {
-          while (AuthBloc.instance.userModel == null ||
-              FirebaseAuth.instance.currentUser == null) {
-            await Future.delayed(Duration(milliseconds: 500));
-          }
-          Future.delayed(Duration(milliseconds: 1500),
-                  () => PostDetail.navigate(null, postId: paths[1]));
+          NotificationBloc.initActions
+              .insert(0, InitAction(ACTION_TYPE.OPEN_POST, paths[1]));
         }
       }
     }

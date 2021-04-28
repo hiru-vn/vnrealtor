@@ -1,5 +1,6 @@
 import 'package:datcao/main.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/guest/guest_feed_page.dart';
@@ -40,6 +41,8 @@ class _SplashPageState extends State<SplashPage> {
           if (!isLog) {
             //LoginPage.navigate();
             GuestFeedPage.navigate();
+            Future.delayed(Duration(milliseconds: 600),
+                () => NotificationBloc.handleInitActions());
           } else {
             final res = await _authBloc.getUserInfo();
             if (res.isSuccess) {
@@ -49,6 +52,8 @@ class _SplashPageState extends State<SplashPage> {
                 UserBloc.instance.init(),
               ]);
               HomePage.navigate();
+              Future.delayed(Duration(milliseconds: 600),
+                  () => NotificationBloc.handleInitActions());
             } else
               GuestFeedPage.navigate();
           }
