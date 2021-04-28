@@ -126,8 +126,7 @@ class _PostWidgetState extends State<PostWidget> {
                           SizedBox(
                             width: 8,
                           ),
-                          if ([UserRole.agent, UserRole.company]
-                              .contains(UserBloc.getRole(widget.post?.user)))
+                          if (UserBloc.isVerified(widget.post?.user))
                             CustomTooltip(
                               margin: EdgeInsets.only(top: 0),
                               message: 'Tài khoản xác thực',

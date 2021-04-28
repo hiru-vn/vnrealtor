@@ -177,10 +177,7 @@ class _SettingPageState extends State<SettingPage> {
                                   .copyWith(fontWeight: FontWeight.w900),
                             ),
                             SizedBox(width: 8),
-                            if ([
-                              UserRole.agent,
-                              UserRole.company
-                            ].contains(UserBloc.getRole(_authBloc.userModel)))
+                            if (UserBloc.isVerified(_authBloc.userModel))
                               CustomTooltip(
                                 margin: EdgeInsets.only(top: 0),
                                 message: 'Tài khoản xác thực',

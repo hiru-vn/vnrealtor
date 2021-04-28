@@ -57,6 +57,12 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
+  static bool isVerified(UserModel user) {
+    if (getRole(user) == UserRole.agent) return true;
+    if (getRole(user) == UserRole.company && user.isVerify) return true;
+    return false;
+  }
+
   ScrollController profileScrollController = ScrollController();
   List<FriendshipModel> friendRequestFromOtherUsers = [];
   List<UserModel> followersIn7Days = [];

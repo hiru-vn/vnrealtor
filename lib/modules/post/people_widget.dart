@@ -45,8 +45,7 @@ class PeopleWidget extends StatelessWidget {
                         SizedBox(
                           width: 6,
                         ),
-                        if ([UserRole.agent, UserRole.company]
-                            .contains(UserBloc.getRole(user))) ...[
+                        if (UserBloc.isVerified(user)) ...[
                           CustomTooltip(
                             margin: EdgeInsets.only(top: 0),
                             message: 'Tài khoản xác thực',
