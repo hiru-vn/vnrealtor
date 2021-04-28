@@ -247,7 +247,7 @@ class WithKeepKeyboardPopupMenuState extends State<WithKeepKeyboardPopupMenu> {
     if (popupState == PopupMenuState.OPENED ||
         popupState == PopupMenuState.OPENING) {
       popupState = PopupMenuState.CLOSING;
-      await _menuKey.currentState.hideMenu();
+      await _menuKey.currentState?.hideMenu();
       _entry.remove();
       popupState = PopupMenuState.CLOSED;
     }

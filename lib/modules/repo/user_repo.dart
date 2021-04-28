@@ -18,7 +18,7 @@ class UserRepo {
     final res = await UserSrv().mutate(
         'registerWithPhone',
         '''
-name: "$name"
+name: "${name.trim()}"
 email: "$email"
 password: "$password"
 phone: "$phone"
@@ -33,7 +33,7 @@ idToken: "$idToken"
     final res = await UserSrv().mutate(
         'registerCompany',
         ''' data : {
-name: "$name"
+name: "${name.trim()}"
 ownerName: "$ownerName"
 email: "$email"
 password: "$password"
@@ -195,7 +195,7 @@ idToken: "$idToken"
     final res = await UserSrv().update(
         id: id,
         data: '''
-name: "$name"
+name: "${name.trim()}"
 email: "$email"
 phone: "$phone",
 avatar: "$avatar",

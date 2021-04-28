@@ -402,7 +402,7 @@ class _CommentWidgetState extends State<CommentWidget> {
     String content = widget.comment.content;
     if (widget.comment.userTags != null) {
       widget.comment.userTags.forEach((key, value) {
-        content = content.replaceAll('@' + value, '<tag>$key<tag>');
+        content = content.replaceAll('@' + value.trim(), '<tag>$key<tag>');
       });
 
       contentSplit = content.split('<tag>');
