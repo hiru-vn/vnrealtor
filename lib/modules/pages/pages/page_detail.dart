@@ -43,22 +43,21 @@ class _PageDetailState extends State<PageDetail> {
 
   @override
   void didChangeDependencies() {
-    if (_pagesBloc == null) {
-      _authBloc = Provider.of(context);
+    if(_authBloc == null) {
+      _authBloc = Provider.of<AuthBloc>(context);
+    }
+    if (_pagesBloc == null)  {
       _pagesBloc = Provider.of<PagesBloc>(context);
-      _getAllPostOfPage();
-      _getPageDetail();
+       _getPageDetail();
+       _getPostPage();
     }
     super.didChangeDependencies();
   }
 
+
   Future _getPageDetail() async {
     var res;
-    if (AuthBloc.instance.userModel != null) {
-      res = await _pagesBloc.getOnePage(_pageState.id);
-    } else {
-      // res = await _postBloc.getOnePostGuest(widget.postId);
-    }
+    res = await _pagesBloc.getOnePage(_pageState.id);
     if (res.isSuccess) {
       _pagesBloc.pageDetail = res.data;
       _pagesBloc.updatePageFollowed(_authBloc.userModel.id);
@@ -68,12 +67,27 @@ class _PageDetailState extends State<PageDetail> {
     }
   }
 
+  Future _getPostPage() async {
+    if (_authBloc.userModel != null) {
+      _getAllPostOfPage();
+    } else {
+      _getAllPostOfPageByGuess();
+    }
+  }
+
   Future<void> _getAllPostOfPage() async => await _pagesBloc.getPostsOfPage(
         filter: GraphqlFilter(
           filter: '{ pageId: "${_pageState.id}"}',
           order: "{updatedAt: -1}",
         ),
       );
+
+  Future<void> _getAllPostOfPageByGuess() async => await _pagesBloc.getPostsOfPageByGuess(
+    filter: GraphqlFilter(
+      filter: '{ pageId: "${_pageState.id}"}',
+      order: "{updatedAt: -1}",
+    ),
+  );
 
   Future popUntilStep(int step, [dynamic params]) async {
     int count = 0;
@@ -199,14 +213,16 @@ class _PageDetailState extends State<PageDetail> {
                 Flexible(
                   child: _itemHeaderInfo(),
                 ),
-                if (AuthBloc.instance.userModel.role != 'COMPANY')
-                  Flexible(
-                    child: _itemButtonFollow(),
-                  )
+                if(_authBloc.userModel != null)
+                  if (_authBloc.userModel.role != 'COMPANY')
+                    Flexible(
+                      child: _itemButtonFollow(),
+                    )
               ],
             ),
             heightSpace(25),
-            AuthBloc.instance.userModel.role != 'COMPANY'
+            if(_authBloc.userModel != null)
+              _authBloc.userModel.role != 'COMPANY'
                 ? _buildContainerButtonsToolMessage()
                 : _buildContainerButtonsToolCreatePost(_pageState.id),
             heightSpace(10),

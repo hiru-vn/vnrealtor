@@ -75,6 +75,19 @@ $pagesPostFragment
     return res['getAllPost'];
   }
 
+  Future getPostOfPageByGuest(
+      {GraphqlFilter filter, String timestamp, String timeSort}) async {
+    if (filter?.filter == null) filter?.filter = "{}";
+    if (filter?.search == null) filter?.search = "";
+    final data = 'q:{filter: ${filter?.filter}}';
+    final res = await PostSrv().query('getAllPost', data, fragment: '''
+    data {
+    ${pagesPostFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + ' _id'}
+  }
+    ''');
+    return res['getAllPost'];
+  }
+
   Future followPage(String pageId) async {
     String data = '''
     pageId: "$pageId"

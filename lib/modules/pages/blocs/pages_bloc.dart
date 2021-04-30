@@ -355,6 +355,28 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getPostsOfPageByGuess({GraphqlFilter filter}) async {
+    try {
+      _isGetPostPageLoading = true;
+      final res = await PagesRepo().getPostOfPageByGuest(filter: filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      // if (list.length < filter.limit) _isEndPostPage = true;
+      _listPagePost = list;
+      _lastFetchPostPage = DateTime.now();
+      _postPage = 1;
+      notifyListeners();
+      return BaseResponse.success(list);
+    } catch (e) {
+      _isGetPostPageLoading = false;
+      notifyListeners();
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      _isGetPostPageLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> followPage(String pageId) async {
     try {
       addToListFollowPageIds(pageId);
