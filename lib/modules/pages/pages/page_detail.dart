@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
@@ -12,6 +14,7 @@ import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/activity_indicator.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
 import 'package:datcao/share/widget/load_more.dart';
+import 'package:datcao/utils/file_util.dart';
 
 class PageDetail extends StatefulWidget {
   final PagesCreate page;
@@ -43,21 +46,24 @@ class _PageDetailState extends State<PageDetail> {
 
   @override
   void didChangeDependencies() {
-    if(_authBloc == null) {
+    if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
     }
-    if (_pagesBloc == null)  {
+    if (_pagesBloc == null) {
       _pagesBloc = Provider.of<PagesBloc>(context);
-       _getPageDetail();
-       _getPostPage();
+      _getPageDetail();
+      _getPostPage();
     }
     super.didChangeDependencies();
   }
 
-
   Future _getPageDetail() async {
     var res;
-    res = await _pagesBloc.getOnePage(_pageState.id);
+    if (_authBloc.userModel != null) {
+      res = await _pagesBloc.getOnePage(_pageState.id);
+    } else {
+      res = await _pagesBloc.getOnePageGuess(_pageState.id);
+    }
     if (res.isSuccess) {
       _pagesBloc.pageDetail = res.data;
       _pagesBloc.updatePageFollowed(_authBloc.userModel.id);
@@ -82,12 +88,13 @@ class _PageDetailState extends State<PageDetail> {
         ),
       );
 
-  Future<void> _getAllPostOfPageByGuess() async => await _pagesBloc.getPostsOfPageByGuess(
-    filter: GraphqlFilter(
-      filter: '{ pageId: "${_pageState.id}"}',
-      order: "{updatedAt: -1}",
-    ),
-  );
+  Future<void> _getAllPostOfPageByGuess() async =>
+      await _pagesBloc.getPostsOfPageByGuess(
+        filter: GraphqlFilter(
+          filter: '{ pageId: "${_pageState.id}"}',
+          order: "{updatedAt: -1}",
+        ),
+      );
 
   Future popUntilStep(int step, [dynamic params]) async {
     int count = 0;
@@ -98,6 +105,41 @@ class _PageDetailState extends State<PageDetail> {
   }
 
   popScreen({dynamic params}) => Navigator.pop(context, params);
+
+  Future _updateCover(String filePath) async {
+    try {
+      _pagesBloc.isLoadingUploadCover = true;
+      final uint8 = (await File(filePath).readAsBytes());
+      final thumbnail = await FileUtil.resizeImage(uint8, 360);
+      final url = await FileUtil.uploadFireStorage(thumbnail?.path,
+          path:
+              "pages/coverImage_user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}");
+      _pagesBloc.isLoadingUploadCover = false;
+      _pagesBloc.pageDetail.coverImage = url;
+      await _pagesBloc.updatePage(_pageState.id, _pagesBloc.pageDetail.avartar,
+          _pagesBloc.pageDetail.coverImage);
+    } catch (e) {
+      showToast(e.toString(), context);
+    }
+  }
+
+
+  Future _updateAvatar(String filePath) async {
+    try {
+      _pagesBloc.isLoadingUploadAvatar = true;
+      // final compressImage = await _compressedFile(filePath);
+      final uint8 = (await File(filePath).readAsBytes());
+      final thumbnail = await FileUtil.resizeImage(uint8, 120);
+      final url = await FileUtil.uploadFireStorage(thumbnail?.path,  path:
+      "pages/avatar_user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}");
+      _pagesBloc.isLoadingUploadAvatar = false;
+      _pagesBloc.pageDetail.avartar = url;
+      await _pagesBloc.updatePage(_pageState.id, _pagesBloc.pageDetail.avartar,
+          _pagesBloc.pageDetail.coverImage);
+    } catch (e) {
+      showToast(e.toString(), context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,37 +206,51 @@ class _PageDetailState extends State<PageDetail> {
   Widget _buildHasData() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildBanner(),
+          !_pagesBloc.isLoadingUploadCover
+              ? _buildBanner()
+              : Container(
+                  height: deviceWidth(context) / 2,
+                  color: ptSecondaryColor(context),
+                  child: Center(
+                    child: ActivityIndicator(),
+                  ),
+                ),
           _buildHeader(),
           _buildInfoPage(),
         ],
       );
 
-  Widget _buildBanner() => CachedNetworkImage(
-        imageUrl: _pagesBloc.pageDetail.coverImage != null
-            ? _pagesBloc.pageDetail.coverImage
-            : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
-        imageBuilder: (context, imageProvider) => Container(
-          height: deviceWidth(context) / 2,
-          decoration: BoxDecoration(
-            color: AppColors.backgroundLightColor,
-            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+  Widget _buildBanner() => GestureDetector(
+        onTap: () {
+          imagePicker(context,
+              onImagePick: _updateCover, onCameraPick: _updateCover);
+        },
+        child: CachedNetworkImage(
+          imageUrl: _pagesBloc.pageDetail.coverImage != null
+              ? _pagesBloc.pageDetail.coverImage
+              : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
+          imageBuilder: (context, imageProvider) => Container(
+            height: deviceWidth(context) / 2,
+            decoration: BoxDecoration(
+              color: AppColors.backgroundLightColor,
+              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+            ),
           ),
-        ),
-        placeholder: (context, url) => Container(
-          height: deviceWidth(context) / 2,
-          color: ptSecondaryColor(context),
-          child: Center(
-            child: ActivityIndicator(),
+          placeholder: (context, url) => Container(
+            height: deviceWidth(context) / 2,
+            color: ptSecondaryColor(context),
+            child: Center(
+              child: ActivityIndicator(),
+            ),
           ),
-        ),
-        errorWidget: (context, url, error) => Container(
-          height: deviceWidth(context) / 2,
-          color: ptSecondaryColor(context),
-          child: Center(
-            child: Icon(
-              Icons.error,
-              color: AppColors.mainColor,
+          errorWidget: (context, url, error) => Container(
+            height: deviceWidth(context) / 2,
+            color: ptSecondaryColor(context),
+            child: Center(
+              child: Icon(
+                Icons.error,
+                color: AppColors.mainColor,
+              ),
             ),
           ),
         ),
@@ -213,59 +269,75 @@ class _PageDetailState extends State<PageDetail> {
                 Flexible(
                   child: _itemHeaderInfo(),
                 ),
-                if(_authBloc.userModel != null)
-                  if (_authBloc.userModel.role != 'COMPANY')
+                if (_authBloc.userModel != null)
+                  if (!_pagesBloc.pageDetail.isOwner)
                     Flexible(
                       child: _itemButtonFollow(),
                     )
               ],
             ),
-            heightSpace(25),
-            if(_authBloc.userModel != null)
-              _authBloc.userModel.role != 'COMPANY'
-                ? _buildContainerButtonsToolMessage()
-                : _buildContainerButtonsToolCreatePost(_pageState.id),
-            heightSpace(10),
+            if (_authBloc.userModel != null) heightSpace(25),
+            if (_authBloc.userModel != null)
+              !_pagesBloc.pageDetail.isOwner
+                  ? _buildContainerButtonsToolMessage()
+                  : _buildContainerButtonsToolCreatePost(_pageState),
+            if (_authBloc.userModel != null) heightSpace(10),
           ],
         ),
       );
 
   Widget _itemHeaderInfo() => Row(
         children: [
-          CachedNetworkImage(
-            imageUrl: _pagesBloc.pageDetail.avartar != null
-                ? _pagesBloc.pageDetail.avartar
-                : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
-            imageBuilder: (context, imageProvider) => Container(
-              width: 50.0,
-              height: 50.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-              ),
+          _pagesBloc.isLoadingUploadAvatar  ?  Container(
+            width: 50.0,
+            height: 50.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              color: ptSecondaryColor(context),
             ),
-            placeholder: (context, url) => Container(
-              width: 50.0,
-              height: 50.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: ptSecondaryColor(context),
-              ),
-              child: Center(
-                child: ActivityIndicator(),
-              ),
+            child: Center(
+              child: ActivityIndicator(),
             ),
-            errorWidget: (context, url, error) => Container(
-              width: 50.0,
-              height: 50.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: ptSecondaryColor(context),
+          ) : GestureDetector(
+            onTap: () {
+              imagePicker(context,
+                  onImagePick: _updateAvatar, onCameraPick: _updateAvatar);
+            },
+            child: CachedNetworkImage(
+              imageUrl: _pagesBloc.pageDetail.avartar != null
+                  ? _pagesBloc.pageDetail.avartar
+                  : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
+              imageBuilder: (context, imageProvider) => Container(
+                width: 50.0,
+                height: 50.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                ),
               ),
-              child: Center(
-                child: Icon(
-                  Icons.error,
-                  color: AppColors.mainColor,
+              placeholder: (context, url) => Container(
+                width: 50.0,
+                height: 50.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: ptSecondaryColor(context),
+                ),
+                child: Center(
+                  child: ActivityIndicator(),
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
+                width: 50.0,
+                height: 50.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: ptSecondaryColor(context),
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.error,
+                    color: AppColors.mainColor,
+                  ),
                 ),
               ),
             ),
@@ -341,12 +413,12 @@ class _PageDetailState extends State<PageDetail> {
         ),
       );
 
-  Widget _buildContainerButtonsToolCreatePost(String pageId) => Container(
+  Widget _buildContainerButtonsToolCreatePost(PagesCreate page) => Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
-              child: _buildButtonCreatePost(pageId),
+              child: _buildButtonCreatePost(page),
             ),
             widthSpace(20),
             _buildButtonSetting()
@@ -370,13 +442,13 @@ class _PageDetailState extends State<PageDetail> {
   Widget _buildButtonMessage() => CustomButton(
         title: "Nhắn tin",
         image: AppImages.icPageMessage,
-        callback: () => {},
+        callback: () => showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey),
       );
 
-  Widget _buildButtonCreatePost(String pageId) => CustomButton(
+  Widget _buildButtonCreatePost(PagesCreate page) => CustomButton(
         title: "Tạo bài viết",
         image: AppImages.icCreatePost,
-        callback: () => PageCreatePostPage.navigate(pageId),
+        callback: () => PageCreatePostPage.navigate(page),
       );
 
   Widget _buildButtonSetting() => Container(
@@ -395,21 +467,24 @@ class _PageDetailState extends State<PageDetail> {
         ),
       );
 
-  Widget _buildButtonBell() => Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(7),
-          color: AppColors.backgroundLightColor,
-        ),
-        child: Image(
-          width: 25,
-          height: 25,
-          image: AssetImage(
-            AppImages.icBellPage,
+  Widget _buildButtonBell() => GestureDetector(
+    onTap: () => showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey),
+    child: Container(
+          width: 45,
+          height: 45,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(7),
+            color: AppColors.backgroundLightColor,
+          ),
+          child: Image(
+            width: 25,
+            height: 25,
+            image: AssetImage(
+              AppImages.icBellPage,
+            ),
           ),
         ),
-      );
+  );
 
   Widget _buildInfoPage() => Container(
         margin: const EdgeInsets.only(top: 10),
@@ -420,11 +495,11 @@ class _PageDetailState extends State<PageDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_pagesBloc.pageDetail.followers.length > 0)
-              ItemInfoPage(
-                image: AppImages.icFollower,
-                title: '${_pagesBloc.pageDetail.followers.length} lượt follow',
-              ),
+            ItemInfoPage(
+              image: AppImages.icFollower,
+              title:
+                  '${_pagesBloc.pageDetail.followers.length > 0 ? _pagesBloc.pageDetail.followers.length : 0} lượt follow',
+            ),
             if (_pagesBloc.pageDetail.address != null)
               ItemInfoPage(
                 image: AppImages.icLocation,

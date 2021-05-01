@@ -454,6 +454,10 @@ class PagesBloc extends ChangeNotifier {
   Future<void> getAllCategories() async {
     _isLoading = true;
     List<String> _listTmpName = [];
+    _listCategories = [];
+    _listModelCategories = [];
+    _listCategoriesSelected = [];
+    _listCategoriesId = [];
     final res = await PagesRepo().getCategories(
         filter: GraphqlFilter(search: '', order: '{createdAt: -1}'));
     final List listRaw = res['data'];
@@ -503,6 +507,34 @@ class PagesBloc extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<BaseResponse> getOnePageGuess(String pageId) async {
+    try {
+      final res = await PagesRepo().getOnePageGuess(pageId);
+      if (res == null)
+        return BaseResponse.fail('Trang không tồn tại hoặc đã bị xóa');
+      return BaseResponse.success(PagesCreate.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+
+  Future<BaseResponse> updatePage(String id ,String avatar , String cover) async {
+    try {
+      final res = await PagesRepo().updatePage(
+          id, avatar, cover);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+      PagesBloc.instance.notifyListeners();
+    }
+  }
+
 
   Future<BaseResponse> suggestFollow() async {
     try {

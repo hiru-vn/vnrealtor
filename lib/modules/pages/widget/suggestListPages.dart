@@ -32,58 +32,55 @@ class _SuggestListPagesState extends State<SuggestListPages> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: widget.suggest.length > 0
-          ? Container(
-              width: deviceWidth(context),
-              color: Colors.white,
-              padding: const EdgeInsets.only(top: 15, bottom: 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
+    return widget.suggest.length > 0
+        ? Container(
+            width: deviceWidth(context),
+            color: Colors.white,
+            padding: const EdgeInsets.only(top: 15, bottom: 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: Text(
+                    AuthBloc.firstLogin
+                        ? 'Chào mừng, ${authBloc.userModel.name}'
+                        : 'Gợi ý trang cho bạn',
+                    style: ptBigTitle().copyWith(color: Colors.black),
+                  ),
+                ),
+                if (AuthBloc.firstLogin) ...[
+                  SizedBox(
+                    height: 8,
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: Text(
-                      AuthBloc.firstLogin
-                          ? 'Chào mừng, ${authBloc.userModel.name}'
-                          : 'Gợi ý trang cho bạn',
-                      style: ptBigTitle().copyWith(color: Colors.black),
+                      'Theo dõi những trang khác để nhận được những nội dung phù hợp với bạn.',
+                      style: ptBody(),
                     ),
                   ),
-                  if (AuthBloc.firstLogin) ...[
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                      child: Text(
-                        'Theo dõi những trang khác để nhận được những nội dung phù hợp với bạn.',
-                        style: ptBody(),
-                      ),
-                    ),
-                  ],
-                  SizedBox(
-                    height: 12,
-                  ),
-                  Container(
-                    height: 175,
-                    child: ListView.separated(
-                        padding: EdgeInsets.only(right: 20, left: 15),
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return PageItem(widget.suggest[index], pagesBloc);
-                        },
-                        separatorBuilder: (context, index) => SizedBox(
-                              width: 10,
-                            ),
-                        itemCount: widget.suggest.length),
-                  )
                 ],
-              ))
-          : const SizedBox(),
-    );
+                SizedBox(
+                  height: 12,
+                ),
+                Container(
+                  height: 175,
+                  child: ListView.separated(
+                      padding: EdgeInsets.only(right: 20, left: 15),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return PageItem(widget.suggest[index], pagesBloc);
+                      },
+                      separatorBuilder: (context, index) => SizedBox(
+                            width: 10,
+                          ),
+                      itemCount: widget.suggest.length),
+                )
+              ],
+            ))
+        : const SizedBox();
   }
 }
 

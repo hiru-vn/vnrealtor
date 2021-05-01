@@ -36,6 +36,8 @@ class _PagesPageState extends State<PagesPage> {
       if (AuthBloc.instance.userModel.role == 'COMPANY') {
         _getAllPageCreated();
         _pagesBloc.getAllHashTagTP();
+        _getAllPageFollow();
+        _pagesBloc.suggestFollow();
       } else {
         _getAllPageFollow();
         _pagesBloc.suggestFollow();
@@ -74,7 +76,10 @@ class _PagesPageState extends State<PagesPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              _itemSuggestList(),
+              if (!_pagesBloc.isSuggestFollowPage)
+                SuggestListPages(
+                  suggest: _pagesBloc.suggestFollowPage,
+                ),
               if (AuthBloc.instance.userModel.role == 'COMPANY') _buildHeader(),
               if (AuthBloc.instance.userModel.role == 'COMPANY')
                 _buildSectionOwnPage(),
@@ -348,22 +353,22 @@ class _PagesPageState extends State<PagesPage> {
       GestureDetector(
         onTap: callback,
         child: Container(
-            padding: const EdgeInsets.only(bottom: 19, top: 11),
-            decoration: BoxDecoration(
-              border: !isLast
-                  ? Border(
-                bottom: BorderSide(
-                  color: AppColors.borderGrayColor.withOpacity(0.3),
-                  width: 0.5,
-                ),
-              )
-                  : Border(
-                bottom: BorderSide(
-                  color: Colors.white,
-                  width: 0.5,
-                ),
-              ),
-            ),
+          padding: const EdgeInsets.only(bottom: 19, top: 11),
+          decoration: BoxDecoration(
+            border: !isLast
+                ? Border(
+                    bottom: BorderSide(
+                      color: AppColors.borderGrayColor.withOpacity(0.3),
+                      width: 0.5,
+                    ),
+                  )
+                : Border(
+                    bottom: BorderSide(
+                      color: Colors.white,
+                      width: 0.5,
+                    ),
+                  ),
+          ),
           child: Row(
             children: [
               Container(
@@ -495,8 +500,4 @@ class _PagesPageState extends State<PagesPage> {
           ],
         ),
       );
-
-  Widget _itemSuggestList() => !_pagesBloc.isSuggestFollowPage ? SuggestListPages(
-    suggest: _pagesBloc.suggestFollowPage,
-  ) : Container();
 }
