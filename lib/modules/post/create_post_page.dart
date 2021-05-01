@@ -386,7 +386,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           return MediaPagePickerWidget(
                             onMediaPick: (list) async {
                               setState(() {
-                                _cacheMedias = list;
+                                _cacheMedias.addAll(list);
                               });
                               final listUrls = await Future.wait(list.map(
                                   (filePath) => FileUtil.uploadFireStorage(
@@ -394,7 +394,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                       path:
                                           'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
                               setState(() {
-                                _urlMedias = listUrls;
+                                _urlMedias.addAll(listUrls);
                               });
                             },
                             maxCount: 10,
