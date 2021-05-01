@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -25,6 +27,25 @@ class PickCoordinatesState extends State<PickCoordinates> {
   String _placeName;
   String _mode = 'point';
   List<LatLng> polygonPoints = [];
+  Uint8List markerIcon;
+
+  @override
+  void initState() {
+    getBytesFromCanvas(200, 100).then((value) {
+      markerIcon = value;
+    });
+    _getInitPosPrefs();
+    getDevicePosition().then((value) async {
+      CameraPosition _curPos = CameraPosition(
+          bearing: 0,
+          target: LatLng(value.latitude, value.longitude),
+          tilt: 0,
+          zoom: 15);
+      final GoogleMapController controller = await _controller.future;
+      controller.animateCamera(CameraUpdate.newCameraPosition(_curPos));
+    });
+    super.initState();
+  }
 
   void _selectMarker(LatLng point) {
     setState(() {
@@ -79,40 +100,56 @@ class PickCoordinatesState extends State<PickCoordinates> {
     });
   }
 
-  void _selectMyLocation() {
-    getDevicePosition().then((value) => setState(() {
-          if (_mode == 'point')
-            selectedMarker = Marker(
-              markerId: MarkerId(value.toString()),
-              position: LatLng(value.latitude, value.longitude),
-              infoWindow: InfoWindow(
-                title: 'Ví trí của tôi',
-              ),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueRed),
-            );
-          CameraPosition _curPos = CameraPosition(
-              bearing: 0,
-              target: LatLng(value.latitude, value.longitude),
-              tilt: 0,
-              zoom: 15);
-          _controller.future.then((controller) => controller
-              .animateCamera(CameraUpdate.newCameraPosition(_curPos)));
-        }));
+  Future<Uint8List> getBytesFromCanvas(int width, int height) async {
+    final PictureRecorder pictureRecorder = PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint = Paint()..color = Colors.blue;
+    final Radius radius = Radius.circular(20.0);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble()),
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius,
+        ),
+        paint);
+    TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+    painter.text = TextSpan(
+      text: 'Hello world',
+      style: TextStyle(fontSize: 25.0, color: Colors.white),
+    );
+    painter.layout();
+    painter.paint(
+        canvas,
+        Offset((width * 0.5) - painter.width * 0.5,
+            (height * 0.5) - painter.height * 0.5));
+    final img = await pictureRecorder.endRecording().toImage(width, height);
+    final data = await img.toByteData(format: ImageByteFormat.png);
+    return data.buffer.asUint8List();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _getInitPosPrefs();
-    getDevicePosition().then((value) async {
-      CameraPosition _curPos = CameraPosition(
-          bearing: 0,
-          target: LatLng(value.latitude, value.longitude),
-          tilt: 0,
-          zoom: 15);
-      final GoogleMapController controller = await _controller.future;
-      controller.animateCamera(CameraUpdate.newCameraPosition(_curPos));
+  void _selectMyLocation() {
+    getDevicePosition().then((value) {
+      setState(() {
+        if (_mode == 'point')
+          selectedMarker = Marker(
+            markerId: MarkerId(value.toString()),
+            position: LatLng(value.latitude, value.longitude),
+            infoWindow: InfoWindow(
+              title: 'Ví trí của tôi',
+            ),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          );
+        CameraPosition _curPos = CameraPosition(
+            bearing: 0,
+            target: LatLng(value.latitude, value.longitude),
+            tilt: 0,
+            zoom: 15);
+        _controller.future.then((controller) =>
+            controller.animateCamera(CameraUpdate.newCameraPosition(_curPos)));
+      });
     });
   }
 
@@ -163,8 +200,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
                     .map((e) => Marker(
                           markerId: MarkerId(e.toString()),
                           position: e,
-                          icon: BitmapDescriptor.defaultMarkerWithHue(
-                              BitmapDescriptor.hueGreen),
+                          icon: BitmapDescriptor.fromBytes(markerIcon),
                         ))
                     .toSet()),
             polygons: (_mode == 'polygon' && polygonPoints.length > 0)
