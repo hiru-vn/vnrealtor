@@ -446,12 +446,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   SizedBox(width: 12),
                   GestureDetector(
                     onTap: () {
-                      PickCoordinates.navigate().then((value) => setState(() {
-                            _pos = value[0];
-                            _placeName = value[1];
-                            _polygonPoints = value[2];
-                            FocusScope.of(context).requestFocus(FocusNode());
-                          }));
+                      try {
+                        PickCoordinates.navigate().then((value) => setState(() {
+                              _pos = value[0];
+                              _placeName = value[1];
+                              _polygonPoints = value[2];
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            }));
+                      } catch (e) {}
                     },
                     child: SizedBox(
                         height: 40,

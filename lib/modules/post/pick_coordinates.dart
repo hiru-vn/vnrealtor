@@ -3,6 +3,8 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/share/import.dart';
+import 'dart:io' show Platform;
+import '../../share/widget/keep_keyboard_popup_menu/keep_keyboard_popup_menu.dart';
 
 class PickCoordinates extends StatefulWidget {
   static Future navigate() {
@@ -266,33 +268,80 @@ class PickCoordinatesState extends State<PickCoordinates> {
               ),
             ),
           ),
-          Positioned(
-              bottom: 120,
-              right: 10,
-              child: Material(
-                borderRadius: BorderRadius.circular(21),
-                elevation: 4,
-                child: GestureDetector(
-                  onTap: _selectMyLocation,
-                  child: Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.my_location,
-                        color: ptPrimaryColor(context),
+          if (!Platform.isIOS)
+            Positioned(
+                bottom: 120,
+                right: 10,
+                child: Material(
+                  borderRadius: BorderRadius.circular(21),
+                  elevation: 4,
+                  child: GestureDetector(
+                    onTap: _selectMyLocation,
+                    child: Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.my_location,
+                          color: ptPrimaryColor(context),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              )),
-          if (_mode == 'polygon' && polygonPoints.length > 0) ...[
+                )),
+          if (_mode == 'polygon' && polygonPoints.length > 1)
             Positioned(
                 top: 100,
+                right: 10,
+                child: WithKeepKeyboardPopupMenu(
+                    menuBuilder: (context, closePopup) {
+                      return GestureDetector(
+                        onTap: () {
+                          closePopup();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0).copyWith(right: 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Chu vi: 2312 m'),
+                              Text('Diện tích: 2312 m2'),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    childBuilder: (context, openPopup, closePopup) => Material(
+                          borderRadius: BorderRadius.circular(21),
+                          elevation: 4,
+                          child: GestureDetector(
+                            onTap: () {
+                              openPopup();
+                            },
+                            child: Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.info_outline,
+                                  color: ptPrimaryColor(context),
+                                  size: 25,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ))),
+          if (_mode == 'polygon' && polygonPoints.length > 0) ...[
+            Positioned(
+                top: 160,
                 right: 10,
                 child: Material(
                   borderRadius: BorderRadius.circular(21),
@@ -316,7 +365,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
                   ),
                 )),
             Positioned(
-                top: 160,
+                top: 220,
                 right: 10,
                 child: Material(
                   borderRadius: BorderRadius.circular(21),
@@ -338,8 +387,8 @@ class PickCoordinatesState extends State<PickCoordinates> {
                       ),
                     ),
                   ),
-                ))
-          ]
+                )),
+          ],
         ],
       ),
     );
