@@ -4,8 +4,8 @@ import 'package:datcao/share/widget/custom_tooltip.dart';
 class VerifiedIcon extends StatelessWidget {
   final String role;
   final double size;
-
-  const VerifiedIcon(this.role, this.size);
+  final bool isPage;
+  const VerifiedIcon(this.role, this.size, {this.isPage = false});
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +19,13 @@ class VerifiedIcon extends StatelessWidget {
       image = 'company';
       message = 'Tài khoản công ty';
     }
+
     if (image == null || message == null) return SizedBox.shrink();
 
     return Align(
       alignment: Alignment.bottomRight,
       child: CustomTooltip(
-        message: message,
+        message: isPage ? "Trang" : message,
         child: Container(
           width: size + 10,
           height: size + 10,
@@ -43,7 +44,9 @@ class VerifiedIcon extends StatelessWidget {
               child: SizedBox(
                   width: size,
                   height: size,
-                  child: Image.asset('assets/image/$image.png')),
+                  child: isPage
+                      ? Image.asset('assets/image/ic_page.png')
+                      : Image.asset('assets/image/$image.png')),
             ),
           ),
         ),

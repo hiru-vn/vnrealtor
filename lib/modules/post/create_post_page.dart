@@ -45,7 +45,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   Future _createPost() async {
-    FocusScope.of(context).requestFocus(FocusNode());
     if (isProcess) return;
     try {
       isProcess = true;

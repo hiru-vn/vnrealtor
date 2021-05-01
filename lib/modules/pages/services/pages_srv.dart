@@ -13,6 +13,7 @@ class PagesSrv extends BaseService {
   phone
   address
   website
+  isOwner
   followers{ 
     id
     name

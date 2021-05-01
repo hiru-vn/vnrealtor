@@ -50,21 +50,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
   }
 
   void _nextPage() {
-    if (_nameC.text.trim() == '') {
-      showToast('Tên trang không được để trống', context);
-      return;
-    }
-
-    if (_describeC.text.trim() == '') {
-      showToast('Nội dung không được để trống', context);
-      return;
-    }
-
-    if (_pagesBloc.listCategoriesId.isEmpty) {
-      showToast('Vui lòng chọn hạng mục', context);
-      return;
-    }
-
+    if (!_formKey.currentState.validate()) return;
     _pageController.nextPage(
         duration: Duration(milliseconds: 300), curve: Curves.easeIn);
   }
@@ -78,8 +64,10 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
                 child: Form(
+                  key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -139,7 +127,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
         color: ptSecondaryColor(context),
         borderRadius: BorderRadius.circular(10),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 25),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
           child: TextFormField(
             validator: TextFieldValidator.notEmptyValidator,
             controller: controller,
@@ -203,13 +191,18 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
     List<String> items,
     OnChange onSubmit,
     TextEditingController controller,
-    Function(String) onValidate,
   }) =>
       MediaQuery(
         data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
         child: TypeAheadFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: onValidate,
+          validator: (str) {
+            if (_pagesBloc.listCategoriesSelected.isEmpty) {
+              return 'Vui lòng điền thông tin';
+            } else {
+              return null;
+            }
+          },
           onSuggestionSelected: (val) {
             onSubmit(val);
             controller.clear();

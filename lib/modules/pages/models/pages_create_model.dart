@@ -13,6 +13,7 @@ class PagesCreate {
   List<Followers> followers;
   Owner owner;
   List<Category> category;
+  bool isOwner;
   String createdAt;
   String updatedAt;
 
@@ -32,6 +33,7 @@ class PagesCreate {
         this.owner,
         this.category,
         this.createdAt,
+        this.isOwner,
         this.updatedAt});
 
   PagesCreate.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,7 @@ class PagesCreate {
     phone = json['phone'];
     address = json['address'];
     website = json['website'];
+    isOwner = json['isOwner'] ?? false;
     if (json['followers'] != null) {
       followers = new List<Followers>();
       json['followers'].forEach((v) {
@@ -76,6 +79,7 @@ class PagesCreate {
     data['phone'] = this.phone;
     data['address'] = this.address;
     data['website'] = this.website;
+    data['isOwner'] = this.isOwner;
     if (this.followers != null) {
       data['followers'] = this.followers.map((v) => v.toJson()).toList();
     }
