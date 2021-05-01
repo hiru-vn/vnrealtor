@@ -293,7 +293,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
                     ),
                   ),
                 )),
-          if (_mode == 'polygon' && polygonPoints.length > 1)
+          if (_mode == 'polygon' && polygonPoints.length > 2)
             Positioned(
                 top: 100,
                 right: 10,
