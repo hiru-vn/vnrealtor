@@ -31,21 +31,7 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
   }
 
   void _nextPage() {
-    if (_pagesBloc.currentAddress == null) {
-      showToast('Địa chỉ hiện tại không được để trống', context);
-      return;
-    }
-
-    if (_pagesBloc.phone == null) {
-      showToast('Số điện thoại không được để trống', context);
-      return;
-    }
-
-    if (_pagesBloc.website == null) {
-      showToast('Email không được để trống', context);
-      return;
-    }
-
+    if (!_formKey.currentState.validate()) return;
     FocusScope.of(context).requestFocus(FocusNode());
     _pageController.nextPage(
         duration: Duration(milliseconds: 300), curve: Curves.easeIn);
@@ -63,6 +49,7 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
                 child: Form(
+                  key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

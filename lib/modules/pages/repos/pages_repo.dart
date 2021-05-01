@@ -3,6 +3,7 @@ import 'package:datcao/modules/pages/services/follow_page_srv.dart';
 import 'package:datcao/modules/pages/services/page_create_post_srv.dart';
 import 'package:datcao/modules/pages/services/pages_srv.dart';
 import 'package:datcao/modules/pages/services/suggest_follow_srv.dart';
+import 'package:datcao/modules/pages/services/updatePage_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/modules/services/post_srv.dart';
 import 'package:datcao/share/import.dart';
@@ -71,6 +72,19 @@ $pagesPostFragment
     data {
 $pagesPostFragment
 }
+    ''');
+    return res['getAllPost'];
+  }
+
+  Future getPostOfPageByGuest(
+      {GraphqlFilter filter, String timestamp, String timeSort}) async {
+    if (filter?.filter == null) filter?.filter = "{}";
+    if (filter?.search == null) filter?.search = "";
+    final data = 'q:{filter: ${filter?.filter}}';
+    final res = await PostSrv().query('getAllPost', data, fragment: '''
+    data {
+    ${pagesPostFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + ' _id'}
+  }
     ''');
     return res['getAllPost'];
   }
@@ -148,6 +162,15 @@ $pageFragment
     return res['getOnePage'];
   }
 
+  Future getOnePageGuess(String pageId) async {
+    final data = 'id: "$pageId"';
+    final res = await PagesSrv().query('getOnePage', data, fragment: '''
+    ${pagesFragment.replaceFirst('isOwner', '')}
+    ''');
+    return res['getOnePage'];
+  }
+
+
   Future getPostFollower({GraphqlFilter filter, String userId}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
@@ -166,6 +189,22 @@ $pagesFragment
         fragment: ' $pagesFragment ', removeData: true);
     return res['suggestFollowPage'];
   }
+
+
+  Future updatePage(
+      String id,
+      String avartar,
+      String coverImage,
+     ) async {
+    final res = await UpdatePageSrv().update(
+        id: id,
+        data: '''
+          avartar: "$avartar"
+          coverImage: "$coverImage"
+        ''',
+        fragment: 'id');
+    return res['id'];
+  }
 }
 
 String pagesFragment = '''
@@ -180,6 +219,7 @@ String pagesFragment = '''
   phone
   address
   website
+  isOwner
   followers{ 
     id
     name

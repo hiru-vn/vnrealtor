@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/widget/page_create_post_appbar.dart';
 import 'package:path/path.dart' as Path;
 import 'package:datcao/modules/inbox/import/detail_media.dart';
@@ -14,14 +15,14 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PageCreatePostPage extends StatefulWidget {
-  final String pageId;
-  const PageCreatePostPage({this.pageId});
+  final PagesCreate page;
+  const PageCreatePostPage({this.page});
 
-  static Future navigate(String pageId) {
+  static Future navigate(PagesCreate page) {
     return navigatorKey.currentState.push(
       pageBuilder(
         PageCreatePostPage(
-          pageId: pageId,
+          page: page,
         ),
       ),
     );
@@ -44,7 +45,8 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
   List<String> _urlMedias = [];
   PagesBloc _pagesBloc;
 
-  String get pageId => widget.pageId;
+  String get pageId => widget.page.id;
+  PagesCreate get page => widget.page;
 
   @override
   void didChangeDependencies() {
@@ -97,6 +99,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
         _contentC.clear();
         _cacheMedias.clear();
         _cachePic.clear();
+        Navigator.pop(context);
       } else {
         showToast(res.errMessage, context);
       }
@@ -128,19 +131,19 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                     radius: 20,
                     backgroundColor: Colors.white,
                     backgroundImage:
-                        (AuthBloc.instance.userModel.avatar != null &&
-                                AuthBloc.instance.userModel.avatar != 'null')
+                        (page.avartar != null &&
+                            page.avartar  != 'null')
                             ? CachedNetworkImageProvider(
-                                AuthBloc.instance.userModel.avatar)
+                            page.avartar)
                             : AssetImage('assets/image/default_avatar.png'),
-                    child: VerifiedIcon(AuthBloc.instance.userModel?.role, 10),
+                    child: VerifiedIcon(AuthBloc.instance.userModel?.role, 10, isPage: true,),
                   ),
                   SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AuthBloc.instance.userModel.name ?? '',
+                        page.name ?? '',
                         style: ptTitle(),
                       ),
                       Row(

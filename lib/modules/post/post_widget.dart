@@ -97,7 +97,11 @@ class _PostWidgetState extends State<PostWidget> {
                                       widget.post?.user?.avatar)
                                   : AssetImage(
                                       'assets/image/default_avatar.png')),
-                      child: VerifiedIcon(widget.post?.user?.role, 10),
+                      child: VerifiedIcon(
+                        widget.post?.user?.role,
+                        10,
+                        isPage: widget.post.isPage,
+                      ),
                     ),
                   ),
                   SizedBox(width: 8),
@@ -123,43 +127,53 @@ class _PostWidgetState extends State<PostWidget> {
                               style: ptTitle(),
                             ),
                           ),
+                          if (!widget.post.isPage)
                           SizedBox(
-                            width: 8,
+                            width: 5,
                           ),
-                          if (UserBloc.isVerified(widget.post?.user))
-                            CustomTooltip(
-                              margin: EdgeInsets.only(top: 0),
-                              message: 'Tài khoản xác thực',
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.blue[600],
-                                ),
-                                padding: EdgeInsets.all(1.3),
-                                child: Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  size: 11,
+                          if (!widget.post.isPage)
+                            if ([UserRole.agent, UserRole.company]
+                                .contains(UserBloc.getRole(widget.post?.user)))
+                              CustomTooltip(
+                                margin: EdgeInsets.only(top: 0),
+                                message: 'Tài khoản xác thực',
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.blue[600],
+                                  ),
+                                  padding: EdgeInsets.all(1.3),
+                                  child: Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                    size: 11,
+                                  ),
                                 ),
                               ),
-                            ),
                           SizedBox(width: 5),
-                          CustomTooltip(
-                            message: 'Điểm tương tác',
-                            child: Text(
-                              widget.post?.user?.reputationScore.toString(),
-                              style: ptSmall(),
+                          if (!widget.post.isPage)
+                            CustomTooltip(
+                              message: 'Điểm tương tác',
+                              child: Text(
+                                widget.post?.user?.reputationScore.toString(),
+                                style: ptSmall(),
+                              ),
                             ),
-                          ),
                           SizedBox(width: 1),
-                          CustomTooltip(
-                            message: 'Điểm tương tác',
-                            child: SizedBox(
-                              height: 13,
-                              width: 13,
-                              child: Image.asset('assets/image/ip.png'),
+                          if (!widget.post.isPage)
+                            CustomTooltip(
+                              message: 'Điểm tương tác',
+                              child: SizedBox(
+                                height: 13,
+                                width: 13,
+                                child: Image.asset('assets/image/ip.png'),
+                              ),
                             ),
-                          ),
+                          if (widget.post.isPage)
+                            Text(
+                              "bởi ${widget.post?.user.name}",
+                              style: ptTiny(),
+                            )
                         ],
                       ),
                       SizedBox(height: 1),
@@ -790,9 +804,8 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
           return SizedBox(
               height: deviceHeight(context) - kToolbarHeight - 15,
               child: CommentPage(
-                post: postModel,
-                keyboardPadding: MediaQuery.of(context).viewInsets.bottom
-              ));
+                  post: postModel,
+                  keyboardPadding: MediaQuery.of(context).viewInsets.bottom));
         });
   }
 }

@@ -473,10 +473,17 @@ buildStoryWidget(PostModel postModel) {
                       child: CircleAvatar(
                         radius: 13,
                         backgroundColor: Colors.white,
-                        backgroundImage: postModel.user.avatar != null &&
-                                postModel.user.avatar != 'null'
-                            ? CachedNetworkImageProvider(postModel.user.avatar)
-                            : AssetImage('assets/image/default_avatar.png'),
+                        backgroundImage: postModel.isPage
+                            ? postModel.page.avartar != null &&
+                                    postModel.page.avartar != 'null'
+                                ? CachedNetworkImageProvider(
+                                    postModel.page.avartar)
+                                : AssetImage('assets/image/default_avatar.png')
+                            : postModel.user.avatar != null &&
+                                    postModel.user.avatar != 'null'
+                                ? CachedNetworkImageProvider(
+                                    postModel.user.avatar)
+                                : AssetImage('assets/image/default_avatar.png'),
                       ),
                     ),
                   ),
@@ -485,7 +492,9 @@ buildStoryWidget(PostModel postModel) {
                   ),
                   Expanded(
                     child: Text(
-                      postModel.user.name ?? '',
+                      postModel.isPage
+                          ? postModel.page.name
+                          : postModel.user.name ?? '',
                       overflow: TextOverflow.fade,
                       style: ptTiny().copyWith(
                         color: Colors.white,
