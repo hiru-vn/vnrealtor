@@ -14,6 +14,7 @@ class PagesSrv extends BaseService {
   address
   website
   isOwner
+  isNoty
   followers{ 
     id
     name
