@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
@@ -27,20 +28,16 @@ class PickCoordinatesState extends State<PickCoordinates> {
   String _placeName;
   String _mode = 'point';
   List<LatLng> polygonPoints = [];
-  Uint8List markerIcon;
 
   @override
   void initState() {
-    getBytesFromCanvas(200, 100).then((value) {
-      markerIcon = value;
-    });
     _getInitPosPrefs();
     getDevicePosition().then((value) async {
       CameraPosition _curPos = CameraPosition(
           bearing: 0,
           target: LatLng(value.latitude, value.longitude),
           tilt: 0,
-          zoom: 15);
+          zoom: 17);
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(_curPos));
     });
@@ -52,11 +49,15 @@ class PickCoordinatesState extends State<PickCoordinates> {
       selectedMarker = Marker(
         markerId: MarkerId(point.toString()),
         position: point,
-        infoWindow: InfoWindow(
-          title: 'Ví trí đang chọn',
-        ),
+        infoWindow:
+            InfoWindow(title: 'Ví trí đang chọn', snippet: 'Đang tìm kiếm...'),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       );
+    });
+
+    Future.delayed(Duration(milliseconds: 150), () {
+      _controller.future.then(
+          (value) => value.showMarkerInfoWindow(MarkerId(point.toString())));
     });
 
     PostBloc.instance.getAddress(point.longitude, point.latitude).then((res) {
@@ -86,11 +87,30 @@ class PickCoordinatesState extends State<PickCoordinates> {
     setState(() {
       polygonPoints.add(point);
     });
+
+    final center = getCenterCoordinate(polygonPoints);
+    PostBloc.instance.getAddress(center.longitude, center.latitude).then((res) {
+      if (res.isSuccess) {
+        setState(() {
+          _placeName = res.data.address;
+        });
+      }
+    });
   }
 
   void _redoMarkerPoligon() {
     setState(() {
       polygonPoints.remove(polygonPoints[polygonPoints.length - 1]);
+    });
+
+    if (polygonPoints.length < 1) return;
+    final center = getCenterCoordinate(polygonPoints);
+    PostBloc.instance.getAddress(center.longitude, center.latitude).then((res) {
+      if (res.isSuccess) {
+        setState(() {
+          _placeName = res.data.address;
+        });
+      }
     });
   }
 
@@ -98,35 +118,6 @@ class PickCoordinatesState extends State<PickCoordinates> {
     setState(() {
       polygonPoints.clear();
     });
-  }
-
-  Future<Uint8List> getBytesFromCanvas(int width, int height) async {
-    final PictureRecorder pictureRecorder = PictureRecorder();
-    final Canvas canvas = Canvas(pictureRecorder);
-    final Paint paint = Paint()..color = Colors.blue;
-    final Radius radius = Radius.circular(20.0);
-    canvas.drawRRect(
-        RRect.fromRectAndCorners(
-          Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble()),
-          topLeft: radius,
-          topRight: radius,
-          bottomLeft: radius,
-          bottomRight: radius,
-        ),
-        paint);
-    TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
-    painter.text = TextSpan(
-      text: 'Hello world',
-      style: TextStyle(fontSize: 25.0, color: Colors.white),
-    );
-    painter.layout();
-    painter.paint(
-        canvas,
-        Offset((width * 0.5) - painter.width * 0.5,
-            (height * 0.5) - painter.height * 0.5));
-    final img = await pictureRecorder.endRecording().toImage(width, height);
-    final data = await img.toByteData(format: ImageByteFormat.png);
-    return data.buffer.asUint8List();
   }
 
   void _selectMyLocation() {
@@ -158,7 +149,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
     final double long = await SPref.instance.get('long') as double;
     if (lat != null && long != null) {
       CameraPosition _lastSavedPos = CameraPosition(
-          bearing: 0, target: LatLng(lat, long), tilt: 0, zoom: 15);
+          bearing: 0, target: LatLng(lat, long), tilt: 0, zoom: 17);
       final GoogleMapController controller = await _controller.future;
       controller.moveCamera(
         CameraUpdate.newCameraPosition(_lastSavedPos),
@@ -188,7 +179,9 @@ class PickCoordinatesState extends State<PickCoordinates> {
       body: Stack(
         children: [
           GoogleMap(
-            mapType: MapType.normal,
+            buildingsEnabled: false,
+            tiltGesturesEnabled: false,
+            mapType: MapType.hybrid,
             initialCameraPosition: _initPos,
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
@@ -200,7 +193,8 @@ class PickCoordinatesState extends State<PickCoordinates> {
                     .map((e) => Marker(
                           markerId: MarkerId(e.toString()),
                           position: e,
-                          icon: BitmapDescriptor.fromBytes(markerIcon),
+                          icon: BitmapDescriptor.fromBytes(
+                              markerIcon[polygonPoints.indexOf(e)]),
                         ))
                     .toSet()),
             polygons: (_mode == 'polygon' && polygonPoints.length > 0)
@@ -255,9 +249,11 @@ class PickCoordinatesState extends State<PickCoordinates> {
                       });
                   },
                   child: SizedBox(
-                    child: const Icon(Icons.more_vert),
-                    height: 24,
-                    width: 24,
+                    child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Icon(Icons.more_vert)),
+                    height: 45,
+                    width: 30,
                   ),
                 ),
               ),
@@ -334,18 +330,46 @@ class PickCoordinatesState extends State<PickCoordinates> {
                 top: 100,
                 right: 10,
                 child: WithKeepKeyboardPopupMenu(
+                    calculatePopupPosition:
+                        (Size menuSize, Rect overlayRect, Rect buttonRect) {
+                      return Offset(buttonRect.left - menuSize.width - 7,
+                          menuSize.height);
+                    },
                     menuBuilder: (context, closePopup) {
+                      final List<double> edges = [];
+
+                      for (int i = 0; i < polygonPoints.length; i++) {
+                        var coor1 = polygonPoints[i];
+                        var coor2 = (i == polygonPoints.length - 1)
+                            ? polygonPoints[0]
+                            : polygonPoints[i + 1];
+                        edges.add(
+                            getCoordinateDistanceInKm(coor1, coor2) * 1000);
+                      }
+
+                      final double perimeter =
+                          edges.fold(0, (e1, e2) => e1 + e2);
+
+                      final double area = getAreaInMeter(polygonPoints);
                       return GestureDetector(
                         onTap: () {
                           closePopup();
                         },
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0).copyWith(right: 0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Chu vi: 2312 m'),
-                              Text('Diện tích: 2312 m2'),
+                              ...polygonPoints.map((e) {
+                                final index = polygonPoints.indexOf(e);
+                                return Text(
+                                    'Từ ${index + 1} đến ${index == polygonPoints.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m');
+                              }),
+                              Divider(
+                                height: 8,
+                              ),
+                              Text('Chu vi: ${perimeter.round()} m'),
+                              Text('Diện tích: ${area.round()} m2'),
                             ],
                           ),
                         ),
