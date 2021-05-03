@@ -14,6 +14,7 @@ class PagesCreate {
   Owner owner;
   List<Category> category;
   bool isOwner;
+  bool isNoty;
   String createdAt;
   String updatedAt;
 
@@ -34,6 +35,7 @@ class PagesCreate {
         this.category,
         this.createdAt,
         this.isOwner,
+        this.isNoty,
         this.updatedAt});
 
   PagesCreate.fromJson(Map<String, dynamic> json) {
@@ -49,6 +51,7 @@ class PagesCreate {
     address = json['address'];
     website = json['website'];
     isOwner = json['isOwner'] ?? false;
+    isNoty = json['isNoty'] ?? false;
     if (json['followers'] != null) {
       followers = new List<Followers>();
       json['followers'].forEach((v) {
@@ -80,6 +83,7 @@ class PagesCreate {
     data['address'] = this.address;
     data['website'] = this.website;
     data['isOwner'] = this.isOwner;
+    data['isNoty'] = this.isNoty;
     if (this.followers != null) {
       data['followers'] = this.followers.map((v) => v.toJson()).toList();
     }

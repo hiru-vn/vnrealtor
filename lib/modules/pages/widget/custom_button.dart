@@ -2,19 +2,28 @@ import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/activity_indicator.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomButton extends StatelessWidget {
   final String title;
   final String image;
+  final String imageSvg;
+  final double sizeSvg;
   final bool isLoading;
   final double size;
   final VoidCallback callback;
+  final Color color;
+  final TextStyle style;
   const CustomButton(
       {this.title,
       this.image,
+      this.imageSvg,
       this.isLoading = false,
       this.callback,
-      this.size});
+      this.size,
+      this.color,
+      this.sizeSvg,
+      this.style});
 
   @override
   Widget build(BuildContext context) {
@@ -26,26 +35,39 @@ class CustomButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(7),
           ),
-          color: AppColors.backgroundLightColor,
+          color: color ?? AppColors.backgroundLightColor,
           onPressed: callback,
           child: isLoading
               ? SizedBox(
-                  width: 20,
-                  height: 20,
                   child: ActivityIndicator(),
                 )
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      image,
-                      width: 24,
-                    ),
+                    image != null
+                        ? Image.asset(
+                            image,
+                            width: 24,
+                          )
+                        : const SizedBox(),
+                    imageSvg != null
+                        ? Container(
+                            width: sizeSvg??25,
+                            height: sizeSvg??25,
+                            child: SvgPicture.asset(
+                              imageSvg,
+                              color: AppColors.mainColor,
+                              semanticsLabel: imageSvg,
+                              fit: BoxFit.contain,
+                            ),
+                          )
+                        : const SizedBox(),
                     widthSpace(10),
                     Text(
                       title,
-                      style: ptButton().copyWith(color: AppColors.mainColor),
+                      style: style ??
+                          ptButton().copyWith(color: AppColors.mainColor),
                     )
                   ],
                 )),

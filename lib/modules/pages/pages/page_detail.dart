@@ -4,6 +4,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/pages/page_create_post.dart';
+import 'package:datcao/modules/pages/pages/page_setting.dart';
 import 'package:datcao/modules/pages/widget/custom_button.dart';
 import 'package:datcao/modules/pages/widget/item_info_page.dart';
 import 'package:datcao/modules/pages/widget/page_Detail_loading.dart';
@@ -15,6 +16,7 @@ import 'package:datcao/share/widget/activity_indicator.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
 import 'package:datcao/share/widget/load_more.dart';
 import 'package:datcao/utils/file_util.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PageDetail extends StatefulWidget {
   final PagesCreate page;
@@ -59,6 +61,7 @@ class _PageDetailState extends State<PageDetail> {
 
   Future _getPageDetail() async {
     var res;
+    _pagesBloc.pageDetail = null;
     if (_authBloc.userModel != null) {
       res = await _pagesBloc.getOnePage(_pageState.id);
     } else {
@@ -67,6 +70,7 @@ class _PageDetailState extends State<PageDetail> {
     if (res.isSuccess) {
       _pagesBloc.pageDetail = res.data;
       _pagesBloc.updatePageFollowed(_authBloc.userModel.id);
+      _pagesBloc.isReceiveNotified = _pagesBloc.pageDetail.isNoty;
     } else {
       navigatorKey.currentState.maybePop();
       showToast(res.errMessage, context);
@@ -116,13 +120,21 @@ class _PageDetailState extends State<PageDetail> {
               "pages/coverImage_user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}");
       _pagesBloc.isLoadingUploadCover = false;
       _pagesBloc.pageDetail.coverImage = url;
-      await _pagesBloc.updatePage(_pageState.id, _pagesBloc.pageDetail.avartar,
-          _pagesBloc.pageDetail.coverImage);
+      await _pagesBloc.updatePage(
+          id: _pageState.id,
+          avatar: _pagesBloc.pageDetail.avartar,
+          cover: _pagesBloc.pageDetail.coverImage,
+          name: _pagesBloc.pageDetail.name,
+          description: _pagesBloc.pageDetail.description,
+          categoryIds: _pagesBloc.pageDetail.categoryIds,
+          address: _pagesBloc.pageDetail.address,
+          phone: _pagesBloc.pageDetail.phone,
+          email: "",
+          website: _pagesBloc.pageDetail.website);
     } catch (e) {
       showToast(e.toString(), context);
     }
   }
-
 
   Future _updateAvatar(String filePath) async {
     try {
@@ -130,12 +142,23 @@ class _PageDetailState extends State<PageDetail> {
       // final compressImage = await _compressedFile(filePath);
       final uint8 = (await File(filePath).readAsBytes());
       final thumbnail = await FileUtil.resizeImage(uint8, 120);
-      final url = await FileUtil.uploadFireStorage(thumbnail?.path,  path:
-      "pages/avatar_user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}");
+      final url = await FileUtil.uploadFireStorage(thumbnail?.path,
+          path:
+              "pages/avatar_user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}");
       _pagesBloc.isLoadingUploadAvatar = false;
       _pagesBloc.pageDetail.avartar = url;
-      await _pagesBloc.updatePage(_pageState.id, _pagesBloc.pageDetail.avartar,
-          _pagesBloc.pageDetail.coverImage);
+      await _pagesBloc.updatePage(
+          id: _pageState.id,
+          avatar: _pagesBloc.pageDetail.avartar,
+          cover: _pagesBloc.pageDetail.coverImage,
+          name: _pagesBloc.pageDetail.name,
+          description: _pagesBloc.pageDetail.description,
+          categoryIds: _pagesBloc.pageDetail.categoryIds,
+          address: _pagesBloc.pageDetail.address,
+          phone: _pagesBloc.pageDetail.phone,
+          email: "",
+          website: _pagesBloc.pageDetail.website,
+      );
     } catch (e) {
       showToast(e.toString(), context);
     }
@@ -149,7 +172,7 @@ class _PageDetailState extends State<PageDetail> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar1(
         bgColor: ptSecondaryColor(context),
-        title: _pageState.name,
+        title: _pagesBloc.pageDetail != null ? _pagesBloc.pageDetail.name :  "Trang",
         textColor: AppColors.mainColor,
         centerTitle: true,
         automaticallyImplyLeading: true,
@@ -288,60 +311,64 @@ class _PageDetailState extends State<PageDetail> {
 
   Widget _itemHeaderInfo() => Row(
         children: [
-          _pagesBloc.isLoadingUploadAvatar  ?  Container(
-            width: 50.0,
-            height: 50.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              color: ptSecondaryColor(context),
-            ),
-            child: Center(
-              child: ActivityIndicator(),
-            ),
-          ) : GestureDetector(
-            onTap: () {
-              imagePicker(context,
-                  onImagePick: _updateAvatar, onCameraPick: _updateAvatar);
-            },
-            child: CachedNetworkImage(
-              imageUrl: _pagesBloc.pageDetail.avartar != null
-                  ? _pagesBloc.pageDetail.avartar
-                  : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
-              imageBuilder: (context, imageProvider) => Container(
-                width: 50.0,
-                height: 50.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                ),
-              ),
-              placeholder: (context, url) => Container(
-                width: 50.0,
-                height: 50.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  color: ptSecondaryColor(context),
-                ),
-                child: Center(
-                  child: ActivityIndicator(),
-                ),
-              ),
-              errorWidget: (context, url, error) => Container(
-                width: 50.0,
-                height: 50.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  color: ptSecondaryColor(context),
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.error,
-                    color: AppColors.mainColor,
+          _pagesBloc.isLoadingUploadAvatar
+              ? Container(
+                  width: 50.0,
+                  height: 50.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    color: ptSecondaryColor(context),
+                  ),
+                  child: Center(
+                    child: ActivityIndicator(),
+                  ),
+                )
+              : GestureDetector(
+                  onTap: () {
+                    imagePicker(context,
+                        onImagePick: _updateAvatar,
+                        onCameraPick: _updateAvatar);
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: _pagesBloc.pageDetail.avartar != null
+                        ? _pagesBloc.pageDetail.avartar
+                        : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: 50.0,
+                      height: 50.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.cover),
+                      ),
+                    ),
+                    placeholder: (context, url) => Container(
+                      width: 50.0,
+                      height: 50.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: ptSecondaryColor(context),
+                      ),
+                      child: Center(
+                        child: ActivityIndicator(),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      width: 50.0,
+                      height: 50.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: ptSecondaryColor(context),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.error,
+                          color: AppColors.mainColor,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
           SizedBox(width: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -404,7 +431,7 @@ class _PageDetailState extends State<PageDetail> {
               ? SizedBox(
                   width: 20,
                   height: 20,
-                  child: CircularProgressIndicator(),
+                  child: ActivityIndicator(),
                 )
               : Text(
                   _pagesBloc.isFollowed ? "Bỏ theo dõi" : "Theo dõi",
@@ -441,50 +468,109 @@ class _PageDetailState extends State<PageDetail> {
 
   Widget _buildButtonMessage() => CustomButton(
         title: "Nhắn tin",
-        image: AppImages.icPageMessage,
-        callback: () => showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey),
+        imageSvg: AppImages.icPageMessage,
+        callback: () => showAlertDialog(context, 'Đang cập nhật',
+            navigatorKey: navigatorKey),
       );
 
   Widget _buildButtonCreatePost(PagesCreate page) => CustomButton(
         title: "Tạo bài viết",
-        image: AppImages.icCreatePost,
+        imageSvg: AppImages.icCreatePost,
         callback: () => PageCreatePostPage.navigate(page),
       );
 
-  Widget _buildButtonSetting() => Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(7),
-          color: AppColors.backgroundLightColor,
-        ),
-        child: Image(
-          width: 25,
-          height: 25,
-          image: AssetImage(
-            AppImages.icSettingPage,
-          ),
+  Widget _buildButtonSetting() => GestureDetector(
+        onTap: () => PageSetting.navigate(_pagesBloc),
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                color: AppColors.backgroundLightColor,
+              ),
+            ),
+            Container(
+              width: 25,
+              height: 25,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                color: AppColors.backgroundLightColor,
+              ),
+              child: SvgPicture.asset(
+                AppImages.icSettingPage,
+                color: AppColors.mainColor,
+                semanticsLabel: 'icSettingPage',
+                fit: BoxFit.contain,
+              ),
+            )
+          ],
         ),
       );
 
   Widget _buildButtonBell() => GestureDetector(
-    onTap: () => showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey),
-    child: Container(
-          width: 45,
-          height: 45,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(7),
-            color: AppColors.backgroundLightColor,
-          ),
-          child: Image(
-            width: 25,
-            height: 25,
-            image: AssetImage(
-              AppImages.icBellPage,
+        onTap: () async {
+          if (_pagesBloc.isReceiveNotified) {
+            _pagesBloc.isReciveNotiPageLoading = true;
+            final res = await _pagesBloc.unReceiveNotifyPage(_pageState.id);
+            if (res.isSuccess) {
+              _pagesBloc.isReceiveNotified = false;
+            } else {
+              _pagesBloc.isReciveNotiPageLoading = false;
+              showToast(res.errMessage, context);
+            }
+
+            _pagesBloc.isReciveNotiPageLoading = false;
+          } else {
+            _pagesBloc.isReciveNotiPageLoading = true;
+            final res = await _pagesBloc.receiveNotifyPage(_pageState.id);
+
+            if (res.isSuccess) {
+              _pagesBloc.isReceiveNotified = true;
+            } else {
+              _pagesBloc.isReciveNotiPageLoading = false;
+              showToast(res.errMessage, context);
+            }
+
+            _pagesBloc.isReciveNotiPageLoading = false;
+          }
+        },
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                color: AppColors.backgroundLightColor,
+              ),
             ),
-          ),
+            Container(
+              width: 25,
+              height: 25,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                color: AppColors.backgroundLightColor,
+              ),
+              child: _pagesBloc.isReciveNotiPageLoading
+                  ? CircularProgressIndicator(
+                      backgroundColor: Color(0xff05515e),
+                    )
+                  : SvgPicture.asset(
+                      _pagesBloc.isReceiveNotified
+                          ? AppImages.icBellActivePage
+                          : AppImages.icBellPage,
+                      color: AppColors.mainColor,
+                      semanticsLabel: 'Notify',
+                      fit: BoxFit.contain,
+                    ),
+            )
+          ],
         ),
-  );
+      );
 
   Widget _buildInfoPage() => Container(
         margin: const EdgeInsets.only(top: 10),
