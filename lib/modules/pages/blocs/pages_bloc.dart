@@ -3,6 +3,7 @@ import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/pages/models/followModel.dart';
 import 'package:datcao/modules/pages/models/pages_category_model.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
+import 'package:datcao/modules/pages/models/receive_notify_page_model.dart';
 import 'package:datcao/modules/pages/models/suggestModel.dart';
 import 'package:datcao/modules/pages/repos/pages_repo.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
@@ -34,9 +35,13 @@ class PagesBloc extends ChangeNotifier {
 
   bool _isFollowed = false;
 
+  bool _isReceiveNotified = false;
+
   bool _isSuggestFollowPage = false;
 
   bool _isSuggestFollowLoading = false;
+
+  bool _isUpdateLoading = false;
 
   List<PagesCreate> _pageCreated = [];
 
@@ -74,6 +79,8 @@ class PagesBloc extends ChangeNotifier {
 
   bool get isSuggestFollowLoading => _isSuggestFollowLoading;
 
+  bool get isUpdateLoading => _isUpdateLoading;
+
   List<String> get followingPageIds => _followingPageIds;
 
   ScrollController pagePostsScrollController;
@@ -85,6 +92,8 @@ class PagesBloc extends ChangeNotifier {
   bool _isLoadingUploadCover = false;
 
   bool _isLoadingUploadAvatar = false;
+
+  bool _isReciveNotiPageLoading = false;
 
   List<String> _listCategories = [];
 
@@ -118,6 +127,10 @@ class PagesBloc extends ChangeNotifier {
 
   bool get isLoadingUploadAvatar => _isLoadingUploadAvatar;
 
+  bool get isReciveNotiPageLoading => _isReciveNotiPageLoading;
+
+  bool get isReceiveNotified => _isReceiveNotified;
+
   List<String> get listCategoriesId => _listCategoriesId;
 
   List<String> get listCategoriesSelected => _listCategoriesSelected;
@@ -140,8 +153,23 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
+  set isUpdateLoading(bool isUpdateLoading) {
+    _isUpdateLoading = isUpdateLoading;
+    notifyListeners();
+  }
+
+  set isReceiveNotified(bool isReceiveNotified) {
+    _isReceiveNotified = isReceiveNotified;
+    notifyListeners();
+  }
+
   set isSuggestFollowLoading(bool isSuggestFollowLoading) {
     _isSuggestFollowLoading = isSuggestFollowLoading;
+    notifyListeners();
+  }
+
+  set isReciveNotiPageLoading(bool isReciveNotiPageLoading) {
+    _isReciveNotiPageLoading = isReciveNotiPageLoading;
     notifyListeners();
   }
 
@@ -406,6 +434,34 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> receiveNotifyPage(String pageId) async {
+    try {
+      final res = await PagesRepo().receiveNotifyPage(pageId);
+      notifyListeners();
+      return BaseResponse.success(ReceiveNotifyPageModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      _isReceiveNotified = true;
+      _isReciveNotiPageLoading = false;
+      Future.delayed(Duration(seconds: 1), () => notifyListeners());
+    }
+  }
+
+  Future<BaseResponse> unReceiveNotifyPage(String pageId) async {
+    try {
+      final res = await PagesRepo().unReceiveNotifyPage(pageId);
+      notifyListeners();
+      return BaseResponse.success(ReceiveNotifyPageModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      _isReceiveNotified = false;
+      _isReciveNotiPageLoading = false;
+      Future.delayed(Duration(seconds: 1), () => notifyListeners());
+    }
+  }
+
   removeCategory(int index) {
     _listCategoriesId.removeAt(index);
     notifyListeners();
@@ -521,20 +577,32 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
-
-  Future<BaseResponse> updatePage(String id ,String avatar , String cover) async {
+  Future<BaseResponse> updatePage(
+      {String id,
+      String avatar,
+      String cover,
+      String name,
+      String description,
+      List<String> categoryIds,
+      String address,
+      String phone,
+      String email,
+      String website}) async {
     try {
-      final res = await PagesRepo().updatePage(
-          id, avatar, cover);
+      _isUpdateLoading = true;
+      final res = await PagesRepo().updatePage(id, avatar, cover, name,
+          description, categoryIds, address, phone, email, website);
+      notifyListeners();
       return BaseResponse.success(res);
     } catch (e) {
+      _isUpdateLoading = false;
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
+      _isUpdateLoading = false;
       notifyListeners();
       PagesBloc.instance.notifyListeners();
     }
   }
-
 
   Future<BaseResponse> suggestFollow() async {
     try {

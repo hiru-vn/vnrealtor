@@ -202,7 +202,9 @@ class _PostDetailState extends State<PostDetail> {
     return Scaffold(
       appBar: AppBar1(
         centerTitle: true,
-        title: _post != null ? 'Bài viết của ${_post.user.name}' : '',
+        title: _post != null
+            ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
+            : '',
         automaticallyImplyLeading: true,
         bgColor: ptSecondaryColor(context),
         textColor: ptPrimaryColor(context),
