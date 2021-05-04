@@ -151,12 +151,13 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     return res;
   }
 
-  Future createReply({String commentId, String content}) async {
+  Future createReply({String commentId, String content, List<String> tagUserIds}) async {
     String data = '''
 commentId: "$commentId"
 content: """
 $content
 """
+tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     ''';
     final res = await ReplySrv().add(data, fragment: '''
     ${ReplySrv().fragmentDefault}

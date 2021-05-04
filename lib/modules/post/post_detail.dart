@@ -103,10 +103,13 @@ class _PostDetailState extends State<PostDetail> {
         commentId: replyComment.id,
         user: AuthBloc.instance.userModel,
         createdAt: DateTime.now().toIso8601String(),
-        updatedAt: DateTime.now().toIso8601String()));
+        updatedAt: DateTime.now().toIso8601String(),
+        userTags: Map.fromIterable(tagUsers,
+            key: (e) => e.id, value: (e) => e.name)));
     setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
-    BaseResponse res = await _postBloc.createReply(text, replyComment.id);
+    BaseResponse res = await _postBloc.createReply(text, replyComment.id,
+        tagUserIds: tagUsers.map((e) => e.id).toList());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
@@ -173,14 +176,13 @@ class _PostDetailState extends State<PostDetail> {
     _commentC.clear();
     comments.add(
       CommentModel(
-        content: text,
-        like: 0,
-        userId: AuthBloc.instance.userModel.id,
-        user: AuthBloc.instance.userModel,
-        updatedAt: DateTime.now().toIso8601String(),
-        userTags: Map.fromIterable(tagUsers,
-            key: (e) => e.id, value: (e) => e.name)
-      ),
+          content: text,
+          like: 0,
+          userId: AuthBloc.instance.userModel.id,
+          user: AuthBloc.instance.userModel,
+          updatedAt: DateTime.now().toIso8601String(),
+          userTags: Map.fromIterable(tagUsers,
+              key: (e) => e.id, value: (e) => e.name)),
     );
     FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text,

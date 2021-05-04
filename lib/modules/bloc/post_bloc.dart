@@ -392,10 +392,11 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> createReply(String content, String commentId) async {
+  Future<BaseResponse> createReply(String content, String commentId,
+      {List<String> tagUserIds}) async {
     try {
       final res =
-          await PostRepo().createReply(commentId: commentId, content: content);
+          await PostRepo().createReply(commentId: commentId, content: content, tagUserIds: tagUserIds);
       return BaseResponse.success(ReplyModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());
