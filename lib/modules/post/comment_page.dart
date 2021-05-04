@@ -140,16 +140,15 @@ class _CommentPageState extends State<CommentPage> {
     } else {
       final index = localReplies
           .lastIndexWhere((element) => element.userId == res.data.userId);
-      if (index >= 0) {
-        localReplies[index] = res.data;
-        comments
-            .firstWhere((element) => element.id == replyComment.id)
-            .replyIds
-            .add(localReplies[index].id);
-      }
-
       if (mounted)
         setState(() {
+          if (index >= 0) {
+            localReplies[index].id = res.data.id;
+            comments
+                .firstWhere((element) => element.id == replyComment.id)
+                .replyIds
+                .add(res.data.id);
+          }
           isReply = false;
           replyComment = null;
         });
@@ -534,7 +533,7 @@ class _CommentWidgetState extends State<CommentWidget> {
     final List<ReplyModel> mergeReplies = [
       ...replies,
       ...(userReplyCache
-              .where((element) => element.commentId == widget.comment.id)
+              .where((element) => element.commentId == widget.comment.id && !replies.any((e) => e.id == element.id))
               ?.toList() ??
           [])
     ];
@@ -596,7 +595,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                 else
                   ...contentSplit.map((e) {
                     print(contentSplit);
-                    if (widget.comment.userTags.containsKey(e)) {
+                    if (widget.comment.userTags?.containsKey(e) ?? false) {
                       return TextSpan(
                           text: (contentSplit.indexOf(e) == 0 ? '' : ' ') +
                               widget.comment.userTags[e] +
