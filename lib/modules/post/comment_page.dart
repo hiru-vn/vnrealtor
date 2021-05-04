@@ -49,7 +49,7 @@ class _CommentPageState extends State<CommentPage> {
   FocusNode _focusNodeComment = FocusNode();
   CommentModel replyComment;
   List<ReplyModel> localReplies = [];
-  List<String> tagUserIds = [];
+  List<UserModel> tagUsers = [];
 
   @override
   void initState() {
@@ -95,12 +95,13 @@ class _CommentPageState extends State<CommentPage> {
         like: 0,
         userId: AuthBloc.instance.userModel.id,
         user: AuthBloc.instance.userModel,
-        updatedAt: DateTime.now().toIso8601String()));
+        updatedAt: DateTime.now().toIso8601String(),
+        userTags: Map.fromIterable(tagUsers.map((e) => {e.id: e.name}))));
     FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text,
         postId: widget.post?.id,
         mediaPostId: widget.mediaPost?.id,
-        tagUserIds: tagUserIds);
+        tagUserIds: tagUsers.map((e) => e.id).toList());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
@@ -112,7 +113,7 @@ class _CommentPageState extends State<CommentPage> {
       if (index >= 0)
         setState(() {
           comments[index] = resComment;
-          tagUserIds = [];
+          tagUsers = [];
         });
     }
   }
@@ -305,8 +306,8 @@ class _CommentPageState extends State<CommentPage> {
                         ),
                         Expanded(
                           child: TagUserField(
-                            onUpdateTags: (userIds) {
-                              tagUserIds = userIds;
+                            onUpdateTags: (users) {
+                              tagUsers = users;
                             },
                             focusNode: _focusNodeComment,
                             controller: _commentC,

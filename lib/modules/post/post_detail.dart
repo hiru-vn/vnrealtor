@@ -3,6 +3,7 @@ import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/comment_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/model/reply.dart';
@@ -37,7 +38,7 @@ class _PostDetailState extends State<PostDetail> {
   FocusNode _focusNodeComment = FocusNode();
   CommentModel replyComment;
   List<ReplyModel> localReplies = [];
-  List<String> tagUserIds = [];
+  List<UserModel> tagUsers = [];
 
   @override
   void initState() {
@@ -181,7 +182,7 @@ class _PostDetailState extends State<PostDetail> {
     );
     FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text,
-        postId: _post?.id, tagUserIds: tagUserIds);
+        postId: _post?.id, tagUserIds: tagUsers.map((e) => e.id).toList());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
@@ -192,7 +193,7 @@ class _PostDetailState extends State<PostDetail> {
       if (index >= 0)
         setState(() {
           comments[index] = resComment;
-          tagUserIds = [];
+          tagUsers = [];
         });
     }
   }
@@ -285,8 +286,8 @@ class _PostDetailState extends State<PostDetail> {
                     ),
                     Expanded(
                       child: TagUserField(
-                        onUpdateTags: (userIds) {
-                          tagUserIds = userIds;
+                        onUpdateTags: (users) {
+                          tagUsers = users;
                         },
                         controller: _commentC,
                         focusNode: _focusNodeComment,
