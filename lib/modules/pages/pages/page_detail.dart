@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/pages/page_create_post.dart';
@@ -148,16 +149,16 @@ class _PageDetailState extends State<PageDetail> {
       _pagesBloc.isLoadingUploadAvatar = false;
       _pagesBloc.pageDetail.avartar = url;
       await _pagesBloc.updatePage(
-          id: _pageState.id,
-          avatar: _pagesBloc.pageDetail.avartar,
-          cover: _pagesBloc.pageDetail.coverImage,
-          name: _pagesBloc.pageDetail.name,
-          description: _pagesBloc.pageDetail.description,
-          categoryIds: _pagesBloc.pageDetail.categoryIds,
-          address: _pagesBloc.pageDetail.address,
-          phone: _pagesBloc.pageDetail.phone,
-          email: "",
-          website: _pagesBloc.pageDetail.website,
+        id: _pageState.id,
+        avatar: _pagesBloc.pageDetail.avartar,
+        cover: _pagesBloc.pageDetail.coverImage,
+        name: _pagesBloc.pageDetail.name,
+        description: _pagesBloc.pageDetail.description,
+        categoryIds: _pagesBloc.pageDetail.categoryIds,
+        address: _pagesBloc.pageDetail.address,
+        phone: _pagesBloc.pageDetail.phone,
+        email: "",
+        website: _pagesBloc.pageDetail.website,
       );
     } catch (e) {
       showToast(e.toString(), context);
@@ -172,7 +173,9 @@ class _PageDetailState extends State<PageDetail> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar1(
         bgColor: ptSecondaryColor(context),
-        title: _pagesBloc.pageDetail != null ? _pagesBloc.pageDetail.name :  "Trang",
+        title: _pagesBloc.pageDetail != null
+            ? _pagesBloc.pageDetail.name
+            : "Trang",
         textColor: AppColors.mainColor,
         centerTitle: true,
         automaticallyImplyLeading: true,
@@ -469,8 +472,18 @@ class _PageDetailState extends State<PageDetail> {
   Widget _buildButtonMessage() => CustomButton(
         title: "Nhắn tin",
         imageSvg: AppImages.icPageMessage,
-        callback: () => showAlertDialog(context, 'Đang cập nhật',
-            navigatorKey: navigatorKey),
+        callback: () async{
+          showSimpleLoadingDialog(context);
+          await InboxBloc.instance.navigateToChatWith(context, widget.page.owner.name,
+              widget.page.avartar, DateTime.now(), widget.page.avartar, [
+            AuthBloc.instance.userModel.id,
+            widget.page.ownerId,
+          ], [
+            AuthBloc.instance.userModel.avatar,
+            widget.page.avartar,
+          ]);
+          navigatorKey.currentState.maybePop();
+        },
       );
 
   Widget _buildButtonCreatePost(PagesCreate page) => CustomButton(
