@@ -178,6 +178,8 @@ class _PostDetailState extends State<PostDetail> {
         userId: AuthBloc.instance.userModel.id,
         user: AuthBloc.instance.userModel,
         updatedAt: DateTime.now().toIso8601String(),
+        userTags: Map.fromIterable(tagUsers,
+            key: (e) => e.id, value: (e) => e.name)
       ),
     );
     FocusScope.of(context).requestFocus(FocusNode());

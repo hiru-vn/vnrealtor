@@ -96,7 +96,8 @@ class _CommentPageState extends State<CommentPage> {
         userId: AuthBloc.instance.userModel.id,
         user: AuthBloc.instance.userModel,
         updatedAt: DateTime.now().toIso8601String(),
-        userTags: Map.fromIterable(tagUsers.map((e) => {e.id: e.name}))));
+        userTags: Map.fromIterable(tagUsers,
+            key: (e) => e.id, value: (e) => e.name)));
     FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text,
         postId: widget.post?.id,
