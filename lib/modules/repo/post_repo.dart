@@ -132,7 +132,10 @@ ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').re
   }
 
   Future createComment(
-      {String postId, String mediaPostId, String content, List<String> tagUserIds}) async {
+      {String postId,
+      String mediaPostId,
+      String content,
+      List<String> tagUserIds}) async {
     String data = '''
 content: """
 $content
@@ -151,7 +154,8 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     return res;
   }
 
-  Future createReply({String commentId, String content, List<String> tagUserIds}) async {
+  Future createReply(
+      {String commentId, String content, List<String> tagUserIds}) async {
     String data = '''
 commentId: "$commentId"
 content: """
@@ -238,7 +242,13 @@ ${postFragment.replaceAll('\n', ' ')}
       double lat,
       double long,
       List<String> images,
-      List<String> videos) async {
+      List<String> videos,
+      List<LatLng> polygon) async {
+    String polygonStr = '''{
+      paths: [
+        ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
+      ]
+    }''';
     String data = '''
 content: """
 ${content.toString()}
@@ -253,6 +263,9 @@ images: ${GraphqlHelper.listStringToGraphqlString(images)}
     }
     if (lat != null && long != null) {
       data += '\nlocationLat: $lat\nlocationLong: $long';
+    }
+    if (polygon != null && polygon.length > 0) {
+      data += '\npolygon: $polygonStr';
     }
     final res = await PostSrv()
         .mutate('updatePost', 'id: "$id"  data: {$data}', fragment: '''
