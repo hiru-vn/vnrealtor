@@ -1,19 +1,19 @@
-import 'dart:io';
+import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:flutter/gestures.dart';
 import 'package:path/path.dart' as Path;
 import 'package:datcao/modules/inbox/import/detail_media.dart';
-import 'package:datcao/modules/inbox/import/media_group.dart';
 import 'package:flutter/material.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
-import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:datcao/modules/post/pick_coordinates.dart';
-import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/utils/file_util.dart';
 import 'package:hashtagable/hashtagable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
+import './tag_user_list_page.dart';
 
 class CreatePostPage extends StatefulWidget {
   final PageController pageController;
@@ -35,6 +35,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   PostBloc _postBloc;
   bool isProcess = false;
   List<LatLng> _polygonPoints = [];
+  List<UserModel> _tagUsers = [];
 
   @override
   void didChangeDependencies() {
@@ -77,7 +78,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
               .where(
                   (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
               .toList(),
-          _polygonPoints);
+          _polygonPoints,
+          _tagUsers.map((e) => e.id).toList());
 
       navigatorKey.currentState.maybePop();
       if (res.isSuccess) {
@@ -464,19 +466,27 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         )),
                   ),
                   SizedBox(width: 12),
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     showAlertDialog(context, 'Đang phát triển',
-                  //         navigatorKey: navigatorKey);
-                  //   },
-                  //   child: SizedBox(
-                  //       height: 40,
-                  //       width: 40,
-                  //       child: Padding(
-                  //         padding: const EdgeInsets.all(6),
-                  //         child: Image.asset('assets/icon/tag_friend.png'),
-                  //       )),
-                  // ),
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) {
+                          return TagUserListPage();
+                        },
+                        backgroundColor: Colors.transparent,
+                      ).then((value) => setState(() {
+                            _tagUsers = value;
+                          }));
+                    },
+                    child: SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Image.asset('assets/icon/tag_friend.png'),
+                        )),
+                  ),
                 ],
               ),
             ),
@@ -494,6 +504,22 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   TextSpan(
                       text: '$_placeName',
                       style: ptSmall().copyWith(fontStyle: FontStyle.italic))
+                ])),
+              ),
+            if (_tagUsers.length > 0)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Text.rich(TextSpan(children: [
+                  TextSpan(
+                      text: 'Gắn thẻ: ',
+                      style: ptSmall().copyWith(color: Colors.black)),
+                  ..._tagUsers.map(
+                    (e) => TextSpan(
+                        text: '${e.name}, ',
+                        recognizer: new TapGestureRecognizer()
+                          ..onTap = () => ProfileOtherPage.navigate(e),
+                        style: ptSmall().copyWith(fontStyle: FontStyle.italic)),
+                  )
                 ])),
               ),
             SizedBox(

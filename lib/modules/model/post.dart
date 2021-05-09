@@ -37,6 +37,7 @@ class PostModel {
   bool isPage;
   PagesCreate page;
   double distance;
+  List<UserModel> tagUsers;
 
   PostModel(
       {this.id,
@@ -70,7 +71,8 @@ class PostModel {
       this.polygonPoints,
       this.dynamicLink,
       this.isPage,
-      this.distance});
+      this.distance,
+      this.tagUsers});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -128,6 +130,9 @@ class PostModel {
         : DynamicLink.fromJson(json['dynamicLink']);
     isPage = json['isPage'];
     distance = double.tryParse(json['distance'].toString());
+    tagUsers = json['tagUsers'] != null
+        ? json['tagUsers'].map<UserModel>((e) => UserModel.fromJson(e)).toList()
+        : [];
   }
 
   Map<String, dynamic> toJson() {

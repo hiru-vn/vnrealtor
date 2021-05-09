@@ -16,6 +16,7 @@ import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:readmore/readmore.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -128,9 +129,9 @@ class _PostWidgetState extends State<PostWidget> {
                             ),
                           ),
                           if (!widget.post.isPage)
-                          SizedBox(
-                            width: 5,
-                          ),
+                            SizedBox(
+                              width: 5,
+                            ),
                           if (!widget.post.isPage)
                             if ([UserRole.agent, UserRole.company]
                                 .contains(UserBloc.getRole(widget.post?.user)))
@@ -349,7 +350,23 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
               ),
             ),
-
+            if (widget.post.tagUsers != null && widget.post.tagUsers.length > 0)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15)
+                    .copyWith(bottom: 7),
+                child: Text.rich(TextSpan(children: [
+                  TextSpan(
+                      text: 'Cùng với: ',
+                      style: ptSmall().copyWith(color: Colors.black)),
+                  ...widget.post.tagUsers.map(
+                    (e) => TextSpan(
+                        text: '${e.name}, ',
+                        recognizer: new TapGestureRecognizer()
+                          ..onTap = () => ProfileOtherPage.navigate(e),
+                        style: ptSmall().copyWith(fontStyle: FontStyle.italic)),
+                  )
+                ])),
+              ),
             if ((widget.post?.hashTag?.length ?? 0) > 0)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),

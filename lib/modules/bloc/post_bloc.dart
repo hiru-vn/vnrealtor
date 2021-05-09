@@ -340,10 +340,11 @@ class PostBloc extends ChangeNotifier {
       double long,
       List<String> images,
       List<String> videos,
-      List<LatLng> polygon) async {
+      List<LatLng> polygon,
+      List<String> tagUserIds) async {
     try {
       final res = await PostRepo().createPost(content, expirationDate,
-          publicity, lat, long, images, videos, polygon);
+          publicity, lat, long, images, videos, polygon, tagUserIds);
       feed.insert(0, PostModel.fromJson(res));
       myPosts.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
@@ -364,10 +365,11 @@ class PostBloc extends ChangeNotifier {
       double long,
       List<String> images,
       List<String> videos,
-      List<LatLng> polygon) async {
+      List<LatLng> polygon,
+      List<String> tagUserIds) async {
     try {
       final res = await PostRepo().updatePost(id, content, expirationDate,
-          publicity, lat, long, images, videos, polygon);
+          publicity, lat, long, images, videos, polygon, tagUserIds);
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());

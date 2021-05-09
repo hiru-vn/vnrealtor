@@ -123,27 +123,25 @@ $followPageFragment
     return res["unfollowPage"];
   }
 
-
   Future receiveNotifyPage(String pageId) async {
     String data = '''
     pageId: "$pageId"
     ''';
 
-    final res =
-    await ReceiveNotifyPageSrv().mutate('reciveNotiPage', '$data', fragment: '''
+    final res = await ReceiveNotifyPageSrv()
+        .mutate('reciveNotiPage', '$data', fragment: '''
 $receiveNotifyPageFragment
     ''');
     return res["reciveNotiPage"];
   }
-
 
   Future unReceiveNotifyPage(String pageId) async {
     String data = '''
     pageId: "$pageId"
     ''';
 
-    final res =
-    await ReceiveNotifyPageSrv().mutate('unReciveNotiPage', '$data', fragment: '''
+    final res = await ReceiveNotifyPageSrv()
+        .mutate('unReciveNotiPage', '$data', fragment: '''
 $receiveNotifyPageFragment
     ''');
     return res["unReciveNotiPage"];
@@ -235,8 +233,7 @@ $pagesFragment
       String address,
       String phone,
       String email,
-      String website
-     ) async {
+      String website) async {
     final res = await UpdatePageSrv().update(
         id: id,
         data: '''
@@ -511,7 +508,6 @@ String suggestFollowFragment = '''
       name
     }
   ''';
-
 
 String receiveNotifyPageFragment = '''
     id
