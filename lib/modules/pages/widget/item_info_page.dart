@@ -1,6 +1,7 @@
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ItemInfoPage extends StatelessWidget {
   final String image;
@@ -14,9 +15,28 @@ class ItemInfoPage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset(
-            image,
-            width: 40,
+          Stack(
+            alignment: AlignmentDirectional.center,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: AppColors.backgroundLightColor,
+                ),
+              ),
+              Container(
+                width: 20,
+                height: 20,
+                child: SvgPicture.asset(
+                  image,
+                  color: AppColors.mainColor,
+                  semanticsLabel: image,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ],
           ),
           widthSpace(15),
           title != null

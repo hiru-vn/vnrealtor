@@ -57,8 +57,9 @@ class DetailMediaGroupWidgetCache extends StatelessWidget {
 class MediaWidgetNetwork extends StatefulWidget {
   final String file;
   final Function callBack;
+  final double radius;
 
-  const MediaWidgetNetwork({Key key, this.file, this.callBack})
+  const MediaWidgetNetwork({Key key, this.file, this.callBack, this.radius})
       : super(key: key);
 
   @override
@@ -102,7 +103,7 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
   Widget _getWidget(FileType type) {
     if (type == FileType.image || type == FileType.gif)
       return ClipRRect(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(widget.radius??5),
         child: Image(
           image: CachedNetworkImageProvider(widget.file),
           fit: BoxFit.cover,

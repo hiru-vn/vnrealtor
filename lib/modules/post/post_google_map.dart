@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:datcao/share/widget/keep_keyboard_popup_menu/keep_keyboard_popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:datcao/share/import.dart';
@@ -43,7 +46,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   void initState() {
     _initPos = CameraPosition(
       target: LatLng(widget.lat, widget.long),
-      zoom: 15,
+      zoom: 18,
     );
     selectedPoint = LatLng(widget.lat, widget.long);
     super.initState();
@@ -61,7 +64,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
 
   _cameraMove() async {
     CameraPosition _curPos = CameraPosition(
-        bearing: 0, target: LatLng(widget.lat, widget.long), tilt: 0, zoom: 15);
+        bearing: 0, target: LatLng(widget.lat, widget.long), tilt: 0, zoom: 18);
     final GoogleMapController controller = await _controller.future;
     controller.moveCamera(CameraUpdate.newCameraPosition(_curPos));
   }
@@ -102,12 +105,24 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
         fit: StackFit.expand,
         children: [
           GoogleMap(
-            mapType: MapType.normal,
+            buildingsEnabled: false,
+            tiltGesturesEnabled: false,
+            mapType: MapType.hybrid,
             initialCameraPosition: _initPos,
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
             },
-            markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
+            markers: (widget.polygonPoints != null &&
+                    (widget.polygonPoints.length > 0)
+                ? widget.polygonPoints
+                    .map((e) => Marker(
+                          markerId: MarkerId(e.toString()),
+                          position: e,
+                          icon: BitmapDescriptor.fromBytes(
+                              markerIcon[widget.polygonPoints.indexOf(e)]),
+                        ))
+                    .toSet()
+                : (selectedMarker != null ? <Marker>{selectedMarker} : null)),
             polygons: (widget.polygonPoints != null &&
                     (widget.polygonPoints.length > 0)
                 ? <Polygon>{
@@ -122,6 +137,81 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                   }
                 : null),
           ),
+          if (widget.polygonPoints != null && widget.polygonPoints.length > 2)
+            Positioned(
+                top: 80,
+                right: 10,
+                child: WithKeepKeyboardPopupMenu(
+                    calculatePopupPosition:
+                        (Size menuSize, Rect overlayRect, Rect buttonRect) {
+                      return Offset(buttonRect.left - menuSize.width - 7,
+                          menuSize.height);
+                    },
+                    menuBuilder: (context, closePopup) {
+                      final List<double> edges = [];
+
+                      for (int i = 0; i < widget.polygonPoints.length; i++) {
+                        var coor1 = widget.polygonPoints[i];
+                        var coor2 = (i == widget.polygonPoints.length - 1)
+                            ? widget.polygonPoints[0]
+                            : widget.polygonPoints[i + 1];
+                        edges.add(
+                            getCoordinateDistanceInKm(coor1, coor2) * 1000);
+                      }
+
+                      final double perimeter =
+                          edges.fold(0, (e1, e2) => e1 + e2);
+
+                      final double area = getAreaInMeter(widget.polygonPoints);
+                      return GestureDetector(
+                        onTap: () {
+                          closePopup();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...widget.polygonPoints.map((e) {
+                                final index = widget.polygonPoints.indexOf(e);
+                                return Text(
+                                    'Từ ${index + 1} đến ${index == widget.polygonPoints.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m');
+                              }),
+                              Divider(
+                                height: 8,
+                              ),
+                              Text('Chu vi: ${perimeter.round()} m'),
+                              Text('Diện tích: ${area.round()} m2'),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    childBuilder: (context, openPopup, closePopup) => Material(
+                          borderRadius: BorderRadius.circular(21),
+                          elevation: 4,
+                          child: GestureDetector(
+                            onTap: () {
+                              openPopup();
+                            },
+                            child: Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.info_outline,
+                                  color: ptPrimaryColor(context),
+                                  size: 25,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ))),
+
           Positioned(
             top: 20,
             right: 12,

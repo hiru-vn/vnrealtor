@@ -49,7 +49,7 @@ class _CommentPageState extends State<CommentPage> {
   FocusNode _focusNodeComment = FocusNode();
   CommentModel replyComment;
   List<ReplyModel> localReplies = [];
-  List<String> tagUserIds = [];
+  List<UserModel> tagUsers = [];
 
   @override
   void initState() {
@@ -95,12 +95,14 @@ class _CommentPageState extends State<CommentPage> {
         like: 0,
         userId: AuthBloc.instance.userModel.id,
         user: AuthBloc.instance.userModel,
-        updatedAt: DateTime.now().toIso8601String()));
+        updatedAt: DateTime.now().toIso8601String(),
+        userTags: Map.fromIterable(tagUsers,
+            key: (e) => e.id, value: (e) => e.name)));
     FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text,
         postId: widget.post?.id,
         mediaPostId: widget.mediaPost?.id,
-        tagUserIds: tagUserIds);
+        tagUserIds: tagUsers.map((e) => e.id).toList());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
@@ -112,7 +114,7 @@ class _CommentPageState extends State<CommentPage> {
       if (index >= 0)
         setState(() {
           comments[index] = resComment;
-          tagUserIds = [];
+          tagUsers = [];
         });
     }
   }
@@ -129,25 +131,27 @@ class _CommentPageState extends State<CommentPage> {
         commentId: replyComment.id,
         user: AuthBloc.instance.userModel,
         createdAt: DateTime.now().toIso8601String(),
-        updatedAt: DateTime.now().toIso8601String()));
+        updatedAt: DateTime.now().toIso8601String(),
+        userTags: Map.fromIterable(tagUsers,
+            key: (e) => e.id, value: (e) => e.name)));
     setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
-    BaseResponse res = await _postBloc.createReply(text, replyComment.id);
+    BaseResponse res = await _postBloc.createReply(text, replyComment.id,
+        tagUserIds: tagUsers.map((e) => e.id).toList());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
       final index = localReplies
           .lastIndexWhere((element) => element.userId == res.data.userId);
-      if (index >= 0) {
-        localReplies[index] = res.data;
-        comments
-            .firstWhere((element) => element.id == replyComment.id)
-            .replyIds
-            .add(localReplies[index].id);
-      }
-
       if (mounted)
         setState(() {
+          if (index >= 0) {
+            localReplies[index].id = res.data.id;
+            comments
+                .firstWhere((element) => element.id == replyComment.id)
+                .replyIds
+                .add(res.data.id);
+          }
           isReply = false;
           replyComment = null;
         });
@@ -305,8 +309,8 @@ class _CommentPageState extends State<CommentPage> {
                         ),
                         Expanded(
                           child: TagUserField(
-                            onUpdateTags: (userIds) {
-                              tagUserIds = userIds;
+                            onUpdateTags: (users) {
+                              tagUsers = users;
                             },
                             focusNode: _focusNodeComment,
                             controller: _commentC,
@@ -388,6 +392,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   List<ReplyModel> replies = [];
   bool isLoadReply = false;
   bool isExpandReply = false;
+  bool canExpand = false;
   List<ReplyModel> userReplyCache;
   final GlobalKey _menuKey = new GlobalKey();
   List<String> contentSplit;
@@ -449,6 +454,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         setState(() {
           replies = res.data;
           if (replies.length > 0) isExpandReply = true;
+          if (widget.comment.replyIds.length > 2) canExpand = true;
         });
     } else {
       // showToast('Có lỗi khi lấy dữ liệu', context);
@@ -532,7 +538,9 @@ class _CommentWidgetState extends State<CommentWidget> {
     final List<ReplyModel> mergeReplies = [
       ...replies,
       ...(userReplyCache
-              .where((element) => element.commentId == widget.comment.id)
+              .where((element) =>
+                  element.commentId == widget.comment.id &&
+                  !replies.any((e) => e.id == element.id))
               ?.toList() ??
           [])
     ];
@@ -594,7 +602,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                 else
                   ...contentSplit.map((e) {
                     print(contentSplit);
-                    if (widget.comment.userTags.containsKey(e)) {
+                    if (widget.comment.userTags?.containsKey(e) ?? false) {
                       return TextSpan(
                           text: (contentSplit.indexOf(e) == 0 ? '' : ' ') +
                               widget.comment.userTags[e] +
@@ -692,9 +700,18 @@ class _CommentWidgetState extends State<CommentWidget> {
             child: GestureDetector(
               onTap: () {
                 if (isExpandReply) {
-                  setState(() {
-                    isExpandReply = false;
-                  });
+                  if (canExpand) {
+                    setState(() {
+                      isExpandReply = false;
+                      canExpand = false;
+                    });
+                    _getReply(
+                        filter:
+                            GraphqlFilter(limit: 40, order: "{updatedAt: 1}"));
+                  } else
+                    setState(() {
+                      isExpandReply = false;
+                    });
                 } else {
                   if (replies.length > 0) {
                     setState(() {
@@ -716,12 +733,14 @@ class _CommentWidgetState extends State<CommentWidget> {
                     children: [
                       Text(
                         isExpandReply
-                            ? 'Rút gọn'
+                            ? (canExpand
+                                ? 'Xem ${widget.comment.replyIds.length - 2} phản hồi'
+                                : 'Rút gọn')
                             : 'Xem ${widget.comment.replyIds.length} phản hồi',
                         style: ptSmall().copyWith(color: Colors.black54),
                       ),
                       Icon(
-                        isExpandReply
+                        isExpandReply && !canExpand
                             ? Icons.keyboard_arrow_up
                             : Icons.keyboard_arrow_down,
                         color: Colors.black54,
@@ -759,16 +778,21 @@ class ReplyWidget extends StatefulWidget {
 }
 
 class _ReplyWidgetState extends State<ReplyWidget> {
-  bool _isLike = false;
   PostBloc _postBloc;
   final GlobalKey _menuKey = new GlobalKey();
+  List<String> contentSplit;
 
   @override
   void initState() {
-    // if (widget.reply.userLikeIds != null)
-    //   _isLike = widget.reply.userLikeIds
-    //           ?.contains(AuthBloc.instance.userModel?.id ?? '') ??
-    //       false;
+    String content = widget.reply.content;
+    if (widget.reply.userTags != null) {
+      widget.reply.userTags.forEach((key, value) {
+        content = content.replaceAll('@' + value.trim(), '<tag>$key<tag>');
+      });
+
+      contentSplit = content.split('<tag>');
+      contentSplit.removeWhere((element) => element.trim() == '');
+    }
 
     super.initState();
   }
@@ -827,11 +851,40 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                   ),
                   Text.rich(
                     TextSpan(children: [
-                      TextSpan(
-                        text: widget.reply.content ?? '',
-                        style: ptBody().copyWith(
-                            fontWeight: FontWeight.w500, color: Colors.black87),
-                      ),
+                      if ((contentSplit?.length ?? 0) < 1)
+                        TextSpan(
+                          text: (widget.reply.content ?? ''),
+                          style: ptBody().copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87),
+                        )
+                      else
+                        ...contentSplit.map((e) {
+                          print(contentSplit);
+                          if (widget.reply.userTags?.containsKey(e) ?? false) {
+                            return TextSpan(
+                                text:
+                                    (contentSplit.indexOf(e) == 0 ? '' : ' ') +
+                                        widget.reply.userTags[e] +
+                                        (contentSplit.indexOf(e) ==
+                                                contentSplit.length - 1
+                                            ? ''
+                                            : ' '),
+                                style: ptBody().copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.blue),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    ProfileOtherPage.navigate(null, userId: e);
+                                  });
+                          } else
+                            return TextSpan(
+                              text: (e),
+                              style: ptBody().copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black87),
+                            );
+                        }).toList(),
                       TextSpan(
                         text: '  ' +
                             Formart.timeByDayViShort(

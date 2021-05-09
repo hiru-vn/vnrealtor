@@ -6,6 +6,7 @@ id: String
 userId: ID
 commentId: ID
 content: String
+userTags
 user {
   id 
   uid 

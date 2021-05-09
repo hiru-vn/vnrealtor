@@ -3,6 +3,7 @@ import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/comment_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/model/reply.dart';
@@ -37,7 +38,7 @@ class _PostDetailState extends State<PostDetail> {
   FocusNode _focusNodeComment = FocusNode();
   CommentModel replyComment;
   List<ReplyModel> localReplies = [];
-  List<String> tagUserIds = [];
+  List<UserModel> tagUsers = [];
 
   @override
   void initState() {
@@ -102,10 +103,13 @@ class _PostDetailState extends State<PostDetail> {
         commentId: replyComment.id,
         user: AuthBloc.instance.userModel,
         createdAt: DateTime.now().toIso8601String(),
-        updatedAt: DateTime.now().toIso8601String()));
+        updatedAt: DateTime.now().toIso8601String(),
+        userTags: Map.fromIterable(tagUsers,
+            key: (e) => e.id, value: (e) => e.name)));
     setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
-    BaseResponse res = await _postBloc.createReply(text, replyComment.id);
+    BaseResponse res = await _postBloc.createReply(text, replyComment.id,
+        tagUserIds: tagUsers.map((e) => e.id).toList());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
@@ -172,16 +176,17 @@ class _PostDetailState extends State<PostDetail> {
     _commentC.clear();
     comments.add(
       CommentModel(
-        content: text,
-        like: 0,
-        userId: AuthBloc.instance.userModel.id,
-        user: AuthBloc.instance.userModel,
-        updatedAt: DateTime.now().toIso8601String(),
-      ),
+          content: text,
+          like: 0,
+          userId: AuthBloc.instance.userModel.id,
+          user: AuthBloc.instance.userModel,
+          updatedAt: DateTime.now().toIso8601String(),
+          userTags: Map.fromIterable(tagUsers,
+              key: (e) => e.id, value: (e) => e.name)),
     );
     FocusScope.of(context).requestFocus(FocusNode());
     BaseResponse res = await _postBloc.createComment(text,
-        postId: _post?.id, tagUserIds: tagUserIds);
+        postId: _post?.id, tagUserIds: tagUsers.map((e) => e.id).toList());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
@@ -192,7 +197,7 @@ class _PostDetailState extends State<PostDetail> {
       if (index >= 0)
         setState(() {
           comments[index] = resComment;
-          tagUserIds = [];
+          tagUsers = [];
         });
     }
   }
@@ -202,7 +207,9 @@ class _PostDetailState extends State<PostDetail> {
     return Scaffold(
       appBar: AppBar1(
         centerTitle: true,
-        title: _post != null ? 'Bài viết của ${_post.user.name}' : '',
+        title: _post != null
+            ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
+            : '',
         automaticallyImplyLeading: true,
         bgColor: ptSecondaryColor(context),
         textColor: ptPrimaryColor(context),
@@ -283,8 +290,8 @@ class _PostDetailState extends State<PostDetail> {
                     ),
                     Expanded(
                       child: TagUserField(
-                        onUpdateTags: (userIds) {
-                          tagUserIds = userIds;
+                        onUpdateTags: (users) {
+                          tagUsers = users;
                         },
                         controller: _commentC,
                         focusNode: _focusNodeComment,

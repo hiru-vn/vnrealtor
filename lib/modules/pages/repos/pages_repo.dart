@@ -2,6 +2,7 @@ import 'package:datcao/modules/pages/services/create_page_srv.dart';
 import 'package:datcao/modules/pages/services/follow_page_srv.dart';
 import 'package:datcao/modules/pages/services/page_create_post_srv.dart';
 import 'package:datcao/modules/pages/services/pages_srv.dart';
+import 'package:datcao/modules/pages/services/receive_notify_page.srv.dart';
 import 'package:datcao/modules/pages/services/suggest_follow_srv.dart';
 import 'package:datcao/modules/pages/services/updatePage_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
@@ -122,6 +123,32 @@ $followPageFragment
     return res["unfollowPage"];
   }
 
+
+  Future receiveNotifyPage(String pageId) async {
+    String data = '''
+    pageId: "$pageId"
+    ''';
+
+    final res =
+    await ReceiveNotifyPageSrv().mutate('reciveNotiPage', '$data', fragment: '''
+$receiveNotifyPageFragment
+    ''');
+    return res["reciveNotiPage"];
+  }
+
+
+  Future unReceiveNotifyPage(String pageId) async {
+    String data = '''
+    pageId: "$pageId"
+    ''';
+
+    final res =
+    await ReceiveNotifyPageSrv().mutate('unReciveNotiPage', '$data', fragment: '''
+$receiveNotifyPageFragment
+    ''');
+    return res["unReciveNotiPage"];
+  }
+
   Future getCategories(
       {GraphqlFilter filter, String timestamp, String timeSort}) async {
     if (filter?.filter == null) filter?.filter = "{}";
@@ -174,7 +201,7 @@ $pageFragment
   Future getOnePageGuess(String pageId) async {
     final data = 'id: "$pageId"';
     final res = await PagesSrv().query('getOnePage', data, fragment: '''
-    ${pagesFragment.replaceFirst('isOwner', '')}
+    ${pagesFragment.replaceFirst('isOwner', '').replaceFirst('isNoty', '')}
     ''');
     return res['getOnePage'];
   }
@@ -199,13 +226,27 @@ $pagesFragment
   }
 
   Future updatePage(
-    String id,
-    String avartar,
-    String coverImage,
-  ) async {
+      String id,
+      String avartar,
+      String coverImage,
+      String name,
+      String description,
+      List<String> categoryIds,
+      String address,
+      String phone,
+      String email,
+      String website
+     ) async {
     final res = await UpdatePageSrv().update(
         id: id,
         data: '''
+          name: "$name"
+          description: "$description"
+          categoryIds: ${GraphqlHelper.listStringToGraphqlString(categoryIds)}
+          address: "$address"
+          phone: "$phone"
+          email: "$email"
+          website: "$website"
           avartar: "$avartar"
           coverImage: "$coverImage"
         ''',
@@ -227,6 +268,7 @@ String pagesFragment = '''
   address
   website
   isOwner
+  isNoty
   followers{ 
     id
     name
@@ -469,3 +511,11 @@ String suggestFollowFragment = '''
       name
     }
   ''';
+
+
+String receiveNotifyPageFragment = '''
+    id
+    description
+    avartar
+    coverImage
+''';

@@ -59,6 +59,7 @@ class DetailImageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Container(
         child: Stack(fit: StackFit.expand, children: [
           Center(

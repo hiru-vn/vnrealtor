@@ -64,6 +64,7 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
     precacheImage(splash.image, context);
+    initMarkerIcon();
 
     ConnectionStatusSingleton connectionStatus =
         ConnectionStatusSingleton.getInstance();

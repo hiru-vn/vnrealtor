@@ -8,6 +8,7 @@ class ReplyModel {
   UserModel user;
   String createdAt;
   String updatedAt;
+  Map userTags;
 
   ReplyModel(
       {this.id,
@@ -16,7 +17,8 @@ class ReplyModel {
       this.commentId,
       this.user,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.userTags});
 
   ReplyModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -26,6 +28,9 @@ class ReplyModel {
     user = json['user'] != null ? UserModel.fromJson(json['user']) : null;
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    if (json['userTags'] != null) {
+      userTags = json['userTags'];
+    }
   }
 
   Map<String, dynamic> toJson() {

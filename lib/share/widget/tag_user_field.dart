@@ -13,7 +13,7 @@ class TagUserField extends StatefulWidget {
   final InputDecoration decoration;
   final double keyboardPadding;
   final Function onTap;
-  final Function(List<String>) onUpdateTags;
+  final Function(List<UserModel>) onUpdateTags;
 
   TagUserField(
       {this.controller,
@@ -92,7 +92,7 @@ class _TagUserFieldState extends State<TagUserField> {
 
                         closePopup();
                         tagUsers.add(e);
-                        widget.onUpdateTags(tagUsers.map((e) => e.id).toList());
+                        widget.onUpdateTags(tagUsers);
                       },
                       child: Row(
                         children: [
