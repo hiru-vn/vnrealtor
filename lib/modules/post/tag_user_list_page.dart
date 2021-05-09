@@ -68,8 +68,8 @@ class _TagUserListPageState extends State<TagUserListPage> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,
-          title: Text('Tag Friends',
-              style: ptBigBody().copyWith(color: Colors.black)),
+          title:
+              Text('Gắn thẻ', style: ptBigBody().copyWith(color: Colors.black)),
           actions: [
             GestureDetector(
               onTap: () => navigatorKey.currentState.pop(tagUsers),
