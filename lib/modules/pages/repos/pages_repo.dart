@@ -39,7 +39,13 @@ $pagesFragment
       double lat,
       double long,
       List<String> images,
-      List<String> videos) async {
+      List<String> videos,
+      List<LatLng> polygon) async {
+    String polygonStr = '''{
+      paths: [
+        ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
+      ]
+    }''';
     String data = '''
     pageId: "$pageId"
 content: """
@@ -55,6 +61,9 @@ images: ${GraphqlHelper.listStringToGraphqlString(images)}
     }
     if (lat != null && long != null) {
       data += '\nlocationLat: $lat\nlocationLong: $long';
+    }
+    if (polygon != null && polygon.length > 0) {
+      data += '\npolygon: $polygonStr';
     }
     final res =
         await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''
@@ -170,7 +179,6 @@ $pageFragment
     return res['getOnePage'];
   }
 
-
   Future getPostFollower({GraphqlFilter filter, String userId}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
@@ -190,12 +198,11 @@ $pagesFragment
     return res['suggestFollowPage'];
   }
 
-
   Future updatePage(
-      String id,
-      String avartar,
-      String coverImage,
-     ) async {
+    String id,
+    String avartar,
+    String coverImage,
+  ) async {
     final res = await UpdatePageSrv().update(
         id: id,
         data: '''

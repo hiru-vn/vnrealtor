@@ -307,10 +307,11 @@ class PagesBloc extends ChangeNotifier {
       double lat,
       double long,
       List<String> images,
-      List<String> videos) async {
+      List<String> videos,
+      List<LatLng> polygon) async {
     try {
       final res = await PagesRepo().createPagePost(pageId, content,
-          expirationDate, publicity, lat, long, images, videos);
+          expirationDate, publicity, lat, long, images, videos, polygon);
       _listPagePost.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
@@ -521,11 +522,10 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
-
-  Future<BaseResponse> updatePage(String id ,String avatar , String cover) async {
+  Future<BaseResponse> updatePage(
+      String id, String avatar, String cover) async {
     try {
-      final res = await PagesRepo().updatePage(
-          id, avatar, cover);
+      final res = await PagesRepo().updatePage(id, avatar, cover);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
@@ -534,7 +534,6 @@ class PagesBloc extends ChangeNotifier {
       PagesBloc.instance.notifyListeners();
     }
   }
-
 
   Future<BaseResponse> suggestFollow() async {
     try {

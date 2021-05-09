@@ -44,6 +44,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
   List<String> _cachePic = [];
   List<String> _urlMedias = [];
   PagesBloc _pagesBloc;
+  List<LatLng> _polygonPoints = [];
 
   String get pageId => widget.page.id;
   PagesCreate get page => widget.page;
@@ -55,7 +56,6 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
     }
     super.didChangeDependencies();
   }
-  
 
   Future _createPagePost() async {
     if (_pagesBloc.isCreatePostLoading) return;
@@ -90,7 +90,8 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
           _urlMedias
               .where(
                   (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
-              .toList());
+              .toList(),
+          _polygonPoints);
       navigatorKey.currentState.maybePop();
       if (res.isSuccess) {
         navigatorKey.currentState.pop();
@@ -131,12 +132,14 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                     radius: 20,
                     backgroundColor: Colors.white,
                     backgroundImage:
-                        (page.avartar != null &&
-                            page.avartar  != 'null')
-                            ? CachedNetworkImageProvider(
-                            page.avartar)
+                        (page.avartar != null && page.avartar != 'null')
+                            ? CachedNetworkImageProvider(page.avartar)
                             : AssetImage('assets/image/default_avatar.png'),
-                    child: VerifiedIcon(AuthBloc.instance.userModel?.role, 10, isPage: true,),
+                    child: VerifiedIcon(
+                      AuthBloc.instance.userModel?.role,
+                      10,
+                      isPage: true,
+                    ),
                   ),
                   SizedBox(width: 10),
                   Column(
@@ -336,7 +339,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                                         ' ' +
                                         _pagesBloc.hasTags
                                             .where((element) => !_contentC.text
-                                            .contains(element['value']))
+                                                .contains(element['value']))
                                             .toList()[index]['value']
                                             .toString();
                                     _contentC.selection =
@@ -354,7 +357,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                                     child: Text(
                                       _pagesBloc.hasTags
                                           .where((element) => !_contentC.text
-                                          .contains(element['value']))
+                                              .contains(element['value']))
                                           .toList()[index]['value']
                                           .toString(),
                                     ),
@@ -364,7 +367,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                             },
                             itemCount: _pagesBloc.hasTags
                                 .where((element) =>
-                            !_contentC.text.contains(element['value']))
+                                    !_contentC.text.contains(element['value']))
                                 .toList()
                                 .length,
                             scrollDirection: Axis.horizontal,
@@ -456,6 +459,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                       PickCoordinates.navigate().then((value) => setState(() {
                             _pos = value[0];
                             _placeName = value[1];
+                            _polygonPoints = value[2];
                             FocusScope.of(context).requestFocus(FocusNode());
                           }));
                     },
