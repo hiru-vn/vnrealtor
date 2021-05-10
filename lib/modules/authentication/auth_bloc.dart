@@ -84,8 +84,8 @@ class AuthBloc extends ChangeNotifier {
   Future<BaseResponse> signIn(String name, String password) async {
     try {
       if (Validator.isPhone(name)) {
-        name = (name.startsWith('+') ? "+" : "+84") +
-            name.toString().substring(1);
+        name =
+            (name.startsWith('+') ? "+" : "+84") + name.toString().substring(1);
       }
       final deviceId = await DeviceInfo.instance.getDeviceId();
       final deviceToken = await FcmService.instance.getDeviceToken();
@@ -114,7 +114,7 @@ class AuthBloc extends ChangeNotifier {
       final fbAuth = await FirebaseAuth.instance.signInWithCustomToken(res);
       authCredential = fbAuth.credential;
 
-      await InboxBloc.instance.init();
+      // InboxBloc.instance.init();
 
       return BaseResponse.success(res);
     } catch (e) {
@@ -196,8 +196,8 @@ class AuthBloc extends ChangeNotifier {
       String name, String email, String password, String phone,
       {bool isResend = false}) async {
     try {
-      final String phoneNumber = (phone.startsWith('+') ? "+" : "+84") +
-          phone.toString().substring(1);
+      final String phoneNumber =
+          (phone.startsWith('+') ? "+" : "+84") + phone.toString().substring(1);
       authStatusSink.add(AuthResponse.requestOtp());
       _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
@@ -231,8 +231,8 @@ class AuthBloc extends ChangeNotifier {
 
   Future requestOtpResetPassword(String phone, {bool isResend = false}) async {
     try {
-      final String phoneNumber = (phone.startsWith('+') ? "+" : "+84") +
-          phone.toString().substring(1);
+      final String phoneNumber =
+          (phone.startsWith('+') ? "+" : "+84") + phone.toString().substring(1);
       authStatusSink.add(AuthResponse.requestOtp());
       _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
