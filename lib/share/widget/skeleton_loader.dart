@@ -155,15 +155,6 @@ class StorySkeleton extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              SizedBox(width: 8),
-              Container(
-                height: 144,
-                width: 109,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: Colors.white,
-                ),
-              ),
             ],
           ),
         ),

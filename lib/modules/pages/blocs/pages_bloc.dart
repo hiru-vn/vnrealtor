@@ -21,10 +21,6 @@ class PagesBloc extends ChangeNotifier {
 
   int _pageFollow = 1;
 
-  bool _isOwnPageLoading = false;
-
-  bool _isPageFollowLoading = false;
-
   bool _isCreatePostLoading = false;
 
   bool _isGetPostPageLoading = false;
@@ -61,10 +57,6 @@ class PagesBloc extends ChangeNotifier {
 
   List<PagesCreate> _suggestFollowPage = [];
 
-  bool get isOwnPageLoading => _isOwnPageLoading;
-
-  bool get isPageFollowLoading => _isPageFollowLoading;
-
   bool get isCreatePostLoading => _isCreatePostLoading;
 
   bool get isGetPostPageLoading => _isGetPostPageLoading;
@@ -74,8 +66,6 @@ class PagesBloc extends ChangeNotifier {
   bool get isFollowPageLoading => _isFollowPageLoading;
 
   bool get isFollowed => _isFollowed;
-
-  bool get isSuggestFollowPage => _isSuggestFollowPage;
 
   bool get isSuggestFollowLoading => _isSuggestFollowLoading;
 
@@ -96,6 +86,8 @@ class PagesBloc extends ChangeNotifier {
   bool _isReciveNotiPageLoading = false;
 
   bool _isSuggestFollowPageLoading = false;
+
+  bool _isDataPageLoading = false;
 
   List<String> _listCategories = [];
 
@@ -135,6 +127,8 @@ class PagesBloc extends ChangeNotifier {
 
   bool get isSuggestFollowPageLoading => _isSuggestFollowPageLoading;
 
+  bool get isDataPageLoading => _isDataPageLoading;
+
   List<String> get listCategoriesId => _listCategoriesId;
 
   List<String> get listCategoriesSelected => _listCategoriesSelected;
@@ -158,6 +152,11 @@ class PagesBloc extends ChangeNotifier {
     if (token != null && id != null) {
       suggestFollow();
     }
+  }
+
+  set isDataPageLoading(bool isDataPageLoading) {
+    _isDataPageLoading = isDataPageLoading;
+    notifyListeners();
   }
 
   set isSuggestFollowPageLoading(bool isSuggestFollowPageLoading) {
@@ -300,7 +299,6 @@ class PagesBloc extends ChangeNotifier {
   Future<BaseResponse> getMyPage() async {
     try {
       _pageCreated = [];
-      _isOwnPageLoading = true;
       final res = await PagesRepo().getPageCreate(
           filter: GraphqlFilter(
         filter: 'filter:{ ownerId: "${AuthBloc.instance.userModel.id}"}',
@@ -312,11 +310,9 @@ class PagesBloc extends ChangeNotifier {
       notifyListeners();
       return BaseResponse.success(list);
     } catch (e) {
-      _isOwnPageLoading = false;
       notifyListeners();
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
-      _isOwnPageLoading = false;
       notifyListeners();
     }
   }
@@ -421,7 +417,6 @@ class PagesBloc extends ChangeNotifier {
   Future<BaseResponse> followPage(String pageId) async {
     try {
       addToListFollowPageIds(pageId);
-      isSuggestFollowLoading = true;
       final res = await PagesRepo().followPage(pageId);
       notifyListeners();
       return BaseResponse.success(FollowPagesModel.fromJson(res));
@@ -429,7 +424,6 @@ class PagesBloc extends ChangeNotifier {
       return BaseResponse.fail(e?.toString());
     } finally {
       _isFollowed = true;
-      isSuggestFollowLoading = false;
       Future.delayed(Duration(seconds: 1), () => notifyListeners());
     }
   }
