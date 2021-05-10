@@ -41,7 +41,8 @@ $pagesFragment
       double long,
       List<String> images,
       List<String> videos,
-      List<LatLng> polygon) async {
+      List<LatLng> polygon,
+      List<String> tagUserIds) async {
     String polygonStr = '''{
       paths: [
         ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
@@ -55,6 +56,7 @@ ${content.toString()}
 publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}
+tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     ''';
 
     if (expirationDate != null) {

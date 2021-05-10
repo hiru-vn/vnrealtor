@@ -1,7 +1,11 @@
 import 'dart:io';
+import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/widget/page_create_post_appbar.dart';
+import 'package:datcao/modules/post/tag_user_list_page.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:flutter/gestures.dart';
 import 'package:path/path.dart' as Path;
 import 'package:datcao/modules/inbox/import/detail_media.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +49,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
   List<String> _urlMedias = [];
   PagesBloc _pagesBloc;
   List<LatLng> _polygonPoints = [];
+  List<UserModel> _tagUsers = [];
 
   String get pageId => widget.page.id;
   PagesCreate get page => widget.page;
@@ -91,7 +96,8 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
               .where(
                   (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
               .toList(),
-          _polygonPoints);
+          _polygonPoints,
+          _tagUsers.map((e) => e.id).toList());
       navigatorKey.currentState.maybePop();
       if (res.isSuccess) {
         navigatorKey.currentState.pop();
@@ -474,8 +480,16 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   SizedBox(width: 12),
                   GestureDetector(
                     onTap: () {
-                      showAlertDialog(context, 'Đang phát triển',
-                          navigatorKey: navigatorKey);
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) {
+                          return TagUserListPage();
+                        },
+                        backgroundColor: Colors.transparent,
+                      ).then((value) => setState(() {
+                            _tagUsers = value;
+                          }));
                     },
                     child: SizedBox(
                         height: 40,
@@ -502,6 +516,22 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   TextSpan(
                       text: '$_placeName',
                       style: ptSmall().copyWith(fontStyle: FontStyle.italic))
+                ])),
+              ),
+            if (_tagUsers.length > 0)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Text.rich(TextSpan(children: [
+                  TextSpan(
+                      text: 'Gắn thẻ: ',
+                      style: ptSmall().copyWith(color: Colors.black)),
+                  ..._tagUsers.map(
+                    (e) => TextSpan(
+                        text: '${e.name}, ',
+                        recognizer: new TapGestureRecognizer()
+                          ..onTap = () => ProfileOtherPage.navigate(e),
+                        style: ptSmall().copyWith(fontStyle: FontStyle.italic)),
+                  )
                 ])),
               ),
             SizedBox(
