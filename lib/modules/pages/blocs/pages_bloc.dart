@@ -95,6 +95,8 @@ class PagesBloc extends ChangeNotifier {
 
   bool _isReciveNotiPageLoading = false;
 
+  bool _isSuggestFollowPageLoading = false;
+
   List<String> _listCategories = [];
 
   List<PagesCategoriesModel> _listModelCategories = [];
@@ -131,6 +133,8 @@ class PagesBloc extends ChangeNotifier {
 
   bool get isReceiveNotified => _isReceiveNotified;
 
+  bool get isSuggestFollowPageLoading => _isSuggestFollowPageLoading;
+
   List<String> get listCategoriesId => _listCategoriesId;
 
   List<String> get listCategoriesSelected => _listCategoriesSelected;
@@ -145,12 +149,20 @@ class PagesBloc extends ChangeNotifier {
 
   PagesCreate get pageDetail => _pageDetail;
 
+  ScrollController feedScrollController = ScrollController();
+
+
   Future init() async {
     final token = await SPref.instance.get('token');
     final id = await SPref.instance.get('id');
     if (token != null && id != null) {
       suggestFollow();
     }
+  }
+
+  set isSuggestFollowPageLoading(bool isSuggestFollowPageLoading) {
+    _isSuggestFollowPageLoading = isSuggestFollowPageLoading;
+    notifyListeners();
   }
 
   set isUpdateLoading(bool isUpdateLoading) {
@@ -607,6 +619,7 @@ class PagesBloc extends ChangeNotifier {
 
   Future<BaseResponse> suggestFollow() async {
     try {
+      _suggestFollowPage = [];
       final res = await PagesRepo().suggestFollowPage();
       final listRaw = res;
       List<PagesCreate> listModel =

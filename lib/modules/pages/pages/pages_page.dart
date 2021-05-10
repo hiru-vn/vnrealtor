@@ -8,6 +8,7 @@ import 'package:datcao/resources/styles/images.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/activity_indicator.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
+import 'package:datcao/share/widget/load_more.dart';
 
 import 'create_page_page.dart';
 
@@ -37,10 +38,10 @@ class _PagesPageState extends State<PagesPage> {
         _getAllPageCreated();
         _pagesBloc.getAllHashTagTP();
         _getAllPageFollow();
-        _pagesBloc.suggestFollow();
+        _getSuggestFollow();
       } else {
         _getAllPageFollow();
-        _pagesBloc.suggestFollow();
+        _getSuggestFollow();
       }
     }
     super.didChangeDependencies();
@@ -56,8 +57,15 @@ class _PagesPageState extends State<PagesPage> {
     _pagesBloc.isFollowPageLoading = false;
   }
 
+  Future<void> _getSuggestFollow() async {
+    _pagesBloc.isSuggestFollowPageLoading = true;
+    await  _pagesBloc.suggestFollow();
+    _pagesBloc.isSuggestFollowPageLoading = false;
+  }
+
   @override
   Widget build(BuildContext context) {
+    _pagesBloc.feedScrollController = ScrollController();
     return Scaffold(
       appBar: AppBar1(
         bgColor: ptSecondaryColor(context),
@@ -66,35 +74,68 @@ class _PagesPageState extends State<PagesPage> {
         centerTitle: true,
         automaticallyImplyLeading: true,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: deviceHeight(context),
-          decoration: BoxDecoration(
-            color: AppColors.backgroundColor.withOpacity(0.5),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              if (!_pagesBloc.isSuggestFollowPage)
-                SuggestListPages(
-                  suggest: _pagesBloc.suggestFollowPage,
-                ),
-              if (AuthBloc.instance.userModel.role == 'COMPANY') _buildHeader(),
-              if (AuthBloc.instance.userModel.role == 'COMPANY')
-                _buildSectionOwnPage(),
-              _buildPageBodySection(
-                  'Trang đã theo dõi', AppImages.icPageFollow),
-              _buildSectionPageFollow(),
-              // heightSpace(10),
-              // _buildPageBodySection(
-              //     'Lời mời thích trang ', AppImages.icPageLike),
-              // _itemBodySectionPageLike(AppImages.imageDemo, 'Dự án MeiLand '),
-              heightSpace(30),
-            ],
+      body: RefreshIndicator(
+        color: ptPrimaryColor(context),
+        onRefresh: () async {
+          if (AuthBloc.instance.userModel.role == 'COMPANY') {
+            _getAllPageCreated();
+            _pagesBloc.getAllHashTagTP();
+            _getAllPageFollow();
+            _pagesBloc.suggestFollow();
+          } else {
+            _getAllPageFollow();
+            _pagesBloc.suggestFollow();
+          }
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: _pagesBloc.feedScrollController,
+          child: Container(
+            height: deviceHeight(context),
+            decoration: BoxDecoration(
+              color: AppColors.backgroundColor.withOpacity(0.5),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                  _pagesBloc.isSuggestFollowPageLoading ? Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                          child: Text(
+                           'Gợi ý trang cho bạn',
+                            style: ptBigTitle().copyWith(color: Colors.black),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                          child: StorySkeleton(),
+                        )
+                      ],
+                    ),
+                  ) : _pagesBloc.suggestFollowPage.isNotEmpty ? SuggestListPages(
+                    suggest: _pagesBloc.suggestFollowPage,
+                  ) : const SizedBox(height: 10,),
+                if (AuthBloc.instance.userModel.role == 'COMPANY') _buildHeader(),
+                if (AuthBloc.instance.userModel.role == 'COMPANY')
+                  _buildSectionOwnPage(),
+                _buildPageBodySection(
+                    'Trang đã theo dõi', AppImages.icPageFollow),
+                _buildSectionPageFollow(),
+                // heightSpace(10),
+                // _buildPageBodySection(
+                //     'Lời mời thích trang ', AppImages.icPageLike),
+                // _itemBodySectionPageLike(AppImages.imageDemo, 'Dự án MeiLand '),
+                heightSpace(30),
+              ],
+            ),
           ),
         ),
-      ),
+      )
     );
   }
 
