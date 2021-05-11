@@ -72,6 +72,7 @@ class _TagUserListPageState extends State<TagUserListPage> {
               Text('Gắn thẻ', style: ptBigBody().copyWith(color: Colors.black)),
           actions: [
             GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () => navigatorKey.currentState.pop(tagUsers),
               child: Center(
                 child: SizedBox(
@@ -212,6 +213,7 @@ class _TagUserListPageState extends State<TagUserListPage> {
 
   _buildUserItem(UserModel user, bool isSelect, Function onTap) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: onTap,
       child: Row(
         children: [
