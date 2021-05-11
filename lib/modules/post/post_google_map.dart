@@ -184,11 +184,11 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                                       ptBody().copyWith(color: Colors.yellow),
                                 );
                               }),
-                              Divider(
-                                height: 8,
-                              ),
-                              Text('Chu vi: ${perimeter.round()} m'),
-                              Text('Diện tích: ${area.round()} m2'),
+                              // Divider(
+                              //   height: 8,
+                              // ),
+                              // Text('Chu vi: ${perimeter.round()} m'),
+                              // Text('Diện tích: ${area.round()} m2'),
                             ],
                           ),
                         ),
