@@ -2,7 +2,6 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
-import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:datcao/modules/notification/notification_page.dart';
 import 'package:datcao/modules/post/post_page.dart';
