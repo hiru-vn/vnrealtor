@@ -448,7 +448,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
                 child: Center(
                   child: Column(
                     children: [
-                      Text('Số điểm dấu: 4',
+                      Text('Số điểm dấu: ${polygonPoints.length}',
                           style: ptBody().copyWith(color: Colors.yellow)),
                       Container(
                         decoration: BoxDecoration(
