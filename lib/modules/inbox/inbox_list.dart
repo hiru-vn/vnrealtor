@@ -112,6 +112,19 @@ class _InboxListState extends State<InboxList>
 
   @override
   Widget build(BuildContext context) {
+    if (_inboxBloc.groupInboxList == null)
+      return Scaffold(
+        appBar: MyAppBar(
+          icon: Icon(
+            Icons.mail,
+          ),
+          title: 'Hộp thư',
+          automaticallyImplyLeading: true,
+          elevation: 3,
+          bgColor: Colors.white,
+        ),
+        body: ListSkeleton(),
+      );
     final friends = _friends
         .where((element) => element.name
             .toLowerCase()
@@ -272,126 +285,126 @@ class _InboxListState extends State<InboxList>
                     physics: NeverScrollableScrollPhysics(),
                     controller: _pageController,
                     children: [
-                      groups != null
-                          ? groups.length == 0
-                              ? EmptyWidget(
-                                  // assetImg: 'assets/image/no_message.dart',
-                                  title: _searchC.text.trim() == ''
-                                      ? 'Bạn chưa có tin nhắn nào.'
-                                      : 'Không tìm thấy người dùng',
-                                )
-                              : RefreshIndicator(
-                                  color: ptPrimaryColor(context),
-                                  onRefresh: () async {
-                                    await _inboxBloc.getList20InboxGroup(
-                                        _authBloc.userModel.id);
-                                    return;
-                                  },
-                                  child: groups.length != 0
-                                      ? ListView.separated(
-                                          itemCount: groups.length,
-                                          itemBuilder: (context, index) {
-                                            final group = groups[index];
-                                            final String nameGroup = group.users
-                                                .where((element) =>
-                                                    element.id !=
-                                                    _authBloc.userModel.id)
-                                                .toList()
-                                                .map((e) => e.name)
-                                                .join(', ');
-                                            return _buildChatTile(
-                                                group, nameGroup);
-                                          },
-                                          separatorBuilder: (context, index) =>
-                                              Divider(
-                                            height: 1,
-                                          ),
-                                        )
-                                      : EmptyWidget(
-                                          // assetImg: 'assets/image/no_message.png',
-                                          title: 'Bạn chưa có tin nhắn nào',
-                                          content:
-                                              'Bạn có thể nhắn tin với người khác khi cả 2 là bạn bè.',
-                                        ),
-                                )
-                          : ListSkeleton(),
-                      ListView.separated(
-                        itemCount: friends.length,
-                        itemBuilder: (context, index) {
-                          final user = friends[index];
-                          return GestureDetector(
-                              onTap: () async {
-                                showSimpleLoadingDialog(context);
-                                await InboxBloc.instance.navigateToChatWith(
-                                    context,
-                                    user.name,
-                                    user.avatar,
-                                    DateTime.now(),
-                                    user.avatar, [
-                                  AuthBloc.instance.userModel.id,
-                                  user.id,
-                                ], [
-                                  AuthBloc.instance.userModel.avatar,
-                                  user.avatar,
-                                ]);
-                                navigatorKey.currentState.maybePop();
-                              },
-                              child: AbsorbPointer(
-                                  child: PeopleWidget(friends[index])));
-                        },
-                        separatorBuilder: (context, index) => SizedBox(
-                          height: 0,
-                        ),
-                      ),
-                      waitingGroups != null
-                          ? waitingGroups.length == 0
-                              ? EmptyWidget(
-                                  // assetImg: 'assets/image/no_message.dart',
-                                  title: _searchC.text.trim() == ''
-                                      ? 'Không có tin nhắn chờ.'
-                                      : 'Không tìm thấy người dùng',
-                                )
-                              : RefreshIndicator(
-                                  color: ptPrimaryColor(context),
-                                  onRefresh: () async {
-                                    await _inboxBloc.getList20InboxGroup(
-                                        _authBloc.userModel.id);
-                                    return;
-                                  },
-                                  child: waitingGroups.length != 0
-                                      ? ListView.separated(
-                                          itemCount: waitingGroups.length,
-                                          itemBuilder: (context, index) {
-                                            final group = waitingGroups[index];
-                                            final String nameGroup = group.users
-                                                .where((element) =>
-                                                    element.id !=
-                                                    _authBloc.userModel.id)
-                                                .toList()
-                                                .map((e) => e.name)
-                                                .join(', ');
-                                            return _buildChatTile(
-                                                group, nameGroup);
-                                          },
-                                          separatorBuilder: (context, index) =>
-                                              Divider(
-                                            height: 1,
-                                          ),
-                                        )
-                                      : EmptyWidget(
-                                          // assetImg: 'assets/image/no_message.png',
-                                          title: 'Bạn chưa có tin nhắn nào',
-                                          content:
-                                              'Bạn có thể nhắn tin với người khác khi cả 2 là bạn bè.',
-                                        ),
-                                )
-                          : ListSkeleton(),
+                      _buildListInboxTab(groups),
+                      _buildFriendsTab(friends),
+                      _buildWaitingGroupTab(waitingGroups),
                     ],
                   ),
                 ),
         ],
       ),
     );
+  }
+
+  _buildListInboxTab(List<FbInboxGroupModel> groups) {
+    if (_inboxBloc.groupInboxList == null) return ListSkeleton();
+    return groups != null
+        ? groups.length == 0
+            ? EmptyWidget(
+                // assetImg: 'assets/image/no_message.dart',
+                title: _searchC.text.trim() == ''
+                    ? 'Bạn chưa có tin nhắn nào.'
+                    : 'Không tìm thấy người dùng',
+              )
+            : RefreshIndicator(
+                color: ptPrimaryColor(context),
+                onRefresh: () async {
+                  await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
+                  return;
+                },
+                child: groups.length != 0
+                    ? ListView.separated(
+                        itemCount: groups.length,
+                        itemBuilder: (context, index) {
+                          final group = groups[index];
+                          final String nameGroup = group.users
+                              .where((element) =>
+                                  element.id != _authBloc.userModel.id)
+                              .toList()
+                              .map((e) => e.name)
+                              .join(', ');
+                          return _buildChatTile(group, nameGroup);
+                        },
+                        separatorBuilder: (context, index) => Divider(
+                          height: 1,
+                        ),
+                      )
+                    : EmptyWidget(
+                        // assetImg: 'assets/image/no_message.png',
+                        title: 'Bạn chưa có tin nhắn nào',
+                        content:
+                            'Bạn có thể nhắn tin với người khác khi cả 2 là bạn bè.',
+                      ),
+              )
+        : ListSkeleton();
+  }
+
+  _buildFriendsTab(List<UserModel> friends) {
+    return ListView.separated(
+      itemCount: friends.length,
+      itemBuilder: (context, index) {
+        final user = friends[index];
+        return GestureDetector(
+            onTap: () async {
+              showSimpleLoadingDialog(context);
+              await InboxBloc.instance.navigateToChatWith(context, user.name,
+                  user.avatar, DateTime.now(), user.avatar, [
+                AuthBloc.instance.userModel.id,
+                user.id,
+              ], [
+                AuthBloc.instance.userModel.avatar,
+                user.avatar,
+              ]);
+              navigatorKey.currentState.maybePop();
+            },
+            child: AbsorbPointer(child: PeopleWidget(friends[index])));
+      },
+      separatorBuilder: (context, index) => SizedBox(
+        height: 0,
+      ),
+    );
+  }
+
+  _buildWaitingGroupTab(List<FbInboxGroupModel> waitingGroups) {
+    return waitingGroups != null
+        ? waitingGroups.length == 0
+            ? EmptyWidget(
+                // assetImg: 'assets/image/no_message.dart',
+                title: _searchC.text.trim() == ''
+                    ? 'Không có tin nhắn chờ.'
+                    : 'Không tìm thấy người dùng',
+              )
+            : RefreshIndicator(
+                color: ptPrimaryColor(context),
+                onRefresh: () async {
+                  await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
+                  return;
+                },
+                child: waitingGroups.length != 0
+                    ? ListView.separated(
+                        itemCount: waitingGroups.length,
+                        itemBuilder: (context, index) {
+                          final group = waitingGroups[index];
+                          final String nameGroup = group.users
+                              .where((element) =>
+                                  element.id != _authBloc.userModel.id)
+                              .toList()
+                              .map((e) => e.name)
+                              .join(', ');
+                          return _buildChatTile(group, nameGroup);
+                        },
+                        separatorBuilder: (context, index) => Divider(
+                          height: 1,
+                        ),
+                      )
+                    : EmptyWidget(
+                        // assetImg: 'assets/image/no_message.png',
+                        title: 'Bạn chưa có tin nhắn nào',
+                        content:
+                            'Bạn có thể nhắn tin với người khác khi cả 2 là bạn bè.',
+                      ),
+              )
+        : ListSkeleton();
   }
 
   _buildChatTile(FbInboxGroupModel group, String nameGroup) {

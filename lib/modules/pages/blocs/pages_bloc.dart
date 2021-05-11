@@ -344,10 +344,11 @@ class PagesBloc extends ChangeNotifier {
       double long,
       List<String> images,
       List<String> videos,
-      List<LatLng> polygon) async {
+      List<LatLng> polygon,
+      List<String> tagUserIds) async {
     try {
       final res = await PagesRepo().createPagePost(pageId, content,
-          expirationDate, publicity, lat, long, images, videos, polygon);
+          expirationDate, publicity, lat, long, images, videos, polygon, tagUserIds);
       _listPagePost.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
