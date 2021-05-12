@@ -9,6 +9,7 @@ import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
+import 'package:geolocator/geolocator.dart';
 
 class PostBloc extends ChangeNotifier {
   PostBloc._privateConstructor();
@@ -67,11 +68,12 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getNewFeedGuest() async {
+  Future<BaseResponse> getNewFeedGuest(int page) async {
     try {
-      final res = await PostRepo().getNewFeedGuest();
+      final res = await PostRepo().getNewFeedGuest(page: page, limit: 10);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
+      feedPage++;
       return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
@@ -194,8 +196,13 @@ class PostBloc extends ChangeNotifier {
   }
 
   Future<BaseResponse> getStoryForGuest() async {
+    Position position;
     try {
-      final res = await PostRepo().getStoryForGuest();
+      position = await getDevicePosition();
+    } catch (e) {}
+    try {
+      final res = await PostRepo()
+          .getStoryForGuest(lat: position?.latitude, long: position?.longitude);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);

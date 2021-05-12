@@ -38,6 +38,7 @@ class PostModel {
   PagesCreate page;
   double distance;
   List<UserModel> tagUsers;
+  int numberOfComment;
 
   PostModel(
       {this.id,
@@ -72,7 +73,8 @@ class PostModel {
       this.dynamicLink,
       this.isPage,
       this.distance,
-      this.tagUsers});
+      this.tagUsers,
+      this.numberOfComment});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -133,6 +135,7 @@ class PostModel {
     tagUsers = json['tagUsers'] != null
         ? json['tagUsers'].map<UserModel>((e) => UserModel.fromJson(e)).toList()
         : [];
+    numberOfComment = json['numberOfComment'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {

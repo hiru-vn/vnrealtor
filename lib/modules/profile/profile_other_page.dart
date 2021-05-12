@@ -20,10 +20,15 @@ class ProfileOtherPage extends StatefulWidget {
 
   const ProfileOtherPage(this.user, {this.userId});
   static Future navigate(UserModel user, {String userId}) {
+    if (AuthBloc.instance.userModel == null) {
+      return navigatorKey.currentState
+          .push(pageBuilder(ProfileOtherPage(user, userId: userId)));
+    }
     if (user?.id == AuthBloc.instance.userModel?.id) {
       return navigatorKey.currentState.push(pageBuilder(ProfilePage()));
     }
-    return navigatorKey.currentState.push(pageBuilder(ProfileOtherPage(user, userId: userId)));
+    return navigatorKey.currentState
+        .push(pageBuilder(ProfileOtherPage(user, userId: userId)));
   }
 
   @override
@@ -59,16 +64,15 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
       setState(() {
         _user = res.data[0];
       });
-    }
-    else {
+    } else {
       showToast('Có lỗi khi load dữ liệu', context);
     }
   }
 
   Future _loadPost() async {
     final res = AuthBloc.instance.userModel != null
-        ? await _postBloc.getUserPost(_user?.id??widget.userId)
-        : await _postBloc.getUserPostGuest(_user?.id??widget.userId);
+        ? await _postBloc.getUserPost(_user?.id ?? widget.userId)
+        : await _postBloc.getUserPostGuest(_user?.id ?? widget.userId);
     if (!res.isSuccess)
       showToast(res.errMessage, context);
     else {
@@ -88,7 +92,7 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
       appBar: AppBar1(
-        title: _user?.name??'',
+        title: _user?.name ?? '',
         automaticallyImplyLeading: true,
         actions: [
           if ([
@@ -148,10 +152,11 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
         headerSliverBuilder: (context, value) {
           return [
             SliverToBoxAdapter(
-              child: 
-              _user !=null? ProfileCard(
-                user: _user,
-              ) : Container(),
+              child: _user != null
+                  ? ProfileCard(
+                      user: _user,
+                    )
+                  : Container(),
             ),
           ];
         },
@@ -170,14 +175,13 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
                     )
                   : EmptyWidget(
                       assetImg: 'assets/image/no_post.png',
-                      content: _user?.name??'' + ' chưa có bài đăng nào.',
+                      content: _user?.name ?? '' + ' chưa có bài đăng nào.',
                     )),
         ),
       ),
     );
   }
 }
-
 
 // class ProfileOtherPageAppBar extends StatelessWidget
 //     implements PreferredSizeWidget {

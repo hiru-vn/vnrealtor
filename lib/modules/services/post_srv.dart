@@ -17,6 +17,7 @@ expirationDate
 publicity
 isUserLike
 isUserShare
+numberOfComment
 hashTag
 storyImages
 polygon {

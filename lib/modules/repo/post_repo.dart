@@ -23,9 +23,10 @@ distance
     return res['getNewsFeed'];
   }
 
-  Future getNewFeedGuest(
-      {GraphqlFilter filter, String timestamp, String timeSort}) async {
-    final res = await PostSrv().query('getNewsFeedByGuest', '', fragment: '''
+  Future getNewFeedGuest({int page, int limit}) async {
+    final res = await PostSrv().query(
+        'getNewsFeedByGuest', 'page: $page , limit: $limit',
+        fragment: '''
     data {
 ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + ' _id'}
 }
@@ -43,14 +44,16 @@ ${postFragment.replaceFirst('id', '')}
     return res['getStoryFollowing'];
   }
 
-  Future getStoryForGuest() async {
-    final res = await PostSrv().query('getStoryForGuest', '',
-        fragment: '''
+  Future getStoryForGuest({double lat, double long}) async {
+    String params = 'lat: $lat , long: $long';
+    final res =
+        await PostSrv().query('getStoryForGuest', lat != null ? params : '',
+            fragment: '''
     data {
 ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + ' _id'}
 }
     ''',
-        removeData: true);
+            removeData: true);
     return res['getStoryForGuest'];
   }
 
@@ -439,6 +442,7 @@ userId
 like
 userLikeIds
 share
+numberOfComment
 userShareIds
 locationLat
 locationLong

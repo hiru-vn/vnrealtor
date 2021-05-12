@@ -531,7 +531,7 @@ class _PostWidgetState extends State<PostWidget> {
                         SizedBox(
                           height: 3,
                         ),
-                        Text('${widget.post.commentIds.length} bình luận',
+                        Text('${widget.post.numberOfComment} bình luận',
                             style: ptTiny()
                                 .copyWith(color: ptPrimaryColor(context))),
                       ]),

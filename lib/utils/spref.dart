@@ -18,7 +18,7 @@ class SPref {
     await prefs.setString(key, value);
   }
 
-   Future setDouble(String key, double value) async {
+  Future setDouble(String key, double value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(key, value);
   }
