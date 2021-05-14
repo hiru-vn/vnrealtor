@@ -1,5 +1,6 @@
 import 'package:datcao/modules/services/friendship_srv.dart';
 import 'package:datcao/modules/services/user_srv.dart';
+import 'package:datcao/share/import.dart';
 import 'package:datcao/utils/spref.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
 
@@ -203,6 +204,19 @@ description: """
 $description
 """,
 facebookUrl: "$facebookUrl"
+    ''',
+        fragment: 'id');
+    return res['id'];
+  }
+
+  Future updateUserStatus(
+      String id,
+      {@required bool isOnline}
+      ) async {
+    final res = await UserSrv().update(
+        id: id,
+        data: '''
+isOnline: isOnline
     ''',
         fragment: 'id');
     return res['id'];
