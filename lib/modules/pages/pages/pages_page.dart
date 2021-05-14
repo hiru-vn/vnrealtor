@@ -28,12 +28,17 @@ class _PagesPageState extends State<PagesPage> {
   PagesBloc _pagesBloc;
   AuthBloc _authBloc;
 
+  bool isDataPageLoading = false;
+
   @override
   void didChangeDependencies() {
-    if (_pagesBloc == null) {
+    if (_authBloc == null) {
       _authBloc = Provider.of(context);
-      _pagesBloc = Provider.of<PagesBloc>(context);
-      if (AuthBloc.instance.userModel.role == 'COMPANY') {
+    }
+    if (_pagesBloc == null) {
+      _pagesBloc = Provider.of<PagesBloc>(context)
+        ..feedScrollController = ScrollController();
+      if (_authBloc.userModel.role == 'COMPANY') {
         _fetchDataCompany();
       } else {
         _fetchData();
@@ -43,19 +48,19 @@ class _PagesPageState extends State<PagesPage> {
   }
 
   Future<void> _fetchDataCompany() async {
-    _pagesBloc.isDataPageLoading = true;
+    setState(() =>  isDataPageLoading = true);
     await _getSuggestFollow();
     await _getAllPageCreated();
     await _getAllPageFollow();
     await _pagesBloc.getAllHashTagTP();
-    _pagesBloc.isDataPageLoading = false;
+    setState(() =>  isDataPageLoading = false);
   }
 
   Future<void> _fetchData() async {
-    _pagesBloc.isDataPageLoading = true;
+    setState(() =>  isDataPageLoading = true);
     await _getSuggestFollow();
     await _getAllPageFollow();
-    _pagesBloc.isDataPageLoading = false;
+    setState(() =>  isDataPageLoading = false);
   }
 
   Future<void> _getAllPageCreated() async => await _pagesBloc.getMyPage();
@@ -68,7 +73,6 @@ class _PagesPageState extends State<PagesPage> {
 
   @override
   Widget build(BuildContext context) {
-    _pagesBloc.feedScrollController = ScrollController();
     return Scaffold(
         appBar: AppBar1(
           bgColor: ptSecondaryColor(context),
@@ -89,7 +93,7 @@ class _PagesPageState extends State<PagesPage> {
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             controller: _pagesBloc.feedScrollController,
-            child: _pagesBloc.isDataPageLoading
+            child: isDataPageLoading
                 ? PageSkeleton()
                 : Container(
                     height: deviceHeight(context),

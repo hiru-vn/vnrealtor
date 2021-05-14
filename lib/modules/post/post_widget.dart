@@ -107,7 +107,6 @@ class _PostWidgetState extends State<PostWidget> {
                   ),
                   SizedBox(width: 8),
                   Column(
-                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 3),
@@ -119,7 +118,7 @@ class _PostWidgetState extends State<PostWidget> {
                               widget.post.isPage
                                   ? PageDetail.navigate(widget.post?.page)
                                   : ProfileOtherPage.navigate(
-                                      widget.post?.user);
+                                  widget.post?.user);
                             },
                             child: Text(
                               widget.post.isPage
@@ -171,9 +170,11 @@ class _PostWidgetState extends State<PostWidget> {
                               ),
                             ),
                           if (widget.post.isPage)
-                            Text(
-                              "bởi ${widget.post?.user.name}",
-                              style: ptTiny(),
+                            Container(
+                              child: Text(
+                                "bởi ${widget.post.user.name}",
+                                style: ptTiny(),
+                              ),
                             )
                         ],
                       ),

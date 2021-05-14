@@ -247,10 +247,10 @@ class _PageDetailState extends State<PageDetail> {
       );
 
   Widget _buildBanner() => GestureDetector(
-        onTap: () {
+        onTap: _pagesBloc.pageDetail.isOwner ? () {
           imagePicker(context,
               onImagePick: _updateCover, onCameraPick: _updateCover);
-        },
+        }: null,
         child: CachedNetworkImage(
           imageUrl: _pagesBloc.pageDetail.coverImage != null
               ? _pagesBloc.pageDetail.coverImage
@@ -327,11 +327,11 @@ class _PageDetailState extends State<PageDetail> {
                   ),
                 )
               : GestureDetector(
-                  onTap: () {
+                  onTap: _pagesBloc.pageDetail.isOwner ? () {
                     imagePicker(context,
                         onImagePick: _updateAvatar,
                         onCameraPick: _updateAvatar);
-                  },
+                  } : null,
                   child: CachedNetworkImage(
                     imageUrl: _pagesBloc.pageDetail.avartar != null
                         ? _pagesBloc.pageDetail.avartar

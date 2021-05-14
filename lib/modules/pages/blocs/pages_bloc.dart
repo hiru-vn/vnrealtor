@@ -87,8 +87,6 @@ class PagesBloc extends ChangeNotifier {
 
   bool _isSuggestFollowPageLoading = false;
 
-  bool _isDataPageLoading = false;
-
   List<String> _listCategories = [];
 
   List<PagesCategoriesModel> _listModelCategories = [];
@@ -127,8 +125,6 @@ class PagesBloc extends ChangeNotifier {
 
   bool get isSuggestFollowPageLoading => _isSuggestFollowPageLoading;
 
-  bool get isDataPageLoading => _isDataPageLoading;
-
   List<String> get listCategoriesId => _listCategoriesId;
 
   List<String> get listCategoriesSelected => _listCategoriesSelected;
@@ -152,11 +148,6 @@ class PagesBloc extends ChangeNotifier {
     if (token != null && id != null) {
       suggestFollow();
     }
-  }
-
-  set isDataPageLoading(bool isDataPageLoading) {
-    _isDataPageLoading = isDataPageLoading;
-    notifyListeners();
   }
 
   set isSuggestFollowPageLoading(bool isSuggestFollowPageLoading) {
