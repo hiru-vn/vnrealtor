@@ -51,7 +51,8 @@ class InboxBloc extends ChangeNotifier {
       DateTime time,
       String image,
       List<String> userIds,
-      List<String> userAvatars) async {
+      List<String> userAvatars,
+      {String groupName}) async {
     userIds.sort();
 
     final snap = await firestore
@@ -60,6 +61,7 @@ class InboxBloc extends ChangeNotifier {
         .get();
     if (!snap.exists) {
       await firestore.collection(groupCollection).doc(userIds.join("-")).set({
+        'groupName': groupName,
         'lastUser': lastUser,
         'lastAvatar': lastAvatar,
         'time': time.toIso8601String(),
@@ -101,7 +103,7 @@ class InboxBloc extends ChangeNotifier {
             waitingBy: userIds
                 .where((element) => element != AuthBloc.instance.userModel.id)
                 .toList()),
-        lastUser);
+        groupName ?? lastUser);
 
     return;
   }

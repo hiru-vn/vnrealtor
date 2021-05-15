@@ -15,6 +15,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/navigator.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'add_group.dart';
 import 'import/app_bar.dart';
 import 'import/color.dart';
 import 'import/font.dart';
@@ -159,6 +160,15 @@ class _InboxListState extends State<InboxList>
         bgColor: Colors.white,
         actions: [
           Center(
+            child: IconButton(
+              splashColor: Colors.white,
+              onPressed: () {
+                AddGroup.navigate();
+              },
+              icon: Icon(Icons.group_add_rounded),
+            ),
+          ),
+          Center(
               child: AnimatedSearchBar(
             onSearch: (val) {},
             onSubmit: (val) {
@@ -174,15 +184,6 @@ class _InboxListState extends State<InboxList>
             },
             controller: _searchC,
           )),
-          // Center(
-          //   child: IconButton(
-          //     splashColor: Colors.white,
-          //     onPressed: () {
-          //       InboxSettingPage.navigate();
-          //     },
-          //     icon: Icon(Icons.settings_outlined),
-          //   ),
-          // ),
         ],
       ),
       body: Column(
@@ -277,7 +278,7 @@ class _InboxListState extends State<InboxList>
           ),
           isSearching
               ? Padding(
-                  padding: const EdgeInsets.only(top: 150),
+                  padding: EdgeInsets.only(top: 200),
                   child: kLoadingSpinner,
                 )
               : Expanded(
