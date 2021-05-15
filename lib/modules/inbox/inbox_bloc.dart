@@ -74,12 +74,12 @@ class InboxBloc extends ChangeNotifier {
             .where((element) => element != AuthBloc.instance.userModel.id)
             .toList(),
       });
-    }
-    userIds.forEach((uid) {
-      firestore.collection(userCollection).doc(uid).update({
-        'groups': FieldValue.arrayUnion([userIds.join("-")])
+      userIds.forEach((uid) {
+        firestore.collection(userCollection).doc(uid).update({
+          'groups': FieldValue.arrayUnion([userIds.join("-")])
+        });
       });
-    });
+    }
 
     final users = await getUsers(userIds);
     if (users == null) {
