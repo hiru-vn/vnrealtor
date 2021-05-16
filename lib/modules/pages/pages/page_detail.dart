@@ -247,10 +247,12 @@ class _PageDetailState extends State<PageDetail> {
       );
 
   Widget _buildBanner() => GestureDetector(
-        onTap: _pagesBloc.pageDetail.isOwner ? () {
-          imagePicker(context,
-              onImagePick: _updateCover, onCameraPick: _updateCover);
-        }: null,
+        onTap: _pagesBloc.pageDetail.isOwner
+            ? () {
+                imagePicker(context,
+                    onImagePick: _updateCover, onCameraPick: _updateCover);
+              }
+            : null,
         child: CachedNetworkImage(
           imageUrl: _pagesBloc.pageDetail.coverImage != null
               ? _pagesBloc.pageDetail.coverImage
@@ -327,11 +329,13 @@ class _PageDetailState extends State<PageDetail> {
                   ),
                 )
               : GestureDetector(
-                  onTap: _pagesBloc.pageDetail.isOwner ? () {
-                    imagePicker(context,
-                        onImagePick: _updateAvatar,
-                        onCameraPick: _updateAvatar);
-                  } : null,
+                  onTap: _pagesBloc.pageDetail.isOwner
+                      ? () {
+                          imagePicker(context,
+                              onImagePick: _updateAvatar,
+                              onCameraPick: _updateAvatar);
+                        }
+                      : null,
                   child: CachedNetworkImage(
                     imageUrl: _pagesBloc.pageDetail.avartar != null
                         ? _pagesBloc.pageDetail.avartar
@@ -472,16 +476,24 @@ class _PageDetailState extends State<PageDetail> {
   Widget _buildButtonMessage() => CustomButton(
         title: "Nhắn tin",
         imageSvg: AppImages.icPageMessage,
-        callback: () async{
+        callback: () async {
           showSimpleLoadingDialog(context);
-          await InboxBloc.instance.navigateToChatWith(context, widget.page.owner.name,
-              widget.page.avartar, DateTime.now(), widget.page.avartar, [
-            AuthBloc.instance.userModel.id,
-            widget.page.ownerId,
-          ], [
-            AuthBloc.instance.userModel.avatar,
-            widget.page.avartar,
-          ]);
+          await InboxBloc.instance.navigateToChatWith(
+              context,
+              widget.page.owner.name,
+              widget.page.avartar,
+              DateTime.now(),
+              widget.page.avartar,
+              [
+                AuthBloc.instance.userModel.id,
+                widget.page.ownerId,
+              ],
+              [
+                AuthBloc.instance.userModel.avatar,
+                widget.page.avartar,
+              ],
+              pageName: widget.page.name,
+              pageId: widget.page.id);
           navigatorKey.currentState.maybePop();
         },
       );

@@ -141,12 +141,12 @@ class PagesBloc extends ChangeNotifier {
 
   ScrollController feedScrollController = ScrollController();
 
-
   Future init() async {
     final token = await SPref.instance.get('token');
     final id = await SPref.instance.get('id');
     if (token != null && id != null) {
       suggestFollow();
+      getMyPage();
     }
   }
 
@@ -338,8 +338,17 @@ class PagesBloc extends ChangeNotifier {
       List<LatLng> polygon,
       List<String> tagUserIds) async {
     try {
-      final res = await PagesRepo().createPagePost(pageId, content,
-          expirationDate, publicity, lat, long, images, videos, polygon, tagUserIds);
+      final res = await PagesRepo().createPagePost(
+          pageId,
+          content,
+          expirationDate,
+          publicity,
+          lat,
+          long,
+          images,
+          videos,
+          polygon,
+          tagUserIds);
       _listPagePost.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {

@@ -3,6 +3,7 @@ import 'package:datcao/modules/inbox/import/spin_loader.dart';
 import 'package:datcao/modules/inbox/inbox_model.dart';
 import 'package:datcao/modules/inbox/inbox_setting.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
@@ -87,6 +88,15 @@ class _InboxListState extends State<InboxList>
       if (e != AuthBloc.instance.userModel.avatar) return e;
     }).toList();
     listAvatar.remove(null);
+    if (group.pageName != null && group.pageId != null) {
+      return CircleAvatar(
+        radius: 21,
+        backgroundColor: Colors.white,
+        backgroundImage: group.image != null
+            ? CachedNetworkImageProvider(group.image ?? '')
+            : AssetImage('assets/image/default_avatar.png'),
+      );
+    }
     if (listAvatar.length > 1) {
       return CircleAvatar(
         radius: 21,
@@ -318,12 +328,17 @@ class _InboxListState extends State<InboxList>
                         itemCount: groups.length,
                         itemBuilder: (context, index) {
                           final group = groups[index];
-                          final String nameGroup = group.users
+                          String nameGroup = group.users
                               .where((element) =>
                                   element.id != _authBloc.userModel.id)
                               .toList()
                               .map((e) => e.name)
                               .join(', ');
+                          if (group.pageName != null &&
+                              group.pageId != null &&
+                              !PagesBloc.instance.pageCreated
+                                  .any((e) => e.id == group.pageId))
+                            nameGroup = group.pageName;
                           return _buildChatTile(group, nameGroup);
                         },
                         separatorBuilder: (context, index) => Divider(
@@ -386,12 +401,15 @@ class _InboxListState extends State<InboxList>
                         itemCount: waitingGroups.length,
                         itemBuilder: (context, index) {
                           final group = waitingGroups[index];
-                          final String nameGroup = group.users
+                          String nameGroup = group.users
                               .where((element) =>
                                   element.id != _authBloc.userModel.id)
                               .toList()
                               .map((e) => e.name)
                               .join(', ');
+                          if (group.pageName != null && group.pageId != null)
+                            nameGroup = group.pageName;
+
                           return _buildChatTile(group, nameGroup);
                         },
                         separatorBuilder: (context, index) => Divider(

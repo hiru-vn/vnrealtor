@@ -4,6 +4,9 @@ import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/inbox/import/spin_loader.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
+import 'package:datcao/modules/pages/models/followModel.dart';
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
@@ -100,12 +103,21 @@ class _InboxChatState extends State<InboxChat> {
   void initState() {
     group = widget.group;
     for (final user in group.users) {
-      _users.add(ChatUser(
-          uid: user.id,
-          name: user.name,
-          containerColor: user.id == AuthBloc.instance.userModel.id
-              ? userColor
-              : Colors.blue[50]));
+      if (group.pageId != null &&
+          group.pageName != null &&
+          user.id != AuthBloc.instance.userModel.id) {
+        _users.add(ChatUser(
+            uid: group.pageId,
+            name: group.pageName,
+            containerColor: Colors.blue[50]));
+      } else {
+        _users.add(ChatUser(
+            uid: user.id,
+            name: user.name,
+            containerColor: user.id == AuthBloc.instance.userModel.id
+                ? userColor
+                : Colors.blue[50]));
+      }
     }
     super.initState();
   }
@@ -126,9 +138,14 @@ class _InboxChatState extends State<InboxChat> {
     final fbUsers = group.users;
     _fbUsers.addAll(fbUsers);
     for (final fbUser in fbUsers) {
-      final user = _users.firstWhere((user) => user.uid == fbUser.id);
-      user.avatar = fbUser.image;
-      user.name = fbUser.name;
+      final user = _users.firstWhere(
+        (user) => user.uid == fbUser.id,
+        orElse: () => null,
+      );
+      if (user != null) {
+        user?.avatar = fbUser.image;
+        user?.name = fbUser.name;
+      }
     }
     loadUsersFromSever();
   }
@@ -136,6 +153,11 @@ class _InboxChatState extends State<InboxChat> {
   Future loadUsersFromSever() async {
     final res = await UserBloc.instance
         .getListUserIn(group.users.map((e) => e.id).toList());
+    PagesCreate page;
+    if (group.pageId != null && group.pageName != null) {
+      final pageRes = await PagesBloc.instance.getOnePage(group.pageId);
+      page = pageRes.data;
+    }
     if (res.isSuccess) {
       _severUsers.clear();
       _severUsers.addAll(res.data);
@@ -311,13 +333,8 @@ class _InboxChatState extends State<InboxChat> {
     // });
     String text = message.text;
 
-    _updateGroupPageText(
-        group.id,
-        _authBloc.userModel.name,
-        text,
-        message.createdAt,
-        message.user.avatar,
-        [...group.readers, AuthBloc.instance.userModel.id]);
+    _updateGroupPageText(group.id, _authBloc.userModel.name, text,
+        message.createdAt, [...group.readers, AuthBloc.instance.userModel.id]);
 
     if (_tempFiles.length == 0) {
       _inboxBloc.addMessage(
@@ -360,12 +377,12 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   _updateGroupPageText(String groupid, String lastUser, String lastMessage,
-      DateTime time, String image, List<String> readers) {
+      DateTime time, List<String> readers) {
     // if (lastMessage.length > 30) {
     //   lastMessage = lastMessage.substring(0, 30) + "...";
     // }
 
-    _inboxBloc.updateGroupOnMessage(groupid, lastUser, time, lastMessage, image,
+    _inboxBloc.updateGroupOnMessage(groupid, lastUser, time, lastMessage,
         _severUsers.map((e) => e.avatar).toList(), readers);
   }
 
