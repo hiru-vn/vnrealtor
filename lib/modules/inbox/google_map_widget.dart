@@ -130,12 +130,19 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
           'Location permissions are permantly denied, we cannot request permissions.');
     }
 
+    if (permission == LocationPermission.deniedForever) {
+      showToast('Ứng dụng không thể truy cập vị trí của bạn', context);
+      return Position(
+          latitude: 10.738381363037085, longitude: 106.68763584916785);
+    }
+
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
-        return Future.error(
-            'Location permissions are denied (actual value: $permission).');
+        showToast('Ứng dụng không thể truy cập vị trí của bạn', context);
+        return Position(
+            latitude: 10.738381363037085, longitude: 106.68763584916785);
       }
     }
 

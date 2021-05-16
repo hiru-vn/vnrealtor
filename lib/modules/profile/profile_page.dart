@@ -25,6 +25,7 @@ class _ProfilePageState extends State<ProfilePage>
   AuthBloc _authBloc;
   UserBloc _userBloc;
   PostBloc _postBloc;
+  bool canPop = true;
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _ProfilePageState extends State<ProfilePage>
       _userBloc = Provider.of<UserBloc>(context);
       _postBloc = Provider.of<PostBloc>(context);
       _postBloc.getMyPost();
+      canPop = navigatorKey.currentState.canPop();
     }
     super.didChangeDependencies();
   }
@@ -53,7 +55,7 @@ class _ProfilePageState extends State<ProfilePage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
-      appBar: ProfilePageAppBar(),
+      appBar: ProfilePageAppBar(canPop: canPop),
       body: NestedScrollView(
         controller: _userBloc.profileScrollController,
         headerSliverBuilder: (context, value) {
@@ -124,7 +126,8 @@ class _ProfilePageState extends State<ProfilePage>
 
 class ProfilePageAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
-  ProfilePageAppBar();
+  final bool canPop;
+  ProfilePageAppBar({this.canPop = true});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -133,7 +136,7 @@ class ProfilePageAppBar extends StatelessWidget implements PreferredSizeWidget {
         padding: const EdgeInsets.only(left: 5, top: 12, bottom: 10, right: 12),
         child: Row(
           children: [
-            navigatorKey.currentState.canPop()
+            canPop
                 ? BackButton()
                 : SizedBox(
                     width: 15,
