@@ -95,7 +95,7 @@ class _AddGroupState extends State<AddGroup> {
                   return;
                 }
                 await navigatorKey.currentState.maybePop();
-                showSimpleLoadingDialog(context);
+                showWaitingDialog(context);
                 await InboxBloc.instance.navigateToChatWith(
                     context,
                     AuthBloc.instance.userModel.name,

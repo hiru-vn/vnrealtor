@@ -1,3 +1,4 @@
+import 'package:datcao/share/import.dart';
 import 'package:flutter/material.dart';
 import './detail_media.dart';
 
@@ -327,8 +328,9 @@ class MediaGroupWidgetCache extends StatelessWidget {
 
 class MediaGroupWidgetNetwork extends StatelessWidget {
   final List<String> urls;
+  final Function onShare;
 
-  const MediaGroupWidgetNetwork({Key key, @required this.urls})
+  const MediaGroupWidgetNetwork({Key key, @required this.urls, this.onShare})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -340,8 +342,9 @@ class MediaGroupWidgetNetwork extends StatelessWidget {
         );
       }));
     };
+    Widget widget;
     if (urls.length == 1) {
-      return SizedBox(
+      widget = SizedBox(
         width: double.infinity,
         height: (MediaQuery.of(context).size.width * 0.7) / 1.75,
         child: MediaWidgetNetwork(
@@ -351,7 +354,7 @@ class MediaGroupWidgetNetwork extends StatelessWidget {
       );
     }
     if (urls.length == 2) {
-      return Row(
+      widget = Row(
         children: [
           Expanded(
             child: SizedBox(
@@ -379,7 +382,7 @@ class MediaGroupWidgetNetwork extends StatelessWidget {
       );
     }
     if (urls.length == 3) {
-      return Column(
+      widget = Column(
         children: [
           SizedBox(
             width: double.infinity,
@@ -421,7 +424,7 @@ class MediaGroupWidgetNetwork extends StatelessWidget {
       );
     }
     if (urls.length == 4) {
-      return Column(
+      widget = Column(
         children: [
           SizedBox(
             width: double.infinity,
@@ -474,7 +477,7 @@ class MediaGroupWidgetNetwork extends StatelessWidget {
       );
     }
     if (urls.length == 5) {
-      return Column(
+      widget = Column(
         children: [
           Row(
             children: [
@@ -546,7 +549,7 @@ class MediaGroupWidgetNetwork extends StatelessWidget {
     }
 
     if (urls.length > 5) {
-      return Column(
+      widget = Column(
         children: [
           Row(
             children: [
@@ -645,6 +648,29 @@ class MediaGroupWidgetNetwork extends StatelessWidget {
         ],
       );
     }
-    return SizedBox.shrink();
+    if (onShare == null) return widget;
+    return Row(
+      children: [
+        Expanded(child: widget),
+        SizedBox(width: 7),
+        GestureDetector(
+          onTap: onShare,
+          child: Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.blue.withOpacity(0.2),
+            ),
+            child: Center(
+              child: Icon(
+                MdiIcons.share,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        )
+      ],
+    );
   }
 }

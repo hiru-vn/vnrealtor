@@ -37,6 +37,7 @@ class MessageListView extends StatefulWidget {
   final bool textBeforeImage;
   final double avatarMaxSize;
   final BoxDecoration Function(ChatMessage, bool) messageDecorationBuilder;
+  final double Function(ChatMessage) messageContainerWidthRadio;
 
   MessageListView({
     this.showLoadEarlierWidget,
@@ -76,6 +77,7 @@ class MessageListView extends StatefulWidget {
     this.messagePaddingBuilder,
     this.textBeforeImage = true,
     this.messageDecorationBuilder,
+    this.messageContainerWidthRadio
   });
 
   @override
@@ -269,6 +271,7 @@ class _MessageListViewState extends State<MessageListView> {
                                                 : AlignmentDirectional
                                                     .centerStart,
                                             child: MessageContainer(
+                                              messageContainerWidthRadio: widget.messageContainerWidthRadio,
                                               messagePaddingBuilder:
                                                   widget.messagePaddingBuilder,
                                               constraints: constraints,

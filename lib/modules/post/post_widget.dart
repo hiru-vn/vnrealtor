@@ -261,7 +261,7 @@ class _PostWidgetState extends State<PostWidget> {
                               ],
                           onSelected: (val) async {
                             if (val == 'Liên hệ') {
-                              showSimpleLoadingDialog(context);
+                              showWaitingDialog(context);
                               await InboxBloc.instance.navigateToChatWith(
                                   context,
                                   widget.post.user.name,

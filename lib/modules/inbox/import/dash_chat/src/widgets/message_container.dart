@@ -67,22 +67,24 @@ class MessageContainer extends StatelessWidget {
   /// return BoxDecoration
   final BoxDecoration Function(ChatMessage, bool) messageDecorationBuilder;
 
-  const MessageContainer({
-    @required this.message,
-    @required this.timeFormat,
-    this.constraints,
-    this.messageImageBuilder,
-    this.messageTextBuilder,
-    this.messageTimeBuilder,
-    this.messageContainerDecoration,
-    this.parsePatterns = const <MatchText>[],
-    this.textBeforeImage = true,
-    this.isUser,
-    this.messageButtonsBuilder,
-    this.buttons,
-    this.messagePaddingBuilder,
-    this.messageDecorationBuilder,
-  });
+  final double Function(ChatMessage) messageContainerWidthRadio;
+
+  const MessageContainer(
+      {@required this.message,
+      @required this.timeFormat,
+      this.constraints,
+      this.messageImageBuilder,
+      this.messageTextBuilder,
+      this.messageTimeBuilder,
+      this.messageContainerDecoration,
+      this.parsePatterns = const <MatchText>[],
+      this.textBeforeImage = true,
+      this.isUser,
+      this.messageButtonsBuilder,
+      this.buttons,
+      this.messagePaddingBuilder,
+      this.messageDecorationBuilder,
+      this.messageContainerWidthRadio});
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +94,10 @@ class MessageContainer extends StatelessWidget {
             maxWidth: MediaQuery.of(context).size.width);
     return ConstrainedBox(
       constraints: BoxConstraints(
-        maxWidth: constraints.maxWidth * 0.6,
+        maxWidth: constraints.maxWidth *
+            (messageContainerWidthRadio != null
+                ? messageContainerWidthRadio(message)
+                : 0.6),
       ),
       child: Container(
         decoration: messageDecorationBuilder != null

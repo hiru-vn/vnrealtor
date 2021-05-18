@@ -10,33 +10,28 @@ enum DialogAction {
 typedef TapButtonListener(DialogAction action);
 typedef TapConfirm();
 
-void showWaitingDialog(BuildContext context, {String message}) {
+void showWaitingDialog(BuildContext context) {
   showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-            backgroundColor: Colors.white,
-            content: Container(
-              width: double.infinity,
-              alignment: Alignment.center,
-              child: Center(
-                  child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Theme.of(context).primaryColor)),
-                  Padding(
-                      padding: EdgeInsets.only(top: 18.0),
-                      child: Text(
-                        message ?? 'Đang xử lí ...',
-                        style: TextStyle(fontSize: 15.0),
-                      ))
-                ],
-              )),
-            ));
+            elevation: 0,
+            contentPadding: EdgeInsets.zero,
+            backgroundColor: Colors.transparent,
+            content: Center(
+                child: Material(
+              borderRadius: BorderRadius.circular(25),
+              elevation: 3,
+              child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                  ),
+                  child: kLoadingSpinner),
+            )));
       });
 }
 

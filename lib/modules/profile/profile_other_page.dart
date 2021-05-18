@@ -567,7 +567,7 @@ class _ProfileCardState extends State<ProfileCard> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () async {
-                                  showSimpleLoadingDialog(context);
+                                  showWaitingDialog(context);
                                   await InboxBloc.instance.navigateToChatWith(
                                       context,
                                       widget.user.name,

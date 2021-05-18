@@ -29,15 +29,13 @@ import 'import/image_view.dart';
 import 'import/media_picker.dart';
 import 'import/page_builder.dart';
 import 'import/skeleton.dart';
-import 'import/video_view.dart';
 import 'inbox_bloc.dart';
 import 'inbox_model.dart';
+import 'share_friend.dart';
 import 'video_call_page.dart';
-import 'voice_call_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './import/media_group.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
-import 'package:photo_manager/photo_manager.dart' as media;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -621,6 +619,12 @@ class _InboxChatState extends State<InboxChat> {
                       showMedia = false;
                     });
                 },
+                messageContainerWidthRadio: (message) {
+                  if (message.customProperties['files'] != null &&
+                      message.customProperties['files'].length > 0)
+                    return 0.6 + 38 / MediaQuery.of(context).size.width;
+                  return 0.6;
+                },
                 messageImageBuilder: (url, [messages]) {
                   if (messages.customProperties == null)
                     return SizedBox.shrink();
@@ -663,6 +667,9 @@ class _InboxChatState extends State<InboxChat> {
                   if (files != null && files.length > 0) {
                     return MediaGroupWidgetNetwork(
                       urls: files,
+                      onShare: () {
+                        ShareFriend.navigate(files);
+                      },
                     );
                   }
 

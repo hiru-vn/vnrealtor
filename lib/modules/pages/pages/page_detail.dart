@@ -477,7 +477,7 @@ class _PageDetailState extends State<PageDetail> {
         title: "Nhắn tin",
         imageSvg: AppImages.icPageMessage,
         callback: () async {
-          showSimpleLoadingDialog(context);
+          showWaitingDialog(context);
           await InboxBloc.instance.navigateToChatWith(
               context,
               widget.page.owner.name,

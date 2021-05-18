@@ -272,6 +272,8 @@ class DashChat extends StatefulWidget {
 
   final Color iconSendColor;
 
+  final double Function(ChatMessage) messageContainerWidthRadio;
+
   /// overrides the boxdecoration of the message
   /// can be used to override color, or customise the message container
   /// params [ChatMessage] and [isUser]: boolean
@@ -358,6 +360,7 @@ class DashChat extends StatefulWidget {
     this.messagePaddingBuilder,
     this.textBeforeImage = true,
     this.messageDecorationBuilder,
+    this.messageContainerWidthRadio,
   }) : super(key: key) {
     this.scrollToBottomStyle = scrollToBottomStyle ?? new ScrollToBottomStyle();
   }
@@ -525,6 +528,8 @@ class DashChatState extends State<DashChat> {
                         messageImageBuilder: widget.messageImageBuilder,
                         messageTimeBuilder: widget.messageTimeBuilder,
                         dateBuilder: widget.dateBuilder,
+                        messageContainerWidthRadio:
+                            widget.messageContainerWidthRadio,
                         messageContainerDecoration:
                             widget.messageContainerDecoration,
                         parsePatterns: widget.parsePatterns,
