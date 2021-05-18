@@ -329,8 +329,13 @@ class MediaGroupWidgetCache extends StatelessWidget {
 class MediaGroupWidgetNetwork extends StatelessWidget {
   final List<String> urls;
   final Function onShare;
+  final bool shareButtonRightSide;
 
-  const MediaGroupWidgetNetwork({Key key, @required this.urls, this.onShare})
+  const MediaGroupWidgetNetwork(
+      {Key key,
+      @required this.urls,
+      this.onShare,
+      this.shareButtonRightSide = true})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -651,25 +656,47 @@ class MediaGroupWidgetNetwork extends StatelessWidget {
     if (onShare == null) return widget;
     return Row(
       children: [
-        Expanded(child: widget),
-        SizedBox(width: 7),
-        GestureDetector(
-          onTap: onShare,
-          child: Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue.withOpacity(0.2),
-            ),
-            child: Center(
-              child: Icon(
-                MdiIcons.share,
-                color: Colors.white,
+        if (!shareButtonRightSide) ...[
+          GestureDetector(
+            onTap: onShare,
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue.withOpacity(0.2),
+              ),
+              child: Center(
+                child: Icon(
+                  MdiIcons.share,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
-        )
+          SizedBox(width: 7),
+        ],
+        Expanded(child: widget),
+        if (shareButtonRightSide) ...[
+          SizedBox(width: 7),
+          GestureDetector(
+            onTap: onShare,
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue.withOpacity(0.2),
+              ),
+              child: Center(
+                child: Icon(
+                  MdiIcons.share,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ]
       ],
     );
   }

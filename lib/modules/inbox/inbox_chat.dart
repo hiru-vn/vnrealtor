@@ -670,6 +670,7 @@ class _InboxChatState extends State<InboxChat> {
                       onShare: () {
                         ShareFriend.navigate(files);
                       },
+                      shareButtonRightSide: messages.user.uid != _authBloc.userModel.id
                     );
                   }
 
