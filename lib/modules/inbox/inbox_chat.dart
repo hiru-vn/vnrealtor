@@ -38,6 +38,8 @@ import './import/media_group.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InboxChat extends StatefulWidget {
   final FbInboxGroupModel group;
@@ -702,16 +704,26 @@ class _InboxChatState extends State<InboxChat> {
                   }
                   return Padding(
                     padding: const EdgeInsets.all(3),
-                    child: Text.rich(TextSpan(children: [
-                      TextSpan(
-                        text: text,
-                        style: ptBody().copyWith(
-                            fontSize: 13.8,
-                            color: messages.user.uid == _authBloc.userModel.id
-                                ? Colors.white
-                                : Colors.black),
-                      ),
-                    ])),
+                    child: Linkify(
+                      onOpen: (link) async {
+                        if (await canLaunch(link.url)) {
+                          await launch(link.url);
+                        } else {
+                          showToastNoContext('Đường dẫn hết hiệu lực');
+                        }
+                      },
+                      text: text,
+                      style: ptBody().copyWith(
+                          fontSize: 13.8,
+                          color: messages.user.uid == _authBloc.userModel.id
+                              ? Colors.white
+                              : Colors.black),
+                      textAlign: TextAlign.start,
+                      linkStyle: ptBody().copyWith(
+                          color: messages.user.uid == _authBloc.userModel.id
+                              ? Colors.white
+                              : Colors.black),
+                    ),
                   );
                 },
                 messageTimeBuilder: (text, [messages]) {

@@ -11,6 +11,10 @@ email: String
 role: String
 reputationScore: Int
 avatar
+dynamicLink {
+  shortLink
+  previewLink
+}
 isMod
 postNoti
 friendIds: [ID]

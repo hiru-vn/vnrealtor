@@ -1,4 +1,5 @@
 import 'package:datcao/modules/model/setting.dart';
+import './media_post.dart';
 
 class UserModel {
   String id;
@@ -25,6 +26,7 @@ class UserModel {
   bool isVerify;
   int messNotiCount;
   bool isMod;
+  DynamicLink dynamicLink;
 
   UserModel(
       {this.id,
@@ -49,7 +51,8 @@ class UserModel {
       this.setting,
       this.messNotiCount,
       this.isVerify,
-      this.isMod});
+      this.isMod,
+      this.dynamicLink});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -86,6 +89,9 @@ class UserModel {
           .where((element) =>
               !(json['followingIds'].cast<String>() as List).contains(element))
           .toList();
+    dynamicLink = json['dynamicLink'] == null
+        ? null
+        : DynamicLink.fromJson(json['dynamicLink']);
   }
 
   Map<String, dynamic> toJson() {

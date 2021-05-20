@@ -8,6 +8,7 @@ import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage();
@@ -416,6 +417,20 @@ class _ProfileCardState extends State<ProfileCard> {
                             width: 26,
                             height: 26,
                             child: Image.asset('assets/image/gmail_icon.png')),
+                      ),
+                    SizedBox(width: 12),
+                    if (widget.user.dynamicLink != null)
+                      GestureDetector(
+                        onTap: () {
+                          showToast('Đã copy đường dẫn tài khoản', context,
+                              isSuccess: true);
+                          Clipboard.setData(ClipboardData(
+                              text: widget.user.dynamicLink.shortLink));
+                        },
+                        child: SizedBox(
+                            width: 23,
+                            height: 23,
+                            child: Image.asset('assets/image/logo.png')),
                       ),
                   ],
                 ),

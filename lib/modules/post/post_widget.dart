@@ -12,13 +12,11 @@ import 'package:datcao/modules/post/report_post_page.dart';
 import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/modules/post/update_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
-import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
-import 'package:readmore/readmore.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'comment_page.dart';

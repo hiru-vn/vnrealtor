@@ -1,5 +1,6 @@
 import 'package:datcao/modules/model/notification.dart';
 import 'package:datcao/modules/post/post_detail.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/modules/repo/notification_repo.dart';
 import 'package:datcao/share/import.dart';
 
@@ -20,14 +21,19 @@ class NotificationBloc extends ChangeNotifier {
   ScrollController notiScrollController = ScrollController();
   static List<InitAction> initActions = [];
   static Future handleInitActions() async {
-    if (initActions.length > 0) {
-      if (initActions[0].type == ACTION_TYPE.OPEN_POST) {
-        await PostDetail.navigate(null, postId: initActions[0].modelId);
+    try {
+      if (initActions.length > 0) {
+        if (initActions[0].type == ACTION_TYPE.OPEN_POST) {
+          await PostDetail.navigate(null, postId: initActions[0].modelId);
+        }
+        if (initActions[0].type == ACTION_TYPE.OPEN_CHAT) {
+          // await InboxBloc.instance.navigateToChatWith(null, postId: initActions[0].modelId);
+        }
+        if (initActions[0].type == ACTION_TYPE.OPEN_PROFILE) {
+          ProfileOtherPage.navigate(null, userId: initActions[0].modelId);
+        }
       }
-      if (initActions[0].type == ACTION_TYPE.OPEN_CHAT) {
-        // await InboxBloc.instance.navigateToChatWith(null, postId: initActions[0].modelId);
-      }
-
+    } catch (e) {} finally {
       initActions.removeAt(0);
     }
     return;

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/post/post_detail.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/modules/services/src/toast/toast.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -192,11 +193,31 @@ class FbdynamicLink {
             if (AuthBloc.instance.userModel != null &&
                 FirebaseAuth.instance.currentUser != null) {
               print('case 2');
+
               PostDetail.navigate(null, postId: paths[1]);
             } else {
               print('case 3');
               Future.delayed(Duration(milliseconds: 1000),
                   () => PostDetail.navigate(null, postId: paths[1]));
+            }
+          }
+        }
+        if (paths.length >= 2 && paths[0] == 'user') {
+          final token = await SPref.instance.get('token');
+          if (token == null) {
+            print('case 1');
+            Future.delayed(Duration(milliseconds: 1000),
+                () => ProfileOtherPage.navigate(null, userId: paths[1]));
+          } else {
+            if (AuthBloc.instance.userModel != null &&
+                FirebaseAuth.instance.currentUser != null) {
+              print('case 2');
+
+              ProfileOtherPage.navigate(null, userId: paths[1]);
+            } else {
+              print('case 3');
+              Future.delayed(Duration(milliseconds: 1000),
+                  () => ProfileOtherPage.navigate(null, userId: paths[1]));
             }
           }
         }
@@ -223,6 +244,16 @@ class FbdynamicLink {
         } else {
           NotificationBloc.initActions
               .insert(0, InitAction(ACTION_TYPE.OPEN_POST, paths[1]));
+        }
+      }
+      if (paths.length >= 2 && paths[0] == 'user') {
+        final token = await SPref.instance.get('token');
+        if (token == null) {
+          NotificationBloc.initActions
+              .insert(0, InitAction(ACTION_TYPE.OPEN_PROFILE, paths[1]));
+        } else {
+          NotificationBloc.initActions
+              .insert(0, InitAction(ACTION_TYPE.OPEN_PROFILE, paths[1]));
         }
       }
     }
