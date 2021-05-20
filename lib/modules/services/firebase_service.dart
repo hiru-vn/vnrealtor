@@ -55,20 +55,20 @@ class FcmService {
     final type = getType(message.data['type']);
 
     if (type == FcmType.message) {
-      // final type = ModalRoute.of(navigatorKey.currentState.overlay.context)
-      //     .settings
-      //     .runtimeType;
-      // print(type);
-      // if (type == InboxList) return;
+      if (InboxBloc.inChat) return;
+
       _audioCache.play('facebook_message.mp3');
-      toast('Tin nhắn mới', onTap: () {
-        InboxBloc.instance.navigateToChatWith('', '', DateTime.now(), '', [
+      toast('Tin nhắn mới', onTap: () async {
+        showWaitingDialog(navigatorKey.currentState.context);
+        await InboxBloc.instance.navigateToChatWith(
+            message.data['name'], message.data['avatar'], DateTime.now(), '', [
           AuthBloc.instance.userModel.id,
-          message.data['modelId'],
+          message.data['userId'],
         ], [
           AuthBloc.instance.userModel.avatar,
-          message.data['modelId'],
+          message.data['avatar'],
         ]);
+        navigatorKey.currentState.maybePop();
       });
     }
 

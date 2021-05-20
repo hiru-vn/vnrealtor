@@ -168,8 +168,7 @@ phone: "$phone"
 
   Future suggestFollowGuest() async {
     final res = await UserSrv().query('suggestFollowForGuest', '',
-        fragment: ' ${userFragment.replaceAll('savedPostIds', '')} ',
-        removeData: true);
+        fragment: ' ${userFragment.replaceAll('savedPostIds', '')} ');
     return res['suggestFollowForGuest'];
   }
 
@@ -209,10 +208,7 @@ facebookUrl: "$facebookUrl"
     return res['id'];
   }
 
-  Future updateUserStatus(
-      String id,
-      {@required bool isOnline}
-      ) async {
+  Future updateUserStatus(String id, {@required bool isOnline}) async {
     final res = await UserSrv().update(
         id: id,
         data: '''

@@ -46,14 +46,15 @@ ${postFragment.replaceFirst('id', '')}
 
   Future getStoryForGuest({double lat, double long}) async {
     String params = 'lat: $lat , long: $long';
-    final res =
-        await PostSrv().query('getStoryForGuest', lat != null ? params : '',
-            fragment: '''
+    final res = await PostSrv().query(
+      'getStoryForGuest',
+      lat != null ? params : '',
+      fragment: '''
     data {
-${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + ' _id'}
+${postFragment.replaceAll('\n', ' ').replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + ' _id'}
 }
     ''',
-            removeData: true);
+    );
     return res['getStoryForGuest'];
   }
 

@@ -99,6 +99,7 @@ class _InboxChatState extends State<InboxChat> {
 
   @override
   void initState() {
+    InboxBloc.inChat = true;
     group = widget.group;
     for (final user in group.users) {
       if (group.pageId != null &&
@@ -123,6 +124,7 @@ class _InboxChatState extends State<InboxChat> {
   @override
   dispose() {
     super.dispose();
+    InboxBloc.inChat = false;
     _incomingMessageListener?.cancel();
     _focusNode.dispose();
   }
@@ -286,16 +288,18 @@ class _InboxChatState extends State<InboxChat> {
     List<String> _tempFiles = [];
     _tempFiles.addAll(_files);
     if (_tempFiles.length == 0 && message.text.trim() == '') return;
+    if (message.customProperties == null)
+      message.customProperties = <String, dynamic>{};
     if (_files.length > 0) {
       // add a loading gif
       if (message.text.trim() != '') {
         // send message text first then send image or video ...
         ChatMessage copyMessage = ChatMessage(
-          // do this because every message gen unique id
-          text: message.text,
-          user: message.user,
-          createdAt: message.createdAt,
-        );
+            // do this because every message gen unique id
+            text: message.text,
+            user: message.user,
+            createdAt: message.createdAt,
+            customProperties: <String, dynamic>{});
         setState(() {
           messages.add(copyMessage);
         });
@@ -308,8 +312,6 @@ class _InboxChatState extends State<InboxChat> {
             _authBloc.userModel.avatar);
         message.text = '';
       }
-      if (message.customProperties == null)
-        message.customProperties = <String, dynamic>{};
       _files.forEach((path) {
         if (message.customProperties['cache_file_paths'] == null) {
           message.customProperties['cache_file_paths'] = <String>[];
@@ -666,12 +668,12 @@ class _InboxChatState extends State<InboxChat> {
                   final files = messages.customProperties['files'];
                   if (files != null && files.length > 0) {
                     return MediaGroupWidgetNetwork(
-                      urls: files,
-                      onShare: () {
-                        ShareFriend.navigate(files);
-                      },
-                      shareButtonRightSide: messages.user.uid != _authBloc.userModel.id
-                    );
+                        urls: files,
+                        onShare: () {
+                          ShareFriend.navigate(files);
+                        },
+                        shareButtonRightSide:
+                            messages.user.uid != _authBloc.userModel.id);
                   }
 
                   final cachePaths =

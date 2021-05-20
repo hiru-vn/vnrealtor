@@ -20,6 +20,8 @@ class InboxBloc extends ChangeNotifier {
     return firestore.collection('group').doc(id);
   }
 
+  static bool inChat = false;
+
   final userCollection = 'user';
   final groupCollection = 'group';
   final messageCollection = 'messages';
