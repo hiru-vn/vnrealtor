@@ -479,7 +479,6 @@ class _PageDetailState extends State<PageDetail> {
         callback: () async {
           showWaitingDialog(context);
           await InboxBloc.instance.navigateToChatWith(
-              context,
               widget.page.owner.name,
               widget.page.avartar,
               DateTime.now(),

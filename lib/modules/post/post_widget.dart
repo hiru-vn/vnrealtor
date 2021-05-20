@@ -118,7 +118,7 @@ class _PostWidgetState extends State<PostWidget> {
                               widget.post.isPage
                                   ? PageDetail.navigate(widget.post?.page)
                                   : ProfileOtherPage.navigate(
-                                  widget.post?.user);
+                                      widget.post?.user);
                             },
                             child: Text(
                               widget.post.isPage
@@ -212,17 +212,17 @@ class _PostWidgetState extends State<PostWidget> {
                     ],
                   ),
                   Spacer(),
-                  GestureDetector(
-                      onTap: () {
-                        showToast('Đã copy link bài viết', context,
-                            isSuccess: true);
-                        Clipboard.setData(
-                          new ClipboardData(
-                              text: widget.post.dynamicLink.shortLink),
-                        );
-                      },
-                      child:
-                          SizedBox(width: 30, child: Icon(MdiIcons.fileLink))),
+                  // GestureDetector(
+                  //     onTap: () {
+                  //       showToast('Đã copy link bài viết', context,
+                  //           isSuccess: true);
+                  //       Clipboard.setData(
+                  //         new ClipboardData(
+                  //             text: widget.post.dynamicLink.shortLink),
+                  //       );
+                  //     },
+                  //     child:
+                  //         SizedBox(width: 30, child: Icon(MdiIcons.fileLink))),
                   if (AuthBloc.instance.userModel != null)
                     Center(
                       child: PopupMenuButton(
@@ -258,12 +258,22 @@ class _PostWidgetState extends State<PostWidget> {
                                   PopupMenuItem(
                                       child: Text('Sửa bài'), value: 'Sửa bài'),
                                 ],
+                                PopupMenuItem(
+                                    child: Text('Copy link'),
+                                    value: 'Copy link'),
                               ],
                           onSelected: (val) async {
+                            if (val == 'Copy link') {
+                              showToast('Đã copy link bài viết', context,
+                                  isSuccess: true);
+                              Clipboard.setData(
+                                new ClipboardData(
+                                    text: widget.post.dynamicLink.shortLink),
+                              );
+                            }
                             if (val == 'Liên hệ') {
                               showWaitingDialog(context);
                               await InboxBloc.instance.navigateToChatWith(
-                                  context,
                                   widget.post.user.name,
                                   widget.post.user.avatar,
                                   DateTime.now(),

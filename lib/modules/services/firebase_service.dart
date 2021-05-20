@@ -1,12 +1,16 @@
 import 'dart:io';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/post/post_detail.dart';
+import 'package:datcao/modules/services/src/toast/toast.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/import.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 enum FcmType {
   message,
@@ -27,6 +31,9 @@ class FcmService {
 
   static FcmService get instance => _instance;
   FirebaseMessaging fb;
+  final _audioCache = AudioCache(
+      prefix: "assets/sound/",
+      fixedPlayer: AudioPlayer()..setReleaseMode(ReleaseMode.STOP));
 
   static FcmType getType(String type) {
     if (type.toLowerCase() == 'Like'.toLowerCase()) return FcmType.like;
@@ -53,7 +60,16 @@ class FcmService {
       //     .runtimeType;
       // print(type);
       // if (type == InboxList) return;
-      showToastNoContext('Tin nhắn mới');
+      _audioCache.play('facebook_message.mp3');
+      toast('Tin nhắn mới', onTap: () {
+        InboxBloc.instance.navigateToChatWith('', '', DateTime.now(), '', [
+          AuthBloc.instance.userModel.id,
+          message.data['modelId'],
+        ], [
+          AuthBloc.instance.userModel.avatar,
+          message.data['modelId'],
+        ]);
+      });
     }
 
     if (type == FcmType.share) {

@@ -569,7 +569,6 @@ class _ProfileCardState extends State<ProfileCard> {
                                 onTap: () async {
                                   showWaitingDialog(context);
                                   await InboxBloc.instance.navigateToChatWith(
-                                      context,
                                       widget.user.name,
                                       widget.user.avatar,
                                       DateTime.now(),

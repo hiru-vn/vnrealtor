@@ -97,7 +97,7 @@ class _AddGroupState extends State<AddGroup> {
                 await navigatorKey.currentState.maybePop();
                 showWaitingDialog(context);
                 await InboxBloc.instance.navigateToChatWith(
-                    context,
+                 
                     AuthBloc.instance.userModel.name,
                     'https://static.thenounproject.com/png/58999-200.png',
                     DateTime.now(),

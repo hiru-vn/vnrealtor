@@ -363,7 +363,7 @@ class _InboxListState extends State<InboxList>
         return GestureDetector(
             onTap: () async {
               showWaitingDialog(context);
-              await InboxBloc.instance.navigateToChatWith(context, user.name,
+              await InboxBloc.instance.navigateToChatWith( user.name,
                   user.avatar, DateTime.now(), user.avatar, [
                 AuthBloc.instance.userModel.id,
                 user.id,

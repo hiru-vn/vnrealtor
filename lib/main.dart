@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/services/firebase_service.dart';
+import 'package:datcao/modules/services/src/overlay.dart';
 import 'package:datcao/modules/setting/connectivity.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry/sentry.dart';
@@ -22,7 +23,6 @@ import 'share/widget/empty_widget.dart';
 final _sentry = SentryClient(
     dsn:
         "https://ab7fbe46a1634b98b918535d535962ea@o396604.ingest.sentry.io/5596357");
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -150,21 +150,23 @@ class _MyAppState extends State<MyApp> {
                           ),
                         ),
                       )
-                    : MaterialApp(
-                        debugShowCheckedModeBanner: false,
-                        localizationsDelegates: [
-                          const AppInternalizationlegate(),
-                          GlobalMaterialLocalizations.delegate,
-                          GlobalWidgetsLocalizations.delegate,
-                          GlobalCupertinoLocalizations.delegate,
-                        ],
-                        supportedLocales: [
-                          Locale('en', 'US'),
-                          Locale('vi', 'VN'),
-                        ],
-                        theme: ThemeProvider.of(context),
-                        navigatorKey: navigatorKey,
-                        home: SplashPage(),
+                    : OverlaySupport(
+                        child: MaterialApp(
+                          debugShowCheckedModeBanner: false,
+                          localizationsDelegates: [
+                            const AppInternalizationlegate(),
+                            GlobalMaterialLocalizations.delegate,
+                            GlobalWidgetsLocalizations.delegate,
+                            GlobalCupertinoLocalizations.delegate,
+                          ],
+                          supportedLocales: [
+                            Locale('en', 'US'),
+                            Locale('vi', 'VN'),
+                          ],
+                          theme: ThemeProvider.of(context),
+                          navigatorKey: navigatorKey,
+                          home: SplashPage(),
+                        ),
                       ),
               );
             }),

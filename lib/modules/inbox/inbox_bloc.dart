@@ -45,7 +45,6 @@ class InboxBloc extends ChangeNotifier {
   }
 
   Future<void> navigateToChatWith(
-    BuildContext context,
     String lastUser, // the other user
     String lastAvatar,
     DateTime time,
