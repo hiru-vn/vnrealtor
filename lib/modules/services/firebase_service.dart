@@ -56,9 +56,7 @@ class FcmService {
     final type = getType(message.data['type']);
 
     if (type == FcmType.message) {
-      print('dádasdasdasdasd');
       if (InboxBloc.inChat) return;
-      print('dádasdasdasdasd');
 
       _audioCache.play('facebook_message.mp3');
       toast('Tin nhắn mới', onTap: () async {

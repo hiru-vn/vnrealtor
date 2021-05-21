@@ -1,6 +1,8 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_model.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/share/import.dart';
 import 'package:skeleton_loader/skeleton_loader.dart';
 
@@ -24,11 +26,11 @@ class _ShareFriendState extends State<ShareFriend> {
   AuthBloc _authBloc;
   UserBloc _userBloc;
   List<UserModel> friends;
-  List<UserModel> followers;
+  List<FbInboxGroupModel> groups;
   List<UserModel> tagUsers = [];
+  List<FbInboxGroupModel> tagGroups = [];
   String search = '';
   String name = '';
-  String hint = '';
   List<String> medias;
 
   @override
@@ -36,20 +38,6 @@ class _ShareFriendState extends State<ShareFriend> {
     if (_authBloc == null) {
       _authBloc = Provider.of(context);
       _userBloc = Provider.of(context);
-      _userBloc
-          .getListUserIn(_authBloc.userModel.followerIds
-              .where(
-                  (element) => !_authBloc.userModel.friendIds.contains(element))
-              .toList())
-          .then((value) {
-        if (value.isSuccess) {
-          setState(() {
-            followers = value.data;
-          });
-        } else
-          showToast('Có lỗi khi lấy danh sách, vui lòng đóng trang và thử lại',
-              context);
-      });
       _userBloc.getListUserIn(_authBloc.userModel.friendIds).then((value) {
         if (value.isSuccess) {
           setState(() {
@@ -59,6 +47,11 @@ class _ShareFriendState extends State<ShareFriend> {
           showToast('Có lỗi khi lấy danh sách, vui lòng đóng trang và thử lại',
               context);
       });
+      groups = InboxBloc.instance.groupInboxList.sublist(
+          0,
+          InboxBloc.instance.groupInboxList.length > 10
+              ? 9
+              : InboxBloc.instance.groupInboxList);
     }
     super.didChangeDependencies();
   }
@@ -69,13 +62,75 @@ class _ShareFriendState extends State<ShareFriend> {
         tagUsers.add(user);
       else
         tagUsers.remove(user);
-      if (tagUsers.length == 0)
-        hint = '';
-      else
-        hint = [AuthBloc.instance.userModel, ...tagUsers]
-            .map((e) => e.name)
-            .join(', ');
     });
+  }
+
+  _tapGroup(FbInboxGroupModel group) {
+    setState(() {
+      if (!tagGroups.contains(group))
+        tagGroups.add(group);
+      else
+        tagGroups.remove(group);
+    });
+  }
+
+  _onShare() async {
+    if (tagUsers.length < 1 && tagGroups.length < 1) {
+      showToast('Cần chọn ít nhất 1 người', context);
+      return;
+    }
+    showWaitingDialog(context);
+    try {
+      await Future.wait([
+        ...tagUsers.map((e) {
+          final list = [e.id, _authBloc.userModel.id];
+          list.sort();
+          final groupId = list.join("-");
+          InboxBloc.instance.updateGroupOnMessage(
+              groupId,
+              _authBloc.userModel.name,
+              DateTime.now(),
+              AuthBloc.instance.userModel.name +
+                  'đã chia sẻ ${widget.medias.length} ảnh/video',
+              [],
+              [AuthBloc.instance.userModel.id]);
+          return InboxBloc.instance.addMessage(
+              groupId,
+              '',
+              DateTime.now(),
+              _authBloc.userModel.id,
+              _authBloc.userModel.name,
+              _authBloc.userModel.avatar,
+              filePaths: widget.medias);
+        }),
+        ...tagGroups.map((e) {
+          InboxBloc.instance.updateGroupOnMessage(
+              e.id,
+              _authBloc.userModel.name,
+              DateTime.now(),
+              AuthBloc.instance.userModel.name +
+                  'đã chia sẻ ${widget.medias.length} ảnh/video',
+              [],
+              [AuthBloc.instance.userModel.id]);
+          return InboxBloc.instance.addMessage(
+              e.id,
+              '',
+              DateTime.now(),
+              _authBloc.userModel.id,
+              _authBloc.userModel.name,
+              _authBloc.userModel.avatar,
+              filePaths: widget.medias);
+        }),
+      ]);
+      showToast('Đã gửi đến ${tagUsers.length + tagGroups.length} người dùng',
+          context,
+          isSuccess: true);
+      await navigatorKey.currentState.maybePop();
+    } catch (e) {
+      showToast(e.toString(), context);
+    } finally {
+      navigatorKey.currentState.maybePop();
+    }
   }
 
   @override
@@ -91,57 +146,7 @@ class _ShareFriendState extends State<ShareFriend> {
         actions: [
           Center(
             child: GestureDetector(
-              onTap: () async {
-                if (tagUsers.length < 1) {
-                  showToast('Cần chọn ít nhất 1 người', context);
-                  return;
-                }
-                showWaitingDialog(context);
-                try {
-                  await Future.wait(tagUsers.map((e) {
-                    final list = [e.id, _authBloc.userModel.id];
-                    list.sort();
-                    final groupId = list.join("-");
-                    InboxBloc.instance.updateGroupOnMessage(
-                        groupId,
-                        _authBloc.userModel.name,
-                        DateTime.now(),
-                        AuthBloc.instance.userModel.name +
-                            'đã chia sẻ ${widget.medias.length} ảnh/video',
-                        [],
-                        [AuthBloc.instance.userModel.id]);
-                    return InboxBloc.instance.addMessage(
-                        groupId,
-                        '',
-                        DateTime.now(),
-                        _authBloc.userModel.id,
-                        _authBloc.userModel.name,
-                        _authBloc.userModel.avatar,
-                        filePaths: widget.medias);
-                  }));
-                  // await InboxBloc.instance.navigateToChatWith(
-                  //     context,
-                  //     AuthBloc.instance.userModel.name,
-                  //     'https://static.thenounproject.com/png/58999-200.png',
-                  //     DateTime.now(),
-                  //     'https://static.thenounproject.com/png/58999-200.png',
-                  //     [AuthBloc.instance.userModel, ...tagUsers]
-                  //         .map((e) => e.id)
-                  //         .toList(),
-                  //     [AuthBloc.instance.userModel, ...tagUsers]
-                  //         .map((e) => e.avatar)
-                  //         .toList(),
-                  //     groupName:
-                  //         (name.trim() == null || name.isEmpty) ? hint : name);
-                  showToast('Đã gửi đến ${tagUsers.length} người dùng', context,
-                      isSuccess: true);
-                  await navigatorKey.currentState.maybePop();
-                } catch (e) {
-                  showToast(e.toString(), context);
-                } finally {
-                  navigatorKey.currentState.maybePop();
-                }
-              },
+              onTap: _onShare,
               behavior: HitTestBehavior.translucent,
               child: Padding(
                 padding: const EdgeInsets.all(10).copyWith(bottom: 13),
@@ -193,7 +198,7 @@ class _ShareFriendState extends State<ShareFriend> {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Text(
-                    'Friend list',
+                    'Hội thoại gần đây',
                     style: ptTitle().copyWith(
                         color: Colors.black, fontSize: 13, letterSpacing: 0.2),
                   ),
@@ -201,25 +206,26 @@ class _ShareFriendState extends State<ShareFriend> {
                 Divider(height: 1, color: Colors.black12.withOpacity(0.3)),
                 Column(
                   children: [
-                    if (friends != null)
+                    if (groups != null)
                       ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: friends
-                            .where((e) => e.name.contains(search))
+                        itemCount: groups
+                            .where((e) => e.users.any((u) => u.name
+                                .toLowerCase()
+                                .contains(search.toLowerCase().trim())))
                             .toList()
                             .length,
                         itemBuilder: (context, index) {
-                          return _buildUserItem(
-                              friends
-                                  .where((e) => e.name.contains(search))
-                                  .toList()[index],
-                              tagUsers.contains(friends
-                                  .where((e) => e.name.contains(search))
-                                  .toList()[index]),
-                              () => _tapUser(friends
-                                  .where((e) => e.name.contains(search))
-                                  .toList()[index]));
+                          final group = groups
+                              .where((e) => e.users.any((u) => u.name
+                                  .toLowerCase()
+                                  .contains(search.toLowerCase().trim())))
+                              .toList()[index];
+                          return _buildGroupItem(
+                              group,
+                              tagGroups.contains(group),
+                              () => _tapGroup(group));
                         },
                         separatorBuilder: (context, index) {
                           return Divider(
@@ -235,7 +241,7 @@ class _ShareFriendState extends State<ShareFriend> {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Text(
-                    'My Followers',
+                    'Bạn bè',
                     style: ptTitle().copyWith(
                         color: Colors.black, fontSize: 13, letterSpacing: 0.2),
                   ),
@@ -243,25 +249,26 @@ class _ShareFriendState extends State<ShareFriend> {
                 Divider(height: 1, color: Colors.black12.withOpacity(0.3)),
                 Column(
                   children: [
-                    if (followers != null)
+                    if (friends != null)
                       ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: followers
-                            .where((e) => e.name.contains(search))
+                        itemCount: friends
+                            .where((e) => e.name
+                                .toLowerCase()
+                                .contains(search.toLowerCase().trim()))
                             .toList()
                             .length,
                         itemBuilder: (context, index) {
+                          final friend = friends
+                              .where((e) => e.name
+                                  .toLowerCase()
+                                  .contains(search.toLowerCase()))
+                              .toList()[index];
                           return _buildUserItem(
-                              followers
-                                  .where((e) => e.name.contains(search))
-                                  .toList()[index],
-                              tagUsers.contains(followers
-                                  .where((e) => e.name.contains(search))
-                                  .toList()[index]),
-                              () => _tapUser(followers
-                                  .where((e) => e.name.contains(search))
-                                  .toList()[index]));
+                              friend,
+                              tagUsers.contains(friend),
+                              () => _tapUser(friend));
                         },
                         separatorBuilder: (context, index) {
                           return Divider(
@@ -322,6 +329,61 @@ class _ShareFriendState extends State<ShareFriend> {
           ),
           SizedBox(width: 14),
           Text(user.name, style: ptBody().copyWith(color: Colors.black)),
+        ],
+      ),
+    );
+  }
+
+  _buildGroupItem(FbInboxGroupModel group, bool isSelect, Function onTap) {
+    String nameGroup = group.users
+        .where((element) => element.id != _authBloc.userModel.id)
+        .toList()
+        .map((e) => e.name)
+        .join(', ');
+    if (group.pageName != null &&
+        group.pageId != null &&
+        !PagesBloc.instance.pageCreated.any((e) => e.id == group.pageId))
+      nameGroup = group.pageName;
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: onTap,
+      child: Row(
+        children: [
+          if (!isSelect)
+            Container(
+              width: 19,
+              height: 19,
+              margin: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.grey[200], width: 2),
+              ),
+            )
+          else
+            Container(
+              width: 19,
+              height: 19,
+              margin: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle, color: ptPrimaryColor(context)),
+              child: Center(
+                child: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 12,
+                ),
+              ),
+            ),
+          SizedBox(width: 10),
+          CircleAvatar(
+            backgroundColor: Colors.white,
+            radius: 15,
+            backgroundImage: group.image != null
+                ? CachedNetworkImageProvider(group.image)
+                : AssetImage('assets/image/default_avatar.png'),
+          ),
+          SizedBox(width: 14),
+          Text(nameGroup ?? '', style: ptBody().copyWith(color: Colors.black)),
         ],
       ),
     );
