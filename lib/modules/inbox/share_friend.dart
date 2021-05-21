@@ -32,6 +32,7 @@ class _ShareFriendState extends State<ShareFriend> {
   String search = '';
   String name = '';
   List<String> medias;
+  TextEditingController _textC = TextEditingController();
 
   @override
   void didChangeDependencies() {
@@ -94,6 +95,15 @@ class _ShareFriendState extends State<ShareFriend> {
                   'đã chia sẻ ${widget.medias.length} ảnh/video',
               [],
               [AuthBloc.instance.userModel.id]);
+          if (_textC.text != '') {
+            InboxBloc.instance.addMessage(
+                groupId,
+                _textC.text,
+                DateTime.now(),
+                _authBloc.userModel.id,
+                _authBloc.userModel.name,
+                _authBloc.userModel.avatar);
+          }
           return InboxBloc.instance.addMessage(
               groupId,
               '',
@@ -112,6 +122,15 @@ class _ShareFriendState extends State<ShareFriend> {
                   'đã chia sẻ ${widget.medias.length} ảnh/video',
               [],
               [AuthBloc.instance.userModel.id]);
+          if (_textC.text != '') {
+            InboxBloc.instance.addMessage(
+                e.id,
+                _textC.text,
+                DateTime.now(),
+                _authBloc.userModel.id,
+                _authBloc.userModel.name,
+                _authBloc.userModel.avatar);
+          }
           return InboxBloc.instance.addMessage(
               e.id,
               '',
@@ -122,6 +141,7 @@ class _ShareFriendState extends State<ShareFriend> {
               filePaths: widget.medias);
         }),
       ]);
+
       showToast('Đã gửi đến ${tagUsers.length + tagGroups.length} người dùng',
           context,
           isSuccess: true);
@@ -185,6 +205,25 @@ class _ShareFriendState extends State<ShareFriend> {
                     }),
                     decoration: InputDecoration(
                         hintText: 'Tìm kiếm tên',
+                        border: InputBorder.none,
+                        hintStyle: ptBody().copyWith(color: Colors.black38)),
+                  ),
+                )
+              ],
+            ),
+            Divider(height: 1, color: Colors.black12.withOpacity(0.3)),
+            Divider(height: 1, color: Colors.black12.withOpacity(0.3)),
+            Row(
+              children: [
+                SizedBox(
+                    width: 36,
+                    child: Icon(Icons.messenger_outline_rounded,
+                        color: Colors.black45)),
+                Expanded(
+                  child: TextField(
+                    controller: _textC,
+                    decoration: InputDecoration(
+                        hintText: 'Lời nhắn',
                         border: InputBorder.none,
                         hintStyle: ptBody().copyWith(color: Colors.black38)),
                   ),

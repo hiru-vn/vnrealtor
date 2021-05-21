@@ -273,13 +273,44 @@ class _InboxListState extends State<InboxList>
                       borderRadius: BorderRadius.circular(25),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 5),
-                    child: Center(
-                      child: Text(
-                        'Đang chờ',
-                        style: ptTitle().copyWith(
-                            color:
-                                tabIndex == 2 ? Colors.white : Colors.black54),
-                      ),
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Text(
+                            'Đang chờ',
+                            style: ptTitle().copyWith(
+                                color: tabIndex == 2
+                                    ? Colors.white
+                                    : Colors.black54),
+                          ),
+                        ),
+                        if (waitingGroups.length > 0)
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              padding: EdgeInsets.all(2.4),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              constraints: BoxConstraints(
+                                minWidth: 17,
+                                minHeight: 17,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  waitingGroups.length.toString(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 9.5,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          )
+                      ],
                     ),
                   ),
                 ),
@@ -363,8 +394,8 @@ class _InboxListState extends State<InboxList>
         return GestureDetector(
             onTap: () async {
               showWaitingDialog(context);
-              await InboxBloc.instance.navigateToChatWith( user.name,
-                  user.avatar, DateTime.now(), user.avatar, [
+              await InboxBloc.instance.navigateToChatWith(
+                  user.name, user.avatar, DateTime.now(), user.avatar, [
                 AuthBloc.instance.userModel.id,
                 user.id,
               ], [

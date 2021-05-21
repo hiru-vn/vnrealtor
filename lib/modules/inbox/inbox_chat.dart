@@ -312,7 +312,7 @@ class _InboxChatState extends State<InboxChat> {
             _authBloc.userModel.id,
             _authBloc.userModel.name,
             _authBloc.userModel.avatar);
-        message.text = '';
+        // message.text = ''; comment this but dont know why
       }
       _files.forEach((path) {
         if (message.customProperties['cache_file_paths'] == null) {
