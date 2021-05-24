@@ -1,6 +1,7 @@
 import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/group/create_group_page.dart';
 import 'package:datcao/modules/group/my_group_page.dart';
+import 'package:datcao/modules/group/suggest_group.dart';
 import 'package:datcao/share/import.dart';
 
 class GroupPage extends StatefulWidget {
@@ -88,7 +89,9 @@ class _GroupPageState extends State<GroupPage> {
                   MyGroupPage.navigate();
                 }),
                 SizedBox(width: 25),
-                _buildButton('Gợi ý', Icons.flag_outlined, () {}),
+                _buildButton('Gợi ý', Icons.flag_outlined, () {
+                  SuggestGroup.navigate();
+                }),
                 SizedBox(width: 25),
                 _buildButton('Lời mời', Icons.mail_outline_rounded, () {})
               ],
