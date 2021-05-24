@@ -1,5 +1,6 @@
 import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/group/create_group_page.dart';
+import 'package:datcao/modules/group/invite_group.dart';
 import 'package:datcao/modules/group/my_group_page.dart';
 import 'package:datcao/modules/group/suggest_group.dart';
 import 'package:datcao/share/import.dart';
@@ -29,13 +30,10 @@ class _GroupPageState extends State<GroupPage> {
           },
           child: SingleChildScrollView(
             controller: GroupBloc.instance.groupScrollController,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-              child: Column(
-                children: [
-                  _buildHeader(),
-                ],
-              ),
+            child: Column(
+              children: [
+                _buildHeader(),
+              ],
             ),
           )),
     );
@@ -93,7 +91,9 @@ class _GroupPageState extends State<GroupPage> {
                   SuggestGroup.navigate();
                 }),
                 SizedBox(width: 25),
-                _buildButton('Lời mời', Icons.mail_outline_rounded, () {})
+                _buildButton('Lời mời', Icons.mail_outline_rounded, () {
+                  InviteGroup.navigate();
+                }, counter: 4)
               ],
             ),
           )
@@ -102,7 +102,8 @@ class _GroupPageState extends State<GroupPage> {
     );
   }
 
-  Widget _buildButton(String text, IconData icon, Function onTap) {
+  Widget _buildButton(String text, IconData icon, Function onTap,
+      {int counter}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -116,7 +117,19 @@ class _GroupPageState extends State<GroupPage> {
           children: [
             Icon(icon, size: 27),
             SizedBox(width: 10),
-            Text(text, style: ptTitle().copyWith(fontSize: 13.5))
+            Text(text, style: ptTitle().copyWith(fontSize: 13.5)),
+            if (counter != null) ...[
+              SizedBox(width: 4),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 1, horizontal: 3),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8), color: Colors.red),
+                child: Text(
+                  '9',
+                  style: ptTiny().copyWith(color: Colors.white),
+                ),
+              )
+            ],
           ],
         ),
       ),

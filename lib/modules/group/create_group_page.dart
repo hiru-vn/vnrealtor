@@ -20,8 +20,21 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         bgColor: ptSecondaryColor(context),
         title: 'Tạo nhóm',
         textColor: ptPrimaryColor(context),
-        centerTitle: true,
         automaticallyImplyLeading: true,
+        actions: [
+          Center(
+            child: FlatButton(
+                color: ptPrimaryColor(context),
+                onPressed: () {
+                  navigatorKey.currentState.maybePop();
+                },
+                child: Text(
+                  'Tạo',
+                  style: ptTitle().copyWith(color: Colors.white),
+                )),
+          ),
+          SizedBox(width: 17)
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
