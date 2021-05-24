@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
+import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/modules/services/src/toast/toast.dart';
@@ -162,6 +163,15 @@ class FcmService {
       ].contains(type)) {
         NotificationBloc.initActions.insert(
             0, InitAction(ACTION_TYPE.OPEN_POST, message.data['modelId']));
+      }
+      if (type == FcmType.message) {
+        NotificationBloc.initActions.insert(
+            0, InitAction(ACTION_TYPE.OPEN_CHAT, message.data['userId'], data: UserModel(
+              id: message.data['userId'],
+              phone: message.data['phone'],
+              name: message.data['name'],
+              avatar: message.data['avatar']
+            )));
       }
     }
   }
