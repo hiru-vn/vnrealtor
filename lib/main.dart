@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/modules/services/src/overlay.dart';
@@ -123,6 +124,9 @@ class _MyAppState extends State<MyApp> {
                   ),
                   ChangeNotifierProvider(
                     create: (context) => PagesBloc.instance,
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => GroupBloc.instance,
                   ),
                 ],
                 child: isOffline
