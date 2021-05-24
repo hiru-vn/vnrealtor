@@ -106,8 +106,6 @@ class FcmService {
     print('Message data: ${message.data}');
     final type = getType(message.data['type']);
 
-    if (type == FcmType.message) {}
-
     if ([
       FcmType.new_post,
       FcmType.like,
@@ -120,7 +118,16 @@ class FcmService {
       PostDetail.navigate(null, postId: message.data['modelId']);
     }
 
-    if (type == FcmType.system) {}
+    if (type == FcmType.message) {
+      InboxBloc.instance.navigateToChatWith(
+          message.data['name'], message.data['avatar'], DateTime.now(), '', [
+        AuthBloc.instance.userModel.id,
+        message.data['userId'],
+      ], [
+        AuthBloc.instance.userModel.avatar,
+        message.data['avatar'],
+      ]);
+    }
 
     NotificationBloc.instance
         .getListNotification(filter: GraphqlFilter(order: '{createdAt: -1}'));
@@ -166,12 +173,13 @@ class FcmService {
       }
       if (type == FcmType.message) {
         NotificationBloc.initActions.insert(
-            0, InitAction(ACTION_TYPE.OPEN_CHAT, message.data['userId'], data: UserModel(
-              id: message.data['userId'],
-              phone: message.data['phone'],
-              name: message.data['name'],
-              avatar: message.data['avatar']
-            )));
+            0,
+            InitAction(ACTION_TYPE.OPEN_CHAT, message.data['userId'],
+                data: UserModel(
+                    id: message.data['userId'],
+                    phone: message.data['phone'],
+                    name: message.data['name'],
+                    avatar: message.data['avatar'])));
       }
     }
   }
