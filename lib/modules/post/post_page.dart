@@ -1,5 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/post/suggest_list.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
@@ -574,47 +575,47 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ),
-          // GestureDetector(
-          //   onTap: () {
-          //     AuthBloc.instance.userModel.messNotiCount = 0;
-          //     UserBloc.instance.seenNotiMess();
-          //     InboxList.navigate();
-          //   },
-          //   child: Stack(
-          //     children: [
-          //       Padding(
-          //         padding:
-          //             const EdgeInsets.only(top: 12, bottom: 10, right: 12),
-          //         child: Container(
-          //             width: 42,
-          //             height: 42,
-          //             child: Icon(
-          //               MdiIcons.chatProcessing,
-          //               size: 26,
-          //             )),
-          //       ),
-          //       if (unReadCount > 0)
-          //         Positioned(
-          //           top: 9,
-          //           right: 11,
-          //           child: Container(
-          //             // width: 8,
-          //             // height: 8,
-          //             padding: EdgeInsets.all(count.length == 2 ? 3.5 : 5),
-          //             decoration: BoxDecoration(
-          //               color: Colors.red,
-          //               shape: BoxShape.circle,
-          //             ),
-          //             child: Text(count,
-          //                 style: ptTiny().copyWith(
-          //                     fontSize: 10.5,
-          //                     color: Colors.white,
-          //                     fontWeight: FontWeight.w600)),
-          //           ),
-          //         ),
-          //     ],
-          //   ),
-          // )
+          GestureDetector(
+            onTap: () {
+              AuthBloc.instance.userModel.messNotiCount = 0;
+              UserBloc.instance.seenNotiMess();
+              InboxList.navigate();
+            },
+            child: Stack(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 12, bottom: 10, right: 12),
+                  child: Container(
+                      width: 42,
+                      height: 42,
+                      child: Icon(
+                        MdiIcons.chatProcessing,
+                        size: 26,
+                      )),
+                ),
+                if (unReadCount > 0)
+                  Positioned(
+                    top: 9,
+                    right: 11,
+                    child: Container(
+                      // width: 8,
+                      // height: 8,
+                      padding: EdgeInsets.all(count.length == 2 ? 3.5 : 5),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(count,
+                          style: ptTiny().copyWith(
+                              fontSize: 10.5,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+              ],
+            ),
+          )
         ],
       ),
       color: ptSecondaryColor(context),
