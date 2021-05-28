@@ -33,7 +33,6 @@ settings {
 likeNoti
 shareNoti
 commentNoti
-
 }
   ''');
 }

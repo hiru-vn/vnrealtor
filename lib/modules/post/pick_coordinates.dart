@@ -10,8 +10,12 @@ import 'dart:io' show Platform;
 import '../../share/widget/keep_keyboard_popup_menu/keep_keyboard_popup_menu.dart';
 
 class PickCoordinates extends StatefulWidget {
-  static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(PickCoordinates()));
+  final bool hasPolygon;
+
+  const PickCoordinates({Key key, this.hasPolygon = true}) : super(key: key);
+  static Future navigate({bool hasPolygon}) {
+    return navigatorKey.currentState
+        .push(pageBuilder(PickCoordinates(hasPolygon: hasPolygon)));
   }
 
   @override
@@ -232,49 +236,50 @@ class PickCoordinatesState extends State<PickCoordinates> {
             onSearch: _onSearch,
             automaticallyImplyBackButton: true,
             actions: [
-              FloatingSearchBarAction(
-                showIfOpened: false,
-                child: PopupMenuButton(
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (_) => <PopupMenuItem<String>>[
-                    PopupMenuItem(
-                      height: 36,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('Đánh vị trí'),
-                          if (_mode == 'point') Icon(Icons.check),
-                        ],
+              if (widget.hasPolygon)
+                FloatingSearchBarAction(
+                  showIfOpened: false,
+                  child: PopupMenuButton(
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (_) => <PopupMenuItem<String>>[
+                      PopupMenuItem(
+                        height: 36,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Đánh vị trí'),
+                            if (_mode == 'point') Icon(Icons.check),
+                          ],
+                        ),
+                        value: 'point',
                       ),
-                      value: 'point',
+                      PopupMenuItem(
+                        height: 36,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Mô phỏng diện tích'),
+                            if (_mode == 'polygon') Icon(Icons.check),
+                          ],
+                        ),
+                        value: 'polygon',
+                      )
+                    ],
+                    onSelected: (val) {
+                      if (_mode != val)
+                        setState(() {
+                          _mode = val;
+                        });
+                    },
+                    child: SizedBox(
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(Icons.more_vert)),
+                      height: 45,
+                      width: 30,
                     ),
-                    PopupMenuItem(
-                      height: 36,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('Mô phỏng diện tích'),
-                          if (_mode == 'polygon') Icon(Icons.check),
-                        ],
-                      ),
-                      value: 'polygon',
-                    )
-                  ],
-                  onSelected: (val) {
-                    if (_mode != val)
-                      setState(() {
-                        _mode = val;
-                      });
-                  },
-                  child: SizedBox(
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(Icons.more_vert)),
-                    height: 45,
-                    width: 30,
                   ),
                 ),
-              ),
             ],
           ),
           Positioned(
