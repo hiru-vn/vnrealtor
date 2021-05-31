@@ -137,17 +137,21 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                   SizedBox(height: 2),
                   Row(
                     children: [
-                      SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: widget.groupModel.owner.avatar != null
-                            ? Image.network(
-                                widget.groupModel.owner.avatar,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Image.asset(
-                                        'assets/image/default_avatar.png'),
-                              )
-                            : Image.asset('assets/image/default_avatar.png'),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(11),
+                        child: SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: widget.groupModel.owner.avatar != null
+                              ? Image.network(
+                                  widget.groupModel.owner.avatar,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Image.asset(
+                                          'assets/image/default_avatar.png'),
+                                )
+                              : Image.asset('assets/image/default_avatar.png'),
+                        ),
                       ),
                       SizedBox(width: 5),
                       Text(widget.groupModel.owner.name),

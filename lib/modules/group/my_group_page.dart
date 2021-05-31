@@ -97,17 +97,19 @@ class _MyGroupPageState extends State<MyGroupPage> {
                 SizedBox(height: 15),
                 (_groupBloc.followingGroups == null)
                     ? ListSkeleton()
-                    : ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return _buildGroupItem(
-                              _groupBloc.followingGroups[index]);
-                        },
-                        itemCount: _groupBloc.followingGroups.length,
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: 14),
-                      )
+                    : (_groupBloc.followingGroups.length == 0
+                        ? Text('Bạn chưa tham gia nhóm nào')
+                        : ListView.separated(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return _buildGroupItem(
+                                  _groupBloc.followingGroups[index]);
+                            },
+                            itemCount: _groupBloc.followingGroups.length,
+                            separatorBuilder: (context, index) =>
+                                SizedBox(height: 14),
+                          ))
               ],
             ),
           )),

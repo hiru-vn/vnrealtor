@@ -134,8 +134,8 @@ class GroupBloc extends ChangeNotifier {
     try {
       final res = await GroupRepo().createGroup(name, privacy, description,
           coverImage, address, locationLat, locationLong);
-      myGroups.add(res as GroupModel);
-      return BaseResponse.success(res as GroupModel);
+      myGroups.add(GroupModel.fromJson(res));
+      return BaseResponse.success(GroupModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());
     } finally {
