@@ -7,6 +7,7 @@ name: String
 tagName: String
 phone: String
 uid: String
+groupIds
 email: String
 role: String
 reputationScore: Int

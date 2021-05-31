@@ -1,4 +1,6 @@
 import 'package:datcao/modules/bloc/group_bloc.dart';
+import 'package:datcao/modules/group/detail_group_page.dart';
+import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/share/import.dart';
 
 class MyGroupPage extends StatefulWidget {
@@ -19,6 +21,7 @@ class _MyGroupPageState extends State<MyGroupPage> {
   void didChangeDependencies() {
     if (_groupBloc == null) {
       _groupBloc = Provider.of(context);
+     
     }
     super.didChangeDependencies();
   }
@@ -61,15 +64,18 @@ class _MyGroupPageState extends State<MyGroupPage> {
                   ],
                 ),
                 SizedBox(height: 15),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return _buildGroupItem();
-                  },
-                  itemCount: 2,
-                  separatorBuilder: (context, index) => SizedBox(height: 14),
-                ),
+                (_groupBloc.myGroups == null)
+                    ? ListSkeleton()
+                    : ListView.separated(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return _buildGroupItem(_groupBloc.myGroups[index]);
+                        },
+                        itemCount: _groupBloc.myGroups.length,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 14),
+                      ),
                 SizedBox(height: 15),
                 Row(
                   children: [
@@ -90,50 +96,56 @@ class _MyGroupPageState extends State<MyGroupPage> {
                   ],
                 ),
                 SizedBox(height: 15),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return _buildGroupItem();
-                  },
-                  itemCount: 2,
-                  separatorBuilder: (context, index) => SizedBox(height: 14),
-                )
+                // ListView.separated(
+                //   shrinkWrap: true,
+                //   physics: NeverScrollableScrollPhysics(),
+                //   itemBuilder: (context, index) {
+                //     return _buildGroupItem();
+                //   },
+                //   itemCount: 2,
+                //   separatorBuilder: (context, index) => SizedBox(height: 14),
+                // )
               ],
             ),
           )),
     );
   }
 
-  _buildGroupItem() {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: ptSecondaryColor(context)),
-            child: CachedNetworkImage(
-              imageUrl: '',
-              fit: BoxFit.cover,
+  _buildGroupItem(GroupModel groupModel) {
+    return GestureDetector(
+      onTap: () {
+        DetailGroupPage.navigate(groupModel);
+      },
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                width: 70,
+                height: 40,
+                color: ptSecondaryColor(context),
+                child: CachedNetworkImage(
+                  imageUrl: groupModel.coverImage,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-          ),
-          SizedBox(width: 15),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Tên group', style: ptTitle()),
-              Text(
-                'Nội dung mới: 2p trước',
-                style: ptTiny(),
-              )
-            ],
-          )
-        ],
+            SizedBox(width: 15),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(groupModel.name, style: ptTitle()),
+                Text(
+                  'Nội dung mới: ${Formart.timeByDayVi(DateTime.tryParse(groupModel.updatedAt))}',
+                  style: ptTiny(),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

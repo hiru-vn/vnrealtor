@@ -202,7 +202,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                           if (index == 1 &&
                               suggestFollowUsers != null &&
                               suggestFollowUsers.length > 0)
-                            SuggestList(
+                            SuggestListUser(
                               users: suggestFollowUsers,
                             ),
                         ],

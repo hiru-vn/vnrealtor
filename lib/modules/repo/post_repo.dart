@@ -23,6 +23,21 @@ distance
     return res['getNewsFeed'];
   }
 
+  Future getNewsFeedGroup(
+      {GraphqlFilter filter, String timestamp, String timeSort}) async {
+    if (filter?.filter == null) filter?.filter = "{}";
+    if (filter?.search == null) filter?.search = "";
+    final data =
+        'q:{limit: ${filter?.limit}, page: ${filter?.page ?? 1}, offset: ${filter?.offset}, filter: ${filter?.filter}, search: "${filter?.search}" , order: ${filter?.order} , timeSort: $timeSort, timestamp: "$timestamp" }';
+    final res = await PostSrv().query('getNewsFeedGroup', data, fragment: '''
+    data {
+$postFragment
+distance
+}
+    ''');
+    return res['getNewsFeedGroup'];
+  }
+
   Future getNewFeedGuest({int page, int limit}) async {
     final res = await PostSrv().query(
         'getNewsFeedByGuest', 'page: $page , limit: $limit',
@@ -185,6 +200,7 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
   }
 
   Future createPost(
+      
       String content,
       String expirationDate,
       bool publicity,
@@ -193,13 +209,14 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
       List<String> images,
       List<String> videos,
       List<LatLng> polygon,
-      List<String> tagUserIds) async {
+      List<String> tagUserIds, {String groupId}) async {
     String polygonStr = '''{
       paths: [
         ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
       ]
     }''';
     String data = '''
+groupId: "$groupId"
 content: """
 ${content.toString()}
 """

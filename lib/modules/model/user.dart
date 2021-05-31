@@ -18,6 +18,7 @@ class UserModel {
   List<String> followingIds;
   List<String> fastFollowIds;
   List<String> savedPostIds;
+  List<String> groupIds;
   int totalPost;
   int notiCount;
   String description;
@@ -46,6 +47,7 @@ class UserModel {
       this.notiCount,
       this.followingIds,
       this.savedPostIds,
+      this.groupIds,
       this.description,
       this.facebookUrl,
       this.setting,
@@ -70,6 +72,7 @@ class UserModel {
     updatedAt = json['updatedAt'];
     totalPost = json['totalPost'] ?? 0;
     avatar = json['avatar'];
+    groupIds = json['groupIds'] != null ? json['groupIds'].cast<String>() : [];
     followerIds =
         json['followerIds'] != null ? json['followerIds'].cast<String>() : [];
     followingIds =

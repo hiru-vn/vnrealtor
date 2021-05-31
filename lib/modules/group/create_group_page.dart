@@ -51,7 +51,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         _position?.latitude,
         _position?.longitude);
 
-    navigatorKey.currentState.maybePop();
+    await navigatorKey.currentState.maybePop();
     if (res.isSuccess) {
       showToast('Tạo nhóm thành công', context, isSuccess: true);
       navigatorKey.currentState.maybePop();

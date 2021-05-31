@@ -3,17 +3,16 @@ import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/share/import.dart';
-import '../profile/profile_other_page.dart';
 
-class SuggestListUser extends StatefulWidget {
+class SuggestListGroup extends StatefulWidget {
   final List<UserModel> users;
-  const SuggestListUser({Key key, this.users}) : super(key: key);
+  const SuggestListGroup({Key key, this.users}) : super(key: key);
 
   @override
-  _SuggestListUserState createState() => _SuggestListUserState();
+  _SuggestListGroupState createState() => _SuggestListGroupState();
 }
 
-class _SuggestListUserState extends State<SuggestListUser> {
+class _SuggestListGroupState extends State<SuggestListGroup> {
   AuthBloc authBloc;
   UserBloc userBloc;
 
@@ -85,8 +84,8 @@ class _SuggestListUserState extends State<SuggestListUser> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  ProfileOtherPage.navigate(
-                                      widget.users[index]);
+                                  // ProfileOtherPage.navigate(
+                                  //     widget.users[index]);
                                 },
                                 child: CircleAvatar(
                                   radius: 30,
@@ -105,8 +104,8 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      ProfileOtherPage.navigate(
-                                          widget.users[index]);
+                                      // ProfileOtherPage.navigate(
+                                      //     widget.users[index]);
                                     },
                                     child: Text(
                                       widget.users[index].name,
@@ -117,8 +116,8 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      ProfileOtherPage.navigate(
-                                          widget.users[index]);
+                                      // ProfileOtherPage.navigate(
+                                      //     widget.users[index]);
                                     },
                                     child: Text(
                                       (() {

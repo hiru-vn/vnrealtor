@@ -281,7 +281,7 @@ class _PostPageState extends State<PostPage> {
                                         UserBloc.instance.suggestFollowUsers
                                                 .length >
                                             0)
-                                      SuggestList(
+                                      SuggestListUser(
                                         users: UserBloc
                                             .instance.suggestFollowUsers,
                                       ),
