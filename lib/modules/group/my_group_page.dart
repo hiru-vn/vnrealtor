@@ -21,7 +21,6 @@ class _MyGroupPageState extends State<MyGroupPage> {
   void didChangeDependencies() {
     if (_groupBloc == null) {
       _groupBloc = Provider.of(context);
-     
     }
     super.didChangeDependencies();
   }
@@ -96,15 +95,19 @@ class _MyGroupPageState extends State<MyGroupPage> {
                   ],
                 ),
                 SizedBox(height: 15),
-                // ListView.separated(
-                //   shrinkWrap: true,
-                //   physics: NeverScrollableScrollPhysics(),
-                //   itemBuilder: (context, index) {
-                //     return _buildGroupItem();
-                //   },
-                //   itemCount: 2,
-                //   separatorBuilder: (context, index) => SizedBox(height: 14),
-                // )
+                (_groupBloc.followingGroups == null)
+                    ? ListSkeleton()
+                    : ListView.separated(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return _buildGroupItem(
+                              _groupBloc.followingGroups[index]);
+                        },
+                        itemCount: _groupBloc.followingGroups.length,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 14),
+                      )
               ],
             ),
           )),

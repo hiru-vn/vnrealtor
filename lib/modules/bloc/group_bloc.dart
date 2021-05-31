@@ -32,12 +32,30 @@ class GroupBloc extends ChangeNotifier {
         myGroups = res.data;
       }
     });
+    getListGroupIn(AuthBloc.instance.userModel.groupIds).then((res) {
+      if (res.isSuccess) {
+        followingGroups = res.data;
+      }
+    });
     getNewFeedGroup(filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
   }
 
   Future<BaseResponse> getListGroup({GraphqlFilter filter}) async {
     try {
       final res = await GroupRepo().getListGroup(filter: filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => GroupModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getListGroupIn(List<String> ids) async {
+    try {
+      final res = await GroupRepo().getListGroupIn(ids);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => GroupModel.fromJson(e)).toList();
       return BaseResponse.success(list);

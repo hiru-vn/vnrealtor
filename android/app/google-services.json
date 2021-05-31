@@ -67,7 +67,8 @@
               "client_id": "259055496489-ml3ci8ch84tqeteu55gavhb6ln5mltpa.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.datcao.mobile"
+                "bundle_id": "com.datcao.mobile",
+                "app_store_id": "1554414069"
               }
             }
           ]
@@ -82,6 +83,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "259055496489-0thhamitb3gb4a9njvik4s2tregtetmr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rexbix.app.vnrealtor",
+            "certificate_hash": "8440a1666e58b899334940db5d4ab75cd7a00122"
+          }
+        },
         {
           "client_id": "259055496489-1lhigk4nlo5ujupe7grq88up3itunm7j.apps.googleusercontent.com",
           "client_type": 1,
@@ -119,7 +128,8 @@
               "client_id": "259055496489-ml3ci8ch84tqeteu55gavhb6ln5mltpa.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.datcao.mobile"
+                "bundle_id": "com.datcao.mobile",
+                "app_store_id": "1554414069"
               }
             }
           ]

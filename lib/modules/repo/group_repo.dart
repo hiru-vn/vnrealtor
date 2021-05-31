@@ -1,4 +1,5 @@
 import 'package:datcao/modules/repo/filter.dart';
+import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/modules/services/group_srv.dart';
 
 class GroupRepo {
@@ -10,6 +11,13 @@ class GroupRepo {
         page: filter?.page,
         order: filter?.order,
         filter: filter?.filter);
+    return res;
+  }
+
+  Future getListGroupIn(List<String> ids) async {
+    final res = await GroupSrv().getList(
+        order: '{createdAt: 1}',
+        filter: '{id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
     return res;
   }
 

@@ -47,6 +47,11 @@ user {
   description
 }
 rawContent
+group {
+  id
+  name
+  coverImage
+}
 mediaPosts {
 id
 userId

@@ -1,5 +1,6 @@
 import 'package:datcao/modules/services/comment_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
+import 'package:datcao/modules/services/group_srv.dart';
 import 'package:datcao/modules/services/reply_srv.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
@@ -200,7 +201,6 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
   }
 
   Future createPost(
-      
       String content,
       String expirationDate,
       bool publicity,
@@ -209,7 +209,8 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
       List<String> images,
       List<String> videos,
       List<LatLng> polygon,
-      List<String> tagUserIds, {String groupId}) async {
+      List<String> tagUserIds,
+      {String groupId}) async {
     String polygonStr = '''{
       paths: [
         ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
@@ -470,6 +471,11 @@ rawContent
 dynamicLink {
   shortLink
   previewLink
+}
+group {
+  id
+  name
+  coverImage
 }
 isUserLike
 isUserShare
