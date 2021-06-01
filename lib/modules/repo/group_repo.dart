@@ -14,6 +14,11 @@ class GroupRepo {
     return res;
   }
 
+  Future getOneGroup(String id) async {
+    final res = await GroupSrv().getItem(id);
+    return res;
+  }
+
   Future getListGroupIn(List<String> ids) async {
     final res = await GroupSrv().getList(
         order: '{createdAt: 1}',

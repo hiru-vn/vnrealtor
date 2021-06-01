@@ -66,6 +66,18 @@ class GroupBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getOneGroup(String id) async {
+    try {
+      final res = await GroupRepo().getOneGroup(id);
+      final group = GroupModel.fromJson(res);
+      return BaseResponse.success(group);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> getNewFeedGroup({GraphqlFilter filter}) async {
     try {
       isEndFeed = false;

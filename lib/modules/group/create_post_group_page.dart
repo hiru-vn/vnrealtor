@@ -145,7 +145,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                     radius: 20,
                     backgroundColor: Colors.white,
                     backgroundImage:
-                        (group.coverImage != null && group.coverImage != 'null')
+                        (AuthBloc.instance.userModel.avatar != null)
                             ? CachedNetworkImageProvider(group.coverImage)
                             : AssetImage('assets/image/default_avatar.png'),
                     child: VerifiedIcon(
@@ -155,63 +155,60 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                     ),
                   ),
                   SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        group.name ?? '',
-                        style: ptTitle(),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            Formart.formatToWeekTime(DateTime.now()),
-                            style: ptTiny().copyWith(color: Colors.black54),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text.rich(TextSpan(children: [
+                          TextSpan(
+                            text: AuthBloc.instance.userModel.name ?? '',
+                            style: ptTitle(),
                           ),
-                          SizedBox(width: 12),
-                          GestureDetector(
-                            onTap: () {
-                              pickList(context, title: 'Chia sẻ với',
-                                  onPicked: (value) {
-                                setState(() {
-                                  _shareWith = value;
-                                  FocusScope.of(context)
-                                      .requestFocus(FocusNode());
-                                });
-                              }, options: [
-                                PickListItem('public', 'Tất cả mọi người'),
-                                PickListItem(
-                                    'friend', 'Chỉ bạn bè mới nhìn thấy'),
-                              ], closeText: 'Xong');
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(color: Colors.black12)),
-                              padding: EdgeInsets.symmetric(
-                                      horizontal: 7, vertical: 2)
-                                  .copyWith(right: 0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    _shareWith == 'public'
-                                        ? 'Tất cả'
-                                        : 'Bạn bè',
-                                    style: ptTiny()
-                                        .copyWith(color: Colors.black54),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Colors.black54,
-                                    size: 15,
-                                  ),
-                                ],
-                              ),
+                          TextSpan(
+                            text: '  ▶  ',
+                            style: ptTitle(),
+                          ),
+                          TextSpan(
+                            text: group?.name ?? '',
+                            style: ptTitle(),
+                          ),
+                        ])),
+                        Row(
+                          children: [
+                            Text(
+                              Formart.formatToWeekTime(DateTime.now()),
+                              style: ptTiny().copyWith(color: Colors.black54),
                             ),
-                          )
-                        ],
-                      ),
-                    ],
+                            SizedBox(width: 12),
+                            if (group.privacy) ...[
+                              SizedBox(
+                                height: 13,
+                                width: 13,
+                                child: Image.asset('assets/icon/private.png',
+                                    color: Colors.black54),
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                'Nhóm kín',
+                                style: ptTiny().copyWith(color: Colors.black54),
+                              )
+                            ] else ...[
+                              SizedBox(
+                                height: 13,
+                                width: 13,
+                                child: Image.asset('assets/icon/public.png',
+                                    color: Colors.black54),
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                'Công khai',
+                                style: ptTiny().copyWith(color: Colors.black54),
+                              )
+                            ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
