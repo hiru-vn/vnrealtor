@@ -24,6 +24,12 @@ distance
     return res['getNewsFeed'];
   }
 
+  Future getPostByGroupId(String groupId) async {
+    final res = await PostSrv().getList(
+        limit: 20, order: '{createdAt: -1}', filter: '{groupId: "$groupId" }');
+    return res;
+  }
+
   Future getNewsFeedGroup(
       {GraphqlFilter filter, String timestamp, String timeSort}) async {
     if (filter?.filter == null) filter?.filter = "{}";

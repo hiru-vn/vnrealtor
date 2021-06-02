@@ -62,13 +62,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
   }
 
   _loadPost() {
-    _groupBloc
-        .getPostGroup(
-            filter: GraphqlFilter(
-                filter: "{groupId: \"${group?.id ?? widget.groupId}\"}",
-                limit: 20,
-                order: "{updatedAt: -1}"))
-        .then((res) {
+    _groupBloc.getPostGroup(group?.id ?? widget.groupId).then((res) {
       if (res.isSuccess)
         setState(() {
           posts = res.data;

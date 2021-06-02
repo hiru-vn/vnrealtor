@@ -137,9 +137,9 @@ class GroupBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getPostGroup({GraphqlFilter filter}) async {
+  Future<BaseResponse> getPostGroup(String groupId) async {
     try {
-      final res = await PostRepo().getNewsFeedGroup(filter: filter);
+      final res = await PostRepo().getPostByGroupId(groupId);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
