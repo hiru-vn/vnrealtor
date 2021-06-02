@@ -97,7 +97,7 @@ class _SuggestGroupState extends State<SuggestGroup> {
                   borderRadius: BorderRadius.circular(10),
                   color: ptSecondaryColor(context)),
               child: CachedNetworkImage(
-                imageUrl: '',
+                imageUrl: group.coverImage,
                 fit: BoxFit.cover,
               ),
             ),
