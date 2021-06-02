@@ -26,6 +26,12 @@ class GroupRepo {
     return res;
   }
 
+  Future suggestGroup() async {
+    final res = await GroupSrv().query('suggestGroup', '',
+        fragment: ' ${GroupSrv().fragmentDefault} ', removeData: true);
+    return res['suggestGroup'];
+  }
+
   Future createGroup(
       String name,
       bool privacy,

@@ -20,6 +20,7 @@ class GroupBloc extends ChangeNotifier {
   DateTime lastFetchFeedPage1;
   int feedPage = 1;
   List<PostModel> feed = [];
+  List<GroupModel> suggestGroup;
 
   Future init() async {
     getListGroup(
@@ -38,6 +39,7 @@ class GroupBloc extends ChangeNotifier {
       }
     });
     getNewFeedGroup(filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
+    getSuggestGroup();
   }
 
   Future<BaseResponse> getListGroup({GraphqlFilter filter}) async {
@@ -46,6 +48,19 @@ class GroupBloc extends ChangeNotifier {
       final List listRaw = res['data'];
       final list = listRaw.map((e) => GroupModel.fromJson(e)).toList();
       return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getSuggestGroup() async {
+    try {
+      final res = await GroupRepo().suggestGroup();
+      final List listRaw = res;
+      suggestGroup = listRaw.map((e) => GroupModel.fromJson(e)).toList();
+      return BaseResponse.success(suggestGroup);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
