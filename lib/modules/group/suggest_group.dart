@@ -17,6 +17,7 @@ class SuggestGroup extends StatefulWidget {
 
 class _SuggestGroupState extends State<SuggestGroup> {
   GroupBloc _groupBloc;
+  TextEditingController _searchC = TextEditingController();
 
   @override
   void didChangeDependencies() {
@@ -29,6 +30,11 @@ class _SuggestGroupState extends State<SuggestGroup> {
 
   @override
   Widget build(BuildContext context) {
+    final List<GroupModel> searchGroups = _groupBloc.suggestGroup
+        ?.where((element) => element.name
+            .toLowerCase()
+            .contains(_searchC.text.trim().toLowerCase()))
+        .toList();
     return Scaffold(
       backgroundColor: ptSecondaryColor(context),
       appBar: AppBar1(
@@ -45,6 +51,10 @@ class _SuggestGroupState extends State<SuggestGroup> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: TextField(
+                onChanged: (text) {
+                  setState(() {});
+                },
+                controller: _searchC,
                 decoration: InputDecoration(
                     border: InputBorder.none,
                     isDense: true,
@@ -67,10 +77,9 @@ class _SuggestGroupState extends State<SuggestGroup> {
                     ? Text('Bạn không có danh sách gợi ý nào')
                     : ListView.separated(
                         itemBuilder: (context, index) {
-                          return _buildGroupItem(
-                              _groupBloc.suggestGroup[index]);
+                          return _buildGroupItem(searchGroups[index]);
                         },
-                        itemCount: _groupBloc.suggestGroup.length,
+                        itemCount: searchGroups.length,
                         separatorBuilder: (context, index) =>
                             SizedBox(height: 0),
                       )),
@@ -90,15 +99,18 @@ class _SuggestGroupState extends State<SuggestGroup> {
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Row(
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: ptSecondaryColor(context)),
-              child: CachedNetworkImage(
-                imageUrl: group.coverImage,
-                fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(3),
+              child: Container(
+                width: 60,
+                height: 40,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: ptSecondaryColor(context)),
+                child: CachedNetworkImage(
+                  imageUrl: group.coverImage,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             SizedBox(width: 15),

@@ -77,15 +77,18 @@ class _InviteGroupState extends State<InviteGroup> {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: ptSecondaryColor(context)),
-            child: CachedNetworkImage(
-              imageUrl: '',
-              fit: BoxFit.cover,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(3),
+            child: Container(
+              width: 60,
+              height: 40,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: ptSecondaryColor(context)),
+              child: CachedNetworkImage(
+                imageUrl: '',
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SizedBox(width: 15),
