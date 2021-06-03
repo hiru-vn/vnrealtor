@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/group/create_post_group_page.dart';
-import 'package:datcao/modules/group/info_group_page.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
@@ -11,21 +10,21 @@ import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class DetailGroupPage extends StatefulWidget {
+class InfoGroupPage extends StatefulWidget {
   static Future navigate(GroupModel groupModel, {String groupId}) {
     return navigatorKey.currentState
-        .push(pageBuilder(DetailGroupPage(groupModel, groupId: groupId)));
+        .push(pageBuilder(InfoGroupPage(groupModel, groupId: groupId)));
   }
 
   final GroupModel groupModel;
   final String groupId;
-  DetailGroupPage(this.groupModel, {this.groupId});
+  InfoGroupPage(this.groupModel, {this.groupId});
 
   @override
-  _DetailGroupPageState createState() => _DetailGroupPageState();
+  _InfoGroupPageState createState() => _InfoGroupPageState();
 }
 
-class _DetailGroupPageState extends State<DetailGroupPage> {
+class _InfoGroupPageState extends State<InfoGroupPage> {
   List<UserModel> admins;
   GroupBloc _groupBloc;
   Completer<GoogleMapController> _controller = Completer();
@@ -126,20 +125,15 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            GestureDetector(
-              onTap: () {
-                InfoGroupPage.navigate(group);
-              },
-              child: Row(
-                children: [
-                  Text(
-                    group.name ?? 'null',
-                    style: ptBigTitle(),
-                  ),
-                  SizedBox(width: 5),
-                  Icon(Icons.chevron_right)
-                ],
-              ),
+            Row(
+              children: [
+                Text(
+                  group.name ?? 'null',
+                  style: ptBigTitle(),
+                ),
+                SizedBox(width: 5),
+                Icon(Icons.chevron_right)
+              ],
             ),
             SizedBox(height: 8),
             Row(
@@ -275,14 +269,14 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                       target: LatLng(group.locationLat, group.locationLong),
                       zoom: 16,
                     ),
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
                     markers: {
                       Marker(
                           markerId: MarkerId('1'),
                           position:
                               LatLng(group.locationLat, group.locationLong))
+                    },
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
                     },
                     onTap: (location) {},
                   ),
