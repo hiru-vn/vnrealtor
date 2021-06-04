@@ -1,5 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
+import 'package:datcao/modules/group/detail_group_page.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/share/import.dart';
 import '../../bloc/group_bloc.dart';
@@ -56,12 +57,18 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                           topRight: Radius.circular(7)),
                       child: Stack(
                         children: [
-                          SizedBox(
-                            width: 180,
-                            height: 100,
-                            child: CachedNetworkImage(
-                              imageUrl: widget.groups[index].coverImage,
-                              fit: BoxFit.cover,
+                          GestureDetector(
+                            onTap: () {
+                              DetailGroupPage.navigate(null,
+                                  groupId: widget.groups[index].id);
+                            },
+                            child: SizedBox(
+                              width: 180,
+                              height: 100,
+                              child: CachedNetworkImage(
+                                imageUrl: widget.groups[index].coverImage,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           Positioned(
