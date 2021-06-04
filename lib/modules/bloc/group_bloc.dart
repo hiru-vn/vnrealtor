@@ -35,7 +35,9 @@ class GroupBloc extends ChangeNotifier {
     });
     getListGroupIn(AuthBloc.instance.userModel.groupIds).then((res) {
       if (res.isSuccess) {
-        followingGroups = res.data;
+        followingGroups = (res.data as List<GroupModel>)
+            .where((element) => !element.isOwner)
+            .toList();
       }
     });
     getNewFeedGroup(filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));

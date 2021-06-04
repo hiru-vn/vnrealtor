@@ -22,7 +22,7 @@ class GroupRepo {
   Future getListGroupIn(List<String> ids) async {
     final res = await GroupSrv().getList(
         order: '{createdAt: 1}',
-        filter: '{id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
+        filter: '{_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
     return res;
   }
 

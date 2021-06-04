@@ -21,6 +21,7 @@ class _MyGroupPageState extends State<MyGroupPage> {
   void didChangeDependencies() {
     if (_groupBloc == null) {
       _groupBloc = Provider.of(context);
+      _groupBloc.init();
     }
     super.didChangeDependencies();
   }
@@ -119,7 +120,7 @@ class _MyGroupPageState extends State<MyGroupPage> {
   _buildGroupItem(GroupModel groupModel) {
     return GestureDetector(
       onTap: () {
-        DetailGroupPage.navigate(groupModel);
+        DetailGroupPage.navigate(groupModel).then((value) => setState(() {}));
       },
       child: Container(
         color: Colors.white,

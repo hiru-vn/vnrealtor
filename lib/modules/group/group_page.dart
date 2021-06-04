@@ -23,7 +23,7 @@ class _GroupPageState extends State<GroupPage> {
   void didChangeDependencies() {
     if (_groupBloc == null) {
       _groupBloc = Provider.of(context);
-      _groupBloc.init();
+      Future.delayed(Duration(seconds: 2), () => _groupBloc.init());
     }
     super.didChangeDependencies();
   }

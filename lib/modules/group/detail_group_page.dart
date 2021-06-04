@@ -31,6 +31,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
   Completer<GoogleMapController> _controller = Completer();
   List<PostModel> posts;
   GroupModel group;
+  bool isLoadingBtn = false;
 
   @override
   void initState() {
@@ -116,13 +117,51 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
 
   Widget _buildGroupInfo() {
     return Column(children: [
-      SizedBox(
-        width: deviceWidth(context),
-        height: 160,
-        child: Image.network(
-          group.coverImage ?? '',
-          fit: BoxFit.cover,
-        ),
+      Stack(
+        children: [
+          SizedBox(
+            width: deviceWidth(context),
+            height: 160,
+            child: Image.network(
+              group.coverImage ?? '',
+              fit: BoxFit.cover,
+            ),
+          ),
+          if (!group.isOwner)
+            Positioned(
+                bottom: 5,
+                right: 5,
+                child: GestureDetector(
+                  onTap: () async {
+                    final confirm = await showConfirmDialog(
+                        context, 'Xác nhận rời nhóm này?',
+                        confirmTap: () {}, navigatorKey: navigatorKey);
+                    if (!confirm) return;
+                    final res = await _groupBloc.leaveGroup(group.id);
+                    if (res.isSuccess) {
+                      await navigatorKey.currentState.maybePop();
+                    } else {
+                      showToast(res.errMessage, context);
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                    decoration: BoxDecoration(
+                        color: Colors.white30,
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Thoát',
+                            style: ptSmall().copyWith(color: Colors.black54)),
+                        SizedBox(width: 3),
+                        Icon(Icons.exit_to_app_rounded,
+                            size: 16, color: Colors.black54)
+                      ],
+                    ),
+                  ),
+                ))
+        ],
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -155,7 +194,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                 SizedBox(width: 5),
                 Text(!group.privacy ? 'Công khai' : 'Nhóm kín',
                     style: ptBigBody().copyWith(fontSize: 14.6)),
-                SizedBox(width: 30),
+                SizedBox(width: 20),
                 Container(
                   height: 8,
                   width: 8,
@@ -169,7 +208,26 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
             ),
             SizedBox(height: 12),
             if (!group.isMember && !group.isOwner)
-              ExpandBtn(text: 'Tham gia', onPress: () {}, borderRadius: 5)
+              ExpandBtn(
+                  text: 'Tham gia',
+                  isLoading: isLoadingBtn,
+                  onPress: () async {
+                    setState(() {
+                      isLoadingBtn = true;
+                    });
+                    final res = await _groupBloc.joinGroup(group.id);
+                    setState(() {
+                      isLoadingBtn = false;
+                    });
+                    if (res.isSuccess) {
+                      setState(() {
+                        group = res.data;
+                      });
+                    } else {
+                      showToast(res.errMessage, context);
+                    }
+                  },
+                  borderRadius: 5)
             else
               ExpandBtn(
                   text: 'Đăng bài',
