@@ -84,135 +84,13 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
         automaticallyImplyLeading: true,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            group != null ? _buildGroupInfo() : _buildGroupSkeleton(),
-            SizedBox(height: 14),
-            if (posts == null)
-              PostSkeleton()
-            else
-              posts.length == 0
-                  ? SizedBox(
-                      height: 50, child: Text('Nhóm này chưa có bài đăng nào'))
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: posts.length,
-                      itemBuilder: (context, index) {
-                        final item = posts[index];
-                        return PostWidget(item);
-                      },
-                    ),
-          ],
-        ),
+        child: group != null ? _buildGroupInfo() : _buildGroupSkeleton(),
       ),
     );
   }
 
   Widget _buildGroupInfo() {
     return Column(children: [
-      SizedBox(
-        width: deviceWidth(context),
-        height: 160,
-        child: Image.network(
-          group.coverImage ?? '',
-          fit: BoxFit.cover,
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  group.name ?? 'null',
-                  style: ptBigTitle(),
-                ),
-                SizedBox(width: 5),
-                Icon(Icons.chevron_right)
-              ],
-            ),
-            SizedBox(height: 8),
-            Row(
-              children: [
-                SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: Image.asset('assets/icon/public.png'),
-                ),
-                SizedBox(width: 5),
-                Text(!group.privacy ? 'Công khai' : 'Nhóm kín',
-                    style: ptBigBody().copyWith(fontSize: 14.6)),
-                SizedBox(width: 30),
-                Container(
-                  height: 8,
-                  width: 8,
-                  decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: Colors.cyan),
-                ),
-                SizedBox(width: 5),
-                Text('${group.countMember} thành viên',
-                    style: ptBigBody().copyWith(fontSize: 14.6)),
-              ],
-            ),
-            SizedBox(height: 12),
-            if (!group.isMember && !group.isOwner)
-              ExpandBtn(text: 'Tham gia', onPress: () {}, borderRadius: 5)
-            else
-              ExpandBtn(
-                  text: 'Đăng bài',
-                  onPress: () {
-                    GroupCreatePostPage.navigate(group);
-                  },
-                  borderRadius: 5)
-          ],
-        ),
-      ),
-      Container(
-        color: Colors.white,
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Quản trị viên', style: ptBigBody().copyWith(fontSize: 14.6)),
-            SizedBox(height: 2),
-            Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(11),
-                  child: SizedBox(
-                    height: 22,
-                    width: 22,
-                    child: group.owner.avatar != null
-                        ? Image.network(
-                            group.owner.avatar,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Image.asset('assets/image/default_avatar.png'),
-                          )
-                        : Image.asset('assets/image/default_avatar.png'),
-                  ),
-                ),
-                SizedBox(width: 5),
-                Text(group.owner.name),
-                Spacer(),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: ptSecondaryColor(context),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Text('Xem thêm', style: ptTitle()),
-                )
-              ],
-            )
-          ],
-        ),
-      ),
-      SizedBox(height: 14),
       Container(
         color: Colors.white,
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
@@ -284,11 +162,100 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
               ),
           ],
         ),
-      )
+      ),
+      SizedBox(height: 12),
+      Container(
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Quản trị viên', style: ptBigBody().copyWith(fontSize: 14.6)),
+            SizedBox(height: 2),
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(11),
+                  child: SizedBox(
+                    height: 22,
+                    width: 22,
+                    child: group.owner.avatar != null
+                        ? Image.network(
+                            group.owner.avatar,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.asset('assets/image/default_avatar.png'),
+                          )
+                        : Image.asset('assets/image/default_avatar.png'),
+                  ),
+                ),
+                SizedBox(width: 5),
+                Text(group.owner.name),
+                Spacer(),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: ptSecondaryColor(context),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Text('Xem thêm', style: ptTitle()),
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+      SizedBox(height: 12),
+      Container(
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: deviceWidth(context)),
+            Text('Hoạt động nhóm', style: ptBigBody().copyWith(fontSize: 14.6)),
+            SizedBox(height: 2),
+            _buildTile('post', '20 bài viết hôm nay', '1028 bài viết'),
+            _buildTile(
+                'person', '890 thành viên', '23 thành viên tham gia hôm nay'),
+            _buildTile('group', 'Tạo 6 tháng trước', null)
+          ],
+        ),
+      ),
     ]);
   }
 
   Widget _buildGroupSkeleton() {
     return PageSkeleton();
+  }
+
+  Widget _buildTile(String asset, String title, String content) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6, top: 6, right: 4, left: 4),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 25,
+            height: 25,
+            child: Image.asset('assets/icon/$asset.png'),
+          ),
+          SizedBox(width: 15),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: ptTitle(),
+              ),
+              if (content != null)
+                Text(
+                  content,
+                  style: ptSmall(),
+                )
+            ],
+          )
+        ],
+      ),
+    );
   }
 }

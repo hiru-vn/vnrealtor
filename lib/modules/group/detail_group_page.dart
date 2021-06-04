@@ -95,7 +95,10 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
             else
               posts.length == 0
                   ? SizedBox(
-                      height: 50, child: Text('Nhóm này chưa có bài đăng nào'))
+                      width: deviceWidth(context),
+                      height: 50,
+                      child:
+                          Center(child: Text('Nhóm này chưa có bài đăng nào')))
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),

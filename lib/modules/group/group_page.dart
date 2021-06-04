@@ -7,6 +7,7 @@ import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:datcao/share/widget/load_more.dart';
+import './widget.dart/suggest_list_group.dart';
 
 class GroupPage extends StatefulWidget {
   const GroupPage({Key key}) : super(key: key);
@@ -145,11 +146,18 @@ class _GroupPageState extends State<GroupPage> {
                   }),
                   SizedBox(width: 25),
                   _buildButton('Lời mời', Icons.mail_outline_rounded, () {
-                    InviteGroup.navigate();
+                    // InviteGroup.navigate();
+                    showToast('Chưa phát triển', context);
                   }, counter: 4),
                   SizedBox(width: 12),
                 ]),
-          )
+          ),
+          if (_groupBloc.suggestGroup != null) ...[
+            SizedBox(height: 15),
+            SuggestListGroup(
+              groups: _groupBloc.suggestGroup,
+            )
+          ]
         ],
       ),
     );

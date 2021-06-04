@@ -1,12 +1,12 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
-import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/share/import.dart';
 
 class SuggestListGroup extends StatefulWidget {
-  final List<UserModel> users;
-  const SuggestListGroup({Key key, this.users}) : super(key: key);
+  final List<GroupModel> groups;
+  const SuggestListGroup({Key key, @required this.groups}) : super(key: key);
 
   @override
   _SuggestListGroupState createState() => _SuggestListGroupState();
@@ -27,202 +27,142 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Container(
-          width: deviceWidth(context),
-          color: Colors.white,
-          padding: const EdgeInsets.only(top: 15, bottom: 18),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                child: Text(
-                  AuthBloc.firstLogin
-                      ? 'Chào mừng, ${authBloc.userModel.name}'
-                      : 'Gợi ý cho bạn',
-                  style: ptBigTitle().copyWith(color: Colors.black),
-                ),
-              ),
-              if (AuthBloc.firstLogin) ...[
-                SizedBox(
-                  height: 8,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: Text(
-                    'Theo dõi những người dùng khác để nhận được những nội dung phù hợp với bạn.',
-                    style: ptBody(),
+    return Container(
+      height: 175,
+      color: Colors.white,
+      width: deviceWidth(context),
+      child: ListView.separated(
+          padding: EdgeInsets.only(right: 20, left: 15),
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            return Container(
+              width: 180,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(7),
+                  border: Border.all(
+                    color: Colors.black12,
+                  )),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      // ProfileOtherPage.navigate(
+                      //     widget.users[index]);
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(7),
+                          topRight: Radius.circular(7)),
+                      child: Stack(
+                        children: [
+                          SizedBox(
+                            width: 180,
+                            height: 100,
+                            child: CachedNetworkImage(
+                              imageUrl: widget.groups[index].coverImage,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 6,
+                            left: 8,
+                            child: Text(
+                              widget.groups[index].name,
+                              style: ptBody().copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ],
-              SizedBox(
-                height: 12,
-              ),
-              Container(
-                height: 175,
-                child: ListView.separated(
-                    padding: EdgeInsets.only(right: 20, left: 15),
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        width: 128,
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(7),
-                            border: Border.all(
-                              color: Colors.black12,
-                            )),
-                        child: Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                height: 12,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  // ProfileOtherPage.navigate(
-                                  //     widget.users[index]);
-                                },
-                                child: CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: Colors.white,
-                                  backgroundImage: widget.users[index].avatar !=
-                                          null
-                                      ? CachedNetworkImageProvider(
-                                          widget.users[index].avatar)
-                                      : AssetImage(
-                                          'assets/image/default_avatar.png'),
-                                ),
-                              ),
-                              Expanded(
-                                  child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      // ProfileOtherPage.navigate(
-                                      //     widget.users[index]);
-                                    },
-                                    child: Text(
-                                      widget.users[index].name,
-                                      style: ptBody().copyWith(
-                                          fontWeight: FontWeight.w600),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      // ProfileOtherPage.navigate(
-                                      //     widget.users[index]);
-                                    },
-                                    child: Text(
-                                      (() {
-                                        final role = UserBloc.getRole(
-                                            widget.users[index]);
-                                        if (role == UserRole.company)
-                                          return 'Công ty';
-                                        if (role == UserRole.agent)
-                                          return 'Nhà môi giới';
-
-                                        return 'Người dùng';
-                                      })(),
-                                      style: ptSmall()
-                                          .copyWith(color: Colors.black),
-                                    ),
-                                  ),
-                                ],
-                              )),
-                              GestureDetector(
-                                onTap: () async {
-                                  if (AuthBloc.instance.userModel == null) {
-                                    LoginPage.navigatePush();
-                                    return;
-                                  }
-                                  authBloc.userModel.followingIds
-                                      .add(widget.users[index].id);
-
-                                  setState(() {});
-                                  final res = await userBloc
-                                      .followUser(widget.users[index].id);
-
-                                  if (res.isSuccess) {
-                                  } else {
-                                    showToast(res.errMessage, context);
-                                    authBloc.userModel.followingIds
-                                        .remove(widget.users[index].id);
-
-                                    setState(() {});
-                                  }
-                                },
-                                child: Container(
-                                  width: 90,
-                                  padding: EdgeInsets.symmetric(vertical: 6),
-                                  decoration: BoxDecoration(
-                                    border: (AuthBloc.instance.userModel
-                                                ?.followingIds
-                                                ?.contains(
-                                                    widget.users[index].id) ==
-                                            true)
-                                        ? Border.all(color: Colors.black12)
-                                        : Border.all(
-                                            color: ptPrimaryColor(context)
-                                                .withOpacity(0.2)),
-                                    color: (AuthBloc.instance.userModel
-                                                ?.followingIds
-                                                ?.contains(
-                                                    widget.users[index].id) ==
-                                            true)
-                                        ? Colors.transparent
-                                        : ptSecondaryColor(context),
-                                    borderRadius: BorderRadius.circular(3),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      AuthBloc.instance.userModel == null
-                                          ? 'Theo dõi'
-                                          : (AuthBloc.instance.userModel
-                                                  .followerIds
-                                                  .contains(
-                                                      widget.users[index].id)
-                                              ? ((AuthBloc.instance.userModel
-                                                      .followingIds
-                                                      .contains(widget
-                                                          .users[index].id)
-                                                  ? 'Bạn bè'
-                                                  : 'Theo dõi lại'))
-                                              : (AuthBloc.instance.userModel
-                                                      .followingIds
-                                                      .contains(widget
-                                                          .users[index].id)
-                                                  ? 'Đã theo dõi'
-                                                  : 'Theo dõi')),
-                                      style: ptSmall().copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        color: ptPrimaryColor(context),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                            ],
+                  Expanded(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          // ProfileOtherPage.navigate(
+                          //     widget.users[index]);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text(
+                            widget.groups[index].privacy
+                                ? 'Riêng tư'
+                                : 'Công khai' +
+                                    ' • ${widget.groups[index].countMember} thành viên',
+                            style: ptTiny().copyWith(color: Colors.black),
                           ),
                         ),
-                      );
+                      ),
+                    ],
+                  )),
+                  GestureDetector(
+                    onTap: () async {
+                      if (AuthBloc.instance.userModel == null) {
+                        LoginPage.navigatePush();
+                        return;
+                      }
+                      authBloc.userModel.followingIds
+                          .add(widget.groups[index].id);
+
+                      setState(() {});
+                      final res =
+                          await userBloc.followUser(widget.groups[index].id);
+
+                      if (res.isSuccess) {
+                      } else {
+                        showToast(res.errMessage, context);
+                        authBloc.userModel.followingIds
+                            .remove(widget.groups[index].id);
+
+                        setState(() {});
+                      }
                     },
-                    separatorBuilder: (context, index) => SizedBox(
-                          width: 10,
+                    child: Container(
+                      width: 100,
+                      padding: EdgeInsets.symmetric(vertical: 7),
+                      decoration: BoxDecoration(
+                        border: (AuthBloc.instance.userModel?.followingIds
+                                    ?.contains(widget.groups[index].id) ==
+                                true)
+                            ? Border.all(color: Colors.black12)
+                            : Border.all(
+                                color:
+                                    ptPrimaryColor(context).withOpacity(0.2)),
+                        color: (AuthBloc.instance.userModel?.followingIds
+                                    ?.contains(widget.groups[index].id) ==
+                                true)
+                            ? Colors.transparent
+                            : ptSecondaryColor(context),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Tham gia',
+                          style: ptSmall().copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: ptPrimaryColor(context),
+                          ),
                         ),
-                    itemCount: widget.users.length),
-              )
-            ],
-          )),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                ],
+              ),
+            );
+          },
+          separatorBuilder: (context, index) => SizedBox(
+                width: 10,
+              ),
+          itemCount: widget.groups.length),
     );
   }
 }
