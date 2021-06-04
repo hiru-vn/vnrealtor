@@ -32,6 +32,18 @@ class GroupRepo {
     return res['suggestGroup'];
   }
 
+  Future joinGroup(String id) async {
+    final res = await GroupSrv().mutate('joinGroup', 'groupId: "$id"',
+        fragment: ' ${GroupSrv().fragmentDefault} ');
+    return res['joinGroup'];
+  }
+
+  Future leaveGroup(String id) async {
+    final res = await GroupSrv().mutate('leaveGroup', 'groupId: "$id"',
+        fragment: ' ${GroupSrv().fragmentDefault} ');
+    return res['leaveGroup'];
+  }
+
   Future createGroup(
       String name,
       bool privacy,

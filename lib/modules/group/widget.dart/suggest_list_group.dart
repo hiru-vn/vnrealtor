@@ -1,8 +1,8 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
-import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/share/import.dart';
+import '../../bloc/group_bloc.dart';
 
 class SuggestListGroup extends StatefulWidget {
   final List<GroupModel> groups;
@@ -13,20 +13,20 @@ class SuggestListGroup extends StatefulWidget {
 }
 
 class _SuggestListGroupState extends State<SuggestListGroup> {
-  AuthBloc authBloc;
-  UserBloc userBloc;
+  GroupBloc groupBloc;
 
   @override
   void didChangeDependencies() {
-    if (authBloc == null) {
-      authBloc = Provider.of(context);
-      userBloc = Provider.of(context);
+    if (groupBloc == null) {
+      groupBloc = Provider.of(context);
     }
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.groups == null || widget.groups.length == 0)
+      return SizedBox.shrink();
     return Container(
       height: 175,
       color: Colors.white,
@@ -107,43 +107,43 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                         LoginPage.navigatePush();
                         return;
                       }
-                      authBloc.userModel.followingIds
-                          .add(widget.groups[index].id);
 
                       setState(() {});
                       final res =
-                          await userBloc.followUser(widget.groups[index].id);
+                          await groupBloc.joinGroup(widget.groups[index].id);
 
                       if (res.isSuccess) {
                       } else {
                         showToast(res.errMessage, context);
-                        authBloc.userModel.followingIds
-                            .remove(widget.groups[index].id);
 
                         setState(() {});
                       }
                     },
                     child: Container(
-                      width: 100,
+                      width: 105,
                       padding: EdgeInsets.symmetric(vertical: 7),
                       decoration: BoxDecoration(
-                        border: (AuthBloc.instance.userModel?.followingIds
-                                    ?.contains(widget.groups[index].id) ==
-                                true)
+                        border: groupBloc?.followingGroups?.any(
+                                    (e) => e.id == widget.groups[index].id) ==
+                                true
                             ? Border.all(color: Colors.black12)
                             : Border.all(
                                 color:
                                     ptPrimaryColor(context).withOpacity(0.2)),
-                        color: (AuthBloc.instance.userModel?.followingIds
-                                    ?.contains(widget.groups[index].id) ==
-                                true)
+                        color: groupBloc?.followingGroups?.any(
+                                    (e) => e.id == widget.groups[index].id) ==
+                                true
                             ? Colors.transparent
                             : ptSecondaryColor(context),
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(
                         child: Text(
-                          'Tham gia',
+                          groupBloc?.followingGroups?.any(
+                                      (e) => e.id == widget.groups[index].id) ==
+                                  true
+                              ? 'Đã tham gia'
+                              : 'Tham gia',
                           style: ptSmall().copyWith(
                             fontWeight: FontWeight.w600,
                             color: ptPrimaryColor(context),

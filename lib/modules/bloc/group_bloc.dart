@@ -150,6 +150,38 @@ class GroupBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> joinGroup(String groupId) async {
+    try {
+      final res = await GroupRepo().joinGroup(groupId);
+      final group = GroupModel.fromJson(res);
+      if (!followingGroups.any((element) => element.id == groupId)) {
+        followingGroups.add(group);
+        AuthBloc.instance.userModel.groupIds.add(group.id);
+      }
+      return BaseResponse.success(group);
+    } catch (e) {
+      return BaseResponse.fail(e?.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> leaveGroup(String groupId) async {
+    try {
+      final res = await GroupRepo().leaveGroup(groupId);
+      final group = GroupModel.fromJson(res);
+      if (followingGroups.any((element) => element.id == groupId)) {
+        followingGroups.remove(group);
+        AuthBloc.instance.userModel.groupIds.remove(group.id);
+      }
+      return BaseResponse.success(group);
+    } catch (e) {
+      return BaseResponse.fail(e?.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> createGroup(
       String name,
       bool privacy,

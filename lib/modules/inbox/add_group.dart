@@ -97,7 +97,6 @@ class _AddGroupState extends State<AddGroup> {
                 await navigatorKey.currentState.maybePop();
                 showWaitingDialog(context);
                 await InboxBloc.instance.navigateToChatWith(
-                 
                     AuthBloc.instance.userModel.name,
                     'https://static.thenounproject.com/png/58999-200.png',
                     DateTime.now(),
@@ -167,7 +166,7 @@ class _AddGroupState extends State<AddGroup> {
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Text(
-                      'Friend list',
+                      'Bạn bè',
                       style: ptTitle().copyWith(
                           color: Colors.black,
                           fontSize: 13,
@@ -211,7 +210,7 @@ class _AddGroupState extends State<AddGroup> {
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Text(
-                      'My Followers',
+                      'Theo dõi bạn',
                       style: ptTitle().copyWith(
                           color: Colors.black,
                           fontSize: 13,

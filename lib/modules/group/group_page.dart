@@ -152,7 +152,8 @@ class _GroupPageState extends State<GroupPage> {
                   SizedBox(width: 12),
                 ]),
           ),
-          if (_groupBloc.suggestGroup != null) ...[
+          if (_groupBloc.suggestGroup != null &&
+              _groupBloc.suggestGroup.length > 0) ...[
             SizedBox(height: 15),
             SuggestListGroup(
               groups: _groupBloc.suggestGroup,

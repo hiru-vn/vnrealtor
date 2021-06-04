@@ -117,7 +117,7 @@ class _TagUserListPageState extends State<TagUserListPage> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: Text(
-                        'Friend list',
+                        'Bạn bè',
                         style: ptTitle().copyWith(
                             color: Colors.black,
                             fontSize: 13,
@@ -161,7 +161,7 @@ class _TagUserListPageState extends State<TagUserListPage> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: Text(
-                        'My Followers',
+                        'Theo dõi bạn',
                         style: ptTitle().copyWith(
                             color: Colors.black,
                             fontSize: 13,
