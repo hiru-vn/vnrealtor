@@ -197,7 +197,8 @@ class GroupBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> sendInviteGroupAdmin(String id, List<String> userIds) async {
+  Future<BaseResponse> sendInviteGroupAdmin(
+      String id, List<String> userIds) async {
     try {
       final res = await GroupRepo().sendInviteGroupAdmin(id, userIds);
       return BaseResponse.success(res);
@@ -284,10 +285,10 @@ class GroupBloc extends ChangeNotifier {
     }
   }
 
-  Future browseMemberSetting(String id, bool enable) async {
+  Future<BaseResponse> browseMemberSetting(String id, bool enable) async {
     try {
       final res = await GroupRepo().browseMemberSetting(id, enable);
-      return BaseResponse.success(res);
+      return BaseResponse.success(GroupModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());
     } finally {

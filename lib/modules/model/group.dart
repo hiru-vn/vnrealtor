@@ -84,7 +84,7 @@ class GroupModel {
     memberIn24h = json['memberIn24h'];
     postIn24h = json['postIn24h'];
     totalPost = json['totalPost'];
-    censor = json['censor'];
+    censor = json['censor']??false;
   }
 
   Map<String, dynamic> toJson() {

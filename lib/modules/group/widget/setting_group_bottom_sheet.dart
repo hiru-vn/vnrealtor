@@ -1,3 +1,4 @@
+import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/share/import.dart';
 
@@ -21,49 +22,68 @@ class SettingGroup extends StatefulWidget {
 
 class _SettingGroupState extends State<SettingGroup> {
   bool _enableBrowseMember = false;
+  GroupBloc _groupBloc;
 
   @override
   void initState() {
-    _enableBrowseMember = widget.groupModel.censor;
+    _enableBrowseMember = widget.groupModel.censor ?? false;
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_groupBloc == null) {
+      _groupBloc = Provider.of(context);
+    }
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: ListView(
-        shrinkWrap: true,
-        children: [
-          CustomListTile(
-            tileColor: Colors.white,
-            leading: Container(
-              decoration: BoxDecoration(
-                color: ptSecondaryColor(context),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              padding: EdgeInsets.all(6),
-              child: Icon(
-                MdiIcons.thumbUp,
-                color: ptPrimaryColor(context),
-                size: 19,
-              ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text('Cài đặt nhóm', style: ptTitle()),
+                Spacer(),
+                IconButton(
+                    icon: Icon(Icons.save),
+                    onPressed: () async {
+                      showWaitingDialog(context);
+                      final res = await _groupBloc.browseMemberSetting(
+                          widget.groupModel.id, _enableBrowseMember);
+                      await navigatorKey.currentState.maybePop();
+                      if (res.isSuccess) {
+                        navigatorKey.currentState.maybePop(res.data);
+                      } else {
+                        showToast(res.errMessage, context);
+                      }
+                    })
+              ],
             ),
-            title: Text(
-              'Lượt thích',
-              style: ptTitle().copyWith(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 15),
-            ),
-            trailing: Switch(
-                value: _enableBrowseMember,
-                onChanged: (bool val) {
-                  setState(() {
-                    _enableBrowseMember = !_enableBrowseMember;
-                  });
-                }),
-          ),
-        ],
+            Row(
+              children: [
+                Text(
+                  'Duyệt thành viên',
+                  style: ptBody().copyWith(color: Colors.black54),
+                ),
+                Spacer(),
+                Switch(
+                    value: _enableBrowseMember,
+                    onChanged: (bool val) {
+                      setState(() {
+                        _enableBrowseMember = !_enableBrowseMember;
+                      });
+                    }),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

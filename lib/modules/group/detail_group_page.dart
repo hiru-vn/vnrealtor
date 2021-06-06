@@ -186,7 +186,13 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                 right: 5,
                 child: GestureDetector(
                   onTap: () async {
-                    showSettingGroup(context, group);
+                    showSettingGroup(context, group).then((value) {
+                      if (value is GroupModel) {
+                        setState(() {
+                          group = value;
+                        });
+                      }
+                    });
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),

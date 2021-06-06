@@ -40,20 +40,20 @@ class GroupRepo {
   }
 
   Future sendInviteGroup(String id, List<String> userIds) async {
-    final res = await GroupSrv().mutate(
-        'sendInviteGroup', 'groupId: "$id", userIds: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
+    final res = await GroupSrv().mutate('sendInviteGroup',
+        'groupId: "$id", userIds: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
     return res['sendInviteGroup'];
   }
 
   Future sendInviteGroupAdmin(String id, List<String> userIds) async {
-    final res = await GroupSrv().mutate(
-        'addAdminForGroup', 'groupId: "$id", memberId: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
+    final res = await GroupSrv().mutate('addAdminForGroup',
+        'groupId: "$id", memberId: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
     return res['addAdminForGroup'];
   }
 
   Future kickMem(String id, List<String> userIds) async {
-    final res = await GroupSrv().mutate(
-        'kickMem', 'groupId: "$id", memberId: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
+    final res = await GroupSrv().mutate('kickMem',
+        'groupId: "$id", memberId: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
     return res['kickMem'];
   }
 
@@ -106,11 +106,9 @@ class GroupRepo {
     return res;
   }
 
-  Future browseMemberSetting(
-      String id,
-      bool value) async {
+  Future browseMemberSetting(String id, bool value) async {
     String data = '''
-      cencor: $value
+      censor: $value
     ''';
     final res = await GroupSrv().update(id: id, data: data);
     return res;
