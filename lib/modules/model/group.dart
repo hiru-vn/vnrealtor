@@ -59,10 +59,15 @@ class GroupModel {
     locationLong = json['locationLong'];
     addressByLatLon = json['addressByLatLon'];
     ownerId = json['ownerId'];
-    adminIds = json['adminIds'];
     if (json['memberIds'] != null) {
       memberIds = new List<String>();
       json['memberIds'].forEach((v) {
+        memberIds.add(v);
+      });
+    }
+    if (json['adminIds'] != null) {
+      memberIds = new List<String>();
+      json['adminIds'].forEach((v) {
         memberIds.add(v);
       });
     }
