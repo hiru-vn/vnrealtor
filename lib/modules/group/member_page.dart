@@ -146,15 +146,15 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                   ],
                 ),
                 SizedBox(height: 15),
-                (admins == null)
+                (members == null)
                     ? ListSkeleton()
                     : ListView.separated(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return PeopleWidget(admins[index]);
+                          return PeopleWidget(members[index]);
                         },
-                        itemCount: _groupBloc.followingGroups.length,
+                        itemCount: members.length,
                         separatorBuilder: (context, index) =>
                             SizedBox(height: 14),
                       )
