@@ -69,8 +69,8 @@ class _TagUserListPageState extends State<TagUserListPage> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,
-          title:
-              Text(widget.title, style: ptBigBody().copyWith(color: Colors.black)),
+          title: Text(widget.title,
+              style: ptBigBody().copyWith(color: Colors.black)),
           actions: [
             GestureDetector(
               behavior: HitTestBehavior.translucent,

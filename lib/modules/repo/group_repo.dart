@@ -45,6 +45,12 @@ class GroupRepo {
     return res['sendInviteGroup'];
   }
 
+  Future sendInviteGroupAdmin(String id, List<String> userIds) async {
+    final res = await GroupSrv().mutate(
+        'addAdminForGroup', 'groupId: "$id", memberId: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
+    return res['addAdminForGroup'];
+  }
+
   Future leaveGroup(String id) async {
     final res = await GroupSrv().mutate('leaveGroup', 'groupId: "$id"',
         fragment: ' ${GroupSrv().fragmentDefault} ');

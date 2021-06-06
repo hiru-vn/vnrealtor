@@ -66,9 +66,9 @@ class GroupModel {
       });
     }
     if (json['adminIds'] != null) {
-      memberIds = new List<String>();
+      adminIds = new List<String>();
       json['adminIds'].forEach((v) {
-        memberIds.add(v);
+        adminIds.add(v);
       });
     }
     isMember = json['isMember'];
