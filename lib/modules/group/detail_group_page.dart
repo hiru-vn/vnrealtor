@@ -145,7 +145,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
               fit: BoxFit.cover,
             ),
           ),
-          if (!group.isOwner)
+          if (!group.isOwner && group.isMember)
             Positioned(
                 bottom: 5,
                 right: 5,

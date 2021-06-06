@@ -159,6 +159,7 @@ class GroupBloc extends ChangeNotifier {
       if (!followingGroups.any((element) => element.id == groupId)) {
         followingGroups.add(group);
         AuthBloc.instance.userModel.groupIds.add(group.id);
+        getSuggestGroup();
       }
       return BaseResponse.success(group);
     } catch (e) {
@@ -175,6 +176,7 @@ class GroupBloc extends ChangeNotifier {
       if (followingGroups.any((element) => element.id == groupId)) {
         followingGroups.remove(group);
         AuthBloc.instance.userModel.groupIds.remove(group.id);
+        getSuggestGroup();
       }
       return BaseResponse.success(group);
     } catch (e) {
