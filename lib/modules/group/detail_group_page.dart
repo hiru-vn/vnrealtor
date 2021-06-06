@@ -339,7 +339,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                 Spacer(),
                 GestureDetector(
                     onTap: () {
-                      GroupMemberPage.navigate(widget.groupModel);
+                      GroupMemberPage.navigate(widget.groupModel ?? group);
                     },
                     child: Container(
                       padding:

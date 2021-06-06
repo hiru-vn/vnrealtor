@@ -30,7 +30,9 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
     if (_groupBloc == null) {
       _groupBloc = Provider.of(context);
       owner = widget.groupModel.owner;
-      UserBloc.instance.getListUserIn(widget.groupModel.adminIds).then((res) {
+      UserBloc.instance
+          .getListUserIn(widget.groupModel.adminIds ?? [])
+          .then((res) {
         if (res.isSuccess) {
           setState(() {
             admins = res.data;
@@ -38,7 +40,9 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
         } else
           showToast(res.errMessage, context);
       });
-      UserBloc.instance.getListUserIn(widget.groupModel.memberIds).then((res) {
+      UserBloc.instance
+          .getListUserIn(widget.groupModel.memberIds ?? [])
+          .then((res) {
         if (res.isSuccess) {
           setState(() {
             members = res.data;
@@ -144,18 +148,16 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                 SizedBox(height: 15),
                 (admins == null)
                     ? ListSkeleton()
-                    : (admins.length == 0
-                        ? Text('Bạn chưa tham gia nhóm nào')
-                        : ListView.separated(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return PeopleWidget(admins[index]);
-                            },
-                            itemCount: _groupBloc.followingGroups.length,
-                            separatorBuilder: (context, index) =>
-                                SizedBox(height: 14),
-                          ))
+                    : ListView.separated(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return PeopleWidget(admins[index]);
+                        },
+                        itemCount: _groupBloc.followingGroups.length,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 14),
+                      )
               ],
             ),
           )),
