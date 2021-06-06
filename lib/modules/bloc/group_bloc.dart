@@ -208,6 +208,17 @@ class GroupBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> kickMem(String id, List<String> userIds) async {
+    try {
+      final res = await GroupRepo().kickMem(id, userIds);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e?.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> createGroup(
       String name,
       bool privacy,
@@ -265,6 +276,17 @@ class GroupBloc extends ChangeNotifier {
     try {
       final res = await GroupRepo().updateGroup(id, name, privacy, description,
           coverImage, address, locationLat, locationLong);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future browseMemberSetting(String id, bool enable) async {
+    try {
+      final res = await GroupRepo().browseMemberSetting(id, enable);
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e?.toString());

@@ -8,6 +8,7 @@ privacy: Boolean
 description: String
 coverImage: String
 address: String
+censor
 locationLat: Float
 locationLong: Float
 addressByLatLon: String

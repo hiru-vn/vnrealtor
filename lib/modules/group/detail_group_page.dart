@@ -13,6 +13,7 @@ import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/post/tag_user_list_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import './widget/setting_group_bottom_sheet.dart';
 
 class DetailGroupPage extends StatefulWidget {
   static Future navigate(GroupModel groupModel, {String groupId}) {
@@ -185,7 +186,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                 right: 5,
                 child: GestureDetector(
                   onTap: () async {
-                    showToast('Chưa phát triển', context);
+                    showSettingGroup(context, group);
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),

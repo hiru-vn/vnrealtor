@@ -7,7 +7,7 @@ import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:datcao/share/widget/load_more.dart';
-import './widget.dart/suggest_list_group.dart';
+import './widget/suggest_list_group.dart';
 
 class GroupPage extends StatefulWidget {
   const GroupPage({Key key}) : super(key: key);

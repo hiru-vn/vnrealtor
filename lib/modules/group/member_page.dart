@@ -167,8 +167,23 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                           }
                         }, 'Mời quản trị viên', context),
                         SizedBox(width: 15),
-                        _buildActionBtn(_selectedUserIds.length > 0, () {
-                          showToast('Đang phát triển', context);
+                        _buildActionBtn(_selectedUserIds.length > 0, () async {
+                          showWaitingDialog(context);
+                          final res = await _groupBloc.kickMem(
+                              _group.id, _selectedUserIds);
+                          await navigatorKey.currentState.maybePop();
+                          if (res.isSuccess) {
+                            setState(() {
+                              _group.memberIds.removeWhere((e) =>
+                                  _selectedUserIds.contains(_selectedUserIds));
+
+                              members.removeWhere(
+                                  (e) => _selectedUserIds.contains(e));
+                              _selectedUserIds.clear();
+                            });
+                          } else {
+                            showToast(res.errMessage, context);
+                          }
                         }, 'Cấm khỏi nhóm', context),
                       ],
                     ),

@@ -51,6 +51,12 @@ class GroupRepo {
     return res['addAdminForGroup'];
   }
 
+  Future kickMem(String id, List<String> userIds) async {
+    final res = await GroupSrv().mutate(
+        'kickMem', 'groupId: "$id", memberId: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
+    return res['kickMem'];
+  }
+
   Future leaveGroup(String id) async {
     final res = await GroupSrv().mutate('leaveGroup', 'groupId: "$id"',
         fragment: ' ${GroupSrv().fragmentDefault} ');
@@ -95,6 +101,16 @@ class GroupRepo {
       address: "${address ?? ''}"
       locationLat: $locationLat
       locationLong: $locationLong
+    ''';
+    final res = await GroupSrv().update(id: id, data: data);
+    return res;
+  }
+
+  Future browseMemberSetting(
+      String id,
+      bool value) async {
+    String data = '''
+      cencor: $value
     ''';
     final res = await GroupSrv().update(id: id, data: data);
     return res;

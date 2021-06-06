@@ -23,6 +23,7 @@ class GroupModel {
   int totalPost;
   int postIn24h;
   int memberIn24h;
+  bool censor;
 
   GroupModel(
       {this.id,
@@ -46,7 +47,8 @@ class GroupModel {
       this.updatedAt,
       this.memberIn24h,
       this.postIn24h,
-      this.totalPost});
+      this.totalPost,
+      this.censor});
 
   GroupModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -82,6 +84,7 @@ class GroupModel {
     memberIn24h = json['memberIn24h'];
     postIn24h = json['postIn24h'];
     totalPost = json['totalPost'];
+    censor = json['censor'];
   }
 
   Map<String, dynamic> toJson() {
