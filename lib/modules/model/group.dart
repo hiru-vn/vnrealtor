@@ -18,6 +18,9 @@ class GroupModel {
   int countMember;
   String createdAt;
   String updatedAt;
+  int totalPost;
+  int postIn24h;
+  int memberIn24h;
 
   GroupModel(
       {this.id,
@@ -36,7 +39,10 @@ class GroupModel {
       this.owner,
       this.countMember,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.memberIn24h,
+      this.postIn24h,
+      this.totalPost});
 
   GroupModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -57,10 +63,14 @@ class GroupModel {
     }
     isMember = json['isMember'];
     isOwner = json['isOwner'];
-    owner = json['owner'] != null ? new UserModel.fromJson(json['owner']) : null;
+    owner =
+        json['owner'] != null ? new UserModel.fromJson(json['owner']) : null;
     countMember = json['countMember'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    memberIn24h = json['memberIn24h'];
+    postIn24h = json['postIn24h'];
+    totalPost = json['totalPost'];
   }
 
   Map<String, dynamic> toJson() {

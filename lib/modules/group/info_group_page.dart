@@ -215,10 +215,18 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
             SizedBox(width: deviceWidth(context)),
             Text('Hoạt động nhóm', style: ptBigBody().copyWith(fontSize: 14.6)),
             SizedBox(height: 2),
-            _buildTile('post', '20 bài viết hôm nay', '1028 bài viết'),
             _buildTile(
-                'person', '890 thành viên', '23 thành viên tham gia hôm nay'),
-            _buildTile('group', 'Tạo 6 tháng trước', null)
+                'post',
+                '${widget.groupModel.postIn24h ?? 0} bài viết hôm nay',
+                '${widget.groupModel.totalPost ?? 0} bài viết'),
+            _buildTile(
+                'person',
+                '${widget.groupModel.countMember ?? 0} thành viên',
+                '${widget.groupModel.memberIn24h ?? 0} thành viên tham gia hôm nay'),
+            _buildTile(
+                'group',
+                'Tạo ${Formart.timeByDayVi(DateTime.tryParse(widget.groupModel.createdAt))}',
+                null)
           ],
         ),
       ),

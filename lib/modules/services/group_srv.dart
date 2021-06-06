@@ -22,6 +22,9 @@ owner {
   avatar
   isMod
 }
+memberIn24h
+postIn24h
+totalPost
 countMember: Int
 createdAt: DateTime
 updatedAt: DateTime
