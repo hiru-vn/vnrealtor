@@ -72,14 +72,22 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                             ),
                           ),
                           Positioned(
-                            bottom: 6,
-                            left: 8,
-                            child: Text(
-                              widget.groups[index].name,
-                              style: ptBody().copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white),
-                              textAlign: TextAlign.center,
+                            bottom: 0,
+                            left: 0,
+                            child: Container(
+                              width: 180,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 6),
+                              color: Colors.black26,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 164),
+                                child: Text(
+                                  widget.groups[index].name,
+                                  style: ptBody().copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white),
+                                ),
+                              ),
                             ),
                           ),
                         ],

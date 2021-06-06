@@ -44,14 +44,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    _pages.addAll([
-      PostPage(),
-      NotificationPage(),
-      ProfilePage(),
-      GroupPage(),
-      PagesPage(),
-      SettingPage(),
-    ]);
     return WillPopScope(
       onWillPop: () async {
         final bool flag = await showConfirmDialog(context, 'Thoát ứng dụng?',
@@ -61,7 +53,14 @@ class _HomePageState extends State<HomePage>
       child: Scaffold(
         body: IndexedStack(
           index: _selectedIndex,
-          children: _pages,
+          children: [
+            PostPage(),
+            NotificationPage(),
+            ProfilePage(),
+            GroupPage(),
+            PagesPage(),
+            SettingPage(),
+          ],
         ),
         extendBody: true,
         bottomNavigationBar: BottomNavigator(

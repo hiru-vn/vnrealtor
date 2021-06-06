@@ -223,7 +223,6 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
       ]
     }''';
     String data = '''
-groupId: "$groupId"
 content: """
 ${content.toString()}
 """
@@ -233,6 +232,9 @@ images: ${GraphqlHelper.listStringToGraphqlString(images)}
 tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     ''';
 
+    if (groupId != null) {
+      data += '\ngroupId: "$groupId"';
+    }
     if (expirationDate != null) {
       data += '\nexpirationDate: "$expirationDate"';
     }
