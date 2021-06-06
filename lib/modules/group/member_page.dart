@@ -30,9 +30,10 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
     if (_groupBloc == null) {
       _groupBloc = Provider.of(context);
       owner = widget.groupModel.owner;
-      UserBloc.instance
-          .getListUserIn(widget.groupModel.adminIds ?? [])
-          .then((res) {
+      UserBloc.instance.getListUserIn([
+        widget.groupModel.ownerId,
+        ...widget.groupModel.adminIds ?? []
+      ]).then((res) {
         if (res.isSuccess) {
           setState(() {
             admins = res.data;
@@ -113,7 +114,6 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                     Text('Quản trị viên', style: ptTitle()),
                   ],
                 ),
-                SizedBox(height: 15),
                 (admins == null)
                     ? ListSkeleton()
                     : ListView.separated(
@@ -124,7 +124,7 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                         },
                         itemCount: admins.length,
                         separatorBuilder: (context, index) =>
-                            SizedBox(height: 14),
+                            SizedBox(height: 0),
                       ),
                 SizedBox(height: 15),
                 Row(
@@ -145,7 +145,6 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                     Text('Thành viên', style: ptTitle()),
                   ],
                 ),
-                SizedBox(height: 15),
                 (members == null)
                     ? ListSkeleton()
                     : ListView.separated(
@@ -156,7 +155,7 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                         },
                         itemCount: members.length,
                         separatorBuilder: (context, index) =>
-                            SizedBox(height: 14),
+                            SizedBox(height: 0),
                       )
               ],
             ),
