@@ -14,6 +14,7 @@ class GroupModel {
   List<String> memberIds;
   List<String> adminIds;
   bool isMember;
+  bool isAdmin;
   bool isOwner;
   UserModel owner;
   int countMember;
@@ -38,6 +39,7 @@ class GroupModel {
       this.adminIds,
       this.isMember,
       this.isOwner,
+      this.isAdmin,
       this.owner,
       this.countMember,
       this.createdAt,
@@ -66,6 +68,7 @@ class GroupModel {
     }
     isMember = json['isMember'];
     isOwner = json['isOwner'];
+    isAdmin = json['isAdmin'];
     owner =
         json['owner'] != null ? new UserModel.fromJson(json['owner']) : null;
     countMember = json['countMember'];

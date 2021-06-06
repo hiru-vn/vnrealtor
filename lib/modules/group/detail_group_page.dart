@@ -178,6 +178,30 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                       ],
                     ),
                   ),
+                )),
+          if (group.isOwner || group.isAdmin)
+            Positioned(
+                top: 5,
+                right: 5,
+                child: GestureDetector(
+                  onTap: () async {
+                    showToast('Chưa phát triển', context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                    decoration: BoxDecoration(
+                        color: Colors.white30,
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Cài đặt',
+                            style: ptSmall().copyWith(color: Colors.black54)),
+                        SizedBox(width: 3),
+                        Icon(Icons.settings, size: 16, color: Colors.black54)
+                      ],
+                    ),
+                  ),
                 ))
         ],
       ),

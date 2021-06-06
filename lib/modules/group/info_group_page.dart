@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:datcao/modules/bloc/group_bloc.dart';
+import 'package:datcao/modules/group/create_group_page.dart';
 import 'package:datcao/modules/group/create_post_group_page.dart';
 import 'package:datcao/modules/group/member_page.dart';
+import 'package:datcao/modules/group/update_group_page.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
@@ -236,6 +238,34 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
           ],
         ),
       ),
+      SizedBox(
+        height: 18,
+      ),
+      if (group.isOwner || group.isAdmin)
+        GestureDetector(
+          onTap: () async {
+            UpdateGroupPage.navigate(group);
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: ptPrimaryColor(context))),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Cập nhật thông tin nhóm',
+                    style: ptTitle().copyWith(color: ptPrimaryColor(context))),
+                SizedBox(width: 3),
+                Icon(Icons.edit, size: 16, color: ptPrimaryColor(context))
+              ],
+            ),
+          ),
+        ),
+      SizedBox(
+        height: 18,
+      )
     ]);
   }
 

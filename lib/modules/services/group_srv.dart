@@ -17,6 +17,7 @@ adminIds
 location: Mixed
 isMember: Boolean
 isOwner: Boolean
+isAdmin
 owner {
   id: String
   name: String
