@@ -29,10 +29,14 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
   bool enableManageUser = false;
   List<String> _selectedUserIds = [];
   GroupModel _group;
+  List<String> adminIds;
+  List<String> memberIds;
 
   @override
   void initState() {
     _group = widget.groupModel;
+    adminIds = [..._group.adminIds, _group.ownerId];
+    memberIds = _group.memberIds.where((e) => !adminIds.contains(e)).toList();
     super.initState();
   }
 
@@ -41,10 +45,7 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
     if (_groupBloc == null) {
       _groupBloc = Provider.of(context);
       owner = widget.groupModel.owner;
-      UserBloc.instance.getListUserIn([
-        widget.groupModel.ownerId,
-        ...widget.groupModel.adminIds ?? []
-      ]).then((res) {
+      UserBloc.instance.getListUserIn(adminIds).then((res) {
         if (res.isSuccess) {
           setState(() {
             admins = res.data;
@@ -52,9 +53,7 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
         } else
           showToast(res.errMessage, context);
       });
-      UserBloc.instance
-          .getListUserIn(widget.groupModel.memberIds ?? [])
-          .then((res) {
+      UserBloc.instance.getListUserIn(memberIds).then((res) {
         if (res.isSuccess) {
           setState(() {
             members = res.data;
