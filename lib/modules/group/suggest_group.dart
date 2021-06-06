@@ -34,7 +34,7 @@ class _SuggestGroupState extends State<SuggestGroup> {
         ?.where((element) => element.name
             .toLowerCase()
             .contains(_searchC.text.trim().toLowerCase()))
-        .toList();
+        ?.toList();
     return Scaffold(
       backgroundColor: ptSecondaryColor(context),
       appBar: AppBar1(
