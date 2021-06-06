@@ -184,6 +184,17 @@ class GroupBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> sendInviteGroup(String id, List<String> userIds) async {
+    try {
+      final res = await GroupRepo().sendInviteGroup(id, userIds);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e?.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> createGroup(
       String name,
       bool privacy,

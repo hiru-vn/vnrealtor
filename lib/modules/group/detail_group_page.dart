@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/group/create_post_group_page.dart';
 import 'package:datcao/modules/group/info_group_page.dart';
+import 'package:datcao/modules/group/invite_group.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/widget/page_skeleton.dart';
 import 'package:datcao/modules/post/post_widget.dart';
+import 'package:datcao/modules/post/tag_user_list_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -72,6 +74,21 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
       else
         showToast(res.errMessage, context);
     });
+  }
+
+  _inviteUsers(List<String> users) async {
+    if (users.length == 0) {
+      await navigatorKey.currentState.maybePop();
+      return;
+    }
+    showWaitingDialog(context);
+    final res = await _groupBloc.sendInviteGroup(group?.id, users);
+    if (res.isSuccess) {
+      showToast('Gửi lời mời thành công', context, isSuccess: true);
+      await navigatorKey.currentState.maybePop();
+    } else {
+      showToast(res.errMessage, context);
+    }
   }
 
   @override
@@ -204,6 +221,35 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                 SizedBox(width: 5),
                 Text('${group.countMember} thành viên',
                     style: ptBigBody().copyWith(fontSize: 14.6)),
+                Spacer(),
+                GestureDetector(
+                  onTap: () async {
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return TagUserListPage('Mời bạn bè vào nhóm');
+                      },
+                      backgroundColor: Colors.transparent,
+                    ).then((user) => _inviteUsers((user as List<UserModel>)
+                        .map<String>((e) => e.id)
+                        .toList()));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: ptPrimaryColor(context),
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Mời',
+                            style: ptSmall().copyWith(color: Colors.white)),
+                        Icon(Icons.add, size: 16, color: Colors.white)
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
             SizedBox(height: 12),

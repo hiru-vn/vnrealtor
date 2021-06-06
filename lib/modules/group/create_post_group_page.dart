@@ -488,7 +488,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                         isScrollControlled: true,
                         context: context,
                         builder: (context) {
-                          return TagUserListPage();
+                          return TagUserListPage('Gắn thẻ');
                         },
                         backgroundColor: Colors.transparent,
                       ).then((value) => setState(() {

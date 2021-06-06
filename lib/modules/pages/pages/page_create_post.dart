@@ -484,11 +484,11 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                         isScrollControlled: true,
                         context: context,
                         builder: (context) {
-                          return TagUserListPage();
+                          return TagUserListPage('Gắn thẻ');
                         },
                         backgroundColor: Colors.transparent,
                       ).then((value) => setState(() {
-                            _tagUsers = value??[];
+                            _tagUsers = value ?? [];
                           }));
                     },
                     child: SizedBox(
@@ -518,7 +518,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                       style: ptSmall().copyWith(fontStyle: FontStyle.italic))
                 ])),
               ),
-            if ((_tagUsers?.length??0) > 0)
+            if ((_tagUsers?.length ?? 0) > 0)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Text.rich(TextSpan(children: [

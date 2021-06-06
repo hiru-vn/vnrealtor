@@ -22,7 +22,8 @@ class GroupRepo {
   Future getListGroupIn(List<String> ids) async {
     final res = await GroupSrv().getList(
         order: '{createdAt: 1}',
-        filter: '{_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
+        filter:
+            '{_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
     return res;
   }
 
@@ -36,6 +37,12 @@ class GroupRepo {
     final res = await GroupSrv().mutate('joinGroup', 'groupId: "$id"',
         fragment: ' ${GroupSrv().fragmentDefault} ');
     return res['joinGroup'];
+  }
+
+  Future sendInviteGroup(String id, List<String> userIds) async {
+    final res = await GroupSrv().mutate(
+        'sendInviteGroup', 'groupId: "$id", userIds: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
+    return res['sendInviteGroup'];
   }
 
   Future leaveGroup(String id) async {
