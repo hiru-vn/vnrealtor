@@ -12,6 +12,7 @@ class GroupModel {
   String addressByLatLon;
   String ownerId;
   List<String> memberIds;
+  List<String> adminIds;
   bool isMember;
   bool isOwner;
   UserModel owner;
@@ -34,6 +35,7 @@ class GroupModel {
       this.addressByLatLon,
       this.ownerId,
       this.memberIds,
+      this.adminIds,
       this.isMember,
       this.isOwner,
       this.owner,
@@ -55,6 +57,7 @@ class GroupModel {
     locationLong = json['locationLong'];
     addressByLatLon = json['addressByLatLon'];
     ownerId = json['ownerId'];
+    adminIds = json['adminIds'];
     if (json['memberIds'] != null) {
       memberIds = new List<String>();
       json['memberIds'].forEach((v) {

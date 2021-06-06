@@ -13,6 +13,7 @@ locationLong: Float
 addressByLatLon: String
 ownerId: ID
 memberIds: [ID]
+adminIds
 location: Mixed
 isMember: Boolean
 isOwner: Boolean

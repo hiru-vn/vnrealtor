@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/group/create_post_group_page.dart';
+import 'package:datcao/modules/group/member_page.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
@@ -192,13 +193,18 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                 SizedBox(width: 5),
                 Text(group.owner.name),
                 Spacer(),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: ptSecondaryColor(context),
-                    borderRadius: BorderRadius.circular(18),
+                GestureDetector(
+                  onTap: () {
+                    GroupMemberPage.navigate(widget.groupModel);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: ptSecondaryColor(context),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Text('Xem thêm', style: ptTitle()),
                   ),
-                  child: Text('Xem thêm', style: ptTitle()),
                 )
               ],
             )

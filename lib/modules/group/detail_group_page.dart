@@ -4,6 +4,7 @@ import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/group/create_post_group_page.dart';
 import 'package:datcao/modules/group/info_group_page.dart';
 import 'package:datcao/modules/group/invite_group.dart';
+import 'package:datcao/modules/group/member_page.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
@@ -312,14 +313,19 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                 SizedBox(width: 5),
                 Text(group.owner.name),
                 Spacer(),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: ptSecondaryColor(context),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Text('Xem thêm', style: ptTitle()),
-                )
+                GestureDetector(
+                    onTap: () {
+                      GroupMemberPage.navigate(widget.groupModel);
+                    },
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: ptSecondaryColor(context),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: Text('Xem thêm', style: ptTitle()),
+                    ))
               ],
             )
           ],
