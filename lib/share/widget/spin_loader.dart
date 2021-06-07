@@ -16,8 +16,8 @@ Center kLoadingSpinner = Center(
     height: 20,
     width: 20,
     child: CircularProgressIndicator(
-      strokeWidth: 2,      backgroundColor: Colors.blue,
-
+      strokeWidth: 2,
+      backgroundColor: Colors.blue,
     ),
   ),
 );

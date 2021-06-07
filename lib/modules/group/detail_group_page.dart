@@ -144,6 +144,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
             child: Image.network(
               group.coverImage ?? '',
               fit: BoxFit.cover,
+              loadingBuilder: kLoadingBuilder,
             ),
           ),
           if (!group.isOwner && group.isMember)
@@ -263,9 +264,12 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                         return TagUserListPage('Mời bạn bè vào nhóm');
                       },
                       backgroundColor: Colors.transparent,
-                    ).then((user) => _inviteUsers((user as List<UserModel>)
-                        .map<String>((e) => e.id)
-                        .toList()));
+                    ).then((user) {
+                      if (user != null)
+                        _inviteUsers((user as List<UserModel>)
+                            .map<String>((e) => e.id)
+                            .toList());
+                    });
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
@@ -401,7 +405,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                           height: 20,
                           child: Image.asset('assets/icon/location.png')),
                     )),
-                Text('Địa chỉ: ' + group.address),
+                Expanded(child: Text('Địa chỉ: ' + group.address)),
               ],
             ),
             SizedBox(height: 12),

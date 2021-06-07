@@ -1,7 +1,10 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/model/group.dart';
+import 'package:datcao/modules/model/notification.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/repo/group_repo.dart';
+import 'package:datcao/modules/repo/notification_repo.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/share/import.dart';
 
@@ -289,6 +292,19 @@ class GroupBloc extends ChangeNotifier {
     try {
       final res = await GroupRepo().browseMemberSetting(id, enable);
       return BaseResponse.success(GroupModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getListInviteGroupNotification() async {
+    try {
+      final res = await NotificationRepo().getListNotification(filter: GraphqlFilter(limit: 10, filter: '{tag: "INVITE_GROUP"}'));
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => NotificationModel.fromJson(e)).toList();
+      return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e?.toString());
     } finally {

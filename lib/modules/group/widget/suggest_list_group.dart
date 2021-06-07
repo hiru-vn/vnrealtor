@@ -64,7 +64,8 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                               width: 180,
                               height: 100,
                               child: CachedNetworkImage(
-                                imageUrl: groupBloc.suggestGroup[index].coverImage,
+                                imageUrl:
+                                    groupBloc.suggestGroup[index].coverImage,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -105,7 +106,7 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Text(
                             groupBloc.suggestGroup[index].privacy
-                                ? 'Riêng tư'
+                                ? 'Nhóm kín'
                                 : 'Công khai' +
                                     ' • ${groupBloc.suggestGroup[index].countMember} thành viên',
                             style: ptTiny().copyWith(color: Colors.black),
@@ -122,8 +123,8 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                       }
 
                       setState(() {});
-                      final res =
-                          await groupBloc.joinGroup(groupBloc.suggestGroup[index].id);
+                      final res = await groupBloc
+                          .joinGroup(groupBloc.suggestGroup[index].id);
 
                       if (res.isSuccess) {
                       } else {
@@ -136,15 +137,15 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                       width: 105,
                       padding: EdgeInsets.symmetric(vertical: 7),
                       decoration: BoxDecoration(
-                        border: groupBloc?.followingGroups?.any(
-                                    (e) => e.id == groupBloc.suggestGroup[index].id) ==
+                        border: groupBloc?.followingGroups?.any((e) =>
+                                    e.id == groupBloc.suggestGroup[index].id) ==
                                 true
                             ? Border.all(color: Colors.black12)
                             : Border.all(
                                 color:
                                     ptPrimaryColor(context).withOpacity(0.2)),
-                        color: groupBloc?.followingGroups?.any(
-                                    (e) => e.id == groupBloc.suggestGroup[index].id) ==
+                        color: groupBloc?.followingGroups?.any((e) =>
+                                    e.id == groupBloc.suggestGroup[index].id) ==
                                 true
                             ? Colors.transparent
                             : ptSecondaryColor(context),
@@ -152,8 +153,9 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                       ),
                       child: Center(
                         child: Text(
-                          groupBloc?.followingGroups?.any(
-                                      (e) => e.id == groupBloc.suggestGroup[index].id) ==
+                          groupBloc?.followingGroups?.any((e) =>
+                                      e.id ==
+                                      groupBloc.suggestGroup[index].id) ==
                                   true
                               ? 'Đã tham gia'
                               : 'Tham gia',

@@ -132,7 +132,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                           height: 20,
                           child: Image.asset('assets/icon/location.png')),
                     )),
-                Text('Địa chỉ: ' + group.address),
+                Expanded(child: Text('Địa chỉ: ' + group.address)),
               ],
             ),
             SizedBox(height: 12),
