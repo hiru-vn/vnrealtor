@@ -10,8 +10,12 @@ import 'dart:io' show Platform;
 import '../../share/widget/keep_keyboard_popup_menu/keep_keyboard_popup_menu.dart';
 
 class PickCoordinates extends StatefulWidget {
-  static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(PickCoordinates()));
+  final bool hasPolygon;
+
+  const PickCoordinates({Key key, this.hasPolygon = true}) : super(key: key);
+  static Future navigate({bool hasPolygon}) {
+    return navigatorKey.currentState
+        .push(pageBuilder(PickCoordinates(hasPolygon: hasPolygon)));
   }
 
   @override
@@ -28,6 +32,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
   String _placeName;
   String _mode = 'point';
   List<LatLng> polygonPoints = [];
+  Function _openPopup;
 
   @override
   void initState() {
@@ -87,6 +92,10 @@ class PickCoordinatesState extends State<PickCoordinates> {
     setState(() {
       polygonPoints.add(point);
     });
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (polygonPoints.length > 2 && _openPopup != null) _openPopup();
+    // });
 
     final center = getCenterCoordinate(polygonPoints);
     PostBloc.instance.getAddress(center.longitude, center.latitude).then((res) {
@@ -175,6 +184,19 @@ class PickCoordinatesState extends State<PickCoordinates> {
 
   @override
   Widget build(BuildContext context) {
+    final List<double> edges = [];
+
+    for (int i = 0; i < polygonPoints.length; i++) {
+      var coor1 = polygonPoints[i];
+      var coor2 = (i == polygonPoints.length - 1)
+          ? polygonPoints[0]
+          : polygonPoints[i + 1];
+      edges.add(getCoordinateDistanceInKm(coor1, coor2) * 1000);
+    }
+
+    final double perimeter = edges.fold(0, (e1, e2) => e1 + e2);
+
+    final double area = getAreaInMeter(polygonPoints);
     return Scaffold(
       body: Stack(
         children: [
@@ -214,49 +236,50 @@ class PickCoordinatesState extends State<PickCoordinates> {
             onSearch: _onSearch,
             automaticallyImplyBackButton: true,
             actions: [
-              FloatingSearchBarAction(
-                showIfOpened: false,
-                child: PopupMenuButton(
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (_) => <PopupMenuItem<String>>[
-                    PopupMenuItem(
-                      height: 36,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('Đánh vị trí'),
-                          if (_mode == 'point') Icon(Icons.check),
-                        ],
+              if (widget.hasPolygon)
+                FloatingSearchBarAction(
+                  showIfOpened: false,
+                  child: PopupMenuButton(
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (_) => <PopupMenuItem<String>>[
+                      PopupMenuItem(
+                        height: 36,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Đánh vị trí'),
+                            if (_mode == 'point') Icon(Icons.check),
+                          ],
+                        ),
+                        value: 'point',
                       ),
-                      value: 'point',
+                      PopupMenuItem(
+                        height: 36,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Mô phỏng diện tích'),
+                            if (_mode == 'polygon') Icon(Icons.check),
+                          ],
+                        ),
+                        value: 'polygon',
+                      )
+                    ],
+                    onSelected: (val) {
+                      if (_mode != val)
+                        setState(() {
+                          _mode = val;
+                        });
+                    },
+                    child: SizedBox(
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(Icons.more_vert)),
+                      height: 45,
+                      width: 30,
                     ),
-                    PopupMenuItem(
-                      height: 36,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('Mô phỏng diện tích'),
-                          if (_mode == 'polygon') Icon(Icons.check),
-                        ],
-                      ),
-                      value: 'polygon',
-                    )
-                  ],
-                  onSelected: (val) {
-                    if (_mode != val)
-                      setState(() {
-                        _mode = val;
-                      });
-                  },
-                  child: SizedBox(
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(Icons.more_vert)),
-                    height: 45,
-                    width: 30,
                   ),
                 ),
-              ),
             ],
           ),
           Positioned(
@@ -330,27 +353,20 @@ class PickCoordinatesState extends State<PickCoordinates> {
                 top: 100,
                 right: 10,
                 child: WithKeepKeyboardPopupMenu(
+                    backgroundBuilder: (context, widget) => Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.yellow, width: 0.75),
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.black45,
+                        ),
+                        child:
+                            Material(color: Colors.transparent, child: widget)),
                     calculatePopupPosition:
                         (Size menuSize, Rect overlayRect, Rect buttonRect) {
                       return Offset(buttonRect.left - menuSize.width - 7,
                           menuSize.height);
                     },
                     menuBuilder: (context, closePopup) {
-                      final List<double> edges = [];
-
-                      for (int i = 0; i < polygonPoints.length; i++) {
-                        var coor1 = polygonPoints[i];
-                        var coor2 = (i == polygonPoints.length - 1)
-                            ? polygonPoints[0]
-                            : polygonPoints[i + 1];
-                        edges.add(
-                            getCoordinateDistanceInKm(coor1, coor2) * 1000);
-                      }
-
-                      final double perimeter =
-                          edges.fold(0, (e1, e2) => e1 + e2);
-
-                      final double area = getAreaInMeter(polygonPoints);
                       return GestureDetector(
                         onTap: () {
                           closePopup();
@@ -363,42 +379,48 @@ class PickCoordinatesState extends State<PickCoordinates> {
                               ...polygonPoints.map((e) {
                                 final index = polygonPoints.indexOf(e);
                                 return Text(
-                                    'Từ ${index + 1} đến ${index == polygonPoints.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m');
+                                  'Từ ${index + 1} đến ${index == polygonPoints.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m',
+                                  style:
+                                      ptBody().copyWith(color: Colors.yellow),
+                                );
                               }),
-                              Divider(
-                                height: 8,
-                              ),
-                              Text('Chu vi: ${perimeter.round()} m'),
-                              Text('Diện tích: ${area.round()} m2'),
+                              // Divider(
+                              //   height: 8,
+                              // ),
+                              // Text('Chu vi: ${perimeter.round()} m'),
+                              // Text('Diện tích: ${area.round()} m2'),
                             ],
                           ),
                         ),
                       );
                     },
-                    childBuilder: (context, openPopup, closePopup) => Material(
-                          borderRadius: BorderRadius.circular(21),
-                          elevation: 4,
-                          child: GestureDetector(
-                            onTap: () {
-                              openPopup();
-                            },
-                            child: Container(
-                              width: 42,
-                              height: 42,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.info_outline,
-                                  color: ptPrimaryColor(context),
-                                  size: 25,
-                                ),
+                    childBuilder: (context, openPopup, closePopup) {
+                      _openPopup = openPopup;
+                      return Material(
+                        borderRadius: BorderRadius.circular(21),
+                        elevation: 4,
+                        child: GestureDetector(
+                          onTap: () {
+                            openPopup();
+                          },
+                          child: Container(
+                            width: 42,
+                            height: 42,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.info_outline,
+                                color: ptPrimaryColor(context),
+                                size: 25,
                               ),
                             ),
                           ),
-                        ))),
+                        ),
+                      );
+                    })),
           if (_mode == 'polygon' && polygonPoints.length > 0) ...[
             Positioned(
                 top: 160,
@@ -424,6 +446,70 @@ class PickCoordinatesState extends State<PickCoordinates> {
                     ),
                   ),
                 )),
+            if (_mode == 'polygon' && polygonPoints.length > 2)
+              Positioned(
+                right: 60,
+                bottom: 18,
+                child: Center(
+                  child: Column(
+                    children: [
+                      Text('Số điểm dấu: ${polygonPoints.length}',
+                          style: ptBody().copyWith(color: Colors.yellow)),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.yellow, width: 0.75),
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.black45,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Chu vi',
+                                        style: ptBody()
+                                            .copyWith(color: Colors.yellow),
+                                      ),
+                                      Text('${perimeter.round()} m',
+                                          style: ptTitle()
+                                              .copyWith(color: Colors.yellow)),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: 45,
+                                  width: 0.75,
+                                  color: Colors.yellow,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Diện tích',
+                                        style: ptBody()
+                                            .copyWith(color: Colors.yellow),
+                                      ),
+                                      Text('${area.round()} m2',
+                                          style: ptTitle()
+                                              .copyWith(color: Colors.yellow)),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             Positioned(
                 top: 220,
                 right: 10,

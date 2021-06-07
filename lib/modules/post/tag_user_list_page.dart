@@ -5,7 +5,8 @@ import 'package:datcao/share/import.dart';
 import 'package:skeleton_loader/skeleton_loader.dart';
 
 class TagUserListPage extends StatefulWidget {
-  TagUserListPage({Key key}) : super(key: key);
+  final String title;
+  TagUserListPage(this.title);
 
   @override
   _TagUserListPageState createState() => _TagUserListPageState();
@@ -68,8 +69,8 @@ class _TagUserListPageState extends State<TagUserListPage> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,
-          title:
-              Text('Gắn thẻ', style: ptBigBody().copyWith(color: Colors.black)),
+          title: Text(widget.title,
+              style: ptBigBody().copyWith(color: Colors.black)),
           actions: [
             GestureDetector(
               behavior: HitTestBehavior.translucent,
@@ -117,7 +118,7 @@ class _TagUserListPageState extends State<TagUserListPage> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: Text(
-                        'Friend list',
+                        'Bạn bè',
                         style: ptTitle().copyWith(
                             color: Colors.black,
                             fontSize: 13,
@@ -161,7 +162,7 @@ class _TagUserListPageState extends State<TagUserListPage> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: Text(
-                        'My Followers',
+                        'Theo dõi bạn',
                         style: ptTitle().copyWith(
                             color: Colors.black,
                             fontSize: 13,

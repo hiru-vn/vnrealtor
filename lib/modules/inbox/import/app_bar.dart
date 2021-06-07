@@ -51,12 +51,14 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               width: 15,
             ),
           ],
-          Text(
-            title ?? '',
-            style: ptBigTitle().copyWith(
-                color: (bgColor != null && bgColor != Colors.white)
-                    ? Colors.white
-                    : Colors.black87),
+          Expanded(
+            child: Text(
+              title ?? '',
+              style: ptTitle().copyWith(
+                  color: (bgColor != null && bgColor != Colors.white)
+                      ? Colors.white
+                      : Colors.black87),
+            ),
           ),
         ],
       ),

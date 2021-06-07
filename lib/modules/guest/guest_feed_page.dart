@@ -33,6 +33,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
   List<UserModel> suggestFollowUsers;
   bool isReloadPost = true;
   bool isReloadStory = true;
+  int page = 1;
 
   @override
   void initState() {
@@ -45,7 +46,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
       _userBloc = Provider.of<UserBloc>(context);
-      _postBloc.getNewFeedGuest().then((res) => setState(() {
+      _postBloc.getNewFeedGuest(1).then((res) => setState(() {
             if (res.isSuccess) {
               posts = res.data;
               isReloadPost = false;
@@ -105,16 +106,25 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
       appBar: showAppBar ? GuestFeedPageAppBar() : null,
       body: LoadMoreScrollView(
         scrollController: _controller,
-        onLoadMore: () {
-          showToast('Vui lòng đăng nhập để tiếp tục xem', context,
-              isSuccess: true);
+        onLoadMore: () async {
+          final res = await _postBloc.getNewFeedGuest(page + 1);
+          if (res.isSuccess) {
+            setState(() {
+              page++;
+              posts.addAll(res.data);
+            });
+          } else {
+            showToast(res.errMessage, context);
+          }
+          return;
         },
         list: RefreshIndicator(
           color: ptPrimaryColor(context),
           onRefresh: () async {
-            final res = await _postBloc.getNewFeedGuest();
+            final res = await _postBloc.getNewFeedGuest(1);
             if (res.isSuccess) {
               setState(() {
+                page = 1;
                 posts = res.data;
               });
             } else {
@@ -192,7 +202,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                           if (index == 1 &&
                               suggestFollowUsers != null &&
                               suggestFollowUsers.length > 0)
-                            SuggestList(
+                            SuggestListUser(
                               users: suggestFollowUsers,
                             ),
                         ],

@@ -100,6 +100,17 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final List<double> edges = [];
+    for (int i = 0; i < widget.polygonPoints.length; i++) {
+      var coor1 = widget.polygonPoints[i];
+      var coor2 = (i == widget.polygonPoints.length - 1)
+          ? widget.polygonPoints[0]
+          : widget.polygonPoints[i + 1];
+      edges.add(getCoordinateDistanceInKm(coor1, coor2) * 1000);
+    }
+    final double perimeter = edges.fold(0, (e1, e2) => e1 + e2);
+    final double area = getAreaInMeter(widget.polygonPoints);
+
     return Material(
       child: Stack(
         fit: StackFit.expand,
@@ -142,27 +153,20 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                 top: 80,
                 right: 10,
                 child: WithKeepKeyboardPopupMenu(
+                    backgroundBuilder: (context, widget) => Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.yellow, width: 0.75),
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.black45,
+                        ),
+                        child:
+                            Material(color: Colors.transparent, child: widget)),
                     calculatePopupPosition:
                         (Size menuSize, Rect overlayRect, Rect buttonRect) {
                       return Offset(buttonRect.left - menuSize.width - 7,
                           menuSize.height);
                     },
                     menuBuilder: (context, closePopup) {
-                      final List<double> edges = [];
-
-                      for (int i = 0; i < widget.polygonPoints.length; i++) {
-                        var coor1 = widget.polygonPoints[i];
-                        var coor2 = (i == widget.polygonPoints.length - 1)
-                            ? widget.polygonPoints[0]
-                            : widget.polygonPoints[i + 1];
-                        edges.add(
-                            getCoordinateDistanceInKm(coor1, coor2) * 1000);
-                      }
-
-                      final double perimeter =
-                          edges.fold(0, (e1, e2) => e1 + e2);
-
-                      final double area = getAreaInMeter(widget.polygonPoints);
                       return GestureDetector(
                         onTap: () {
                           closePopup();
@@ -175,36 +179,40 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                               ...widget.polygonPoints.map((e) {
                                 final index = widget.polygonPoints.indexOf(e);
                                 return Text(
-                                    'Từ ${index + 1} đến ${index == widget.polygonPoints.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m');
+                                  'Từ ${index + 1} đến ${index == widget.polygonPoints.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m',
+                                  style:
+                                      ptBody().copyWith(color: Colors.yellow),
+                                );
                               }),
-                              Divider(
-                                height: 8,
-                              ),
-                              Text('Chu vi: ${perimeter.round()} m'),
-                              Text('Diện tích: ${area.round()} m2'),
+                              // Divider(
+                              //   height: 8,
+                              // ),
+                              // Text('Chu vi: ${perimeter.round()} m'),
+                              // Text('Diện tích: ${area.round()} m2'),
                             ],
                           ),
                         ),
                       );
                     },
                     childBuilder: (context, openPopup, closePopup) => Material(
+                          color: Colors.transparent,
                           borderRadius: BorderRadius.circular(21),
-                          elevation: 4,
+                          elevation: 0,
                           child: GestureDetector(
                             onTap: () {
                               openPopup();
                             },
                             child: Container(
-                              width: 42,
-                              height: 42,
+                              width: 40,
+                              height: 40,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.white,
+                                color: Colors.black38,
                               ),
                               child: Center(
                                 child: Icon(
                                   Icons.info_outline,
-                                  color: ptPrimaryColor(context),
+                                  color: Colors.white,
                                   size: 25,
                                 ),
                               ),
@@ -233,6 +241,70 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
           // CustomFloatingSearchBar(
           //   onSearch: _onSearch,
           // ),
+          if (widget.polygonPoints.length > 2)
+            Positioned(
+              right: 60,
+              bottom: 18,
+              child: Center(
+                child: Column(
+                  children: [
+                    Text('Số điểm dấu: ${widget.polygonPoints.length}',
+                        style: ptBody().copyWith(color: Colors.yellow)),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.yellow, width: 0.75),
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.black45,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Chu vi',
+                                      style: ptBody()
+                                          .copyWith(color: Colors.yellow),
+                                    ),
+                                    Text('${perimeter.round()} m',
+                                        style: ptTitle()
+                                            .copyWith(color: Colors.yellow)),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: 45,
+                                width: 0.75,
+                                color: Colors.yellow,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Diện tích',
+                                      style: ptBody()
+                                          .copyWith(color: Colors.yellow),
+                                    ),
+                                    Text('${area.round()} m2',
+                                        style: ptTitle()
+                                            .copyWith(color: Colors.yellow)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           Positioned(
             bottom: 15,
             left: 12,
@@ -256,7 +328,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                       SizedBox(
                         width: 8,
                       ),
-                      Text('Mở trong Google Map')
+                      Text('Mở GoogleMap')
                     ],
                   ),
                 ),

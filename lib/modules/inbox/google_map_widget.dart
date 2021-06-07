@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:datcao/modules/inbox/import/file_util.dart';
 import 'package:datcao/navigator.dart';
@@ -125,17 +124,20 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     }
 
     permission = await Geolocator.checkPermission();
+
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permantly denied, we cannot request permissions.');
+      showToast('Ứng dụng không thể truy cập vị trí của bạn', context);
+      return Position(
+          latitude: 10.738381363037085, longitude: 106.68763584916785);
     }
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
-        return Future.error(
-            'Location permissions are denied (actual value: $permission).');
+        showToast('Ứng dụng không thể truy cập vị trí của bạn', context);
+        return Position(
+            latitude: 10.738381363037085, longitude: 106.68763584916785);
       }
     }
 

@@ -180,6 +180,17 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> updateUserStatus({@required bool isOnline}) async {
+    try {
+      final res = await UserRepo()
+          .updateUserStatus(AuthBloc.instance.userModel.id, isOnline: isOnline);
+
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {}
+  }
+
   Future<BaseResponse> updateSetting(SettingModel setting) async {
     try {
       final res = await UserRepo().updateSetting(setting.likeNoti,

@@ -1,5 +1,6 @@
 import 'package:datcao/modules/services/friendship_srv.dart';
 import 'package:datcao/modules/services/user_srv.dart';
+import 'package:datcao/share/import.dart';
 import 'package:datcao/utils/spref.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
 
@@ -7,7 +8,7 @@ import 'filter.dart';
 
 class UserRepo {
   String userFragment =
-      ' id uid name tagName email phone totalPost isVerify description savedPostIds messNotiCount facebookUrl role reputationScore friendIds createdAt updatedAt followerIds followingIds avatar settings { likeNoti shareNoti commentNoti}';
+      ' id uid name tagName email phone groupIds totalPost isVerify description dynamicLink { shortLink previewLink } savedPostIds messNotiCount facebookUrl role reputationScore friendIds createdAt updatedAt followerIds followingIds avatar settings { likeNoti shareNoti commentNoti}';
 
   Future registerWithPhone(
       {String name,
@@ -167,8 +168,7 @@ phone: "$phone"
 
   Future suggestFollowGuest() async {
     final res = await UserSrv().query('suggestFollowForGuest', '',
-        fragment: ' ${userFragment.replaceAll('savedPostIds', '')} ',
-        removeData: true);
+        fragment: ' ${userFragment.replaceAll('savedPostIds', '')} ');
     return res['suggestFollowForGuest'];
   }
 
@@ -203,6 +203,16 @@ description: """
 $description
 """,
 facebookUrl: "$facebookUrl"
+    ''',
+        fragment: 'id');
+    return res['id'];
+  }
+
+  Future updateUserStatus(String id, {@required bool isOnline}) async {
+    final res = await UserSrv().update(
+        id: id,
+        data: '''
+isOnline: isOnline
     ''',
         fragment: 'id');
     return res['id'];

@@ -241,6 +241,7 @@ class PostMapState extends State<PostMap> {
         CustomFloatingSearchBar(
           onSearch: _onSearch,
         ),
+        
         Positioned(
             bottom: 120,
             right: 10,

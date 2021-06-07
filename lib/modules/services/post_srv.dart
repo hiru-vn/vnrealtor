@@ -17,6 +17,7 @@ expirationDate
 publicity
 isUserLike
 isUserShare
+numberOfComment
 hashTag
 storyImages
 polygon {
@@ -46,6 +47,11 @@ user {
   description
 }
 rawContent
+group {
+  id
+  name
+  coverImage
+}
 mediaPosts {
 id
 userId

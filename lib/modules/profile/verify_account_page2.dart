@@ -28,7 +28,7 @@ class _VertifyAccountPage2State extends State<VertifyAccountPage2> {
   Future _submit() async {
     FocusScope.of(context).requestFocus(FocusNode());
     if (!_formKey.currentState.validate()) return;
-    showSimpleLoadingDialog(context);
+    showWaitingDialog(context);
     final res = await _verificationBloc.createVerification();
     await navigatorKey.currentState.maybePop();
     if (res.isSuccess) {

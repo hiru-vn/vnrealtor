@@ -2,11 +2,11 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/pages/page_detail.dart';
 import 'package:datcao/modules/pages/widget/own_page_loading.dart';
+import 'package:datcao/modules/pages/widget/page_skeleton.dart';
 import 'package:datcao/modules/pages/widget/suggestListPages.dart';
 import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/resources/styles/images.dart';
 import 'package:datcao/share/import.dart';
-import 'package:datcao/share/widget/activity_indicator.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
 
 import 'create_page_page.dart';
@@ -28,83 +28,110 @@ class _PagesPageState extends State<PagesPage> {
   PagesBloc _pagesBloc;
   AuthBloc _authBloc;
 
+  bool isDataPageLoading = false;
+
   @override
   void didChangeDependencies() {
-    if (_pagesBloc == null) {
+    if (_authBloc == null) {
       _authBloc = Provider.of(context);
-      _pagesBloc = Provider.of<PagesBloc>(context);
-      if (AuthBloc.instance.userModel.role == 'COMPANY') {
-        _getAllPageCreated();
-        _pagesBloc.getAllHashTagTP();
-        _getAllPageFollow();
-        _pagesBloc.suggestFollow();
+    }
+    if (_pagesBloc == null) {
+      _pagesBloc = Provider.of<PagesBloc>(context)
+        ..feedScrollController = ScrollController();
+      if (_authBloc.userModel.role == 'COMPANY') {
+        _fetchDataCompany();
       } else {
-        _getAllPageFollow();
-        _pagesBloc.suggestFollow();
+        _fetchData();
       }
     }
     super.didChangeDependencies();
   }
 
+  Future<void> _fetchDataCompany() async {
+    setState(() =>  isDataPageLoading = true);
+    await _getSuggestFollow();
+    await _getAllPageCreated();
+    await _getAllPageFollow();
+    await _pagesBloc.getAllHashTagTP();
+    setState(() =>  isDataPageLoading = false);
+  }
+
+  Future<void> _fetchData() async {
+    setState(() =>  isDataPageLoading = true);
+    await _getSuggestFollow();
+    await _getAllPageFollow();
+    setState(() =>  isDataPageLoading = false);
+  }
+
   Future<void> _getAllPageCreated() async => await _pagesBloc.getMyPage();
 
-  Future<void> _getAllPageFollow() async {
-    _pagesBloc.isFollowPageLoading = true;
-    await _pagesBloc.getPagesFollow(
-        filter: GraphqlFilter(limit: 15, page: 1),
-        userId: _authBloc.userModel.id);
-    _pagesBloc.isFollowPageLoading = false;
-  }
+  Future<void> _getAllPageFollow() async => await _pagesBloc.getPagesFollow(
+      filter: GraphqlFilter(limit: 15, page: 1),
+      userId: _authBloc.userModel.id);
+
+  Future<void> _getSuggestFollow() async => await _pagesBloc.suggestFollow();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar1(
-        bgColor: ptSecondaryColor(context),
-        title: 'Trang',
-        textColor: AppColors.mainColor,
-        centerTitle: true,
-        automaticallyImplyLeading: true,
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: deviceHeight(context),
-          decoration: BoxDecoration(
-            color: AppColors.backgroundColor.withOpacity(0.5),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              if (!_pagesBloc.isSuggestFollowPage)
-                SuggestListPages(
-                  suggest: _pagesBloc.suggestFollowPage,
-                ),
-              if (AuthBloc.instance.userModel.role == 'COMPANY') _buildHeader(),
-              if (AuthBloc.instance.userModel.role == 'COMPANY')
-                _buildSectionOwnPage(),
-              _buildPageBodySection(
-                  'Trang đã theo dõi', AppImages.icPageFollow),
-              _buildSectionPageFollow(),
-              // heightSpace(10),
-              // _buildPageBodySection(
-              //     'Lời mời thích trang ', AppImages.icPageLike),
-              // _itemBodySectionPageLike(AppImages.imageDemo, 'Dự án MeiLand '),
-              heightSpace(30),
-            ],
-          ),
+        appBar: AppBar1(
+          bgColor: ptSecondaryColor(context),
+          title: 'Trang',
+          textColor: AppColors.mainColor,
+          centerTitle: true,
+          automaticallyImplyLeading: true,
         ),
-      ),
-    );
+        body: RefreshIndicator(
+          color: ptPrimaryColor(context),
+          onRefresh: () async {
+            if (AuthBloc.instance.userModel.role == 'COMPANY') {
+              _fetchDataCompany();
+            } else {
+              _fetchData();
+            }
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: _pagesBloc.feedScrollController,
+            child: isDataPageLoading
+                ? PageSkeleton()
+                : Container(
+                    height: deviceHeight(context),
+                    decoration: BoxDecoration(
+                      color: AppColors.backgroundColor.withOpacity(0.2),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _pagesBloc.suggestFollowPage.isNotEmpty
+                            ? SuggestListPages(
+                                suggest: _pagesBloc.suggestFollowPage)
+                            : const SizedBox(),
+                        if (AuthBloc.instance.userModel.role == 'COMPANY')
+                          _buildHeader(),
+                        if (AuthBloc.instance.userModel.role == 'COMPANY')
+                          _buildSectionOwnPage(),
+                        _buildPageBodySection(
+                            'Trang đã theo dõi', AppImages.icPageFollow),
+                        _buildSectionPageFollow(),
+                        // heightSpace(10),
+                        // _buildPageBodySection(
+                        //     'Lời mời thích trang ', AppImages.icPageLike),
+                        // _itemBodySectionPageLike(AppImages.imageDemo, 'Dự án MeiLand '),
+                        heightSpace(30),
+                      ],
+                    ),
+                  ),
+          ),
+        ));
   }
 
   Widget _buildSectionOwnPage() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildPageBodySection('Trang của bạn', AppImages.icOwnPage),
-          _pagesBloc.isOwnPageLoading
-              ? _buildOwnPageLoading()
-              : _buildListPageCreate(),
+          _buildListPageCreate()
         ],
       );
 
@@ -200,11 +227,7 @@ class _PagesPageState extends State<PagesPage> {
 
   Widget _buildSectionPageFollow() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _pagesBloc.isFollowPageLoading
-              ? _buildOwnPageLoading()
-              : _buildListPageFollow(),
-        ],
+        children: [_buildListPageFollow()],
       );
 
   Widget _buildHeader() => Container(
@@ -302,6 +325,7 @@ class _PagesPageState extends State<PagesPage> {
                         imageUrl: image.isNotEmpty
                             ? image
                             : 'https://i.ibb.co/Zcx1Ms8/error-image-generic.png',
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -382,6 +406,7 @@ class _PagesPageState extends State<PagesPage> {
                         imageUrl: image.isNotEmpty
                             ? image
                             : 'https://i.ibb.co/Zcx1Ms8/error-image-generic.png',
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

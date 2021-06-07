@@ -1,12 +1,18 @@
 import 'dart:io';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
+import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_detail.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/modules/services/src/toast/toast.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/import.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 enum FcmType {
   message,
@@ -27,6 +33,9 @@ class FcmService {
 
   static FcmService get instance => _instance;
   FirebaseMessaging fb;
+  final _audioCache = AudioCache(
+      prefix: "assets/sound/",
+      fixedPlayer: AudioPlayer()..setReleaseMode(ReleaseMode.STOP));
 
   static FcmType getType(String type) {
     if (type.toLowerCase() == 'Like'.toLowerCase()) return FcmType.like;
@@ -48,12 +57,21 @@ class FcmService {
     final type = getType(message.data['type']);
 
     if (type == FcmType.message) {
-      // final type = ModalRoute.of(navigatorKey.currentState.overlay.context)
-      //     .settings
-      //     .runtimeType;
-      // print(type);
-      // if (type == InboxList) return;
-      showToastNoContext('Tin nhắn mới');
+      if (InboxBloc.inChat) return;
+
+      _audioCache.play('facebook_message.mp3');
+      toast('Tin nhắn mới', onTap: () async {
+        showWaitingDialog(navigatorKey.currentState.context);
+        await InboxBloc.instance.navigateToChatWith(
+            message.data['name'], message.data['avatar'], DateTime.now(), '', [
+          AuthBloc.instance.userModel.id,
+          message.data['userId'],
+        ], [
+          AuthBloc.instance.userModel.avatar,
+          message.data['avatar'],
+        ]);
+        navigatorKey.currentState.maybePop();
+      });
     }
 
     if (type == FcmType.share) {
@@ -88,8 +106,6 @@ class FcmService {
     print('Message data: ${message.data}');
     final type = getType(message.data['type']);
 
-    if (type == FcmType.message) {}
-
     if ([
       FcmType.new_post,
       FcmType.like,
@@ -102,7 +118,16 @@ class FcmService {
       PostDetail.navigate(null, postId: message.data['modelId']);
     }
 
-    if (type == FcmType.system) {}
+    if (type == FcmType.message) {
+      InboxBloc.instance.navigateToChatWith(
+          message.data['name'], message.data['avatar'], DateTime.now(), '', [
+        AuthBloc.instance.userModel.id,
+        message.data['userId'],
+      ], [
+        AuthBloc.instance.userModel.avatar,
+        message.data['avatar'],
+      ]);
+    }
 
     NotificationBloc.instance
         .getListNotification(filter: GraphqlFilter(order: '{createdAt: -1}'));
@@ -146,6 +171,16 @@ class FcmService {
         NotificationBloc.initActions.insert(
             0, InitAction(ACTION_TYPE.OPEN_POST, message.data['modelId']));
       }
+      if (type == FcmType.message) {
+        NotificationBloc.initActions.insert(
+            0,
+            InitAction(ACTION_TYPE.OPEN_CHAT, message.data['userId'],
+                data: UserModel(
+                    id: message.data['userId'],
+                    phone: message.data['phone'],
+                    name: message.data['name'],
+                    avatar: message.data['avatar'])));
+      }
     }
   }
 
@@ -176,11 +211,31 @@ class FbdynamicLink {
             if (AuthBloc.instance.userModel != null &&
                 FirebaseAuth.instance.currentUser != null) {
               print('case 2');
+
               PostDetail.navigate(null, postId: paths[1]);
             } else {
               print('case 3');
               Future.delayed(Duration(milliseconds: 1000),
                   () => PostDetail.navigate(null, postId: paths[1]));
+            }
+          }
+        }
+        if (paths.length >= 2 && paths[0] == 'user') {
+          final token = await SPref.instance.get('token');
+          if (token == null) {
+            print('case 1');
+            Future.delayed(Duration(milliseconds: 1000),
+                () => ProfileOtherPage.navigate(null, userId: paths[1]));
+          } else {
+            if (AuthBloc.instance.userModel != null &&
+                FirebaseAuth.instance.currentUser != null) {
+              print('case 2');
+
+              ProfileOtherPage.navigate(null, userId: paths[1]);
+            } else {
+              print('case 3');
+              Future.delayed(Duration(milliseconds: 1000),
+                  () => ProfileOtherPage.navigate(null, userId: paths[1]));
             }
           }
         }
@@ -207,6 +262,16 @@ class FbdynamicLink {
         } else {
           NotificationBloc.initActions
               .insert(0, InitAction(ACTION_TYPE.OPEN_POST, paths[1]));
+        }
+      }
+      if (paths.length >= 2 && paths[0] == 'user') {
+        final token = await SPref.instance.get('token');
+        if (token == null) {
+          NotificationBloc.initActions
+              .insert(0, InitAction(ACTION_TYPE.OPEN_PROFILE, paths[1]));
+        } else {
+          NotificationBloc.initActions
+              .insert(0, InitAction(ACTION_TYPE.OPEN_PROFILE, paths[1]));
         }
       }
     }

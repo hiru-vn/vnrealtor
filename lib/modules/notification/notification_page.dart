@@ -1,6 +1,7 @@
 import 'package:datcao/main.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/group/detail_group_page.dart';
 import 'package:datcao/modules/inbox/import/app_bar.dart';
 import 'package:datcao/modules/model/notification.dart';
 import 'package:datcao/modules/model/user.dart';
@@ -187,65 +188,76 @@ class _NotificationTabState extends State<NotificationTab> {
                 height: 1,
               ),
               itemCount: list.length,
-              itemBuilder: (context, index) =>
-                  list[index].runtimeType == UserModel
-                      ? ListTile(
-                          tileColor: ptBackgroundColor(context),
-                          onTap: () {
-                            ProfileOtherPage.navigate(list[index]);
-                          },
-                          leading: CircleAvatar(
-                            radius: 22,
-                            backgroundImage: (list[index].avatar == null ||
-                                    list[index].avatar == '')
-                                ? AssetImage('assets/image/icon_white.png')
-                                : NetworkImage(list[index].avatar),
-                          ),
-                          title: Text(
-                            list[index].name + ' đã theo dõi bạn',
-                            style: ptBody(),
-                          ),
-                          subtitle: Text(
-                            Formart.timeByDayVi(
-                                    DateTime.tryParse(list[index].updatedAt)) ??
-                                '',
-                            style: ptTiny(),
-                          ),
-                        )
-                      : ListTile(
-                          onTap: () {
-                            if (!list[index].seen) {
-                              _notificationBloc.seenNoti(list[index].id);
-                              list[index].seen = true;
-                            }
-                            if (['LIKE', 'COMMENT', 'SHARE', 'NEW_POST', 'TAG_COMMENT', 'TAG_REPLY', 'TAG_POST']
-                                .contains(list[index].type.toUpperCase())) {
-                              PostDetail.navigate(null,
-                                  postId: list[index].data['modelId']);
-                            }
-                          },
-                          tileColor: list[index].seen
-                              ? Colors.white
-                              : ptBackgroundColor(context),
-                          leading: CircleAvatar(
-                            radius: 22,
-                            backgroundColor: Colors.white,
-                            backgroundImage: (list[index].image == null ||
-                                    list[index].image == '')
-                                ? AssetImage('assets/image/default_avatar.png')
-                                : CachedNetworkImageProvider(list[index].image),
-                          ),
-                          title: Text(
-                            list[index].body,
-                            style: ptBody(),
-                          ),
-                          subtitle: Text(
-                            Formart.timeByDayVi(
-                                    DateTime.tryParse(list[index].createdAt)) ??
-                                '',
-                            style: ptTiny(),
-                          ),
-                        ),
+              itemBuilder: (context, index) => list[index].runtimeType ==
+                      UserModel
+                  ? ListTile(
+                      tileColor: ptBackgroundColor(context),
+                      onTap: () {
+                        ProfileOtherPage.navigate(list[index]);
+                      },
+                      leading: CircleAvatar(
+                        radius: 22,
+                        backgroundImage: (list[index].avatar == null ||
+                                list[index].avatar == '')
+                            ? AssetImage('assets/image/icon_white.png')
+                            : NetworkImage(list[index].avatar),
+                      ),
+                      title: Text(
+                        list[index].name + ' đã theo dõi bạn',
+                        style: ptBody(),
+                      ),
+                      subtitle: Text(
+                        Formart.timeByDayVi(
+                                DateTime.tryParse(list[index].updatedAt)) ??
+                            '',
+                        style: ptTiny(),
+                      ),
+                    )
+                  : ListTile(
+                      onTap: () {
+                        if (!list[index].seen) {
+                          _notificationBloc.seenNoti(list[index].id);
+                          list[index].seen = true;
+                        }
+                        if ([
+                          'LIKE',
+                          'COMMENT',
+                          'SHARE',
+                          'NEW_POST',
+                          'TAG_COMMENT',
+                          'TAG_REPLY',
+                          'TAG_POST'
+                        ].contains(list[index].type.toUpperCase())) {
+                          PostDetail.navigate(null,
+                              postId: list[index].data['modelId']);
+                        }
+                        if (list[index].type.toUpperCase() == 'INVITE_GROUP') {
+                          DetailGroupPage.navigate(null,
+                              groupId: list[index].data['modelId']);
+                        }
+                      },
+                      tileColor: list[index].seen
+                          ? Colors.white
+                          : ptBackgroundColor(context),
+                      leading: CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.white,
+                        backgroundImage: (list[index].image == null ||
+                                list[index].image == '')
+                            ? AssetImage('assets/image/default_avatar.png')
+                            : CachedNetworkImageProvider(list[index].image),
+                      ),
+                      title: Text(
+                        list[index].body,
+                        style: ptBody(),
+                      ),
+                      subtitle: Text(
+                        Formart.timeByDayVi(
+                                DateTime.tryParse(list[index].createdAt)) ??
+                            '',
+                        style: ptTiny(),
+                      ),
+                    ),
             ),
           )
         : EmptyWidget(

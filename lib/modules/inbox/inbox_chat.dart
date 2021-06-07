@@ -4,6 +4,9 @@ import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/inbox/import/spin_loader.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
+import 'package:datcao/modules/pages/models/followModel.dart';
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
@@ -26,17 +29,17 @@ import 'import/image_view.dart';
 import 'import/media_picker.dart';
 import 'import/page_builder.dart';
 import 'import/skeleton.dart';
-import 'import/video_view.dart';
 import 'inbox_bloc.dart';
 import 'inbox_model.dart';
+import 'share_friend.dart';
 import 'video_call_page.dart';
-import 'voice_call_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './import/media_group.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
-import 'package:photo_manager/photo_manager.dart' as media;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InboxChat extends StatefulWidget {
   final FbInboxGroupModel group;
@@ -98,14 +101,24 @@ class _InboxChatState extends State<InboxChat> {
 
   @override
   void initState() {
+    InboxBloc.inChat = true;
     group = widget.group;
     for (final user in group.users) {
-      _users.add(ChatUser(
-          uid: user.id,
-          name: user.name,
-          containerColor: user.id == AuthBloc.instance.userModel.id
-              ? userColor
-              : Colors.blue[50]));
+      if (group.pageId != null &&
+          group.pageName != null &&
+          user.id != AuthBloc.instance.userModel.id) {
+        _users.add(ChatUser(
+            uid: group.pageId,
+            name: group.pageName,
+            containerColor: Colors.blue[50]));
+      } else {
+        _users.add(ChatUser(
+            uid: user.id,
+            name: user.name,
+            containerColor: user.id == AuthBloc.instance.userModel.id
+                ? userColor
+                : Colors.blue[50]));
+      }
     }
     super.initState();
   }
@@ -113,6 +126,7 @@ class _InboxChatState extends State<InboxChat> {
   @override
   dispose() {
     super.dispose();
+    InboxBloc.inChat = false;
     _incomingMessageListener?.cancel();
     _focusNode.dispose();
   }
@@ -126,9 +140,14 @@ class _InboxChatState extends State<InboxChat> {
     final fbUsers = group.users;
     _fbUsers.addAll(fbUsers);
     for (final fbUser in fbUsers) {
-      final user = _users.firstWhere((user) => user.uid == fbUser.id);
-      user.avatar = fbUser.image;
-      user.name = fbUser.name;
+      final user = _users.firstWhere(
+        (user) => user.uid == fbUser.id,
+        orElse: () => null,
+      );
+      if (user != null) {
+        user?.avatar = fbUser.image;
+        user?.name = fbUser.name;
+      }
     }
     loadUsersFromSever();
   }
@@ -136,6 +155,11 @@ class _InboxChatState extends State<InboxChat> {
   Future loadUsersFromSever() async {
     final res = await UserBloc.instance
         .getListUserIn(group.users.map((e) => e.id).toList());
+    PagesCreate page;
+    if (group.pageId != null && group.pageName != null) {
+      final pageRes = await PagesBloc.instance.getOnePage(group.pageId);
+      page = pageRes.data;
+    }
     if (res.isSuccess) {
       _severUsers.clear();
       _severUsers.addAll(res.data);
@@ -266,16 +290,18 @@ class _InboxChatState extends State<InboxChat> {
     List<String> _tempFiles = [];
     _tempFiles.addAll(_files);
     if (_tempFiles.length == 0 && message.text.trim() == '') return;
+    if (message.customProperties == null)
+      message.customProperties = <String, dynamic>{};
     if (_files.length > 0) {
       // add a loading gif
       if (message.text.trim() != '') {
         // send message text first then send image or video ...
         ChatMessage copyMessage = ChatMessage(
-          // do this because every message gen unique id
-          text: message.text,
-          user: message.user,
-          createdAt: message.createdAt,
-        );
+            // do this because every message gen unique id
+            text: message.text,
+            user: message.user,
+            createdAt: message.createdAt,
+            customProperties: <String, dynamic>{});
         setState(() {
           messages.add(copyMessage);
         });
@@ -286,10 +312,8 @@ class _InboxChatState extends State<InboxChat> {
             _authBloc.userModel.id,
             _authBloc.userModel.name,
             _authBloc.userModel.avatar);
-        message.text = '';
+        // message.text = ''; comment this but dont know why
       }
-      if (message.customProperties == null)
-        message.customProperties = <String, dynamic>{};
       _files.forEach((path) {
         if (message.customProperties['cache_file_paths'] == null) {
           message.customProperties['cache_file_paths'] = <String>[];
@@ -311,13 +335,8 @@ class _InboxChatState extends State<InboxChat> {
     // });
     String text = message.text;
 
-    _updateGroupPageText(
-        group.id,
-        _authBloc.userModel.name,
-        text,
-        message.createdAt,
-        message.user.avatar,
-        [...group.readers, AuthBloc.instance.userModel.id]);
+    _updateGroupPageText(group.id, _authBloc.userModel.name, text,
+        message.createdAt, [...group.readers, AuthBloc.instance.userModel.id]);
 
     if (_tempFiles.length == 0) {
       _inboxBloc.addMessage(
@@ -360,12 +379,12 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   _updateGroupPageText(String groupid, String lastUser, String lastMessage,
-      DateTime time, String image, List<String> readers) {
+      DateTime time, List<String> readers) {
     // if (lastMessage.length > 30) {
     //   lastMessage = lastMessage.substring(0, 30) + "...";
     // }
 
-    _inboxBloc.updateGroupOnMessage(groupid, lastUser, time, lastMessage, image,
+    _inboxBloc.updateGroupOnMessage(groupid, lastUser, time, lastMessage,
         _severUsers.map((e) => e.avatar).toList(), readers);
   }
 
@@ -604,6 +623,12 @@ class _InboxChatState extends State<InboxChat> {
                       showMedia = false;
                     });
                 },
+                messageContainerWidthRadio: (message) {
+                  if (message.customProperties['files'] != null &&
+                      message.customProperties['files'].length > 0)
+                    return 0.6 + 38 / MediaQuery.of(context).size.width;
+                  return 0.6;
+                },
                 messageImageBuilder: (url, [messages]) {
                   if (messages.customProperties == null)
                     return SizedBox.shrink();
@@ -645,8 +670,12 @@ class _InboxChatState extends State<InboxChat> {
                   final files = messages.customProperties['files'];
                   if (files != null && files.length > 0) {
                     return MediaGroupWidgetNetwork(
-                      urls: files,
-                    );
+                        urls: files,
+                        onShare: () {
+                          ShareFriend.navigate(files);
+                        },
+                        shareButtonRightSide:
+                            messages.user.uid != _authBloc.userModel.id);
                   }
 
                   final cachePaths =
@@ -675,16 +704,26 @@ class _InboxChatState extends State<InboxChat> {
                   }
                   return Padding(
                     padding: const EdgeInsets.all(3),
-                    child: Text.rich(TextSpan(children: [
-                      TextSpan(
-                        text: text,
-                        style: ptBody().copyWith(
-                            fontSize: 13.8,
-                            color: messages.user.uid == _authBloc.userModel.id
-                                ? Colors.white
-                                : Colors.black),
-                      ),
-                    ])),
+                    child: Linkify(
+                      onOpen: (link) async {
+                        if (await canLaunch(link.url)) {
+                          await launch(link.url);
+                        } else {
+                          showToastNoContext('Đường dẫn hết hiệu lực');
+                        }
+                      },
+                      text: text,
+                      style: ptBody().copyWith(
+                          fontSize: 13.8,
+                          color: messages.user.uid == _authBloc.userModel.id
+                              ? Colors.white
+                              : Colors.black),
+                      textAlign: TextAlign.start,
+                      linkStyle: ptBody().copyWith(
+                          color: messages.user.uid == _authBloc.userModel.id
+                              ? Colors.white
+                              : Colors.black),
+                    ),
                   );
                 },
                 messageTimeBuilder: (text, [messages]) {

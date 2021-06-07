@@ -1,3 +1,4 @@
+import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/share/import.dart';
@@ -38,6 +39,8 @@ class PostModel {
   PagesCreate page;
   double distance;
   List<UserModel> tagUsers;
+  int numberOfComment;
+  GroupModel group;
 
   PostModel(
       {this.id,
@@ -72,7 +75,9 @@ class PostModel {
       this.dynamicLink,
       this.isPage,
       this.distance,
-      this.tagUsers});
+      this.tagUsers,
+      this.numberOfComment,
+      this.group});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -133,6 +138,8 @@ class PostModel {
     tagUsers = json['tagUsers'] != null
         ? json['tagUsers'].map<UserModel>((e) => UserModel.fromJson(e)).toList()
         : [];
+    numberOfComment = json['numberOfComment'] ?? 0;
+    group = json['group'] != null ? GroupModel.fromJson(json['group']) : null;
   }
 
   Map<String, dynamic> toJson() {

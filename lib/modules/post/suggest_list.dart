@@ -5,15 +5,15 @@ import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/share/import.dart';
 import '../profile/profile_other_page.dart';
 
-class SuggestList extends StatefulWidget {
+class SuggestListUser extends StatefulWidget {
   final List<UserModel> users;
-  const SuggestList({Key key, this.users}) : super(key: key);
+  const SuggestListUser({Key key, this.users}) : super(key: key);
 
   @override
-  _SuggestListState createState() => _SuggestListState();
+  _SuggestListUserState createState() => _SuggestListUserState();
 }
 
-class _SuggestListState extends State<SuggestList> {
+class _SuggestListUserState extends State<SuggestListUser> {
   AuthBloc authBloc;
   UserBloc userBloc;
 

@@ -53,7 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
               builder: (context) => _buildOtpDialog());
         }
         if (event.status == AuthStatus.requestOtp) {
-          showSimpleLoadingDialog(context);
+          showWaitingDialog(context);
         }
       });
     }

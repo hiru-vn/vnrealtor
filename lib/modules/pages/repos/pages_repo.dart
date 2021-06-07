@@ -1,9 +1,7 @@
 import 'package:datcao/modules/pages/services/create_page_srv.dart';
 import 'package:datcao/modules/pages/services/follow_page_srv.dart';
-import 'package:datcao/modules/pages/services/page_create_post_srv.dart';
 import 'package:datcao/modules/pages/services/pages_srv.dart';
 import 'package:datcao/modules/pages/services/receive_notify_page.srv.dart';
-import 'package:datcao/modules/pages/services/suggest_follow_srv.dart';
 import 'package:datcao/modules/pages/services/updatePage_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/modules/services/post_srv.dart';

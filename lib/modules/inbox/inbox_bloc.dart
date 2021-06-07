@@ -20,6 +20,8 @@ class InboxBloc extends ChangeNotifier {
     return firestore.collection('group').doc(id);
   }
 
+  static bool inChat = false;
+
   final userCollection = 'user';
   final groupCollection = 'group';
   final messageCollection = 'messages';
@@ -45,21 +47,25 @@ class InboxBloc extends ChangeNotifier {
   }
 
   Future<void> navigateToChatWith(
-      BuildContext context,
-      String lastUser, // the other user
-      String lastAvatar,
-      DateTime time,
-      String image,
-      List<String> userIds,
-      List<String> userAvatars) async {
+    String lastUser, // the other user
+    String lastAvatar,
+    DateTime time,
+    String image,
+    List<String> userIds,
+    List<String> userAvatars, {
+    String groupName,
+    String pageName,
+    String pageId,
+  }) async {
     userIds.sort();
 
-    final snap = await firestore
-        .collection(groupCollection)
-        .doc(userIds.join("-"))
-        .get();
+    final groupId = userIds.join("-") + (pageName != null ? '-$pageName' : '');
+    final snap = await firestore.collection(groupCollection).doc(groupId).get();
     if (!snap.exists) {
-      await firestore.collection(groupCollection).doc(userIds.join("-")).set({
+      await firestore.collection(groupCollection).doc(groupId).set({
+        'groupName': groupName,
+        'pageName': pageName,
+        'pageId': pageId,
         'lastUser': lastUser,
         'lastAvatar': lastAvatar,
         'time': time.toIso8601String(),
@@ -72,12 +78,12 @@ class InboxBloc extends ChangeNotifier {
             .where((element) => element != AuthBloc.instance.userModel.id)
             .toList(),
       });
-    }
-    userIds.forEach((uid) {
-      firestore.collection(userCollection).doc(uid).update({
-        'groups': FieldValue.arrayUnion([userIds.join("-")])
+      userIds.forEach((uid) {
+        firestore.collection(userCollection).doc(uid).update({
+          'groups': FieldValue.arrayUnion([groupId])
+        });
       });
-    });
+    }
 
     final users = await getUsers(userIds);
     if (users == null) {
@@ -89,7 +95,7 @@ class InboxBloc extends ChangeNotifier {
 
     await InboxChat.navigate(
         FbInboxGroupModel(
-            userIds.join("-"),
+            groupId,
             lastAvatar,
             '${AuthBloc.instance.userModel.name} đã bắt đầu cuộc trò chuyện',
             lastUser,
@@ -101,12 +107,14 @@ class InboxBloc extends ChangeNotifier {
             waitingBy: userIds
                 .where((element) => element != AuthBloc.instance.userModel.id)
                 .toList()),
-        lastUser);
+        pageName ?? groupName ?? lastUser);
 
     return;
   }
 
   Future<void> userJoinGroupChat(String uid, String groupId) async {}
+
+  Future<void> deleteConversation(String groupId) async {}
 
   Future<void> blockGroup(String groupId) async {
     final snapShot =
@@ -168,7 +176,7 @@ class InboxBloc extends ChangeNotifier {
       String lastUser,
       DateTime time,
       String lastMessage,
-      String image,
+      // String image,
       List<String> userAvatars,
       List<String> readers) async {
     readers = readers.toSet().toList(); //distinct
@@ -179,7 +187,7 @@ class InboxBloc extends ChangeNotifier {
         'lastUser': lastUser,
         'time': time.toIso8601String(),
         'lastMessage': lastMessage,
-        'image': image,
+        // 'image': image,
         'userAvatars': userAvatars,
         'readers': readers,
         'waitingBy': FieldValue.arrayRemove([AuthBloc.instance.userModel.id])

@@ -1,5 +1,6 @@
 import 'package:datcao/modules/services/comment_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
+import 'package:datcao/modules/services/group_srv.dart';
 import 'package:datcao/modules/services/reply_srv.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
@@ -23,9 +24,31 @@ distance
     return res['getNewsFeed'];
   }
 
-  Future getNewFeedGuest(
+  Future getPostByGroupId(String groupId) async {
+    final res = await PostSrv().getList(
+        limit: 20, order: '{createdAt: -1}', filter: '{groupId: "$groupId" }');
+    return res;
+  }
+
+  Future getNewsFeedGroup(
       {GraphqlFilter filter, String timestamp, String timeSort}) async {
-    final res = await PostSrv().query('getNewsFeedByGuest', '', fragment: '''
+    if (filter?.filter == null) filter?.filter = "{}";
+    if (filter?.search == null) filter?.search = "";
+    final data =
+        'q:{limit: ${filter?.limit}, page: ${filter?.page ?? 1}, offset: ${filter?.offset}, filter: ${filter?.filter}, search: "${filter?.search}" , order: ${filter?.order} , timeSort: $timeSort, timestamp: "$timestamp" }';
+    final res = await PostSrv().query('getNewsFeedGroup', data, fragment: '''
+    data {
+$postFragment
+distance
+}
+    ''');
+    return res['getNewsFeedGroup'];
+  }
+
+  Future getNewFeedGuest({int page, int limit}) async {
+    final res = await PostSrv().query(
+        'getNewsFeedByGuest', 'page: $page , limit: $limit',
+        fragment: '''
     data {
 ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + ' _id'}
 }
@@ -43,14 +66,17 @@ ${postFragment.replaceFirst('id', '')}
     return res['getStoryFollowing'];
   }
 
-  Future getStoryForGuest() async {
-    final res = await PostSrv().query('getStoryForGuest', '',
-        fragment: '''
+  Future getStoryForGuest({double lat, double long}) async {
+    String params = 'lat: $lat , long: $long';
+    final res = await PostSrv().query(
+      'getStoryForGuest',
+      lat != null ? params : '',
+      fragment: '''
     data {
-${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + ' _id'}
+${postFragment.replaceAll('\n', ' ').replaceFirst('isUserLike', '').replaceFirst('isUserShare', '') + ' _id'}
 }
     ''',
-        removeData: true);
+    );
     return res['getStoryForGuest'];
   }
 
@@ -189,7 +215,8 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
       List<String> images,
       List<String> videos,
       List<LatLng> polygon,
-      List<String> tagUserIds) async {
+      List<String> tagUserIds,
+      {String groupId}) async {
     String polygonStr = '''{
       paths: [
         ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
@@ -205,6 +232,9 @@ images: ${GraphqlHelper.listStringToGraphqlString(images)}
 tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     ''';
 
+    if (groupId != null) {
+      data += '\ngroupId: "$groupId"';
+    }
     if (expirationDate != null) {
       data += '\nexpirationDate: "$expirationDate"';
     }
@@ -439,6 +469,7 @@ userId
 like
 userLikeIds
 share
+numberOfComment
 userShareIds
 locationLat
 locationLong
@@ -448,6 +479,11 @@ rawContent
 dynamicLink {
   shortLink
   previewLink
+}
+group {
+  id
+  name
+  coverImage
 }
 isUserLike
 isUserShare

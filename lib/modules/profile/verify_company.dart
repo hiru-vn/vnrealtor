@@ -29,7 +29,7 @@ class _VerifyCompanyState extends State<VerifyCompany> {
   Future _submit() async {
     FocusScope.of(context).requestFocus(FocusNode());
     if (!_formKey.currentState.validate()) return;
-    showSimpleLoadingDialog(context);
+    showWaitingDialog(context);
     final res = await _verificationBloc.createCompanyVerification();
     await navigatorKey.currentState.maybePop();
     if (res.isSuccess) {

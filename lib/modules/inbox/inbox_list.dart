@@ -3,6 +3,7 @@ import 'package:datcao/modules/inbox/import/spin_loader.dart';
 import 'package:datcao/modules/inbox/inbox_model.dart';
 import 'package:datcao/modules/inbox/inbox_setting.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
@@ -15,6 +16,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/navigator.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'add_group.dart';
 import 'import/app_bar.dart';
 import 'import/color.dart';
 import 'import/font.dart';
@@ -86,6 +88,15 @@ class _InboxListState extends State<InboxList>
       if (e != AuthBloc.instance.userModel.avatar) return e;
     }).toList();
     listAvatar.remove(null);
+    if (group.pageName != null && group.pageId != null) {
+      return CircleAvatar(
+        radius: 21,
+        backgroundColor: Colors.white,
+        backgroundImage: group.image != null
+            ? CachedNetworkImageProvider(group.image ?? '')
+            : AssetImage('assets/image/default_avatar.png'),
+      );
+    }
     if (listAvatar.length > 1) {
       return CircleAvatar(
         radius: 21,
@@ -159,6 +170,15 @@ class _InboxListState extends State<InboxList>
         bgColor: Colors.white,
         actions: [
           Center(
+            child: IconButton(
+              splashColor: Colors.white,
+              onPressed: () {
+                AddGroup.navigate();
+              },
+              icon: Icon(Icons.group_add_rounded),
+            ),
+          ),
+          Center(
               child: AnimatedSearchBar(
             onSearch: (val) {},
             onSubmit: (val) {
@@ -174,15 +194,6 @@ class _InboxListState extends State<InboxList>
             },
             controller: _searchC,
           )),
-          // Center(
-          //   child: IconButton(
-          //     splashColor: Colors.white,
-          //     onPressed: () {
-          //       InboxSettingPage.navigate();
-          //     },
-          //     icon: Icon(Icons.settings_outlined),
-          //   ),
-          // ),
         ],
       ),
       body: Column(
@@ -262,13 +273,44 @@ class _InboxListState extends State<InboxList>
                       borderRadius: BorderRadius.circular(25),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 5),
-                    child: Center(
-                      child: Text(
-                        'Đang chờ',
-                        style: ptTitle().copyWith(
-                            color:
-                                tabIndex == 2 ? Colors.white : Colors.black54),
-                      ),
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Text(
+                            'Đang chờ',
+                            style: ptTitle().copyWith(
+                                color: tabIndex == 2
+                                    ? Colors.white
+                                    : Colors.black54),
+                          ),
+                        ),
+                        if (waitingGroups.length > 0)
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              padding: EdgeInsets.all(2.4),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              constraints: BoxConstraints(
+                                minWidth: 17,
+                                minHeight: 17,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  waitingGroups.length.toString(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 9.5,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          )
+                      ],
                     ),
                   ),
                 ),
@@ -277,7 +319,7 @@ class _InboxListState extends State<InboxList>
           ),
           isSearching
               ? Padding(
-                  padding: const EdgeInsets.only(top: 150),
+                  padding: EdgeInsets.only(top: 200),
                   child: kLoadingSpinner,
                 )
               : Expanded(
@@ -317,12 +359,17 @@ class _InboxListState extends State<InboxList>
                         itemCount: groups.length,
                         itemBuilder: (context, index) {
                           final group = groups[index];
-                          final String nameGroup = group.users
+                          String nameGroup = group.users
                               .where((element) =>
                                   element.id != _authBloc.userModel.id)
                               .toList()
                               .map((e) => e.name)
                               .join(', ');
+                          if (group.pageName != null &&
+                              group.pageId != null &&
+                              !PagesBloc.instance.pageCreated
+                                  .any((e) => e.id == group.pageId))
+                            nameGroup = group.pageName;
                           return _buildChatTile(group, nameGroup);
                         },
                         separatorBuilder: (context, index) => Divider(
@@ -346,9 +393,9 @@ class _InboxListState extends State<InboxList>
         final user = friends[index];
         return GestureDetector(
             onTap: () async {
-              showSimpleLoadingDialog(context);
-              await InboxBloc.instance.navigateToChatWith(context, user.name,
-                  user.avatar, DateTime.now(), user.avatar, [
+              showWaitingDialog(context);
+              await InboxBloc.instance.navigateToChatWith(
+                  user.name, user.avatar, DateTime.now(), user.avatar, [
                 AuthBloc.instance.userModel.id,
                 user.id,
               ], [
@@ -385,12 +432,15 @@ class _InboxListState extends State<InboxList>
                         itemCount: waitingGroups.length,
                         itemBuilder: (context, index) {
                           final group = waitingGroups[index];
-                          final String nameGroup = group.users
+                          String nameGroup = group.users
                               .where((element) =>
                                   element.id != _authBloc.userModel.id)
                               .toList()
                               .map((e) => e.name)
                               .join(', ');
+                          if (group.pageName != null && group.pageId != null)
+                            nameGroup = group.pageName;
+
                           return _buildChatTile(group, nameGroup);
                         },
                         separatorBuilder: (context, index) => Divider(

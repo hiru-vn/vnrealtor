@@ -13,20 +13,21 @@ class NotificationModel {
   String createdAt;
   String updatedAt;
 
-  NotificationModel(
-      {this.id,
-      this.type,
-      this.title,
-      this.body,
-      this.html,
-      this.seen,
-      this.seenAt,
-      this.data,
-      this.image,
-      this.toUserId,
-      this.fromUserId,
-      this.createdAt,
-      this.updatedAt,});
+  NotificationModel({
+    this.id,
+    this.type,
+    this.title,
+    this.body,
+    this.html,
+    this.seen,
+    this.seenAt,
+    this.data,
+    this.image,
+    this.toUserId,
+    this.fromUserId,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   NotificationModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];

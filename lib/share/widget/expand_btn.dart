@@ -34,14 +34,13 @@ class ExpandBtn extends StatelessWidget {
         color: color ?? ptPrimaryColor(context),
         onPressed: onPress,
         child: isLoading
-            ? SizedBox(
-                width: 20,
+            ? kLoadingSpinner
+            : SizedBox(
                 height: 20,
-                child: CircularProgressIndicator(),
-              )
-            : Text(
-                text,
-                style: ptButton().copyWith(color: textColor ?? Colors.white),
+                child: Text(
+                  text,
+                  style: ptButton().copyWith(color: textColor ?? Colors.white),
+                ),
               ),
       ),
     );

@@ -44,9 +44,7 @@ class _SuggestListPagesState extends State<SuggestListPages> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: Text(
-                    AuthBloc.firstLogin
-                        ? 'Chào mừng, ${authBloc.userModel.name}'
-                        : 'Gợi ý trang cho bạn',
+                    'Gợi ý trang cho bạn',
                     style: ptBigTitle().copyWith(color: Colors.black),
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'package:datcao/modules/model/setting.dart';
+import './media_post.dart';
 
 class UserModel {
   String id;
@@ -17,6 +18,7 @@ class UserModel {
   List<String> followingIds;
   List<String> fastFollowIds;
   List<String> savedPostIds;
+  List<String> groupIds;
   int totalPost;
   int notiCount;
   String description;
@@ -25,6 +27,7 @@ class UserModel {
   bool isVerify;
   int messNotiCount;
   bool isMod;
+  DynamicLink dynamicLink;
 
   UserModel(
       {this.id,
@@ -44,12 +47,14 @@ class UserModel {
       this.notiCount,
       this.followingIds,
       this.savedPostIds,
+      this.groupIds,
       this.description,
       this.facebookUrl,
       this.setting,
       this.messNotiCount,
       this.isVerify,
-      this.isMod});
+      this.isMod,
+      this.dynamicLink});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -67,6 +72,7 @@ class UserModel {
     updatedAt = json['updatedAt'];
     totalPost = json['totalPost'] ?? 0;
     avatar = json['avatar'];
+    groupIds = json['groupIds'] != null ? json['groupIds'].cast<String>() : [];
     followerIds =
         json['followerIds'] != null ? json['followerIds'].cast<String>() : [];
     followingIds =
@@ -86,6 +92,9 @@ class UserModel {
           .where((element) =>
               !(json['followingIds'].cast<String>() as List).contains(element))
           .toList();
+    dynamicLink = json['dynamicLink'] == null
+        ? null
+        : DynamicLink.fromJson(json['dynamicLink']);
   }
 
   Map<String, dynamic> toJson() {

@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
 
   _submit() async {
     if (!_formKey.currentState.validate()) return;
-    showSimpleLoadingDialog(context);
+    showWaitingDialog(context);
     try {
       final res = await _authBloc.signIn(_nameC.text, _passC.text);
       if (res.isSuccess) {

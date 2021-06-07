@@ -80,7 +80,7 @@ class Validator {
 
 class TextFieldValidator {
   static String notEmptyValidator(String string) {
-    if (string.trim().isEmpty) return 'Vui lòng điền thông tin';
+    if (string?.trim()?.isEmpty ?? false) return 'Vui lòng điền thông tin';
     return null;
   }
 
