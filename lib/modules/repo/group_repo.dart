@@ -95,7 +95,7 @@ class GroupRepo {
       double locationLong) async {
     String data = '''
       name: "${name ?? ''}"
-    	privacy: "${privacy ?? ''}"
+    	privacy: $privacy
       description: "${description ?? ''}"
       coverImage: "${coverImage ?? ''}"
       address: "${address ?? ''}"
