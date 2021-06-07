@@ -146,8 +146,7 @@ class _GroupPageState extends State<GroupPage> {
                   }),
                   SizedBox(width: 25),
                   _buildButton('Lời mời', Icons.mail_outline_rounded, () {
-                    // InviteGroup.navigate();
-                    showToast('Chưa phát triển', context);
+                    InviteGroup.navigate();
                   }, counter: 4),
                   SizedBox(width: 12),
                 ]),

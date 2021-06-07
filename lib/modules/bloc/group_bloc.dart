@@ -302,7 +302,10 @@ class GroupBloc extends ChangeNotifier {
   Future<BaseResponse> getListInviteGroupNotification() async {
     try {
       final res = await NotificationRepo().getListNotification(
-          filter: GraphqlFilter(limit: 10, filter: '{tag: "INVITE_GROUP"}'));
+          filter: GraphqlFilter(
+              limit: 10,
+              filter:
+                  '{tag: "INVITE_GROUP", toUserId: "${AuthBloc.instance.userModel.id}"}'));
       final List listRaw = res['data'];
       invites = listRaw.map((e) => NotificationModel.fromJson(e)).toList();
       return BaseResponse.success(invites);

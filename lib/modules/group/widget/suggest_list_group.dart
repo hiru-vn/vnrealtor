@@ -97,20 +97,14 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          // ProfileOtherPage.navigate(
-                          //     widget.users[index]);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text(
-                            groupBloc.suggestGroup[index].privacy
-                                ? 'Nhóm kín'
-                                : 'Công khai' +
-                                    ' • ${groupBloc.suggestGroup[index].countMember} thành viên',
-                            style: ptTiny().copyWith(color: Colors.black),
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          groupBloc.suggestGroup[index].privacy
+                              ? 'Nhóm kín'
+                              : 'Công khai' +
+                                  ' • ${groupBloc.suggestGroup[index].countMember} thành viên',
+                          style: ptTiny().copyWith(color: Colors.black),
                         ),
                       ),
                     ],

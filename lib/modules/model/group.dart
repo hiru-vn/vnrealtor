@@ -13,6 +13,7 @@ class GroupModel {
   String ownerId;
   List<String> memberIds;
   List<String> adminIds;
+  List<String> pendingMemberIds;
   bool isMember;
   bool isAdmin;
   bool isOwner;
@@ -48,7 +49,8 @@ class GroupModel {
       this.memberIn24h,
       this.postIn24h,
       this.totalPost,
-      this.censor});
+      this.censor,
+      this.pendingMemberIds});
 
   GroupModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -84,7 +86,8 @@ class GroupModel {
     memberIn24h = json['memberIn24h'];
     postIn24h = json['postIn24h'];
     totalPost = json['totalPost'];
-    censor = json['censor']??false;
+    censor = json['censor'] ?? false;
+    pendingMemberIds = censor ? json['pendingMemberIds'] : [];
   }
 
   Map<String, dynamic> toJson() {
