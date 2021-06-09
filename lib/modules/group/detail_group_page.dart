@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/group/create_post_group_page.dart';
@@ -14,6 +15,7 @@ import 'package:datcao/modules/post/tag_user_list_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './widget/setting_group_bottom_sheet.dart';
+import 'widget/choose_user_popup.dart';
 
 class DetailGroupPage extends StatefulWidget {
   static Future navigate(GroupModel groupModel, {String groupId}) {
@@ -41,6 +43,26 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
   @override
   void initState() {
     group = widget.groupModel;
+
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_groupBloc == null) {
+      _groupBloc = Provider.of(context);
+      if (group == null) {
+        _loadGroup();
+      } else {
+        _loadPendingUsers();
+      }
+      _loadPost();
+    }
+    super.didChangeDependencies();
+  }
+
+  _loadPendingUsers() {
+    if (!group.isAdmin && !group.isOwner) return;
     UserBloc.instance
         .getListUserIn(widget.groupModel.pendingMemberIds.sublist(
             0,
@@ -54,20 +76,6 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
         });
       }
     });
-
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
-      if (group == null) {
-        _loadGroup();
-      }
-      _loadPost();
-    }
-    super.didChangeDependencies();
   }
 
   _loadGroup() async {
@@ -76,6 +84,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
       setState(() {
         group = res.data;
       });
+      _loadPendingUsers();
     } else {
       showToast('Có lỗi khi load dữ liệu', context);
     }
@@ -303,7 +312,14 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
               ],
             ),
             SizedBox(height: 12),
-            if (!group.isMember && !group.isOwner)
+            if (group.pendingMemberIds.contains(AuthBloc.instance.userModel.id))
+              ExpandBtn(
+                  color: Colors.white,
+                  textColor: ptPrimaryColor(context),
+                  text: 'Đang chờ duyệt yêu cầu',
+                  onPress: () {},
+                  borderRadius: 5)
+            else if (!group.isMember && !group.isOwner)
               ExpandBtn(
                   text: 'Tham gia',
                   isLoading: isLoadingBtn,
@@ -424,12 +440,35 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                                 .toList(),
                           ))
                         : Spacer(),
-                    Row(
-                      children: [
-                        SizedBox(width: 10),
-                        Text('Chi tiết', style: ptSmall()),
-                        Icon(Icons.chevron_right_rounded)
-                      ],
+                    GestureDetector(
+                      onTap: () async {
+                        final users = await showChooseUsersPopup(
+                            context, group.pendingMemberIds, 'Yêu cầu tham gia',
+                            submitText: 'Duyệt');
+
+                        if (users.length > 0) {
+                          showWaitingDialog(context);
+                          final res = await _groupBloc.adminAcceptMem(
+                              group.id, users.map((e) => e.id).toList());
+                          await navigatorKey.currentState.maybePop();
+                          if (res.isSuccess) {
+                            showToast(
+                                'Thêm ${users.length} thành viên mới', context,
+                                isSuccess: true);
+                            setState(() {
+                              if (res.data is GroupModel) group = res.data;
+                            });
+                          } else
+                            showToast(res.errMessage, context);
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          SizedBox(width: 10),
+                          Text('Chi tiết', style: ptSmall()),
+                          Icon(Icons.chevron_right_rounded)
+                        ],
+                      ),
                     )
                   ],
                 ),

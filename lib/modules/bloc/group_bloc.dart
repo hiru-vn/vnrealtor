@@ -26,25 +26,32 @@ class GroupBloc extends ChangeNotifier {
   List<NotificationModel> invites;
 
   Future init() async {
-    getListGroup(
-            filter: GraphqlFilter(
-                limit: 20,
-                order: "{updatedAt: -1}",
-                filter: "{ownerId: \"${AuthBloc.instance.userModel.id}\"}"))
-        .then((res) {
-      if (res.isSuccess) {
-        myGroups = res.data;
-      }
-    });
-    getListGroupIn(AuthBloc.instance.userModel.groupIds).then((res) {
-      if (res.isSuccess) {
-        followingGroups = (res.data as List<GroupModel>)
-            .where((element) => !element.isOwner)
-            .toList();
-      }
-    });
     getNewFeedGroup(filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
     getSuggestGroup();
+    getMyGroup();
+  }
+
+  Future getMyGroup() async {
+    await Future.wait([
+      getListGroup(
+              filter: GraphqlFilter(
+                  limit: 20,
+                  order: "{updatedAt: -1}",
+                  filter: "{ownerId: \"${AuthBloc.instance.userModel.id}\"}"))
+          .then((res) {
+        if (res.isSuccess) {
+          myGroups = res.data;
+        }
+      }),
+      getListGroupIn(AuthBloc.instance.userModel.groupIds).then((res) {
+        if (res.isSuccess) {
+          followingGroups = (res.data as List<GroupModel>)
+              .where((element) => !element.isOwner)
+              .toList();
+        }
+      })
+    ]);
+    notifyListeners();
   }
 
   Future<BaseResponse> getListGroup({GraphqlFilter filter}) async {
@@ -216,6 +223,17 @@ class GroupBloc extends ChangeNotifier {
     try {
       final res = await GroupRepo().kickMem(id, userIds);
       return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e?.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> adminAcceptMem(String id, List<String> userIds) async {
+    try {
+      final res = await GroupRepo().adminAcceptMem(id, userIds);
+      return BaseResponse.success(GroupModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.message ?? e.toString());
     } finally {
