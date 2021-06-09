@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:datcao/modules/bloc/group_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/group/create_post_group_page.dart';
 import 'package:datcao/modules/group/info_group_page.dart';
-import 'package:datcao/modules/group/invite_group.dart';
 import 'package:datcao/modules/group/member_page.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/post.dart';
@@ -36,10 +36,24 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
   List<PostModel> posts;
   GroupModel group;
   bool isLoadingBtn = false;
+  List<UserModel> pendingUsers;
 
   @override
   void initState() {
     group = widget.groupModel;
+    UserBloc.instance
+        .getListUserIn(widget.groupModel.pendingMemberIds.sublist(
+            0,
+            widget.groupModel.pendingMemberIds.length > 5
+                ? 5
+                : widget.groupModel.pendingMemberIds.length))
+        .then((res) {
+      if (res.isSuccess) {
+        setState(() {
+          pendingUsers = res.data;
+        });
+      }
+    });
 
     super.initState();
   }
@@ -367,6 +381,64 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
         ),
       ),
       SizedBox(height: 14),
+      if (group.censor && (group.isAdmin || group.isOwner)) ...[
+        Container(
+          color: Colors.white,
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Yêu cầu tham gia nhóm',
+                  style: ptBigBody().copyWith(fontSize: 14.6)),
+              SizedBox(height: 2),
+              SizedBox(
+                height: 25,
+                child: Row(
+                  children: [
+                    group.pendingMemberIds != null &&
+                            group.pendingMemberIds.length > 0
+                        ? Text(
+                            'Có ${group.pendingMemberIds.length} yêu cầu tham gia')
+                        : Text('Không có yêu cầu tham gia mới'),
+                    SizedBox(width: 10),
+                    pendingUsers != null
+                        ? Expanded(
+                            child: Stack(
+                            fit: StackFit.expand,
+                            children: pendingUsers
+                                .map<Widget>((e) => Positioned(
+                                    height: 25,
+                                    left:
+                                        5 * pendingUsers.indexOf(e).toDouble(),
+                                    child: Center(
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        radius: 9,
+                                        backgroundImage: e.avatar != null
+                                            ? CachedNetworkImageProvider(
+                                                e.avatar)
+                                            : AssetImage(
+                                                'assets/image/default_avatar.png'),
+                                      ),
+                                    )))
+                                .toList(),
+                          ))
+                        : Spacer(),
+                    Row(
+                      children: [
+                        SizedBox(width: 10),
+                        Text('Chi tiết', style: ptSmall()),
+                        Icon(Icons.chevron_right_rounded)
+                      ],
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        SizedBox(height: 14),
+      ],
       Container(
         color: Colors.white,
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),

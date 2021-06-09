@@ -87,7 +87,12 @@ class GroupModel {
     postIn24h = json['postIn24h'];
     totalPost = json['totalPost'];
     censor = json['censor'] ?? false;
-    pendingMemberIds = censor ? json['pendingMemberIds'] : [];
+    if (json['pendingMemberIds'] != null && censor == true) {
+      pendingMemberIds = new List<String>();
+      json['pendingMemberIds'].forEach((v) {
+        pendingMemberIds.add(v);
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {

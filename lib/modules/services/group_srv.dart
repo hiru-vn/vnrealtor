@@ -15,6 +15,7 @@ addressByLatLon: String
 ownerId: ID
 memberIds: [ID]
 adminIds
+pendingMemberIds
 location: Mixed
 isMember: Boolean
 isOwner: Boolean
