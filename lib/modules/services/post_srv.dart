@@ -9,6 +9,7 @@ commentIds
 userId
 like
 userLikeIds
+postShareId
 share
 userShareIds
 locationLat

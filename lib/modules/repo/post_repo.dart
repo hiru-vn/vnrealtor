@@ -251,6 +251,21 @@ ${postFragment.replaceAll('\n', ' ')}
     return res["createPost"];
   }
 
+  Future sharePost(String postId, {String groupId, String pageId}) async {
+    String data = 'postId: "$postId"';
+
+    if (groupId != null) {
+      data += '\ngroupId: "$groupId"';
+    }
+    if (pageId != null) {
+      data += '\npageId: "$pageId"';
+    }
+    final res = await PostSrv().mutate('sharePost', '$data', fragment: '''
+${postFragment.replaceAll('\n', ' ')}
+    ''');
+    return res["sharePost"];
+  }
+
   Future deletePost(String postId) async {
     final res = await PostSrv().delete(postId);
     return res;
@@ -466,6 +481,7 @@ content
 mediaPostIds
 commentIds
 userId
+postShareId
 like
 userLikeIds
 share

@@ -386,6 +386,23 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> sharePost(String postId,
+      {String groupId, String pageId}) async {
+    try {
+      final res =
+          await PostRepo().sharePost(postId, groupId: groupId, pageId: pageId);
+      feed.insert(0, PostModel.fromJson(res));
+      if (groupId == null && pageId == null)
+        myPosts.insert(0, PostModel.fromJson(res));
+      return BaseResponse.success(PostModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      // wait to reload post
+      Future.delayed(Duration(seconds: 1), () => notifyListeners());
+    }
+  }
+
   Future<BaseResponse> createComment(String content,
       {String postId, String mediaPostId, List<String> tagUserIds}) async {
     try {

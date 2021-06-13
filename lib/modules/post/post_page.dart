@@ -217,49 +217,6 @@ class _PostPageState extends State<PostPage> {
                             scrollDirection: Axis.horizontal,
                           ),
                         ),
-                      // if (isFilterDistance)
-                      //   Align(
-                      //     alignment: Alignment.centerRight,
-                      //     child: Container(
-                      //       padding: const EdgeInsets.only(
-                      //           top: 2, bottom: 2, left: 7, right: 1),
-                      //       margin: EdgeInsets.only(right: 8, top: 8),
-                      //       decoration: BoxDecoration(
-                      //           borderRadius: BorderRadius.circular(5),
-                      //           border: Border.all(color: Colors.black12)),
-                      //       child: DropdownButton(
-                      //           value: distance,
-                      //           isDense: true,
-                      //           style: ptBody().copyWith(color: Colors.black87),
-                      //           items: [
-                      //             DropdownMenuItem(
-                      //               child: Text('Bán kính 10 km',
-                      //                   style: ptSmall()
-                      //                       .copyWith(color: Colors.black87)),
-                      //               value: 10,
-                      //             ),
-                      //             DropdownMenuItem(
-                      //               child: Text('Bán kính 20 km',
-                      //                   style: ptSmall()
-                      //                       .copyWith(color: Colors.black87)),
-                      //               value: 20,
-                      //             ),
-                      //             DropdownMenuItem(
-                      //               child: Text('Bán kính 50 km',
-                      //                   style: ptSmall()
-                      //                       .copyWith(color: Colors.black87)),
-                      //               value: 50,
-                      //             ),
-                      //           ],
-                      //           underline: SizedBox.shrink(),
-                      //           onChanged: (val) {
-                      //             setState(() {
-                      //               distance = val;
-                      //             });
-                      //             _getPostLocal();
-                      //           }),
-                      //     ),
-                      //   ),
                       _postBloc.feed.length == 0
                           ? EmptyWidget(
                               assetImg: 'assets/image/no_post.png',
@@ -391,32 +348,6 @@ class CreatePostCard extends StatelessWidget {
               Divider(
                 height: 10,
               ),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(
-            //     horizontal: 20,
-            //   ),
-            //   child: Row(
-            //     children: [
-            //       SizedBox(
-            //         width: 6,
-            //       ),
-            //       Image.asset('assets/image/map_icon.png'),
-            //       SizedBox(
-            //         width: 6,
-            //       ),
-            //       Text(
-            //         // 'Bài viết nổi bật',
-            //         '',
-            //         style: ptBody().copyWith(
-            //           fontWeight: FontWeight.w600,
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            // SizedBox(
-            //   height: 10,
-            // ),
             postBloc.isLoadStory
                 ? StorySkeleton()
                 : postBloc.stories.length == 0
@@ -599,8 +530,6 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                     top: 9,
                     right: 11,
                     child: Container(
-                      // width: 8,
-                      // height: 8,
                       padding: EdgeInsets.all(count.length == 2 ? 3.5 : 5),
                       decoration: BoxDecoration(
                         color: Colors.red,
