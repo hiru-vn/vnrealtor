@@ -1,7 +1,15 @@
+import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
+import 'package:datcao/modules/inbox/share_friend.dart';
+import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
+
+import 'share_pick_list.dart';
 
 class SharePost extends StatefulWidget {
   final PostModel post;
@@ -50,8 +58,8 @@ class _SharePostState extends State<SharePost> {
             children: [
               _builtTile(Icons.add_circle_outline_rounded,
                   'Chia sẻ trên trang cá nhân', _onShareUser),
-              _builtTile(MdiIcons.chatOutline, 'Chia sẻ trong tin nhắn',
-                  _onShareGroup),
+              _builtTile(
+                  MdiIcons.chatOutline, 'Chia sẻ trong tin nhắn', _onShareUser),
               _builtTile(Icons.flag_outlined, 'Chia sẻ trên trang của tôi',
                   _onSharePage),
               _builtTile(MdiIcons.accountGroupOutline,
@@ -67,31 +75,61 @@ class _SharePostState extends State<SharePost> {
 
   _onShareUser() async {
     showWaitingDialog(context);
-    final res = await _postBloc.sharePost(widget.post.id);
-    navigatorKey.currentState.maybePop();
-    if (res.isSuccess)
-      navigatorKey.currentState.maybePop();
-    else
-      showToast(res.errMessage, context);
+    await InboxBloc.instance.init();
+    await navigatorKey.currentState.maybePop();
+    final res = await ShareFriendPost.navigate(widget.post);
+    if (res) await navigatorKey.currentState.maybePop();
   }
 
   _onSharePage() async {
     showWaitingDialog(context);
-    final res = await _postBloc.sharePost(widget.post.id);
-    navigatorKey.currentState.maybePop();
-    if (res.isSuccess)
-      navigatorKey.currentState.maybePop();
-    else
+    BaseResponse res = await PagesBloc.instance.getMyPage();
+    await navigatorKey.currentState.maybePop();
+    if (!res.isSuccess) {
+      showToast(res.errMessage, context);
+      return;
+    }
+    final list = res.data as List<PagesCreate>;
+    int index = await showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return SharePickList<PagesCreate>('Chọn trang', list,
+            (index) => list[index].name, (index) => list[index].avartar);
+      },
+      backgroundColor: Colors.transparent,
+    );
+    if (index == null) return;
+    showWaitingDialog(context);
+    res = await _postBloc.sharePost(widget.post.id, pageId: list[index].id);
+    await navigatorKey.currentState.maybePop();
+    if (res.isSuccess) {
+      await navigatorKey.currentState.maybePop();
+      await navigatorKey.currentState.maybePop();
+    } else
       showToast(res.errMessage, context);
   }
 
   _onShareGroup() async {
+    final list = GroupBloc.instance.myGroups;
+    int index = await showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return SharePickList<GroupModel>('Chọn nhóm', list,
+            (index) => list[index].name, (index) => list[index].coverImage);
+      },
+      backgroundColor: Colors.transparent,
+    );
+    if (index == null) return;
     showWaitingDialog(context);
-    final res = await _postBloc.sharePost(widget.post.id);
-    navigatorKey.currentState.maybePop();
-    if (res.isSuccess)
-      navigatorKey.currentState.maybePop();
-    else
+    final res =
+        await _postBloc.sharePost(widget.post.id, groupId: list[index].id);
+    await navigatorKey.currentState.maybePop();
+    if (res.isSuccess) {
+      await navigatorKey.currentState.maybePop();
+      await navigatorKey.currentState.maybePop();
+    } else
       showToast(res.errMessage, context);
   }
 

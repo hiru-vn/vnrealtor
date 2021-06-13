@@ -5,13 +5,11 @@ import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/inbox/import/spin_loader.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
-import 'package:datcao/modules/pages/models/followModel.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
-import 'package:datcao/utils/call_kit.dart';
 import 'package:flutter/material.dart';
 import './import/dash_chat/dash_chat.dart';
 import 'package:path/path.dart' as path;
@@ -672,7 +670,7 @@ class _InboxChatState extends State<InboxChat> {
                     return MediaGroupWidgetNetwork(
                         urls: files,
                         onShare: () {
-                          ShareFriend.navigate(files);
+                          ShareFriendMedias.navigate(files);
                         },
                         shareButtonRightSide:
                             messages.user.uid != _authBloc.userModel.id);
