@@ -59,7 +59,7 @@ class _SharePostState extends State<SharePost> {
               _builtTile(Icons.add_circle_outline_rounded,
                   'Chia sẻ trên trang cá nhân', _onShareUser),
               _builtTile(
-                  MdiIcons.chatOutline, 'Chia sẻ trong tin nhắn', _onShareUser),
+                  MdiIcons.chatOutline, 'Chia sẻ trong tin nhắn', _onShareMessage),
               _builtTile(Icons.flag_outlined, 'Chia sẻ trên trang của tôi',
                   _onSharePage),
               _builtTile(MdiIcons.accountGroupOutline,
@@ -74,6 +74,16 @@ class _SharePostState extends State<SharePost> {
   }
 
   _onShareUser() async {
+    showWaitingDialog(context);
+    final res = await _postBloc.sharePost(widget.post.id);
+    navigatorKey.currentState.maybePop();
+    if (res.isSuccess)
+      navigatorKey.currentState.maybePop();
+    else
+      showToast(res.errMessage, context);
+  }
+
+  _onShareMessage() async {
     showWaitingDialog(context);
     await InboxBloc.instance.init();
     await navigatorKey.currentState.maybePop();
