@@ -251,7 +251,12 @@ ${postFragment.replaceAll('\n', ' ')}
     return res["createPost"];
   }
 
-  Future sharePost(String postId, {String groupId, String pageId}) async {
+  Future sharePost(String postId,
+      {String groupId,
+      String pageId,
+      List<String> tagUserIds,
+      List<String> hashTag,
+      String content}) async {
     String data = 'postId: "$postId"';
 
     if (groupId != null) {
@@ -260,6 +265,24 @@ ${postFragment.replaceAll('\n', ' ')}
     if (pageId != null) {
       data += '\npageId: "$pageId"';
     }
+
+    String subData = '';
+    if (tagUserIds != null) {
+      subData +=
+          '\ntagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}';
+    }
+    if (hashTag != null) {
+      subData +=
+          '\nhashTag: ${GraphqlHelper.listStringToGraphqlString(hashTag)}';
+    }
+    if (content != null) {
+      subData += '''
+      \ncontent: """
+      ${content.toString()}
+      """
+      ''';
+    }
+    data += ", data: {$subData}";
     final res = await PostSrv().mutate('sharePost', '$data', fragment: '''
 ${postFragment.replaceAll('\n', ' ')}
     ''');

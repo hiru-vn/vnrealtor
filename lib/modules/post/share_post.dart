@@ -6,6 +6,7 @@ import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
+import 'package:datcao/modules/post/share_post_content.dart';
 import 'package:datcao/share/function/share_to.dart';
 import 'package:datcao/share/import.dart';
 
@@ -76,7 +77,7 @@ class _SharePostState extends State<SharePost> {
   _onShareUser() async {
     showWaitingDialog(context);
     final res = await _postBloc.sharePost(widget.post.id);
-    await navigatorKey.currentState.maybePop();
+    closeLoading();
     if (res.isSuccess)
       await navigatorKey.currentState.maybePop();
     else
@@ -86,7 +87,7 @@ class _SharePostState extends State<SharePost> {
   _onShareMessage() async {
     showWaitingDialog(context);
     await InboxBloc.instance.init();
-    await navigatorKey.currentState.maybePop();
+    closeLoading();
     final res = await ShareFriendPost.navigate(widget.post);
     if (res) await navigatorKey.currentState.maybePop();
   }
@@ -94,7 +95,7 @@ class _SharePostState extends State<SharePost> {
   _onSharePage() async {
     showWaitingDialog(context);
     BaseResponse res = await PagesBloc.instance.getMyPage();
-    await navigatorKey.currentState.maybePop();
+    closeLoading();
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
       return;
@@ -110,9 +111,17 @@ class _SharePostState extends State<SharePost> {
       backgroundColor: Colors.transparent,
     );
     if (index == null) return;
+    // List postOptions = await showModalBottomSheet(
+    //   isScrollControlled: true,
+    //   context: context,
+    //   builder: (context) {
+    //     return SharePostContent(widget.post);
+    //   },
+    //   backgroundColor: Colors.transparent,
+    // );
     showWaitingDialog(context);
     res = await _postBloc.sharePost(widget.post.id, pageId: list[index].id);
-    await navigatorKey.currentState.maybePop();
+    closeLoading();
     if (res.isSuccess) {
       await navigatorKey.currentState.maybePop();
       await navigatorKey.currentState.maybePop();
@@ -124,6 +133,7 @@ class _SharePostState extends State<SharePost> {
     final list = GroupBloc.instance.myGroups;
     int index = await showModalBottomSheet(
       isScrollControlled: true,
+      useRootNavigator: true,
       context: context,
       builder: (context) {
         return SharePickList<GroupModel>('Chọn nhóm', list,
@@ -132,12 +142,24 @@ class _SharePostState extends State<SharePost> {
       backgroundColor: Colors.transparent,
     );
     if (index == null) return;
+    List postOptions = await showModalBottomSheet(
+      isScrollControlled: true,
+      useRootNavigator: true,
+      context: context,
+      builder: (context) {
+        return SharePostGroupContent(widget.post, list[index]);
+      },
+      backgroundColor: Colors.transparent,
+    );
+    if (postOptions == null) return;
+    await Future.delayed(Duration(milliseconds: 300));
     showWaitingDialog(context);
-    final res =
-        await _postBloc.sharePost(widget.post.id, groupId: list[index].id);
-    await navigatorKey.currentState.maybePop();
+    final res = await _postBloc.sharePost(widget.post.id,
+        groupId: list[index].id,
+        content: postOptions[0],
+        tagUserIds: postOptions[1]);
+    closeLoading();
     if (res.isSuccess) {
-      await navigatorKey.currentState.maybePop();
       await navigatorKey.currentState.maybePop();
     } else
       showToast(res.errMessage, context);

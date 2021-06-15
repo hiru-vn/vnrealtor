@@ -20,6 +20,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:flutter/services.dart';
 import 'share/widget/empty_widget.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 final _sentry = SentryClient(
     dsn:
@@ -156,6 +157,8 @@ class _MyAppState extends State<MyApp> {
                       )
                     : OverlaySupport(
                         child: MaterialApp(
+                          builder: BotToastInit(), //1. call BotToastInit
+                          navigatorObservers: [BotToastNavigatorObserver()],
                           debugShowCheckedModeBanner: false,
                           localizationsDelegates: [
                             const AppInternalizationlegate(),

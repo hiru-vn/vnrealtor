@@ -109,7 +109,7 @@ class _AddGroupState extends State<AddGroup> {
                         .toList(),
                     groupName:
                         (name.trim() == null || name.isEmpty) ? hint : name);
-                navigatorKey.currentState.maybePop();
+                closeLoading();
               },
               behavior: HitTestBehavior.translucent,
               child: Padding(

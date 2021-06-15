@@ -59,6 +59,19 @@ class _PostWidgetState extends State<PostWidget> {
   }
 
   @override
+  void didUpdateWidget(covariant PostWidget oldWidget) {
+    if (widget.post.postShareId != null && _sharePost == null) {
+      _postBloc.getOnePost(widget.post.postShareId).then((res) {
+        if (res.isSuccess)
+          setState(() {
+            _sharePost = res.data;
+          });
+      });
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }
@@ -512,7 +525,7 @@ class _PostWidgetState extends State<PostWidget> {
                       AuthBloc.instance.userModel.avatar,
                       widget.post.user.avatar,
                     ]);
-                    navigatorKey.currentState.maybePop();
+                    closeLoading();
                   }
                   if (val == 'Báo cáo') {
                     showReport(widget.post, context);
@@ -761,7 +774,7 @@ class _PostWidgetState extends State<PostWidget> {
                       AuthBloc.instance.userModel.avatar,
                       widget.post.user.avatar,
                     ]);
-                    navigatorKey.currentState.maybePop();
+                    closeLoading();
                   }
                   if (val == 'Báo cáo') {
                     showReport(widget.post, context);

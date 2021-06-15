@@ -594,7 +594,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                     AuthBloc.instance.userModel.avatar,
                                     widget.user.avatar,
                                   ]);
-                                  navigatorKey.currentState.maybePop();
+                                  closeLoading();
                                 },
                                 child: Container(
                                   padding: EdgeInsets.all(6),

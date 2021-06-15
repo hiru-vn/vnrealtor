@@ -151,7 +151,7 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                           showWaitingDialog(context);
                           final res = await _groupBloc.sendInviteGroupAdmin(
                               _group.id, _selectedUserIds);
-                          await navigatorKey.currentState.maybePop();
+                          closeLoading();
                           if (res.isSuccess) {
                             setState(() {
                               _group.adminIds.addAll(_selectedUserIds);
@@ -171,7 +171,7 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                           showWaitingDialog(context);
                           final res = await _groupBloc.kickMem(
                               _group.id, _selectedUserIds);
-                          await navigatorKey.currentState.maybePop();
+                          closeLoading();
                           if (res.isSuccess) {
                             setState(() {
                               _group.memberIds.removeWhere((e) =>

@@ -31,7 +31,7 @@ class _VerifyCompanyState extends State<VerifyCompany> {
     if (!_formKey.currentState.validate()) return;
     showWaitingDialog(context);
     final res = await _verificationBloc.createCompanyVerification();
-    await navigatorKey.currentState.maybePop();
+    closeLoading();
     if (res.isSuccess) {
       showToast('Gửi yêu cầu xác minh thành công', context, isSuccess: true);
       await navigatorKey.currentState.maybePop();

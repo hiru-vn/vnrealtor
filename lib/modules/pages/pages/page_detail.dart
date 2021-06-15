@@ -493,7 +493,7 @@ class _PageDetailState extends State<PageDetail> {
               ],
               pageName: widget.page.name,
               pageId: widget.page.id);
-          navigatorKey.currentState.maybePop();
+         closeLoading();
         },
       );
 

@@ -108,9 +108,9 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
     }
     showWaitingDialog(context);
     final res = await _groupBloc.sendInviteGroup(group?.id, users);
+    closeLoading();
     if (res.isSuccess) {
       showToast('Gửi lời mời thành công', context, isSuccess: true);
-      await navigatorKey.currentState.maybePop();
     } else {
       showToast(res.errMessage, context);
     }
@@ -450,7 +450,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                           showWaitingDialog(context);
                           final res = await _groupBloc.adminAcceptMem(
                               group.id, users.map((e) => e.id).toList());
-                          await navigatorKey.currentState.maybePop();
+                          closeLoading();
                           if (res.isSuccess) {
                             showToast(
                                 'Thêm ${users.length} thành viên mới', context,

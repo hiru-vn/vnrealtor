@@ -65,7 +65,7 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
         _position?.latitude,
         _position?.longitude);
 
-    await navigatorKey.currentState.maybePop();
+    closeLoading();
     if (res.isSuccess) {
       showToast('Cập nhật nhóm thành công', context, isSuccess: true);
       navigatorKey.currentState.maybePop();

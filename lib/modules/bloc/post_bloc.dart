@@ -387,10 +387,18 @@ class PostBloc extends ChangeNotifier {
   }
 
   Future<BaseResponse> sharePost(String postId,
-      {String groupId, String pageId}) async {
+      {String groupId,
+      String pageId,
+      String content,
+      List<String> tagUserIds,
+      List<String> hashTag}) async {
     try {
-      final res =
-          await PostRepo().sharePost(postId, groupId: groupId, pageId: pageId);
+      final res = await PostRepo().sharePost(postId,
+          groupId: groupId,
+          pageId: pageId,
+          content: content,
+          tagUserIds: tagUserIds,
+          hashTag: hashTag);
       feed.insert(0, PostModel.fromJson(res));
       if (groupId == null && pageId == null)
         myPosts.insert(0, PostModel.fromJson(res));

@@ -400,7 +400,7 @@ class _InboxListState extends State<InboxList>
                 AuthBloc.instance.userModel.avatar,
                 user.avatar,
               ]);
-              navigatorKey.currentState.maybePop();
+              closeLoading();
             },
             child: AbsorbPointer(child: PeopleWidget(friends[index])));
       },

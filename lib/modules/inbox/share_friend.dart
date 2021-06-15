@@ -149,7 +149,7 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
       showToast('Đã gửi đến ${tagUsers.length + tagGroups.length} người dùng',
           context,
           isSuccess: true);
-      await navigatorKey.currentState.maybePop();
+      closeLoading();
     } catch (e) {
       showToast(e.toString(), context);
     } finally {
@@ -574,7 +574,7 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
       showToast('Đã gửi đến ${tagUsers.length + tagGroups.length} người dùng',
           context,
           isSuccess: true);
-      await navigatorKey.currentState.maybePop();
+      closeLoading();
     } catch (e) {
       showToast(e.toString(), context);
     } finally {
