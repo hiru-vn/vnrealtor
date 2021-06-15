@@ -255,7 +255,6 @@ ${postFragment.replaceAll('\n', ' ')}
       {String groupId,
       String pageId,
       List<String> tagUserIds,
-      List<String> hashTag,
       String content}) async {
     String data = 'postId: "$postId"';
 
@@ -270,10 +269,6 @@ ${postFragment.replaceAll('\n', ' ')}
     if (tagUserIds != null) {
       subData +=
           '\ntagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}';
-    }
-    if (hashTag != null) {
-      subData +=
-          '\nhashTag: ${GraphqlHelper.listStringToGraphqlString(hashTag)}';
     }
     if (content != null) {
       subData += '''

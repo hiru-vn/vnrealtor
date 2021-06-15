@@ -88,13 +88,15 @@ class _PostWidgetState extends State<PostWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-                padding: EdgeInsets.all(12)
-                    .copyWith(bottom: 8, top: widget.isSharedPost ? 0 : 12),
+                padding: EdgeInsets.all(12).copyWith(
+                    bottom: widget.post.postShareId != null ? 0 : 8,
+                    top: widget.isSharedPost ? 0 : 12),
                 child: widget.post.group == null
                     ? _buildUserOrPageTile()
                     : _buildGroupTile()),
             Padding(
-              padding: const EdgeInsets.all(15).copyWith(top: 0, bottom: 5),
+              padding: const EdgeInsets.all(15).copyWith(
+                  top: 0, bottom: widget.post.postShareId != null ? 0 : 5),
               child: GestureDetector(
                 onTap: () {
                   PostDetail.navigate(widget.post);
@@ -467,7 +469,7 @@ class _PostWidgetState extends State<PostWidget> {
             ],
           ),
         ),
-        if (AuthBloc.instance.userModel != null)
+        if (AuthBloc.instance.userModel != null && !widget.isSharedPost)
           Center(
             child: PopupMenuButton(
                 padding: EdgeInsets.zero,
@@ -716,7 +718,7 @@ class _PostWidgetState extends State<PostWidget> {
         //     },
         //     child:
         //         SizedBox(width: 30, child: Icon(MdiIcons.fileLink))),
-        if (AuthBloc.instance.userModel != null)
+        if (AuthBloc.instance.userModel != null && !widget.isSharedPost)
           Center(
             child: PopupMenuButton(
                 padding: EdgeInsets.zero,
