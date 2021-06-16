@@ -26,7 +26,11 @@ class PostWidget extends StatefulWidget {
   final Function commentCallBack;
   final bool isSharedPost;
   final PostModel post;
-  PostWidget(this.post, {this.commentCallBack, this.isSharedPost = false});
+  final bool isInDetailPage;
+  PostWidget(this.post,
+      {this.commentCallBack,
+      this.isSharedPost = false,
+      this.isInDetailPage = false});
   @override
   _PostWidgetState createState() => _PostWidgetState();
 }
@@ -99,7 +103,7 @@ class _PostWidgetState extends State<PostWidget> {
                   top: 0, bottom: widget.post.postShareId != null ? 0 : 5),
               child: GestureDetector(
                 onTap: () {
-                  PostDetail.navigate(widget.post);
+                  if (!widget.isInDetailPage) PostDetail.navigate(widget.post);
                 },
                 child: Linkify(
                   onOpen: (link) async {
