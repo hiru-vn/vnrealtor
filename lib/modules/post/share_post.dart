@@ -111,19 +111,23 @@ class _SharePostState extends State<SharePost> {
       backgroundColor: Colors.transparent,
     );
     if (index == null) return;
-    // List postOptions = await showModalBottomSheet(
-    //   isScrollControlled: true,
-    //   context: context,
-    //   builder: (context) {
-    //     return SharePostContent(widget.post);
-    //   },
-    //   backgroundColor: Colors.transparent,
-    // );
+    List postOptions = await showModalBottomSheet(
+      isScrollControlled: true,
+      useRootNavigator: true,
+      context: context,
+      builder: (context) {
+        return SharePostPageContent(widget.post, list[index]);
+      },
+      backgroundColor: Colors.transparent,
+    );
+    if (postOptions == null) return;
     showWaitingDialog(context);
-    res = await _postBloc.sharePost(widget.post.id, pageId: list[index].id);
+    res = await _postBloc.sharePost(widget.post.id,
+        pageId: list[index].id,
+        content: postOptions[0],
+        tagUserIds: postOptions[1]);
     closeLoading();
     if (res.isSuccess) {
-      await navigatorKey.currentState.maybePop();
       await navigatorKey.currentState.maybePop();
     } else
       showToast(res.errMessage, context);
