@@ -1,6 +1,8 @@
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/post/post_widget.dart';
+import 'package:datcao/modules/post/tag_user_list_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -163,8 +165,8 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
                             .copyWith(bottom: 32),
                         child: HashTagTextField(
                           maxLength: 500,
-                          maxLines: 15,
-                          minLines: 8,
+                          maxLines: 5,
+                          minLines: 3,
                           controller: _contentC,
                           onChanged: (value) => setState(() {}),
                           basicStyle:
@@ -172,7 +174,7 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Nêu cảm nghĩ hoặc để trống...',
-                            hintStyle: ptBigTitle().copyWith(
+                            hintStyle: ptTitle().copyWith(
                                 color: Colors.black38,
                                 letterSpacing: 1,
                                 fontWeight: FontWeight.w500),
@@ -264,8 +266,38 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
                 ])),
               ),
             SizedBox(
-              height: 3.0,
+              height: 5.0,
             ),
+            Divider(height: 1),
+            GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (context) {
+                    return TagUserListPage('Gắn thẻ');
+                  },
+                  backgroundColor: Colors.transparent,
+                ).then((value) => setState(() {
+                      _tagUsers = value ?? [];
+                    }));
+              },
+              child: Row(
+                children: [
+                  SizedBox(width: 12, height: 50),
+                  SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Image.asset('assets/icon/tag_friend.png'),
+                      )),
+                  SizedBox(width: 4),
+                  Text('Gắn thẻ bạn bè'),
+                ],
+              ),
+            ),
+            Divider(height: 1),
             SizedBox(
               height: _activityNode.hasFocus
                   ? MediaQuery.of(context).viewInsets.bottom
