@@ -27,13 +27,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.0
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
   sentry: ">=3.0.0 <4.0.0"
   shared_preferences: ^0.5.12+2
   # flutter_local_notifications: ^3.0.3
@@ -49,7 +42,6 @@ dev_dependencies:
   video_thumbnail: ^0.2.5+1
   image_picker: 0.6.2
   dotted_border: ^1.0.7
-  flutter_launcher_icons: ^0.8.1
   webview_flutter: ^1.0.7
   provider: ^4.3.2+3
   graphql: ^3.0.2
@@ -84,6 +76,7 @@ dev_dependencies:
   flutter_svg: ^0.19.1
   audioplayers: ^0.17.4
   bot_toast: ^3.0.5
+  inview_notifier_list: ^1.0.0
   # call
   flutter_callkeep: ^0.1.8
 
@@ -98,6 +91,15 @@ dev_dependencies:
   package_info: ^0.4.3+4
   flutter_native_image: ^0.0.5+3
   firebase_dynamic_links: 0.7.0+1
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.8.1
 
 flutter_icons:
   android: "launcher_icon"

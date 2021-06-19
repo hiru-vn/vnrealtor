@@ -184,6 +184,7 @@ class _PostWidgetState extends State<PostWidget> {
                 children: [
                   GroupMediaPostWidget(
                     posts: widget.post?.mediaPosts,
+                    autoPlayVideo: true,
                   ),
                   if (widget.post.locationLat != null &&
                       widget.post.locationLong != null)

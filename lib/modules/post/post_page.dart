@@ -11,7 +11,7 @@ import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/create_post_page.dart';
 import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/share/import.dart';
-
+import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'post_widget.dart';
 
 class PostPage extends StatefulWidget {
@@ -222,11 +222,18 @@ class _PostPageState extends State<PostPage> {
                               assetImg: 'assets/image/no_post.png',
                               title: 'Không tìm thấy bài đăng',
                             )
-                          : ListView.builder(
+                          : InViewNotifierList(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
                               itemCount: _postBloc.feed.length,
-                              itemBuilder: (context, index) {
+                              initialInViewIds: ['0'],
+                              isInViewPortCondition: (double deltaTop,
+                                  double deltaBottom,
+                                  double viewPortDimension) {
+                                return deltaTop < (0.3 * viewPortDimension) &&
+                                    deltaBottom > (0.3 * viewPortDimension);
+                              },
+                              builder: (context, index) {
                                 final item = _postBloc.feed[index];
                                 return Column(
                                   mainAxisSize: MainAxisSize.min,
