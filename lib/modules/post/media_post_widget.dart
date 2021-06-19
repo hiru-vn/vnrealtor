@@ -354,6 +354,7 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
             if (mounted)
               setState(() {
                 _controller.setLooping(true);
+                _controller.setVolume(0);
                 _controller.play();
               });
           },
@@ -430,18 +431,30 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
 
             inViewState.addContext(context: context, id: widget.post.url);
             final Size size = _controller.value.size;
-            return ClipRect(
-                child: OverflowBox(
-                    maxWidth: deviceWidth(context),
-                    maxHeight: double.infinity,
-                    alignment: Alignment.center,
-                    child: new FittedBox(
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
-                        child: Container(
-                            width: size.width,
-                            height: size.height,
-                            child: VideoPlayer(_controller)))));
+            if (size == null) return thumb;
+            return AnimatedBuilder(
+                animation: inViewState,
+                builder: (context, snapshot) {
+                  if (inViewState.inView(widget.post.url)) {
+                    _controller.play();
+                  } else {
+                    _controller.pause();
+                  }
+                  return ClipRect(
+                      child: OverflowBox(
+                          maxWidth: deviceWidth(context),
+                          maxHeight: double.infinity,
+                          alignment: Alignment.center,
+                          child: new FittedBox(
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
+                              child: Container(
+                                  width: size?.width ?? deviceWidth(context),
+                                  height: size?.height ??
+                                      (deviceWidth(context) *
+                                          _controller.value.aspectRatio),
+                                  child: VideoPlayer(_controller)))));
+                });
           } catch (e) {
             return thumb;
           }
