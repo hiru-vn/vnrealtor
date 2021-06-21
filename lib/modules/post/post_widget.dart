@@ -221,6 +221,59 @@ class _PostWidgetState extends State<PostWidget> {
                 ],
               ),
             SizedBox(height: 10),
+            if ([
+              widget.post.area,
+              widget.post.action,
+              widget.post.price,
+              widget.post.category
+            ].any((item) => item != null)) ...[
+              Row(children: [
+                Spacer(),
+                if (widget.post.area != null)
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.yellow,
+                    ),
+                    padding: EdgeInsets.all(6),
+                    child: Text('${widget.post.area} m2',
+                        style: ptSmall().copyWith(color: Colors.red)),
+                  ),
+                if (widget.post.action != null)
+                  Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.red,
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                      child: Text(widget.post.action,
+                          style: ptSmall().copyWith(color: Colors.white))),
+                if (widget.post.category != null)
+                  Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.orange,
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                      child: Text(widget.post.category,
+                          style: ptSmall().copyWith(color: Colors.white))),
+                if (widget.post.price != null)
+                  Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.blue,
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                      child: Text(
+                          Formart.toVNDPrice(widget.post.price.toDouble()),
+                          style: ptSmall().copyWith(color: Colors.white)))
+              ]),
+              SizedBox(height: 10),
+            ],
             if (!widget.isSharedPost)
               Row(
                 children: [

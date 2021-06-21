@@ -1,4 +1,5 @@
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/post/info_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:path/path.dart' as Path;
@@ -36,6 +37,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
   bool isProcess = false;
   List<LatLng> _polygonPoints = [];
   List<UserModel> _tagUsers = [];
+  double _price;
+  double _area;
+  String _type;
+  String _need;
 
   @override
   void didChangeDependencies() {
@@ -64,22 +69,26 @@ class _CreatePostPageState extends State<CreatePostPage> {
       }
 
       final res = await _postBloc.createPost(
-          _contentC.text.trim(),
-          _expirationDate?.toIso8601String(),
-          _shareWith == 'public',
-          _pos?.latitude,
-          _pos?.longitude,
-          _urlMedias
-              .where((path) =>
-                  FileUtil.getFbUrlFileType(path) == FileType.image ||
-                  FileUtil.getFbUrlFileType(path) == FileType.gif)
-              .toList(),
-          _urlMedias
-              .where(
-                  (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
-              .toList(),
-          _polygonPoints,
-          _tagUsers.map((e) => e.id).toList());
+        _contentC.text.trim(),
+        _expirationDate?.toIso8601String(),
+        _shareWith == 'public',
+        _pos?.latitude,
+        _pos?.longitude,
+        _urlMedias
+            .where((path) =>
+                FileUtil.getFbUrlFileType(path) == FileType.image ||
+                FileUtil.getFbUrlFileType(path) == FileType.gif)
+            .toList(),
+        _urlMedias
+            .where((path) => FileUtil.getFbUrlFileType(path) == FileType.video)
+            .toList(),
+        _polygonPoints,
+        _tagUsers.map((e) => e.id).toList(),
+        _type,
+        _need,
+        _area,
+        _price,
+      );
 
       navigatorKey.currentState.maybePop();
       if (res.isSuccess) {
@@ -375,8 +384,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
             ),
             SizedBox(
               height: 40,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
+              child: Row(
                 children: [
                   SizedBox(width: 12),
                   GestureDetector(
@@ -487,6 +495,45 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           child: Image.asset('assets/icon/tag_friend.png'),
                         )),
                   ),
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) {
+                          return InfoPostPage();
+                        },
+                        backgroundColor: Colors.transparent,
+                      ).then((value) {
+                        if (value != null && value.length == 4) {
+                          setState(() {
+                            _type = value[0];
+                            _need = value[1];
+                            _area = value[2];
+                            _price = value[3];
+                          });
+                        }
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: ptSecondaryColor(context),
+                      ),
+                      padding: EdgeInsets.all(6),
+                      child: Row(
+                        children: [
+                          Icon(_area == null ? Icons.add : Icons.edit,
+                              size: 15),
+                          SizedBox(width: 3),
+                          Text('thông tin', style: ptSmall()),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
                 ],
               ),
             ),

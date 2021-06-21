@@ -216,6 +216,10 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
       List<String> videos,
       List<LatLng> polygon,
       List<String> tagUserIds,
+      String category,
+      String action,
+      double area,
+      double price,
       {String groupId}) async {
     String polygonStr = '''{
       paths: [
@@ -244,6 +248,19 @@ tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     if (polygon != null && polygon.length > 0) {
       data += '\npolygon: $polygonStr';
     }
+    if (category != null) {
+      data += '\n category: "$category"';
+    }
+    if (action != null) {
+      data += '\n action: "$action"';
+    }
+    if (price != null) {
+      data += '\n price: ${price.toInt()}';
+    }
+    if (area != null) {
+      data += '\n area: $area';
+    }
+
     final res =
         await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''
 ${postFragment.replaceAll('\n', ' ')}
@@ -494,7 +511,11 @@ id
   }
 
   String postFragment = '''
- id
+id
+price
+area
+action
+category
 content
 mediaPostIds
 commentIds

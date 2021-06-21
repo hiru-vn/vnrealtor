@@ -271,10 +271,26 @@ class GroupBloc extends ChangeNotifier {
       List<String> images,
       List<String> videos,
       List<LatLng> polygon,
-      List<String> tagUserIds) async {
+      List<String> tagUserIds,
+      String type,
+      String need,
+      double area,
+      double price) async {
     try {
-      final res = await PostRepo().createPost(content, expirationDate,
-          publicity, lat, long, images, videos, polygon, tagUserIds,
+      final res = await PostRepo().createPost(
+          content,
+          expirationDate,
+          publicity,
+          lat,
+          long,
+          images,
+          videos,
+          polygon,
+          tagUserIds,
+          type,
+          need,
+          area,
+          price,
           groupId: groupId);
       feed.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
