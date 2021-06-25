@@ -234,11 +234,11 @@ class _PostWidgetState extends State<PostWidget> {
                     margin: EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
-                      color: Colors.yellow,
+                      color: Colors.green,
                     ),
                     padding: EdgeInsets.all(6),
                     child: Text('${widget.post.area} m2',
-                        style: ptSmall().copyWith(color: Colors.red)),
+                        style: ptSmall().copyWith(color: Colors.white)),
                   ),
                 if (widget.post.action != null)
                   Container(

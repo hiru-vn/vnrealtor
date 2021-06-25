@@ -181,8 +181,10 @@ class PagesBloc extends ChangeNotifier {
   }
 
   set pageDetail(PagesCreate pageDetail) {
-    _pageDetail = pageDetail;
-    notifyListeners();
+    try {
+      _pageDetail = pageDetail;
+      if (pageDetail != null) notifyListeners();
+    } catch (e) {}
   }
 
   set listCategoriesSelected(List<String> listCategoriesSelected) {
