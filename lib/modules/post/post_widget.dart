@@ -221,59 +221,6 @@ class _PostWidgetState extends State<PostWidget> {
                 ],
               ),
             SizedBox(height: 10),
-            if ([
-              widget.post.area,
-              widget.post.action,
-              widget.post.price,
-              widget.post.category
-            ].any((item) => item != null)) ...[
-              Row(children: [
-                Spacer(),
-                if (widget.post.area != null)
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.green,
-                    ),
-                    padding: EdgeInsets.all(6),
-                    child: Text('${widget.post.area} m2',
-                        style: ptSmall().copyWith(color: Colors.white)),
-                  ),
-                if (widget.post.action != null)
-                  Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.red,
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-                      child: Text(widget.post.action,
-                          style: ptSmall().copyWith(color: Colors.white))),
-                if (widget.post.category != null)
-                  Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.orange,
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-                      child: Text(widget.post.category,
-                          style: ptSmall().copyWith(color: Colors.white))),
-                if (widget.post.price != null)
-                  Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.blue,
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-                      child: Text(
-                          Formart.toVNDPrice(widget.post.price.toDouble()),
-                          style: ptSmall().copyWith(color: Colors.white)))
-              ]),
-              SizedBox(height: 10),
-            ],
             if (!widget.isSharedPost)
               Row(
                 children: [
@@ -494,7 +441,6 @@ class _PostWidgetState extends State<PostWidget> {
                         groupId: widget.post?.group?.id),
                 ),
               ])),
-              SizedBox(height: 1),
               Row(
                 children: [
                   Text(
@@ -524,6 +470,68 @@ class _PostWidgetState extends State<PostWidget> {
                   ]
                 ],
               ),
+              if ([
+                widget.post.area,
+                widget.post.action,
+                widget.post.price,
+                widget.post.category
+              ].any((item) => item != null)) ...[
+                Padding(
+                  padding: const EdgeInsets.only(top: 3),
+                  child: Row(children: [
+                    if (widget.post.area != null)
+                      Container(
+                        margin: EdgeInsets.only(right: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.green,
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                        child: Text('${widget.post.area} m2',
+                            style: ptTiny()
+                                .copyWith(color: Colors.white, fontSize: 10.5)),
+                      ),
+                    if (widget.post.action != null)
+                      Container(
+                          margin: EdgeInsets.only(right: 5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.red,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 0.5),
+                          child: Text(widget.post.action,
+                              style: ptTiny().copyWith(
+                                  color: Colors.white, fontSize: 10.5))),
+                    if (widget.post.category != null)
+                      Container(
+                          margin: EdgeInsets.only(right: 5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.orange,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 0.5),
+                          child: Text(widget.post.category,
+                              style: ptTiny().copyWith(
+                                  color: Colors.white, fontSize: 10.5))),
+                    if (widget.post.price != null)
+                      Container(
+                          margin: EdgeInsets.only(right: 5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.blue,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 0.5),
+                          child: Text(
+                              Formart.toVNDPrice(widget.post.price.toDouble()),
+                              style: ptTiny().copyWith(
+                                  color: Colors.white, fontSize: 10.5)))
+                  ]),
+                ),
+              ]
             ],
           ),
         ),
@@ -732,7 +740,6 @@ class _PostWidgetState extends State<PostWidget> {
                   )
               ],
             ),
-            SizedBox(height: 1),
             Row(
               children: [
                 Text(
@@ -759,9 +766,72 @@ class _PostWidgetState extends State<PostWidget> {
                     widget.post.distance.toStringAsFixed(1) + ' km',
                     style: ptTiny().copyWith(color: Colors.black54),
                   ),
-                ]
+                ],
               ],
             ),
+            if ([
+              widget.post.area,
+              widget.post.action,
+              widget.post.price,
+              widget.post.category
+            ].any((item) => item != null)) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 3),
+                child: Row(children: [
+                  if (widget.post.area != null)
+                    Container(
+                      margin: EdgeInsets.only(right: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.green,
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                      child: Text('${widget.post.area.floor()} m2',
+                          style: ptTiny()
+                              .copyWith(color: Colors.white, fontSize: 10.5)),
+                    ),
+                  if (widget.post.action != null)
+                    Container(
+                        margin: EdgeInsets.only(right: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.red,
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                        child: Text(widget.post.action,
+                            style: ptTiny().copyWith(
+                                color: Colors.white, fontSize: 10.5))),
+                  if (widget.post.category != null)
+                    Container(
+                        margin: EdgeInsets.only(right: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.orange,
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                        child: Text(widget.post.category,
+                            style: ptTiny().copyWith(
+                                color: Colors.white, fontSize: 10.5))),
+                  if (widget.post.price != null)
+                    Container(
+                        margin: EdgeInsets.only(right: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.blue,
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                        child: Text(
+                            Formart.toVNDPrice(widget.post.price.toDouble()),
+                            style: ptTiny()
+                                .copyWith(color: Colors.white, fontSize: 10.5)))
+                ]),
+              ),
+              SizedBox(height: 10),
+            ],
           ],
         ),
         Spacer(),

@@ -220,7 +220,8 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
       String action,
       double area,
       double price,
-      {String groupId}) async {
+      {String groupId,
+      String pageId}) async {
     String polygonStr = '''{
       paths: [
         ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
@@ -266,6 +267,66 @@ tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
 ${postFragment.replaceAll('\n', ' ')}
     ''');
     return res["createPost"];
+  }
+
+  Future updatePost(
+    String id,
+    String content,
+    String expirationDate,
+    bool publicity,
+    double lat,
+    double long,
+    List<String> images,
+    List<String> videos,
+    List<LatLng> polygon,
+    List<String> tagUserIds,
+    String category,
+    String action,
+    double area,
+    double price,
+  ) async {
+    String polygonStr = '''{
+      paths: [
+        ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
+      ]
+    }''';
+    String data = '''
+content: """
+${content.toString()}
+"""
+publicity: $publicity
+videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
+images: ${GraphqlHelper.listStringToGraphqlString(images)}
+tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
+    ''';
+
+    if (expirationDate != null) {
+      data += '\nexpirationDate: "$expirationDate"';
+    }
+    if (lat != null && long != null) {
+      data += '\nlocationLat: $lat\nlocationLong: $long';
+    }
+    if (polygon != null && polygon.length > 0) {
+      data += '\npolygon: $polygonStr';
+    }
+    if (category != null) {
+      data += '\n category: "$category"';
+    }
+    if (action != null) {
+      data += '\n action: "$action"';
+    }
+    if (price != null) {
+      data += '\n price: ${price.toInt()}';
+    }
+    if (area != null) {
+      data += '\n area: $area';
+    }
+
+    final res = await PostSrv()
+        .mutate('updatePost', 'id: "$id"  data: {$data}', fragment: '''
+$postFragment
+    ''');
+    return res["updatePost"];
   }
 
   Future sharePost(String postId,
@@ -314,48 +375,6 @@ ${postFragment.replaceAll('\n', ' ')}
   Future deleteReply(String replyId) async {
     final res = await ReplySrv().delete(replyId);
     return res;
-  }
-
-  Future updatePost(
-      String id,
-      String content,
-      String expirationDate,
-      bool publicity,
-      double lat,
-      double long,
-      List<String> images,
-      List<String> videos,
-      List<LatLng> polygon,
-      List<String> tagUserIds) async {
-    String polygonStr = '''{
-      paths: [
-        ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
-      ]
-    }''';
-    String data = '''
-content: """
-${content.toString()}
-"""
-publicity: $publicity
-videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
-images: ${GraphqlHelper.listStringToGraphqlString(images)}
-tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
-    ''';
-
-    if (expirationDate != null) {
-      data += '\nexpirationDate: "$expirationDate"';
-    }
-    if (lat != null && long != null) {
-      data += '\nlocationLat: $lat\nlocationLong: $long';
-    }
-    if (polygon != null && polygon.length > 0) {
-      data += '\npolygon: $polygonStr';
-    }
-    final res = await PostSrv()
-        .mutate('updatePost', 'id: "$id"  data: {$data}', fragment: '''
-$postFragment
-    ''');
-    return res["updatePost"];
   }
 
   Future hidePost(

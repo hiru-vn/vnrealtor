@@ -318,65 +318,103 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         bottom: 0,
                         height: 30,
                         left: 0,
-                        right: 0,
-                        child: Container(
-                          height: 30,
-                          width: deviceWidth(context) - 20,
-                          child: ListView.separated(
-                            // shrinkWrap: true,
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            separatorBuilder: (context, index) {
-                              return SizedBox(
-                                width: 10,
-                              );
-                            },
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                borderRadius: BorderRadius.circular(15),
-                                onTap: () {
-                                  setState(() {
-                                    _contentC.text = _contentC.text +
-                                        ' ' +
-                                        _postBloc.hasTags
-                                            .where((element) => !_contentC.text
-                                                .contains(element['value']))
-                                            .toList()[index]['value']
-                                            .toString();
-                                    _contentC.selection =
-                                        TextSelection.fromPosition(TextPosition(
-                                            offset: _contentC.text.length));
-                                  });
-                                },
-                                child: Container(
-                                  height: 30,
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      color: ptSecondaryColor(context),
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Center(
-                                    child: Text(
-                                      _postBloc.hasTags
-                                          .where((element) => !_contentC.text
-                                              .contains(element['value']))
-                                          .toList()[index]['value']
-                                          .toString(),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                            itemCount: _postBloc.hasTags
-                                .where((element) =>
-                                    !_contentC.text.contains(element['value']))
-                                .toList()
-                                .length,
-                            scrollDirection: Axis.horizontal,
+                        child: GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) {
+                                return InfoPostPage();
+                              },
+                              backgroundColor: Colors.transparent,
+                            ).then((value) {
+                              if (value != null && value.length == 4) {
+                                setState(() {
+                                  _type = value[0];
+                                  _need = value[1];
+                                  _area = value[2];
+                                  _price = value[3];
+                                });
+                              }
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: ptPrimaryColor(context),
+                            ),
+                            padding: EdgeInsets.all(6),
+                            child: Row(
+                              children: [
+                                Icon(_area == null ? Icons.add : Icons.edit,
+                                    size: 15, color: Colors.white),
+                                SizedBox(width: 3),
+                                Text('Mô tả chi tiết',
+                                    style: ptSmall()
+                                        .copyWith(color: Colors.white)),
+                                SizedBox(width: 5),
+                              ],
+                            ),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
+              ),
+            ),
+            Container(
+              height: 30,
+              width: deviceWidth(context),
+              child: ListView.separated(
+                // shrinkWrap: true,
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                separatorBuilder: (context, index) {
+                  return SizedBox(
+                    width: 10,
+                  );
+                },
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(15),
+                    onTap: () {
+                      setState(() {
+                        _contentC.text = _contentC.text +
+                            ' ' +
+                            _postBloc.hasTags
+                                .where((element) =>
+                                    !_contentC.text.contains(element['value']))
+                                .toList()[index]['value']
+                                .toString();
+                        _contentC.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _contentC.text.length));
+                      });
+                    },
+                    child: Container(
+                      height: 30,
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          color: ptSecondaryColor(context),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Center(
+                        child: Text(
+                          _postBloc.hasTags
+                              .where((element) =>
+                                  !_contentC.text.contains(element['value']))
+                              .toList()[index]['value']
+                              .toString(),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                itemCount: _postBloc.hasTags
+                    .where(
+                        (element) => !_contentC.text.contains(element['value']))
+                    .toList()
+                    .length,
+                scrollDirection: Axis.horizontal,
               ),
             ),
             SizedBox(
@@ -496,43 +534,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         )),
                   ),
                   Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (context) {
-                          return InfoPostPage();
-                        },
-                        backgroundColor: Colors.transparent,
-                      ).then((value) {
-                        if (value != null && value.length == 4) {
-                          setState(() {
-                            _type = value[0];
-                            _need = value[1];
-                            _area = value[2];
-                            _price = value[3];
-                          });
-                        }
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: ptSecondaryColor(context),
-                      ),
-                      padding: EdgeInsets.all(6),
-                      child: Row(
-                        children: [
-                          Icon(_area == null ? Icons.add : Icons.edit,
-                              size: 15),
-                          SizedBox(width: 3),
-                          Text('thông tin', style: ptSmall()),
-                        ],
-                      ),
-                    ),
-                  ),
                   SizedBox(width: 12),
                 ],
               ),

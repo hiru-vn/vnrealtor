@@ -46,7 +46,7 @@ class NotificationBloc extends ChangeNotifier {
         }
       }
     } catch (e) {} finally {
-      initActions.removeAt(0);
+      if (initActions.length > 0) initActions.removeAt(0);
     }
     return;
   }
