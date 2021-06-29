@@ -18,7 +18,7 @@ class Formart {
     if (value > 1000000) return (value / 1000000).toStringAsFixed(1) + ' triệu';
     if (value > 10000) return (value / 1000).floor().toString() + ' nghìn';
     if (value > 1000) return (value / 1000).toStringAsFixed(1) + ' nghìn';
-    return 'null';
+    return '${value.floor()} VND';
   }
 
   static toUSDCurency(double value) {

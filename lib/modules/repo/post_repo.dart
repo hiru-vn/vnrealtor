@@ -240,6 +240,9 @@ tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     if (groupId != null) {
       data += '\ngroupId: "$groupId"';
     }
+    if (pageId != null) {
+      data += '\npageId: "$pageId"';
+    }
     if (expirationDate != null) {
       data += '\nexpirationDate: "$expirationDate"';
     }

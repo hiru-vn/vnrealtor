@@ -347,7 +347,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             padding: EdgeInsets.all(6),
                             child: Row(
                               children: [
-                                Icon(_area == null ? Icons.add : Icons.edit,
+                                Icon(_area == null ? Icons.add : Icons.check,
                                     size: 15, color: Colors.white),
                                 SizedBox(width: 3),
                                 Text('Mô tả chi tiết',
@@ -363,7 +363,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ),
                 ),
               ),
-            ),
+            ),SizedBox(height: 5),
             Container(
               height: 30,
               width: deviceWidth(context),
