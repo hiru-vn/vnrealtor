@@ -778,6 +778,30 @@ class _PostWidgetState extends State<PostWidget> {
               Padding(
                 padding: const EdgeInsets.only(top: 3),
                 child: Row(children: [
+                  if (widget.post.category != null)
+                    Container(
+                        margin: EdgeInsets.only(right: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.orange,
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                        child: Text(widget.post.category,
+                            style: ptTiny().copyWith(
+                                color: Colors.white, fontSize: 10.5))),
+                  if (widget.post.action != null)
+                    Container(
+                        margin: EdgeInsets.only(right: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.red,
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                        child: Text(widget.post.action,
+                            style: ptTiny().copyWith(
+                                color: Colors.white, fontSize: 10.5))),
                   if (widget.post.area != null)
                     Container(
                       margin: EdgeInsets.only(right: 5),
@@ -791,30 +815,6 @@ class _PostWidgetState extends State<PostWidget> {
                           style: ptTiny()
                               .copyWith(color: Colors.white, fontSize: 10.5)),
                     ),
-                  if (widget.post.action != null)
-                    Container(
-                        margin: EdgeInsets.only(right: 5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Colors.red,
-                        ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
-                        child: Text(widget.post.action,
-                            style: ptTiny().copyWith(
-                                color: Colors.white, fontSize: 10.5))),
-                  if (widget.post.category != null)
-                    Container(
-                        margin: EdgeInsets.only(right: 5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Colors.orange,
-                        ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
-                        child: Text(widget.post.category,
-                            style: ptTiny().copyWith(
-                                color: Colors.white, fontSize: 10.5))),
                   if (widget.post.price != null)
                     Container(
                         margin: EdgeInsets.only(right: 5),
