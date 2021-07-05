@@ -1,4 +1,5 @@
 import 'package:datcao/modules/bloc/group_bloc.dart';
+import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/group/create_group_page.dart';
 import 'package:datcao/modules/group/invite_group.dart';
 import 'package:datcao/modules/group/my_group_page.dart';
@@ -146,9 +147,12 @@ class _GroupPageState extends State<GroupPage> {
                   }),
                   SizedBox(width: 25),
                   _buildButton('Lời mời', Icons.mail_outline_rounded, () {
-                    // InviteGroup.navigate();
-                    showToast('Chưa phát triển', context);
-                  }, counter: 4),
+                    InviteGroup.navigate();
+                  },
+                      counter: NotificationBloc.instance.notifications
+                          .where((e) => e.type == 'INVITE_GROUP')
+                          .toList()
+                          .length),
                   SizedBox(width: 12),
                 ]),
           ),
@@ -185,7 +189,7 @@ class _GroupPageState extends State<GroupPage> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8), color: Colors.red),
                 child: Text(
-                  '9',
+                  counter.toString(),
                   style: ptTiny().copyWith(color: Colors.white),
                 ),
               )

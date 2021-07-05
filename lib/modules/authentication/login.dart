@@ -42,13 +42,11 @@ class _LoginPageState extends State<LoginPage> {
     showWaitingDialog(context);
     try {
       final res = await _authBloc.signIn(_nameC.text, _passC.text);
+      closeLoading();
       if (res.isSuccess) {
-        navigatorKey.currentState
-            .maybePop()
-            .then((value) => HomePage.navigate());
+        HomePage.navigate();
       } else {
         showToast(res.errMessage, context);
-        navigatorKey.currentState.maybePop();
       }
     } catch (e) {} finally {}
   }

@@ -181,8 +181,10 @@ class PagesBloc extends ChangeNotifier {
   }
 
   set pageDetail(PagesCreate pageDetail) {
-    _pageDetail = pageDetail;
-    notifyListeners();
+    try {
+      _pageDetail = pageDetail;
+      if (pageDetail != null) notifyListeners();
+    } catch (e) {}
   }
 
   set listCategoriesSelected(List<String> listCategoriesSelected) {
@@ -336,10 +338,13 @@ class PagesBloc extends ChangeNotifier {
       List<String> images,
       List<String> videos,
       List<LatLng> polygon,
-      List<String> tagUserIds) async {
+      List<String> tagUserIds,
+      String category,
+      String action,
+      double area,
+      double price) async {
     try {
-      final res = await PagesRepo().createPagePost(
-          pageId,
+      final res = await PostRepo().createPost(
           content,
           expirationDate,
           publicity,
@@ -348,7 +353,12 @@ class PagesBloc extends ChangeNotifier {
           images,
           videos,
           polygon,
-          tagUserIds);
+          tagUserIds,
+          category,
+          action,
+          area,
+          price,
+          pageId: pageId);
       _listPagePost.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {

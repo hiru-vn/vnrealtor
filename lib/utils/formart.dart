@@ -9,6 +9,18 @@ class Formart {
     return newValue + (hasUnit ? ' VND' : '');
   }
 
+  static toVNDPrice(double value, {hasUnit = true}) {
+    if (value == null) return '0 VND';
+    if (value > 1000000000)
+      return (value / 1000000000).toStringAsFixed(1) + ' tỷ';
+    if (value > 10000000)
+      return (value / 1000000).floor().toString() + ' triệu';
+    if (value > 1000000) return (value / 1000000).toStringAsFixed(1) + ' triệu';
+    if (value > 10000) return (value / 1000).floor().toString() + ' nghìn';
+    if (value > 1000) return (value / 1000).toStringAsFixed(1) + ' nghìn';
+    return '${value.floor()} VND';
+  }
+
   static toUSDCurency(double value) {
     final formatter = NumberFormat("#,##0.00", "en_US");
     String newValue = formatter.format(value);

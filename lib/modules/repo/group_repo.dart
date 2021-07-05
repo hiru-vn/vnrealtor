@@ -57,6 +57,13 @@ class GroupRepo {
     return res['kickMem'];
   }
 
+  Future adminAcceptMem(String id, List<String> userIds) async {
+    final res = await GroupSrv().mutate('adminAcceptMem',
+        'groupId: "$id", memberIds: ${GraphqlHelper.listStringToGraphqlString(userIds)}',
+        fragment: '${GroupSrv().fragmentDefault}');
+    return res['adminAcceptMem'];
+  }
+
   Future leaveGroup(String id) async {
     final res = await GroupSrv().mutate('leaveGroup', 'groupId: "$id"',
         fragment: ' ${GroupSrv().fragmentDefault} ');

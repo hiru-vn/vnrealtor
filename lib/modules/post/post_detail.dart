@@ -230,10 +230,8 @@ class _PostDetailState extends State<PostDetail> {
                       ? PostSkeleton(
                           count: 1,
                         )
-                      : PostWidget(
-                          _post,
-                          commentCallBack: () {},
-                        ),
+                      : PostWidget(_post,
+                          commentCallBack: () {}, isInDetailPage: true),
                   comments != null
                       ? ListView.separated(
                           padding: EdgeInsets.zero,

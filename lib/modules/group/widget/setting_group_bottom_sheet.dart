@@ -57,7 +57,7 @@ class _SettingGroupState extends State<SettingGroup> {
                       showWaitingDialog(context);
                       final res = await _groupBloc.browseMemberSetting(
                           widget.groupModel.id, _enableBrowseMember);
-                      await navigatorKey.currentState.maybePop();
+                      closeLoading();
                       if (res.isSuccess) {
                         navigatorKey.currentState.maybePop(res.data);
                       } else {

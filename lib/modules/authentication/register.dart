@@ -45,7 +45,7 @@ class _RegisterPageState extends State<RegisterPage> {
           HomePage.navigate();
         }
         if (event.status == AuthStatus.otpSent) {
-          await navigatorKey.currentState.maybePop();
+          closeLoading();
           showDialog(
               useRootNavigator: true,
               barrierDismissible: false,

@@ -120,7 +120,9 @@ class _MyGroupPageState extends State<MyGroupPage> {
   _buildGroupItem(GroupModel groupModel) {
     return GestureDetector(
       onTap: () {
-        DetailGroupPage.navigate(groupModel).then((value) => setState(() {}));
+        DetailGroupPage.navigate(groupModel).then((value) {
+          _groupBloc.getMyGroup();
+        });
       },
       child: Container(
         color: Colors.white,

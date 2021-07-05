@@ -30,7 +30,7 @@ class _VertifyAccountPage2State extends State<VertifyAccountPage2> {
     if (!_formKey.currentState.validate()) return;
     showWaitingDialog(context);
     final res = await _verificationBloc.createVerification();
-    await navigatorKey.currentState.maybePop();
+    closeLoading();
     if (res.isSuccess) {
       showToast('Gửi yêu cầu xác minh thành công', context, isSuccess: true);
       await navigatorKey.currentState.maybePop();

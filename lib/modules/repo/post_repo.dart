@@ -216,7 +216,12 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
       List<String> videos,
       List<LatLng> polygon,
       List<String> tagUserIds,
-      {String groupId}) async {
+      String category,
+      String action,
+      double area,
+      double price,
+      {String groupId,
+      String pageId}) async {
     String polygonStr = '''{
       paths: [
         ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
@@ -235,6 +240,9 @@ tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     if (groupId != null) {
       data += '\ngroupId: "$groupId"';
     }
+    if (pageId != null) {
+      data += '\npageId: "$pageId"';
+    }
     if (expirationDate != null) {
       data += '\nexpirationDate: "$expirationDate"';
     }
@@ -244,6 +252,19 @@ tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     if (polygon != null && polygon.length > 0) {
       data += '\npolygon: $polygonStr';
     }
+    if (category != null) {
+      data += '\n category: "$category"';
+    }
+    if (action != null) {
+      data += '\n action: "$action"';
+    }
+    if (price != null) {
+      data += '\n price: ${price.toInt()}';
+    }
+    if (area != null) {
+      data += '\n area: $area';
+    }
+
     final res =
         await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''
 ${postFragment.replaceAll('\n', ' ')}
@@ -251,32 +272,22 @@ ${postFragment.replaceAll('\n', ' ')}
     return res["createPost"];
   }
 
-  Future deletePost(String postId) async {
-    final res = await PostSrv().delete(postId);
-    return res;
-  }
-
-  Future deleteComment(String commentId) async {
-    final res = await CommentSrv().delete(commentId);
-    return res;
-  }
-
-  Future deleteReply(String replyId) async {
-    final res = await ReplySrv().delete(replyId);
-    return res;
-  }
-
   Future updatePost(
-      String id,
-      String content,
-      String expirationDate,
-      bool publicity,
-      double lat,
-      double long,
-      List<String> images,
-      List<String> videos,
-      List<LatLng> polygon,
-      List<String> tagUserIds) async {
+    String id,
+    String content,
+    String expirationDate,
+    bool publicity,
+    double lat,
+    double long,
+    List<String> images,
+    List<String> videos,
+    List<LatLng> polygon,
+    List<String> tagUserIds,
+    String category,
+    String action,
+    double area,
+    double price,
+  ) async {
     String polygonStr = '''{
       paths: [
         ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
@@ -301,11 +312,72 @@ tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     if (polygon != null && polygon.length > 0) {
       data += '\npolygon: $polygonStr';
     }
+    if (category != null) {
+      data += '\n category: "$category"';
+    }
+    if (action != null) {
+      data += '\n action: "$action"';
+    }
+    if (price != null) {
+      data += '\n price: ${price.toInt()}';
+    }
+    if (area != null) {
+      data += '\n area: $area';
+    }
+
     final res = await PostSrv()
         .mutate('updatePost', 'id: "$id"  data: {$data}', fragment: '''
 $postFragment
     ''');
     return res["updatePost"];
+  }
+
+  Future sharePost(String postId,
+      {String groupId,
+      String pageId,
+      List<String> tagUserIds,
+      String content}) async {
+    String data = 'postId: "$postId"';
+
+    if (groupId != null) {
+      data += '\ngroupId: "$groupId"';
+    }
+    if (pageId != null) {
+      data += '\npageId: "$pageId"';
+    }
+
+    String subData = '';
+    if (tagUserIds != null) {
+      subData +=
+          '\ntagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}';
+    }
+    if (content != null) {
+      subData += '''
+      \ncontent: """
+      ${content.toString()}
+      """
+      ''';
+    }
+    data += ", data: {$subData}";
+    final res = await PostSrv().mutate('sharePost', '$data', fragment: '''
+${postFragment.replaceAll('\n', ' ')}
+    ''');
+    return res["sharePost"];
+  }
+
+  Future deletePost(String postId) async {
+    final res = await PostSrv().delete(postId);
+    return res;
+  }
+
+  Future deleteComment(String commentId) async {
+    final res = await CommentSrv().delete(commentId);
+    return res;
+  }
+
+  Future deleteReply(String replyId) async {
+    final res = await ReplySrv().delete(replyId);
+    return res;
   }
 
   Future hidePost(
@@ -461,11 +533,16 @@ id
   }
 
   String postFragment = '''
- id
+id
+price
+area
+action
+category
 content
 mediaPostIds
 commentIds
 userId
+postShareId
 like
 userLikeIds
 share

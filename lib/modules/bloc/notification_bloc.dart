@@ -46,7 +46,7 @@ class NotificationBloc extends ChangeNotifier {
         }
       }
     } catch (e) {} finally {
-      initActions.removeAt(0);
+      if (initActions.length > 0) initActions.removeAt(0);
     }
     return;
   }
@@ -59,7 +59,7 @@ class NotificationBloc extends ChangeNotifier {
       if (notifications.length == 0) {
         isLoadNoti = true;
       }
-      final res = await NotificationRepo().getListNotification(filter: filter);
+      final res = await NotificationRepo().getMyNotification(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => NotificationModel.fromJson(e)).toList();
       notifications = list;

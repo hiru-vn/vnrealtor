@@ -70,8 +70,9 @@ class _PageDetailState extends State<PageDetail> {
     }
     if (res.isSuccess) {
       _pagesBloc.pageDetail = res.data;
-      _pagesBloc.updatePageFollowed(_authBloc.userModel.id);
-      _pagesBloc.isReceiveNotified = _pagesBloc.pageDetail.isNoty;
+      if (_authBloc.userModel != null)
+        _pagesBloc.updatePageFollowed(_authBloc.userModel.id);
+      _pagesBloc.isReceiveNotified = _pagesBloc.pageDetail?.isNoty;
     } else {
       navigatorKey.currentState.maybePop();
       showToast(res.errMessage, context);
@@ -493,7 +494,7 @@ class _PageDetailState extends State<PageDetail> {
               ],
               pageName: widget.page.name,
               pageId: widget.page.id);
-          navigatorKey.currentState.maybePop();
+          closeLoading();
         },
       );
 

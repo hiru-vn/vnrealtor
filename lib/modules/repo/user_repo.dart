@@ -73,7 +73,7 @@ Page: "$page"
         '''
     username: "$userName"
     password: "$password"
-  	deviceId: "$deviceToken"
+  	deviceId: "$deviceId"
     deviceToken: "$deviceToken"
     ''',
         fragment: 'token user { $userFragment }');

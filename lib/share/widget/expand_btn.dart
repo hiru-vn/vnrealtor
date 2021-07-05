@@ -4,6 +4,7 @@ class ExpandBtn extends StatelessWidget {
   final String text;
   final Function onPress;
   final Color color;
+  final Color borderColor;
   final Color textColor;
   final double height;
   final int elevation;
@@ -18,6 +19,7 @@ class ExpandBtn extends StatelessWidget {
       this.textColor,
       this.borderRadius,
       this.elevation,
+      this.borderColor,
       this.isLoading = false,
       this.height})
       : super(key: key);
@@ -28,10 +30,12 @@ class ExpandBtn extends StatelessWidget {
       height: height ?? 45,
       child: FlatButton(
         // elevation: elevation?.toDouble() ?? 5,
+
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? 0),
         ),
         color: color ?? ptPrimaryColor(context),
+
         onPressed: onPress,
         child: isLoading
             ? kLoadingSpinner

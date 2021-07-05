@@ -41,6 +41,11 @@ class PostModel {
   List<UserModel> tagUsers;
   int numberOfComment;
   GroupModel group;
+  String postShareId;
+  num price;
+  num area;
+  String action;
+  String category;
 
   PostModel(
       {this.id,
@@ -77,7 +82,12 @@ class PostModel {
       this.distance,
       this.tagUsers,
       this.numberOfComment,
-      this.group});
+      this.group,
+      this.postShareId,
+      this.action,
+      this.area,
+      this.category,
+      this.price});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -140,6 +150,11 @@ class PostModel {
         : [];
     numberOfComment = json['numberOfComment'] ?? 0;
     group = json['group'] != null ? GroupModel.fromJson(json['group']) : null;
+    postShareId = json['postShareId'];
+    category = json['category'];
+    action = json['action'];
+    price = json['price'];
+    area = json['area'];
   }
 
   Map<String, dynamic> toJson() {

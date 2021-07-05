@@ -348,10 +348,26 @@ class PostBloc extends ChangeNotifier {
       List<String> images,
       List<String> videos,
       List<LatLng> polygon,
-      List<String> tagUserIds) async {
+      List<String> tagUserIds,
+      String type,
+      String need,
+      double area,
+      double price) async {
     try {
-      final res = await PostRepo().createPost(content, expirationDate,
-          publicity, lat, long, images, videos, polygon, tagUserIds);
+      final res = await PostRepo().createPost(
+          content,
+          expirationDate,
+          publicity,
+          lat,
+          long,
+          images,
+          videos,
+          polygon,
+          tagUserIds,
+          type,
+          need,
+          area,
+          price);
       feed.insert(0, PostModel.fromJson(res));
       myPosts.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
@@ -373,10 +389,50 @@ class PostBloc extends ChangeNotifier {
       List<String> images,
       List<String> videos,
       List<LatLng> polygon,
-      List<String> tagUserIds) async {
+      List<String> tagUserIds,
+      String type,
+      String need,
+      double area,
+      double price) async {
     try {
-      final res = await PostRepo().updatePost(id, content, expirationDate,
-          publicity, lat, long, images, videos, polygon, tagUserIds);
+      final res = await PostRepo().updatePost(
+          id,
+          content,
+          expirationDate,
+          publicity,
+          lat,
+          long,
+          images,
+          videos,
+          polygon,
+          tagUserIds,
+          type,
+          need,
+          area,
+          price);
+      return BaseResponse.success(PostModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      // wait to reload post
+      Future.delayed(Duration(seconds: 1), () => notifyListeners());
+    }
+  }
+
+  Future<BaseResponse> sharePost(String postId,
+      {String groupId,
+      String pageId,
+      String content,
+      List<String> tagUserIds}) async {
+    try {
+      final res = await PostRepo().sharePost(postId,
+          groupId: groupId,
+          pageId: pageId,
+          content: content,
+          tagUserIds: tagUserIds);
+      feed.insert(0, PostModel.fromJson(res));
+      if (groupId == null && pageId == null)
+        myPosts.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());

@@ -30,49 +30,6 @@ $pagesFragment
     return res['getAllPage'];
   }
 
-  Future createPagePost(
-      String pageId,
-      String content,
-      String expirationDate,
-      bool publicity,
-      double lat,
-      double long,
-      List<String> images,
-      List<String> videos,
-      List<LatLng> polygon,
-      List<String> tagUserIds) async {
-    String polygonStr = '''{
-      paths: [
-        ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
-      ]
-    }''';
-    String data = '''
-    pageId: "$pageId"
-content: """
-${content.toString()}
-"""
-publicity: $publicity
-videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
-images: ${GraphqlHelper.listStringToGraphqlString(images)}
-tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
-    ''';
-
-    if (expirationDate != null) {
-      data += '\nexpirationDate: "$expirationDate"';
-    }
-    if (lat != null && long != null) {
-      data += '\nlocationLat: $lat\nlocationLong: $long';
-    }
-    if (polygon != null && polygon.length > 0) {
-      data += '\npolygon: $polygonStr';
-    }
-    final res =
-        await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''
-$pagesPostFragment
-    ''');
-    return res["createPost"];
-  }
-
   Future getPostOfPage(
       {GraphqlFilter filter, String timestamp, String timeSort}) async {
     if (filter?.filter == null) filter?.filter = "{}";

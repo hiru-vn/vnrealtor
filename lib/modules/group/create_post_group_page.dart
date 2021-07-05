@@ -6,6 +6,7 @@ import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/widget/page_create_post_appbar.dart';
+import 'package:datcao/modules/post/info_post_page.dart';
 import 'package:datcao/modules/post/tag_user_list_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:flutter/gestures.dart';
@@ -55,6 +56,10 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
   List<LatLng> _polygonPoints = [];
   List<UserModel> _tagUsers = [];
   bool isLoading = false;
+  double _price;
+  double _area;
+  String _type;
+  String _need;
 
   String get groupId => widget.group.id;
   GroupModel get group => widget.group;
@@ -87,23 +92,27 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
       }
 
       final res = await _groupBloc.createPost(
-          groupId,
-          _contentC.text.trim(),
-          _expirationDate?.toIso8601String(),
-          _shareWith == 'public',
-          _pos?.latitude,
-          _pos?.longitude,
-          _urlMedias
-              .where((path) =>
-                  FileUtil.getFbUrlFileType(path) == FileType.image ||
-                  FileUtil.getFbUrlFileType(path) == FileType.gif)
-              .toList(),
-          _urlMedias
-              .where(
-                  (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
-              .toList(),
-          _polygonPoints,
-          _tagUsers.map((e) => e.id).toList());
+        groupId,
+        _contentC.text.trim(),
+        _expirationDate?.toIso8601String(),
+        _shareWith == 'public',
+        _pos?.latitude,
+        _pos?.longitude,
+        _urlMedias
+            .where((path) =>
+                FileUtil.getFbUrlFileType(path) == FileType.image ||
+                FileUtil.getFbUrlFileType(path) == FileType.gif)
+            .toList(),
+        _urlMedias
+            .where((path) => FileUtil.getFbUrlFileType(path) == FileType.video)
+            .toList(),
+        _polygonPoints,
+        _tagUsers.map((e) => e.id).toList(),
+        _type,
+        _need,
+        _area,
+        _price,
+      );
       navigatorKey.currentState.maybePop();
       if (res.isSuccess) {
         navigatorKey.currentState.pop();
@@ -328,65 +337,104 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                         bottom: 0,
                         height: 30,
                         left: 0,
-                        right: 0,
-                        child: Container(
-                          height: 30,
-                          width: deviceWidth(context) - 20,
-                          child: ListView.separated(
-                            // shrinkWrap: true,
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            separatorBuilder: (context, index) {
-                              return SizedBox(
-                                width: 10,
-                              );
-                            },
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                borderRadius: BorderRadius.circular(15),
-                                onTap: () {
-                                  setState(() {
-                                    _contentC.text = _contentC.text +
-                                        ' ' +
-                                        _postBloc.hasTags
-                                            .where((element) => !_contentC.text
-                                                .contains(element['value']))
-                                            .toList()[index]['value']
-                                            .toString();
-                                    _contentC.selection =
-                                        TextSelection.fromPosition(TextPosition(
-                                            offset: _contentC.text.length));
-                                  });
-                                },
-                                child: Container(
-                                  height: 30,
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      color: ptSecondaryColor(context),
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Center(
-                                    child: Text(
-                                      _postBloc.hasTags
-                                          .where((element) => !_contentC.text
-                                              .contains(element['value']))
-                                          .toList()[index]['value']
-                                          .toString(),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                            itemCount: _postBloc.hasTags
-                                .where((element) =>
-                                    !_contentC.text.contains(element['value']))
-                                .toList()
-                                .length,
-                            scrollDirection: Axis.horizontal,
+                        child: GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) {
+                                return InfoPostPage();
+                              },
+                              backgroundColor: Colors.transparent,
+                            ).then((value) {
+                              if (value != null && value.length == 4) {
+                                setState(() {
+                                  _type = value[0];
+                                  _need = value[1];
+                                  _area = value[2];
+                                  _price = value[3];
+                                });
+                              }
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: ptPrimaryColor(context),
+                            ),
+                            padding: EdgeInsets.all(6),
+                            child: Row(
+                              children: [
+                                Icon(_area == null ? Icons.add : Icons.check,
+                                    size: 15, color: Colors.white),
+                                SizedBox(width: 3),
+                                Text('Mô tả chi tiết',
+                                    style: ptSmall()
+                                        .copyWith(color: Colors.white)),
+                                SizedBox(width: 5),
+                              ],
+                            ),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
+              ),
+            ),
+            SizedBox(height: 5),
+            Container(
+              height: 30,
+              width: deviceWidth(context),
+              child: ListView.separated(
+                // shrinkWrap: true,
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                separatorBuilder: (context, index) {
+                  return SizedBox(
+                    width: 10,
+                  );
+                },
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(15),
+                    onTap: () {
+                      setState(() {
+                        _contentC.text = _contentC.text +
+                            ' ' +
+                            _postBloc.hasTags
+                                .where((element) =>
+                                    !_contentC.text.contains(element['value']))
+                                .toList()[index]['value']
+                                .toString();
+                        _contentC.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _contentC.text.length));
+                      });
+                    },
+                    child: Container(
+                      height: 30,
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          color: ptSecondaryColor(context),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Center(
+                        child: Text(
+                          _postBloc.hasTags
+                              .where((element) =>
+                                  !_contentC.text.contains(element['value']))
+                              .toList()[index]['value']
+                              .toString(),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                itemCount: _postBloc.hasTags
+                    .where(
+                        (element) => !_contentC.text.contains(element['value']))
+                    .toList()
+                    .length,
+                scrollDirection: Axis.horizontal,
               ),
             ),
             SizedBox(
@@ -394,8 +442,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
             ),
             SizedBox(
               height: 40,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
+              child: Row(
                 children: [
                   SizedBox(width: 12),
                   GestureDetector(
@@ -503,6 +550,8 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                           child: Image.asset('assets/icon/tag_friend.png'),
                         )),
                   ),
+                  Spacer(),
+                  SizedBox(width: 12),
                 ],
               ),
             ),

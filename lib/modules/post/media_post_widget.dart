@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
-import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:flutter/material.dart';
+import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/media_post.dart';
@@ -19,8 +18,10 @@ import 'package:path_provider/path_provider.dart';
 
 class GroupMediaPostWidget extends StatelessWidget {
   final List<MediaPost> posts;
+  final bool autoPlayVideo;
 
-  const GroupMediaPostWidget({Key key, this.posts}) : super(key: key);
+  const GroupMediaPostWidget({Key key, this.posts, this.autoPlayVideo = false})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     final callBack = (int index) {
@@ -32,12 +33,15 @@ class GroupMediaPostWidget extends StatelessWidget {
       }));
     };
     if (posts.length == 1) {
-      return SizedBox(
-        width: deviceWidth(context),
-        height: deviceWidth(context) / 1.25,
-        child: MediaPostWidget(
-          post: posts[0],
-          onTapPostCallBack: () => callBack(0),
+      return ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: deviceWidth(context) * 1.1),
+        child: SizedBox(
+          width: deviceWidth(context),
+          child: MediaPostWidget(
+            post: posts[0],
+            onTapPostCallBack: () => callBack(0),
+            autoPlayVideo: autoPlayVideo,
+          ),
         ),
       );
     }
@@ -324,10 +328,11 @@ class GroupMediaPostWidget extends StatelessWidget {
 class MediaPostWidget extends StatefulWidget {
   final MediaPost post;
   final Function onTapPostCallBack;
-  MediaPostWidget({
-    @required this.post,
-    @required this.onTapPostCallBack,
-  });
+  final bool autoPlayVideo;
+  MediaPostWidget(
+      {@required this.post,
+      @required this.onTapPostCallBack,
+      this.autoPlayVideo});
 
   @override
   _MediaPostWidgetState createState() => _MediaPostWidgetState();
@@ -336,12 +341,32 @@ class MediaPostWidget extends StatefulWidget {
 class _MediaPostWidgetState extends State<MediaPostWidget> {
   String thumbnailPath;
   FileType type;
+  VideoPlayerController _controller;
 
   @override
   void initState() {
     type = FileUtil.getFbUrlFileType(widget.post.url);
-    if (type == FileType.video) _getThumbnail();
+    if (type == FileType.video) {
+      _getThumbnail();
+      _controller = VideoPlayerController.network(widget.post.url)
+        ..initialize().then(
+          (_) {
+            if (mounted)
+              setState(() {
+                _controller.setLooping(true);
+                _controller.setVolume(0);
+                _controller.play();
+              });
+          },
+        );
+    }
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 
   _getThumbnail() async {
@@ -359,18 +384,6 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // if (type == FileType.image || type == FileType.gif)
-        //   Navigator.push(context, MaterialPageRoute(builder: (_) {
-        //     return DetailImagePost(
-        //       widget.post,
-        //     );
-        //   }));
-        // if (type == FileType.video)
-        //   Navigator.push(context, MaterialPageRoute(builder: (_) {
-        //     return DetailVideoPost(
-        //       widget.post,
-        //     );
-        //   }));
         widget.onTapPostCallBack();
 
         FocusScope.of(context).requestFocus(FocusNode());
@@ -380,6 +393,26 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
   }
 
   Widget _getWidget(FileType type) {
+    final thumb = thumbnailPath == null
+        ? Image.asset(
+            'assets/image/video_holder.png',
+            fit: BoxFit.cover,
+            errorBuilder: imageNetworkErrorBuilder,
+          )
+        : Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.file(
+                File(thumbnailPath),
+                fit: BoxFit.cover,
+                errorBuilder: imageNetworkErrorBuilder,
+              ),
+              Center(
+                child: Icon(Icons.play_circle_outline_rounded,
+                    size: 50, color: Colors.white),
+              ),
+            ],
+          );
     if (type == FileType.image || type == FileType.gif)
       return Image(
         image:
@@ -388,27 +421,47 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
         errorBuilder: imageNetworkErrorBuilder,
         loadingBuilder: kLoadingBuilder,
       );
-    else if (type == FileType.video)
-      return thumbnailPath == null
-          ? Image.asset(
-              'assets/image/video_holder.png',
-              fit: BoxFit.cover,
-              errorBuilder: imageNetworkErrorBuilder,
-            )
-          : Stack(
-              fit: StackFit.expand,
-              children: [
-                Image.file(
-                  File(thumbnailPath),
-                  fit: BoxFit.cover,
-                  errorBuilder: imageNetworkErrorBuilder,
-                ),
-                Center(
-                  child: Icon(Icons.play_circle_outline_rounded,
-                      size: 50, color: Colors.white),
-                ),
-              ],
-            );
+    else if (type == FileType.video) {
+      if (widget.autoPlayVideo) {
+        return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+          try {
+            final InViewState inViewState = InViewNotifierList.of(context);
+            if (inViewState == null) return thumb;
+
+            inViewState.addContext(context: context, id: widget.post.url);
+            final Size size = _controller.value.size;
+            if (size == null) return thumb;
+            return AnimatedBuilder(
+                animation: inViewState,
+                builder: (context, snapshot) {
+                  if (inViewState.inView(widget.post.url)) {
+                    _controller.play();
+                  } else {
+                    _controller.pause();
+                  }
+                  return ClipRect(
+                      child: OverflowBox(
+                          maxWidth: deviceWidth(context),
+                          maxHeight: double.infinity,
+                          alignment: Alignment.center,
+                          child: new FittedBox(
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
+                              child: Container(
+                                  width: size?.width ?? deviceWidth(context),
+                                  height: size?.height ??
+                                      (deviceWidth(context) *
+                                          _controller.value.aspectRatio),
+                                  child: VideoPlayer(_controller)))));
+                });
+          } catch (e) {
+            return thumb;
+          }
+        });
+      } else
+        return thumb;
+    }
     return SizedBox.shrink();
   }
 }
@@ -591,7 +644,8 @@ class _DetailImagePostState extends State<DetailImagePost> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        String content = widget.post.dynamicLink?.shortLink??'';
+                        String content =
+                            widget.post.dynamicLink?.shortLink ?? '';
                         shareTo(context,
                             image: [widget.post.url], content: content);
                       },
@@ -846,7 +900,8 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        String content = widget.post.dynamicLink?.shortLink??'';
+                        String content =
+                            widget.post.dynamicLink?.shortLink ?? '';
                         shareTo(context,
                             video: [widget.post.url], content: content);
                       },
@@ -951,8 +1006,7 @@ showComment(MediaPost postModel, BuildContext context) {
         return SizedBox(
             height: deviceHeight(context) - kToolbarHeight,
             child: CommentPage(
-              mediaPost: postModel,
-              keyboardPadding: MediaQuery.of(context).viewInsets.bottom
-            ));
+                mediaPost: postModel,
+                keyboardPadding: MediaQuery.of(context).viewInsets.bottom));
       });
 }

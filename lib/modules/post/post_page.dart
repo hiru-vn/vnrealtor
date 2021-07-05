@@ -11,7 +11,7 @@ import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/create_post_page.dart';
 import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/share/import.dart';
-
+import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'post_widget.dart';
 
 class PostPage extends StatefulWidget {
@@ -106,200 +106,167 @@ class _PostPageState extends State<PostPage> {
 
                   return;
                 },
-                child: SingleChildScrollView(
-                  // physics: const BouncingScrollPhysics(
-                  //     parent: AlwaysScrollableScrollPhysics()),
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  controller: _postBloc.feedScrollController,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: (!showAppBar)
-                            ? MediaQuery.of(context).padding.top +
-                                kToolbarHeight
-                            : 0,
-                      ),
-                      CreatePostCard(
-                        postBloc: _postBloc,
-                        pageController: _postBloc.pageController,
-                      ),
-                      if (_postBloc.isReloadFeed) PostSkeleton(),
-                      if (_postBloc.hasTags != null &&
-                          _postBloc.hasTags.length > 0)
-                        Container(
-                          width: deviceWidth(context),
-                          height: 30,
-                          margin: EdgeInsets.only(top: 8),
-                          // padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: ListView.separated(
-                            // shrinkWrap: true,
-                            padding: EdgeInsets.only(left: 15),
-                            separatorBuilder: (context, index) {
-                              return SizedBox(
-                                width: 10,
-                              );
-                            },
-                            itemBuilder: (context, index) {
-                              if (index == 0) {
-                                return PopupMenuButton(
-                                  itemBuilder: (_) => <PopupMenuItem<int>>[
-                                    PopupMenuItem(
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text('Bán kính 10 km'),
-                                          if (distance == 10)
-                                            Icon(Icons.check, size: 18)
-                                        ],
-                                      ),
-                                      value: 10,
-                                    ),
-                                    PopupMenuItem(
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text('Bán kính 20 km'),
-                                            if (distance == 20)
-                                              Icon(Icons.check, size: 18)
-                                          ],
-                                        ),
-                                        value: 20),
-                                    PopupMenuItem(
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text('Bán kính 50 km'),
-                                            if (distance == 50)
-                                              Icon(Icons.check, size: 18)
-                                          ],
-                                        ),
-                                        value: 50),
-                                  ],
-                                  onSelected: (val) async {
-                                    setState(() {
-                                      isFilterDistance = true;
-                                      distance = val;
-                                    });
-                                    _getPostLocal();
-                                  },
-                                  padding: EdgeInsets.zero,
-                                  child: Center(
-                                    child: Icon(Icons.my_location,
-                                        color: !isFilterDistance
-                                            ? Colors.black54
-                                            : ptPrimaryColor(context)),
-                                  ),
-                                );
-                              }
-                              return InkWell(
-                                borderRadius: BorderRadius.circular(15),
-                                onTap: () {
-                                  SearchPostPage.navigate(
-                                      hashTag: _postBloc.hasTags[index - 1]
-                                          ['value']);
-                                },
-                                child: Container(
-                                  height: 30,
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      color: ptSecondaryColor(context),
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Center(
-                                    child: Text(
-                                      _postBloc.hasTags[index - 1]['value']
-                                          .toString(),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                            itemCount: _postBloc.hasTags.length,
-                            scrollDirection: Axis.horizontal,
+                child: InViewNotifierCustomScrollView(
+                    // physics: const BouncingScrollPhysics(
+                    //     parent: AlwaysScrollableScrollPhysics()),
+                    isInViewPortCondition: (double deltaTop, double deltaBottom,
+                        double viewPortDimension) {
+                      return deltaTop < (0.5 * viewPortDimension) + 100.0 &&
+                          deltaBottom > (0.5 * viewPortDimension) - 100.0;
+                    },
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _postBloc.feedScrollController,
+                    slivers: <Widget>[
+                      SliverList(
+                          delegate: SliverChildListDelegate(
+                        [
+                          SizedBox(
+                            height: (!showAppBar)
+                                ? MediaQuery.of(context).padding.top +
+                                    kToolbarHeight
+                                : 0,
                           ),
-                        ),
-                      // if (isFilterDistance)
-                      //   Align(
-                      //     alignment: Alignment.centerRight,
-                      //     child: Container(
-                      //       padding: const EdgeInsets.only(
-                      //           top: 2, bottom: 2, left: 7, right: 1),
-                      //       margin: EdgeInsets.only(right: 8, top: 8),
-                      //       decoration: BoxDecoration(
-                      //           borderRadius: BorderRadius.circular(5),
-                      //           border: Border.all(color: Colors.black12)),
-                      //       child: DropdownButton(
-                      //           value: distance,
-                      //           isDense: true,
-                      //           style: ptBody().copyWith(color: Colors.black87),
-                      //           items: [
-                      //             DropdownMenuItem(
-                      //               child: Text('Bán kính 10 km',
-                      //                   style: ptSmall()
-                      //                       .copyWith(color: Colors.black87)),
-                      //               value: 10,
-                      //             ),
-                      //             DropdownMenuItem(
-                      //               child: Text('Bán kính 20 km',
-                      //                   style: ptSmall()
-                      //                       .copyWith(color: Colors.black87)),
-                      //               value: 20,
-                      //             ),
-                      //             DropdownMenuItem(
-                      //               child: Text('Bán kính 50 km',
-                      //                   style: ptSmall()
-                      //                       .copyWith(color: Colors.black87)),
-                      //               value: 50,
-                      //             ),
-                      //           ],
-                      //           underline: SizedBox.shrink(),
-                      //           onChanged: (val) {
-                      //             setState(() {
-                      //               distance = val;
-                      //             });
-                      //             _getPostLocal();
-                      //           }),
-                      //     ),
-                      //   ),
-                      _postBloc.feed.length == 0
-                          ? EmptyWidget(
-                              assetImg: 'assets/image/no_post.png',
-                              title: 'Không tìm thấy bài đăng',
-                            )
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: _postBloc.feed.length,
-                              itemBuilder: (context, index) {
-                                final item = _postBloc.feed[index];
-                                return Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (index ==
-                                            (AuthBloc.firstLogin ? 0 : 5) &&
-                                        UserBloc.instance.suggestFollowUsers !=
-                                            null &&
-                                        UserBloc.instance.suggestFollowUsers
-                                                .length >
-                                            0)
-                                      SuggestListUser(
-                                        users: UserBloc
-                                            .instance.suggestFollowUsers,
+                          CreatePostCard(
+                            postBloc: _postBloc,
+                            pageController: _postBloc.pageController,
+                          ),
+                          if (_postBloc.isReloadFeed) PostSkeleton(),
+                          if (_postBloc.hasTags != null &&
+                              _postBloc.hasTags.length > 0)
+                            Container(
+                              width: deviceWidth(context),
+                              height: 30,
+                              margin: EdgeInsets.only(top: 8),
+                              // padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: ListView.separated(
+                                // shrinkWrap: true,
+                                padding: EdgeInsets.only(left: 15),
+                                separatorBuilder: (context, index) {
+                                  return SizedBox(
+                                    width: 10,
+                                  );
+                                },
+                                itemBuilder: (context, index) {
+                                  if (index == 0) {
+                                    return PopupMenuButton(
+                                      itemBuilder: (_) => <PopupMenuItem<int>>[
+                                        PopupMenuItem(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text('Bán kính 10 km'),
+                                              if (distance == 10)
+                                                Icon(Icons.check, size: 18)
+                                            ],
+                                          ),
+                                          value: 10,
+                                        ),
+                                        PopupMenuItem(
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text('Bán kính 20 km'),
+                                                if (distance == 20)
+                                                  Icon(Icons.check, size: 18)
+                                              ],
+                                            ),
+                                            value: 20),
+                                        PopupMenuItem(
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text('Bán kính 50 km'),
+                                                if (distance == 50)
+                                                  Icon(Icons.check, size: 18)
+                                              ],
+                                            ),
+                                            value: 50),
+                                      ],
+                                      onSelected: (val) async {
+                                        setState(() {
+                                          isFilterDistance = true;
+                                          distance = val;
+                                        });
+                                        _getPostLocal();
+                                      },
+                                      padding: EdgeInsets.zero,
+                                      child: Center(
+                                        child: Icon(Icons.my_location,
+                                            color: !isFilterDistance
+                                                ? Colors.black54
+                                                : ptPrimaryColor(context)),
                                       ),
-                                    PostWidget(item),
-                                  ],
-                                );
-                              },
+                                    );
+                                  }
+                                  return InkWell(
+                                    borderRadius: BorderRadius.circular(15),
+                                    onTap: () {
+                                      SearchPostPage.navigate(
+                                          hashTag: _postBloc.hasTags[index - 1]
+                                              ['value']);
+                                    },
+                                    child: Container(
+                                      height: 30,
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      decoration: BoxDecoration(
+                                          color: ptSecondaryColor(context),
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      child: Center(
+                                        child: Text(
+                                          _postBloc.hasTags[index - 1]['value']
+                                              .toString(),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                itemCount: _postBloc.hasTags.length,
+                                scrollDirection: Axis.horizontal,
+                              ),
                             ),
-                      if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
-                        PostSkeleton(
-                          count: 1,
-                        ),
-                      SizedBox(
-                        height: 70,
-                      ),
-                    ],
-                  ),
-                ),
+                          _postBloc.feed.length == 0
+                              ? EmptyWidget(
+                                  assetImg: 'assets/image/no_post.png',
+                                  title: 'Không tìm thấy bài đăng',
+                                )
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: _postBloc.feed.length,
+                                  itemBuilder: (context, index) {
+                                    final item = _postBloc.feed[index];
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (index ==
+                                                (AuthBloc.firstLogin ? 0 : 5) &&
+                                            UserBloc.instance
+                                                    .suggestFollowUsers !=
+                                                null &&
+                                            UserBloc.instance.suggestFollowUsers
+                                                    .length >
+                                                0)
+                                          SuggestListUser(
+                                            users: UserBloc
+                                                .instance.suggestFollowUsers,
+                                          ),
+                                        PostWidget(item),
+                                      ],
+                                    );
+                                  },
+                                ),
+                          if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
+                            PostSkeleton(
+                              count: 1,
+                            ),
+                          SizedBox(
+                            height: 70,
+                          ),
+                        ],
+                      ))
+                    ]),
               ),
             ),
           ),
@@ -391,32 +358,6 @@ class CreatePostCard extends StatelessWidget {
               Divider(
                 height: 10,
               ),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(
-            //     horizontal: 20,
-            //   ),
-            //   child: Row(
-            //     children: [
-            //       SizedBox(
-            //         width: 6,
-            //       ),
-            //       Image.asset('assets/image/map_icon.png'),
-            //       SizedBox(
-            //         width: 6,
-            //       ),
-            //       Text(
-            //         // 'Bài viết nổi bật',
-            //         '',
-            //         style: ptBody().copyWith(
-            //           fontWeight: FontWeight.w600,
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            // SizedBox(
-            //   height: 10,
-            // ),
             postBloc.isLoadStory
                 ? StorySkeleton()
                 : postBloc.stories.length == 0
@@ -599,8 +540,6 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                     top: 9,
                     right: 11,
                     child: Container(
-                      // width: 8,
-                      // height: 8,
                       padding: EdgeInsets.all(count.length == 2 ? 3.5 : 5),
                       decoration: BoxDecoration(
                         color: Colors.red,

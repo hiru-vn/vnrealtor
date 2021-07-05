@@ -1,4 +1,5 @@
 import 'package:datcao/share/import.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 enum DialogAction {
   cancel,
@@ -11,29 +12,24 @@ typedef TapButtonListener(DialogAction action);
 typedef TapConfirm();
 
 void showWaitingDialog(BuildContext context) {
-  showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            elevation: 0,
-            contentPadding: EdgeInsets.zero,
-            backgroundColor: Colors.transparent,
-            content: Center(
-                child: Material(
-              borderRadius: BorderRadius.circular(25),
-              elevation: 3,
-              child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  ),
-                  child: kLoadingSpinner),
-            )));
-      });
+  BotToast.closeAllLoading();
+  BotToast.showCustomLoading(
+      backgroundColor: Colors.black38,
+      toastBuilder: (_) => Material(
+            borderRadius: BorderRadius.circular(25),
+            elevation: 3,
+            child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: kLoadingSpinner),
+          ));
 }
+
+closeLoading() => BotToast.closeAllLoading();
 
 Future<bool> showConfirmDialog(BuildContext context, String errorMessage,
     {@required TapConfirm confirmTap,

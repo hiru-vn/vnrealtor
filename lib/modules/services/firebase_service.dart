@@ -70,7 +70,7 @@ class FcmService {
           AuthBloc.instance.userModel.avatar,
           message.data['avatar'],
         ]);
-        navigatorKey.currentState.maybePop();
+        closeLoading();
       });
     }
 

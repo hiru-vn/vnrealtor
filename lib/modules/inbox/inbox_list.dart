@@ -1,14 +1,12 @@
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/import/spin_loader.dart';
 import 'package:datcao/modules/inbox/inbox_model.dart';
-import 'package:datcao/modules/inbox/inbox_setting.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/widget/animation_search.dart';
-import 'package:datcao/share/widget/spacing_box.dart';
 import 'package:datcao/utils/formart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -402,7 +400,7 @@ class _InboxListState extends State<InboxList>
                 AuthBloc.instance.userModel.avatar,
                 user.avatar,
               ]);
-              navigatorKey.currentState.maybePop();
+              closeLoading();
             },
             child: AbsorbPointer(child: PeopleWidget(friends[index])));
       },

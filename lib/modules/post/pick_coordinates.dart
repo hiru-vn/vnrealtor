@@ -236,7 +236,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
             onSearch: _onSearch,
             automaticallyImplyBackButton: true,
             actions: [
-              if (widget.hasPolygon)
+              if (widget.hasPolygon ?? false)
                 FloatingSearchBarAction(
                   showIfOpened: false,
                   child: PopupMenuButton(

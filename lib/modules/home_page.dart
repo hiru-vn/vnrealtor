@@ -26,7 +26,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
-  List<Widget> _pages = <Widget>[];
   AuthBloc _authBloc;
 
   @override
@@ -67,12 +66,6 @@ class _HomePageState extends State<HomePage>
           selectedIndex: _selectedIndex,
           list: [
             BottomTabModel(0, 'Trang chủ', MdiIcons.homeOutline, MdiIcons.home),
-            // BottomTabModel(
-            //   _authBloc.userModel?.messNotiCount ?? 0,
-            //   'Hộp thư',
-            //   Icons.message_outlined,
-            //   Icons.message,
-            // ),
             BottomTabModel(_authBloc.userModel?.notiCount ?? 0, 'Thông báo',
                 MdiIcons.bellOutline, MdiIcons.bell),
             BottomTabModel(0, 'Hồ sơ', Icons.person_outline, Icons.person),

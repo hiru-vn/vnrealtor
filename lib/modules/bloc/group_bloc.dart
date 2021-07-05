@@ -26,25 +26,32 @@ class GroupBloc extends ChangeNotifier {
   List<NotificationModel> invites;
 
   Future init() async {
-    getListGroup(
-            filter: GraphqlFilter(
-                limit: 20,
-                order: "{updatedAt: -1}",
-                filter: "{ownerId: \"${AuthBloc.instance.userModel.id}\"}"))
-        .then((res) {
-      if (res.isSuccess) {
-        myGroups = res.data;
-      }
-    });
-    getListGroupIn(AuthBloc.instance.userModel.groupIds).then((res) {
-      if (res.isSuccess) {
-        followingGroups = (res.data as List<GroupModel>)
-            .where((element) => !element.isOwner)
-            .toList();
-      }
-    });
     getNewFeedGroup(filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
     getSuggestGroup();
+    getMyGroup();
+  }
+
+  Future getMyGroup() async {
+    await Future.wait([
+      getListGroup(
+              filter: GraphqlFilter(
+                  limit: 20,
+                  order: "{updatedAt: -1}",
+                  filter: "{ownerId: \"${AuthBloc.instance.userModel.id}\"}"))
+          .then((res) {
+        if (res.isSuccess) {
+          myGroups = res.data;
+        }
+      }),
+      getListGroupIn(AuthBloc.instance.userModel.groupIds).then((res) {
+        if (res.isSuccess) {
+          followingGroups = (res.data as List<GroupModel>)
+              .where((element) => !element.isOwner)
+              .toList();
+        }
+      })
+    ]);
+    notifyListeners();
   }
 
   Future<BaseResponse> getListGroup({GraphqlFilter filter}) async {
@@ -223,6 +230,17 @@ class GroupBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> adminAcceptMem(String id, List<String> userIds) async {
+    try {
+      final res = await GroupRepo().adminAcceptMem(id, userIds);
+      return BaseResponse.success(GroupModel.fromJson(res));
+    } catch (e) {
+      return BaseResponse.fail(e?.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> createGroup(
       String name,
       bool privacy,
@@ -253,10 +271,26 @@ class GroupBloc extends ChangeNotifier {
       List<String> images,
       List<String> videos,
       List<LatLng> polygon,
-      List<String> tagUserIds) async {
+      List<String> tagUserIds,
+      String type,
+      String need,
+      double area,
+      double price) async {
     try {
-      final res = await PostRepo().createPost(content, expirationDate,
-          publicity, lat, long, images, videos, polygon, tagUserIds,
+      final res = await PostRepo().createPost(
+          content,
+          expirationDate,
+          publicity,
+          lat,
+          long,
+          images,
+          videos,
+          polygon,
+          tagUserIds,
+          type,
+          need,
+          area,
+          price,
           groupId: groupId);
       feed.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
@@ -302,7 +336,10 @@ class GroupBloc extends ChangeNotifier {
   Future<BaseResponse> getListInviteGroupNotification() async {
     try {
       final res = await NotificationRepo().getListNotification(
-          filter: GraphqlFilter(limit: 10, filter: '{tag: "INVITE_GROUP"}'));
+          filter: GraphqlFilter(
+              limit: 10,
+              filter:
+                  '{tag: "INVITE_GROUP", toUserId: "${AuthBloc.instance.userModel.id}"}'));
       final List listRaw = res['data'];
       invites = listRaw.map((e) => NotificationModel.fromJson(e)).toList();
       return BaseResponse.success(invites);
