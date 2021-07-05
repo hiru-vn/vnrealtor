@@ -37,7 +37,9 @@ flutter run # make sure your mobile device is connected
 
 ## Showcase
 
-![p1]![p2]![p3]![p4]
+![p1] ![p2] 
+![p3] ![p4] 
+
 
 ## Support 
 
