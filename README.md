@@ -12,8 +12,8 @@
 
 ## Download
 
-- [on Android](https://play.google.com/store/apps/details?id=com.datcao.mobile)
-- [on iOS](https://apps.apple.com/vn/app/datcao/id1554414069)
+- [on Android](https://play.google.com/store/apps/details?id=com.datcao.mobile) - require Android 7.0 or later
+- [on iOS](https://apps.apple.com/vn/app/datcao/id1554414069) - require minimum iOS 11.0
 
 ## Technology
 
