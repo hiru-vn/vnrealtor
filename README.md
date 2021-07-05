@@ -1,25 +1,27 @@
-# Money Management - Flutter - SE346 UIT
+## Money Management - Flutter
 
-* __Built by: Hei Dun Luv__ - __`Hate and Love`__ 
-  
-    * 17520583 - Nguyễn Quang Huy  
+* Built by: 
+  * quanghuy1998kh@gmail.com - Nguyễn Quang Huy
+  * phamphuckhai@gmail.com - Phạm Phúc Khải  
 
-<p align="center"> <img src ="./assets/logo.png" /> </p>
-<p align="center"> Ứng dụng quản lý chi tiêu - hãy chi tiêu thông minh </p>
+<p align="center"> <img src ="./assets/image/logo_full.png" /> </p>
+<p align="center"> Ứng dụng mạng xã hội bất động sản cho người Việt </p>
 
 ---
+![DATCAO PROMOTION](https://drive.google.com/uc?export=view&id=15apyx8kdT5de9sUxDrmbMU2fzNDXOK-3)
 
-# Technology
+## Download
 
-- [flutter](https://flutter.dev/) (develope version: 1.9.1, last config version: 1.22.6)
+- [on Android](https://play.google.com/store/apps/details?id=com.datcao.mobile)
+- [on iOS](https://apps.apple.com/vn/app/datcao/id1554414069)
+
+## Technology
+
+- [flutter](https://flutter.dev/)
 - [provider](https://pub.dev/packages/provider)
-- [bloc](https://pub.dev/packages/bloc)
-- [sqflite](https://pub.dev/packages/sqflite)
-
-
-# Installation
-
-- Download [release apk](https://github.com/huynguyen1999kh/wallet-app-money-management-flutter/releases/tag/v1.0)
+- Firebase services (FCM, Dynamic Links, Firestore, Storage, Analysis)
+- MongoDB
+- GraphQL
 
 or manually download the project:
 
@@ -33,31 +35,21 @@ flutter run # make sure your mobile device is connected
 ```
 
 
-# Showcase
+## Showcase
 
-||||
-|:---:|:---:|:---:|
-|![drawer]<br>Các màn hình|![tong-quan]<br>Trang chủ|![tao-giao-dich]<br>Tạo giao dịch|
-|![lich-su-giao-dich]<br>Truy vấn giao dịch|![tai-khoan]<br>Danh sách tài khoản|![bieu-do]<br>Thống kê bằng biểu đồ|
+![p1]![p2]![p3]![p4]
 
-for more detail information, check out [Document](https://github.com/huynguyen1999kh/wallet-app-money-management-flutter/blob/master/document.docx) (written in Vietnamese)
+## Support 
 
-
-# Support 
-
- - [x] Thêm/xóa/sửa giao dịch chi tiêu
- - [x] Thêm/xóa/sửa hạn mức chi
- - [x] Thêm/xóa/sửa tài khoản
- - [x] Thêm/xóa/sửa danh mục thu/chi
- - [x] Thống kê bằng biểu đồ
- - [x] Tùy chỉnh theme
- - [ ] Chức năng đăng nhập
- - [ ] Liên kết với tài khoản ngân hàng
+ - Đăng bán/ cho thuê bất động sản
+ - Kết quạn, nhắn tin
+ - Xem tin tức, tìm kiếm
+ - Coi các dự án xung quanh, trên bản đồ
+ - Tạo nhóm
+ - Tạo trang cho tổ chức kinh doanh
 
 
-[bieu-do]: ./assets/showcase/bieu-do.png
-[drawer]: ./assets/showcase/drawer.png
-[lich-su-giao-dich]: ./assets/showcase/lich-su-giao-dich.png
-[tai-khoan]: ./assets/showcase/tai-khoan.png
-[tao-giao-dich]: ./assets/showcase/tao-giao-dich.png
-[tong-quan]: ./assets/showcase/tong-quan.png
+[p1]: https://drive.google.com/uc?export=view&id=1eZVvpkEP1GJMCm1tLLeakbz4NS7GA8jq
+[p2]: https://drive.google.com/uc?export=view&id=1aUtDjkRjGD6EXDehhKn3ldJ95ZFe0JlO
+[p3]: https://drive.google.com/uc?export=view&id=1SbRxjF8778F9MzpXr6R_ss_b26hZWj10
+[p4]: https://drive.google.com/uc?export=view&id=1enE9Ccn9XQGofclTO7jteGfOaEmDvsDU
