@@ -1,4 +1,4 @@
-## Money Management - Flutter
+## DAT CAO - Flutter
 
 * Built by: 
   * quanghuy1998kh@gmail.com - Nguyễn Quang Huy
