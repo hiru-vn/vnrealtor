@@ -353,6 +353,7 @@ class AuthBloc extends ChangeNotifier {
     firstLogin = false;
     await SPref.instance.remove('token');
     await SPref.instance.remove('id');
+    SPref.instance.remove('notShowRecomendAgain');
     AuthBloc.instance.userModel = null;
     FirebaseAuth.instance.signOut();
     print('User Sign Out');

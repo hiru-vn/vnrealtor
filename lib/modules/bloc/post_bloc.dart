@@ -24,6 +24,7 @@ class PostBloc extends ChangeNotifier {
   bool isEndFeed = false;
   DateTime lastFetchFeedPage1;
   int feedPage = 1;
+  static int counterCreatPostIn1Session = 0;
 
   List<PostModel> feed = [];
   List<PostModel> myPosts;

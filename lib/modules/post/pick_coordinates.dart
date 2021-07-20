@@ -13,7 +13,7 @@ class PickCoordinates extends StatefulWidget {
   final bool hasPolygon;
 
   const PickCoordinates({Key key, this.hasPolygon = true}) : super(key: key);
-  static Future navigate({bool hasPolygon}) {
+  static Future navigate({bool hasPolygon = true}) {
     return navigatorKey.currentState
         .push(pageBuilder(PickCoordinates(hasPolygon: hasPolygon)));
   }

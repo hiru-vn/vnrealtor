@@ -25,7 +25,9 @@ class CommentModel {
       this.user,
       this.createdAt,
       this.updatedAt,
-      this.userLikeIds, this.replyIds, this.userTags});
+      this.userLikeIds,
+      this.replyIds,
+      this.userTags});
 
   CommentModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -39,7 +41,7 @@ class CommentModel {
     updatedAt = json['updatedAt'];
     userLikeIds =
         json['userLikeIds'] != null ? json['userLikeIds'].cast<String>() : [];
-        replyIds = json['replyIds'] != null ? json['replyIds'].cast<String>() : [];
+    replyIds = json['replyIds'] != null ? json['replyIds'].cast<String>() : [];
     if (json['userTags'] != null) {
       userTags = json['userTags'];
     }

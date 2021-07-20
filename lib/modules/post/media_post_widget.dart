@@ -332,7 +332,7 @@ class MediaPostWidget extends StatefulWidget {
   MediaPostWidget(
       {@required this.post,
       @required this.onTapPostCallBack,
-      this.autoPlayVideo});
+      this.autoPlayVideo = false});
 
   @override
   _MediaPostWidgetState createState() => _MediaPostWidgetState();
