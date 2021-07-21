@@ -78,7 +78,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
         showToast('Phải có ít nhất một hình ảnh hoặc video', context);
         return;
       }
-      showSimpleLoadingDialog(context, canDismiss: false);
+      showWaitingDialog(context);
 
       while (_urlMedias.length < _cacheMedias.length + _cachePic.length) {
         await Future.delayed(Duration(milliseconds: 500));
@@ -106,7 +106,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
         _area,
         _price,
       );
-      navigatorKey.currentState.maybePop();
+      closeLoading();
       if (res.isSuccess) {
         navigatorKey.currentState.pop();
         FocusScope.of(context).requestFocus(FocusNode());
@@ -509,12 +509,15 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   SizedBox(width: 12),
                   GestureDetector(
                     onTap: () {
-                      PickCoordinates.navigate().then((value) => setState(() {
-                            _pos = value[0];
-                            _placeName = value[1];
-                            _polygonPoints = value[2];
-                            FocusScope.of(context).requestFocus(FocusNode());
-                          }));
+                      PickCoordinates.navigate(
+                              polygon: _polygonPoints, position: _pos)
+                          .then((value) => setState(() {
+                                _pos = value[0];
+                                _placeName = value[1];
+                                _polygonPoints = value[2];
+                                FocusScope.of(context)
+                                    .requestFocus(FocusNode());
+                              }));
                     },
                     child: SizedBox(
                         height: 40,

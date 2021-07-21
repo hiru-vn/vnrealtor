@@ -11,11 +11,19 @@ import '../../share/widget/keep_keyboard_popup_menu/keep_keyboard_popup_menu.dar
 
 class PickCoordinates extends StatefulWidget {
   final bool hasPolygon;
+  final LatLng position;
+  final List<LatLng> polygon;
 
-  const PickCoordinates({Key key, this.hasPolygon = true}) : super(key: key);
-  static Future navigate({bool hasPolygon = true}) {
-    return navigatorKey.currentState
-        .push(pageBuilder(PickCoordinates(hasPolygon: hasPolygon)));
+  const PickCoordinates(
+      {Key key, this.hasPolygon = true, this.position, this.polygon})
+      : super(key: key);
+  static Future navigate(
+      {bool hasPolygon = true, LatLng position, List<LatLng> polygon}) {
+    return navigatorKey.currentState.push(pageBuilder(PickCoordinates(
+      hasPolygon: hasPolygon,
+      polygon: polygon.length > 0 ? polygon : null,
+      position: position,
+    )));
   }
 
   @override
@@ -40,6 +48,14 @@ class PickCoordinatesState extends State<PickCoordinates>
 
   @override
   void initState() {
+    if (widget.position != null) {
+      Future.delayed(
+          Duration(milliseconds: 500), () => _selectMarker(widget.position));
+    }
+    if (widget.polygon != null) {
+      polygonPoints = widget.polygon;
+      _mode = 'polygon';
+    }
     _getInitPosPrefs();
     getDevicePosition().then((value) async {
       CameraPosition _curPos = CameraPosition(
@@ -60,7 +76,6 @@ class PickCoordinatesState extends State<PickCoordinates>
             }
           })
           ..forward();
-    getCenter();
     super.initState();
   }
 
@@ -244,18 +259,19 @@ class PickCoordinatesState extends State<PickCoordinates>
                 getCenter().then((value) => setState(() {}));
               }
             },
-            polylines: _mode == 'polygon' && polygonPoints.length > 0
-                ? <Polyline>{
-                    Polyline(
-                        color: Colors.red,
-                        width: 1,
-                        polylineId: PolylineId('PolylineId'),
-                        points: <LatLng>[
-                          center,
-                          polygonPoints[polygonPoints.length - 1]
-                        ])
-                  }
-                : null,
+            polylines:
+                _mode == 'polygon' && polygonPoints.length > 0 && center != null
+                    ? <Polyline>{
+                        Polyline(
+                            color: Colors.red,
+                            width: 1,
+                            polylineId: PolylineId('PolylineId'),
+                            points: <LatLng>[
+                              center,
+                              polygonPoints[polygonPoints.length - 1]
+                            ])
+                      }
+                    : null,
             onTap: _mode == 'point' ? _selectMarker : (LatLng _) {},
             markers: _mode == 'point'
                 ? (selectedMarker != null ? <Marker>{selectedMarker} : null)
@@ -583,11 +599,10 @@ class PickCoordinatesState extends State<PickCoordinates>
                   ),
                 )),
           ],
-          if (_mode == 'polygon')
+          if (_mode == 'polygon') ...[
             Center(
               child: Icon(MdiIcons.target, size: 50, color: Colors.white),
             ),
-          if (_mode == 'polygon')
             Positioned(
                 top: 280,
                 right: 10,
@@ -613,6 +628,25 @@ class PickCoordinatesState extends State<PickCoordinates>
                     ),
                   ),
                 )),
+            if (polygonPoints.length > 0)
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 80.0),
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.black54),
+                  child: Text(
+                    '${() {
+                      final distance = getCoordinateDistanceInKm(
+                          polygonPoints[polygonPoints.length - 1], center);
+                      return (distance * 1000).toStringAsFixed(1);
+                    }()} m',
+                    style: ptBody().copyWith(color: Colors.white),
+                  ),
+                ),
+              ),
+          ],
           if (shouldShowInstructionPolygon) ...[
             IgnorePointer(
               child: ColorFiltered(

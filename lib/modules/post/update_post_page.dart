@@ -87,7 +87,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         showToast('Phải có ít nhất một hình ảnh hoặc video', context);
         return;
       }
-      showSimpleLoadingDialog(context, canDismiss: false);
+      showWaitingDialog(context);
 
       while (_urlMedias.length < _cacheMedias.length + _cachePic.length) {
         await Future.delayed(Duration(milliseconds: 500));
@@ -116,7 +116,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         _price,
       );
 
-      await navigatorKey.currentState.maybePop();
+      closeLoading();
       if (res.isSuccess) {
         final index = _postBloc.feed
             .indexWhere((element) => element.id == widget.post.id);
@@ -557,7 +557,11 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   SizedBox(width: 12),
                   GestureDetector(
                     onTap: () {
-                      PickCoordinates.navigate().then((value) {
+                      PickCoordinates.navigate(
+                              polygon: widget.post.polygonPoints,
+                              position: LatLng(widget.post.locationLat,
+                                  widget.post.locationLong))
+                          .then((value) {
                         if (value == null) return;
                         setState(() {
                           _pos = value[0];

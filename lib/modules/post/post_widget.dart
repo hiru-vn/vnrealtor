@@ -786,7 +786,7 @@ class _PostWidgetState extends State<PostWidget> {
                           color: Colors.orange,
                         ),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                         child: Text(widget.post.category,
                             style: ptTiny().copyWith(
                                 color: Colors.white, fontSize: 10.5))),
@@ -798,7 +798,7 @@ class _PostWidgetState extends State<PostWidget> {
                           color: Colors.red,
                         ),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                         child: Text(widget.post.action,
                             style: ptTiny().copyWith(
                                 color: Colors.white, fontSize: 10.5))),
@@ -810,7 +810,7 @@ class _PostWidgetState extends State<PostWidget> {
                         color: Colors.green,
                       ),
                       padding:
-                          EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                          EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                       child: Text('${widget.post.area.floor()} m2',
                           style: ptTiny()
                               .copyWith(color: Colors.white, fontSize: 10.5)),
@@ -823,7 +823,7 @@ class _PostWidgetState extends State<PostWidget> {
                           color: Colors.blue,
                         ),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                         child: Text(
                             Formart.toVNDPrice(widget.post.price.toDouble()),
                             style: ptTiny()

@@ -11,6 +11,7 @@ import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/utils/device_info.dart';
 import 'package:datcao/utils/formart.dart';
+import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 
 enum AuthStatus {
   unAuthed,
@@ -335,6 +336,22 @@ class AuthBloc extends ChangeNotifier {
       final res = await _userRepo.getOneUserForClient(id: id);
       userModel = UserModel.fromJson(res);
       await loginFirebase(userModel);
+
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      setOnline();
+    }
+  }
+
+  Future<BaseResponse> setOnline() async {
+    try {
+      final deviceId = await DeviceInfo.instance.getDeviceId();
+      final deviceToken = await FcmService.instance.getDeviceToken();
+      final ip = await WifiInfo().getWifiIP();
+      final res = await _userRepo.setOnline(deviceId, deviceToken, ip);
+
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e?.toString());

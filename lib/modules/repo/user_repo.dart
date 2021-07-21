@@ -130,6 +130,22 @@ Page: "$page"
     return res['setUserlocation'];
   }
 
+  Future setOnline(
+    String deviceId,
+    String deviceToken,
+    String ip,
+  ) async {
+    final res = await UserSrv().mutate(
+        'setOnline',
+        '''
+    deviceId: "$deviceId"
+    deviceToken: "$deviceToken"
+  	ip: "$ip"
+    ''',
+        fragment: 'id');
+    return res['setOnline'];
+  }
+
   Future getListUserIn(List<String> ids) async {
     final res = await UserSrv().query('getAllUserForClient',
         'q:{order: {createdAt: 1} filter: {_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}}',
