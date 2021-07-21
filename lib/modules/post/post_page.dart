@@ -282,7 +282,13 @@ Future<bool> _showRecomendDialog(BuildContext context) async {
       await SPref.instance.getBool('notShowRecomendAgain');
   if (notShowRecomendAgain) return Future.value(false);
   if (AuthBloc.firstLogin) return Future.value(false);
-  // if (AuthBloc.instance.userModel. == 0) return Future.value(false);
+  if (PostBloc.instance.myPosts
+          .where((element) =>
+              DateTime.tryParse(element.createdAt)
+                  .compareTo(DateTime.now().subtract(Duration(days: 1))) >=
+              0)
+          .length ==
+      0) return Future.value(false);
   if (AuthBloc.instance.userModel.role != 'EDITOR') return Future.value(false);
 
   return showDialog<bool>(
