@@ -22,7 +22,8 @@ class PickCoordinates extends StatefulWidget {
   State<PickCoordinates> createState() => PickCoordinatesState();
 }
 
-class PickCoordinatesState extends State<PickCoordinates> {
+class PickCoordinatesState extends State<PickCoordinates>
+    with SingleTickerProviderStateMixin {
   Completer<GoogleMapController> _controller = Completer();
   CameraPosition _initPos = CameraPosition(
     target: LatLng(16.04, 108.19),
@@ -32,7 +33,10 @@ class PickCoordinatesState extends State<PickCoordinates> {
   String _placeName;
   String _mode = 'point';
   List<LatLng> polygonPoints = [];
+  LatLng center;
   Function _openPopup;
+  bool readedInstructionPolygon = false;
+  AnimationController animationController;
 
   @override
   void initState() {
@@ -46,6 +50,17 @@ class PickCoordinatesState extends State<PickCoordinates> {
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(_curPos));
     });
+    animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 600))
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              animationController.reverse();
+            } else if (status == AnimationStatus.dismissed) {
+              animationController.forward();
+            }
+          })
+          ..forward();
+    getCenter();
     super.initState();
   }
 
@@ -105,6 +120,19 @@ class PickCoordinatesState extends State<PickCoordinates> {
         });
       }
     });
+  }
+
+  Future<LatLng> getCenter() async {
+    final GoogleMapController controller = await _controller.future;
+    LatLngBounds visibleRegion = await controller.getVisibleRegion();
+    LatLng centerLatLng = LatLng(
+      (visibleRegion.northeast.latitude + visibleRegion.southwest.latitude) / 2,
+      (visibleRegion.northeast.longitude + visibleRegion.southwest.longitude) /
+          2,
+    );
+    center = centerLatLng;
+
+    return centerLatLng;
   }
 
   void _redoMarkerPoligon() {
@@ -197,6 +225,9 @@ class PickCoordinatesState extends State<PickCoordinates> {
     final double perimeter = edges.fold(0, (e1, e2) => e1 + e2);
 
     final double area = getAreaInMeter(polygonPoints);
+    final shouldShowInstructionPolygon = _mode == 'polygon' &&
+        polygonPoints.length == 0 &&
+        !readedInstructionPolygon;
     return Scaffold(
       body: Stack(
         children: [
@@ -208,7 +239,24 @@ class PickCoordinatesState extends State<PickCoordinates> {
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
             },
-            onTap: _mode == 'point' ? _selectMarker : _addMarkerPoligon,
+            onCameraMove: (_) {
+              if (_mode == 'polygon' && polygonPoints.length > 0) {
+                getCenter().then((value) => setState(() {}));
+              }
+            },
+            polylines: _mode == 'polygon' && polygonPoints.length > 0
+                ? <Polyline>{
+                    Polyline(
+                        color: Colors.red,
+                        width: 1,
+                        polylineId: PolylineId('PolylineId'),
+                        points: <LatLng>[
+                          center,
+                          polygonPoints[polygonPoints.length - 1]
+                        ])
+                  }
+                : null,
+            onTap: _mode == 'point' ? _selectMarker : (LatLng _) {},
             markers: _mode == 'point'
                 ? (selectedMarker != null ? <Marker>{selectedMarker} : null)
                 : (polygonPoints
@@ -224,7 +272,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
                     Polygon(
                       polygonId: PolygonId('PolygonId'),
                       points: polygonPoints,
-                      consumeTapEvents: true,
+                      consumeTapEvents: false,
                       strokeColor: Colors.redAccent,
                       strokeWidth: 1,
                       fillColor: Colors.redAccent.withOpacity(0.5),
@@ -535,6 +583,130 @@ class PickCoordinatesState extends State<PickCoordinates> {
                   ),
                 )),
           ],
+          if (_mode == 'polygon')
+            Center(
+              child: Icon(MdiIcons.target, size: 50, color: Colors.white),
+            ),
+          if (_mode == 'polygon')
+            Positioned(
+                top: 280,
+                right: 10,
+                child: Material(
+                  borderRadius: BorderRadius.circular(21),
+                  elevation: 4,
+                  child: GestureDetector(
+                    onTap: () async {
+                      final center = await getCenter();
+                      _addMarkerPoligon(center);
+                    },
+                    child: Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ptPrimaryColor(context),
+                      ),
+                      child: Center(
+                        child: Icon(MdiIcons.vectorPolylinePlus,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                )),
+          if (shouldShowInstructionPolygon) ...[
+            IgnorePointer(
+              child: ColorFiltered(
+                colorFilter: ColorFilter.mode(Colors.black45,
+                    BlendMode.srcOut), // This one will create the magic
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black45,
+                          backgroundBlendMode: BlendMode
+                              .dstOut), // This one will handle background + difference out
+                    ),
+                    Positioned(
+                      top: 270,
+                      right: 0,
+                      width: 64,
+                      height: 64,
+                      child: Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape
+                                .circle), // This one will handle background + difference out
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape
+                                .circle), // This one will handle background + difference out
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+                right: 15,
+                top: 240,
+                child: ScaleTransition(
+                    scale: Tween(
+                      begin: 0.9,
+                      end: 1.0,
+                    ).animate(CurvedAnimation(
+                      parent: animationController,
+                      curve: Curves.easeInCubic,
+                    )),
+                    child: Text(
+                      '2. Nhấn để chọn điểm',
+                      style: ptTitle().copyWith(
+                        color: Colors.white,
+                      ),
+                    ))),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 110.0),
+                child: ScaleTransition(
+                    scale: Tween(
+                      begin: 0.9,
+                      end: 1.0,
+                    ).animate(CurvedAnimation(
+                      parent: animationController,
+                      curve: Curves.easeInCubic,
+                    )),
+                    child: Text(
+                      '1. Di chuyển bản đồ\nđể căn điểm',
+                      style: ptTitle().copyWith(
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    )),
+              ),
+            ),
+            Center(
+                child: Padding(
+                    padding: const EdgeInsets.only(top: 140.0),
+                    child: FlatButton(
+                      child: Text(
+                        'Đã hiểu',
+                      ),
+                      color: ptPrimaryColor(context),
+                      onPressed: () {
+                        setState(() {
+                          readedInstructionPolygon = true;
+                        });
+                      },
+                    )))
+          ]
         ],
       ),
     );

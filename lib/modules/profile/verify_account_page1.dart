@@ -157,9 +157,10 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               onTap: () {
                 showDatePicker(
                   context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now().subtract(Duration(days: 5475)),
-                  lastDate: DateTime.now(),
+                  locale: Locale('vi', 'VN'),
+                  initialDate: DateTime.now().subtract(Duration(days: 10000)),
+                  firstDate: DateTime.now().subtract(Duration(days: 29200)),
+                  lastDate: DateTime.now().subtract(Duration(days: 6570)),
                 ).then((value) => onChange(value.toIso8601String()));
               },
               readOnly: true,
