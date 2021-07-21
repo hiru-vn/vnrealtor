@@ -39,7 +39,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
             icon: Stack(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5).copyWith(bottom: 12),
                   child: Container(
                     height: 28,
                     width: 28,
@@ -81,15 +81,18 @@ class _BottomNavigatorState extends State<BottomNavigator> {
             ),
             activeIcon: Stack(
               children: [
-                Container(
-                  height: 28,
-                  width: 28,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.transparent),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Icon(
-                      e.iconActive,
+                Padding(
+                  padding: const EdgeInsets.all(5).copyWith(bottom: 12),
+                  child: Container(
+                    height: 28,
+                    width: 28,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.transparent),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Icon(
+                        e.iconActive,
+                      ),
                     ),
                   ),
                 ),
