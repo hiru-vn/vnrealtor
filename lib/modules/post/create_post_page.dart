@@ -69,27 +69,27 @@ class _CreatePostPageState extends State<CreatePostPage> {
       }
 
       final res = await _postBloc.createPost(
-        _contentC.text.trim(),
-        _expirationDate?.toIso8601String(),
-        _shareWith == 'public',
-        _pos?.latitude,
-        _pos?.longitude,
-        _urlMedias
-            .where((path) =>
-                FileUtil.getFbUrlFileType(path) == FileType.image ||
-                FileUtil.getFbUrlFileType(path) == FileType.gif)
-            .toList(),
-        _urlMedias
-            .where((path) => FileUtil.getFbUrlFileType(path) == FileType.video)
-            .toList(),
-        _polygonPoints,
-        _tagUsers.map((e) => e.id).toList(),
-        _type,
-        _need,
-        _area,
-        _price,
-        _shareWith == 'onlyme'
-      );
+          _contentC.text.trim(),
+          _expirationDate?.toIso8601String(),
+          _shareWith == 'public',
+          _pos?.latitude,
+          _pos?.longitude,
+          _urlMedias
+              .where((path) =>
+                  FileUtil.getFbUrlFileType(path) == FileType.image ||
+                  FileUtil.getFbUrlFileType(path) == FileType.gif)
+              .toList(),
+          _urlMedias
+              .where(
+                  (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
+              .toList(),
+          _polygonPoints,
+          _tagUsers.map((e) => e.id).toList(),
+          _type,
+          _need,
+          _area,
+          _price,
+          _shareWith == 'onlyme');
 
       closeLoading();
       if (res.isSuccess) {
@@ -170,6 +170,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 PickListItem('public', 'Tất cả mọi người'),
                                 PickListItem(
                                     'friend', 'Chỉ bạn bè mới nhìn thấy'),
+                                PickListItem('onlyme', 'Chỉ mình tôi')
                               ], closeText: 'Xong');
                             },
                             child: Container(

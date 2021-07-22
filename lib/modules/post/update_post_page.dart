@@ -114,6 +114,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         _need,
         _area,
         _price,
+        _shareWith == 'onlyme',
       );
 
       closeLoading();

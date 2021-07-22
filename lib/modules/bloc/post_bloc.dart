@@ -396,7 +396,8 @@ class PostBloc extends ChangeNotifier {
       String type,
       String need,
       double area,
-      double price) async {
+      double price,
+      bool onlyMe) async {
     try {
       final res = await PostRepo().updatePost(
           id,
@@ -412,7 +413,7 @@ class PostBloc extends ChangeNotifier {
           type,
           need,
           area,
-          price);
+          price,onlyMe);
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());

@@ -237,6 +237,7 @@ publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}
 tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
+onlyMe: $onlyMe
     ''';
 
     if (groupId != null) {
@@ -291,6 +292,7 @@ ${postFragment.replaceAll('\n', ' ')}
     String action,
     double area,
     double price,
+    bool onlyMe
   ) async {
     String polygonStr = '''{
       paths: [
@@ -305,6 +307,7 @@ publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}
 tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
+onlyMe: $onlyMe
     ''';
 
     if (expirationDate != null) {

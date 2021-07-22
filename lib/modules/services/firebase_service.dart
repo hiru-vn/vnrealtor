@@ -4,6 +4,7 @@ import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/modules/services/audio.dart';
 import 'package:datcao/modules/services/src/toast/toast.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,8 +12,7 @@ import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/import.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
+
 
 enum FcmType {
   message,
@@ -33,9 +33,7 @@ class FcmService {
 
   static FcmService get instance => _instance;
   FirebaseMessaging fb;
-  final _audioCache = AudioCache(
-      prefix: "assets/sound/",
-      fixedPlayer: AudioPlayer()..setReleaseMode(ReleaseMode.STOP));
+  
 
   static FcmType getType(String type) {
     if (type.toLowerCase() == 'Like'.toLowerCase()) return FcmType.like;
@@ -59,7 +57,7 @@ class FcmService {
     if (type == FcmType.message) {
       if (InboxBloc.inChat) return;
 
-      _audioCache.play('facebook_message.mp3');
+      audioCache.play('facebook_message.mp3');
       toast('Tin nhắn mới', onTap: () async {
         showWaitingDialog(navigatorKey.currentState.context);
         await InboxBloc.instance.navigateToChatWith(
