@@ -299,53 +299,123 @@ class PickCoordinatesState extends State<PickCoordinates>
           CustomFloatingSearchBar(
             onSearch: _onSearch,
             automaticallyImplyBackButton: true,
-            actions: [
-              if (widget.hasPolygon ?? false)
-                FloatingSearchBarAction(
-                  showIfOpened: false,
-                  child: PopupMenuButton(
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (_) => <PopupMenuItem<String>>[
-                      PopupMenuItem(
-                        height: 36,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Đánh vị trí'),
-                            if (_mode == 'point') Icon(Icons.check),
-                          ],
-                        ),
-                        value: 'point',
-                      ),
-                      PopupMenuItem(
-                        height: 36,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Mô phỏng diện tích'),
-                            if (_mode == 'polygon') Icon(Icons.check),
-                          ],
-                        ),
-                        value: 'polygon',
-                      )
-                    ],
-                    onSelected: (val) {
-                      if (_mode != val)
-                        setState(() {
-                          _mode = val;
-                        });
-                    },
-                    child: SizedBox(
-                      child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Icon(Icons.more_vert)),
-                      height: 45,
-                      width: 30,
-                    ),
-                  ),
-                ),
-            ],
+            //   actions: [
+            //     if (widget.hasPolygon ?? false)
+            //       FloatingSearchBarAction(
+            //         showIfOpened: false,
+            //         child: PopupMenuButton(
+            //           padding: EdgeInsets.zero,
+            //           itemBuilder: (_) => <PopupMenuItem<String>>[
+            //             PopupMenuItem(
+            //               height: 36,
+            //               child: Row(
+            //                 mainAxisSize: MainAxisSize.min,
+            //                 children: [
+            //                   Text('Đánh vị trí'),
+            //                   if (_mode == 'point') Icon(Icons.check),
+            //                 ],
+            //               ),
+            //               value: 'point',
+            //             ),
+            //             PopupMenuItem(
+            //               height: 36,
+            //               child: Row(
+            //                 mainAxisSize: MainAxisSize.min,
+            //                 children: [
+            //                   Text('Mô phỏng diện tích'),
+            //                   if (_mode == 'polygon') Icon(Icons.check),
+            //                 ],
+            //               ),
+            //               value: 'polygon',
+            //             )
+            //           ],
+            //           onSelected: (val) {
+            //             if (_mode != val)
+            //               setState(() {
+            //                 _mode = val;
+            //               });
+            //           },
+            //           child: SizedBox(
+            //             child: Align(
+            //                 alignment: Alignment.centerRight,
+            //                 child: Icon(Icons.more_vert)),
+            //             height: 45,
+            //             width: 30,
+            //           ),
+            //         ),
+            //       ),
+            //   ],
           ),
+          Positioned(
+              bottom: 180,
+              right: 8,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.white),
+                child: Column(
+                  children: [
+                    Material(
+                      borderRadius: BorderRadius.circular(21),
+                      elevation: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _mode = 'point';
+                          });
+                        },
+                        child: Container(
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _mode == 'point'
+                                ? ptPrimaryColor(context)
+                                : Colors.white,
+                          ),
+                          child: Center(
+                            child: Icon(MdiIcons.mapMarker,
+                                color: _mode == 'point'
+                                    ? Colors.white
+                                    : ptPrimaryColor(context)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Material(
+                      borderRadius: BorderRadius.circular(21),
+                      elevation: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _mode = 'polygon';
+                          });
+                        },
+                        child: Container(
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _mode == 'polygon'
+                                ? ptPrimaryColor(context)
+                                : Colors.white,
+                          ),
+                          child: Center(
+                            child: Icon(MdiIcons.vectorPolygon,
+                                color: _mode == 'polygon'
+                                    ? Colors.white
+                                    : ptPrimaryColor(context)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
           Positioned(
             bottom: 15,
             left: 12,
@@ -733,7 +803,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                       child: Text(
                         'Đã hiểu',
                       ),
-                      color: ptPrimaryColor(context),
+                      color: Colors.black54,
                       onPressed: () {
                         setState(() {
                           readedInstructionPolygon = true;
