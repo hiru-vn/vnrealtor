@@ -433,7 +433,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                 elevation: 4,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: ptPrimaryColor(context),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   height: 40,
@@ -442,12 +442,15 @@ class PickCoordinatesState extends State<PickCoordinates>
                     children: [
                       Icon(
                         Icons.send,
-                        color: Colors.blue,
+                        color: Colors.white,
                       ),
                       SizedBox(
                         width: 8,
                       ),
-                      Text('Lưu vị trí này'),
+                      Text(
+                        'Lưu vị trí này',
+                        style: ptBody().copyWith(color: Colors.white),
+                      ),
                       SizedBox(
                         width: 3,
                       ),

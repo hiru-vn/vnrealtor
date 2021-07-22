@@ -566,7 +566,9 @@ class _PostWidgetState extends State<PostWidget> {
                           child: Text('Xóa bài'),
                           value: 'Xóa bài',
                         ),
-                        PopupMenuItem(child: Text('Sửa bài'), value: 'Sửa bài'),
+                        if (widget.post.postShareId == null)
+                          PopupMenuItem(
+                              child: Text('Sửa bài'), value: 'Sửa bài'),
                       ],
                       PopupMenuItem(
                           child: Text('Copy link'), value: 'Copy link'),
@@ -877,7 +879,9 @@ class _PostWidgetState extends State<PostWidget> {
                           child: Text('Xóa bài'),
                           value: 'Xóa bài',
                         ),
-                        PopupMenuItem(child: Text('Sửa bài'), value: 'Sửa bài'),
+                        if (widget.post.postShareId == null)
+                          PopupMenuItem(
+                              child: Text('Sửa bài'), value: 'Sửa bài'),
                       ],
                       PopupMenuItem(
                           child: Text('Copy link'), value: 'Copy link'),

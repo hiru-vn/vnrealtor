@@ -88,6 +88,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         _need,
         _area,
         _price,
+        _shareWith == 'onlyme'
       );
 
       closeLoading();

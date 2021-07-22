@@ -342,7 +342,8 @@ class PagesBloc extends ChangeNotifier {
       String category,
       String action,
       double area,
-      double price) async {
+      double price,
+      bool onlyMe) async {
     try {
       final res = await PostRepo().createPost(
           content,
@@ -358,6 +359,7 @@ class PagesBloc extends ChangeNotifier {
           action,
           area,
           price,
+          onlyMe,
           pageId: pageId);
       _listPagePost.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));

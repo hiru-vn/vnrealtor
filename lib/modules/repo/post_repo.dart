@@ -221,6 +221,7 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
       String action,
       double area,
       double price,
+      bool onlyMe,
       {String groupId,
       String pageId}) async {
     String polygonStr = '''{

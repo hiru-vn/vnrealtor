@@ -105,6 +105,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
         _need,
         _area,
         _price,
+        _shareWith == 'onlyme'
       );
       closeLoading();
       if (res.isSuccess) {
@@ -176,6 +177,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                                   onPicked: (value) {
                                 setState(() {
                                   _shareWith = value;
+
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
                                 });
@@ -183,6 +185,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                                 PickListItem('public', 'Tất cả mọi người'),
                                 PickListItem(
                                     'friend', 'Chỉ bạn bè mới nhìn thấy'),
+                                PickListItem('onlyme', 'Chỉ mình tôi')
                               ], closeText: 'Xong');
                             },
                             child: Container(

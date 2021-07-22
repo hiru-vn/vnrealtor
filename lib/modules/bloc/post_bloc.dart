@@ -353,7 +353,8 @@ class PostBloc extends ChangeNotifier {
       String type,
       String need,
       double area,
-      double price) async {
+      double price,
+      bool onlyMe) async {
     try {
       final res = await PostRepo().createPost(
           content,
@@ -368,7 +369,8 @@ class PostBloc extends ChangeNotifier {
           type,
           need,
           area,
-          price);
+          price,
+          onlyMe);
       feed.insert(0, PostModel.fromJson(res));
       myPosts.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));

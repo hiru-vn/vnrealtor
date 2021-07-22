@@ -214,6 +214,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                                 PickListItem('public', 'Tất cả mọi người'),
                                 PickListItem(
                                     'friend', 'Chỉ bạn bè mới nhìn thấy'),
+                                PickListItem('onlyme', 'Chỉ mình tôi')
                               ], closeText: 'Xong');
                             },
                             child: Container(
