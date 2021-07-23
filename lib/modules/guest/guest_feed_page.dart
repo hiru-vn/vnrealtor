@@ -120,7 +120,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
         },
         list: RefreshIndicator(
           color: ptPrimaryColor(context),
-          onRefresh: () async {
+          onRefresh: () async {audioCache.play('tab3.mp3');
             final res = await _postBloc.getNewFeedGuest(1);
             if (res.isSuccess) {
               setState(() {
@@ -245,7 +245,7 @@ class CreatePostCardGuest extends StatelessWidget {
                 horizontal: 15,
               ),
               child: GestureDetector(
-                onTap: () {
+                onTap: () {audioCache.play('tab3.mp3');
                   if (AuthBloc.instance.userModel == null) {
                     LoginPage.navigatePush();
                     return;
@@ -268,7 +268,7 @@ class CreatePostCardGuest extends StatelessWidget {
                         ),
                         Spacer(),
                         GestureDetector(
-                          onTap: () {
+                          onTap: () {audioCache.play('tab3.mp3');
                             if (AuthBloc.instance.userModel == null) {
                               LoginPage.navigatePush();
                               return;
@@ -290,7 +290,7 @@ class CreatePostCardGuest extends StatelessWidget {
                           width: 5,
                         ),
                         GestureDetector(
-                          onTap: () {
+                          onTap: () {audioCache.play('tab3.mp3');
                             if (AuthBloc.instance.userModel == null) {
                               LoginPage.navigatePush();
                               return;

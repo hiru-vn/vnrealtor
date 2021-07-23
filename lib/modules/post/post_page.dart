@@ -95,7 +95,7 @@ class _PostPageState extends State<PostPage> {
               },
               list: RefreshIndicator(
                 color: ptPrimaryColor(context),
-                onRefresh: () async {
+                onRefresh: () async {audioCache.play('tab3.mp3');
                   setState(() {
                     isFilterDistance = false;
                   });
@@ -321,7 +321,7 @@ class CreatePostCard extends StatelessWidget {
               ),
               child: GestureDetector(
                 onTap: () {
-                  audioCache.play('buttons/tab3.mp3');
+                  audioCache.play('tab3.mp3');
                   pageController
                       .animateToPage(1,
                           duration: Duration(milliseconds: 300),
@@ -342,7 +342,7 @@ class CreatePostCard extends StatelessWidget {
                         ),
                         Spacer(),
                         GestureDetector(
-                          onTap: () {
+                          onTap: () {audioCache.play('tab3.mp3');
                             pageController.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
@@ -360,7 +360,7 @@ class CreatePostCard extends StatelessWidget {
                           width: 5,
                         ),
                         GestureDetector(
-                          onTap: () {
+                          onTap: () {audioCache.play('tab3.mp3');
                             pageController.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
@@ -410,7 +410,7 @@ class CreatePostCard extends StatelessWidget {
 buildStoryWidget(PostModel postModel) {
   return Center(
     child: GestureDetector(
-      onTap: () {
+      onTap: () {audioCache.play('tab3.mp3');
         PostDetail.navigate(postModel);
       },
       child: Material(
@@ -528,7 +528,7 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
           Padding(
             padding: const EdgeInsets.only(top: 12, bottom: 10),
             child: GestureDetector(
-              onTap: () {
+              onTap: () {audioCache.play('tab3.mp3');
                 SearchPostPage.navigate().then((value) =>
                     FocusScope.of(context).requestFocus(FocusNode()));
               },
@@ -543,7 +543,7 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           GestureDetector(
-            onTap: () {
+            onTap: () {audioCache.play('tab3.mp3');
               AuthBloc.instance.userModel.messNotiCount = 0;
               UserBloc.instance.seenNotiMess();
               InboxList.navigate();

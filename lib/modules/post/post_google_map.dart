@@ -168,7 +168,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                     },
                     menuBuilder: (context, closePopup) {
                       return GestureDetector(
-                        onTap: () {
+                        onTap: () {audioCache.play('tab3.mp3');
                           closePopup();
                         },
                         child: Padding(
@@ -199,7 +199,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                           borderRadius: BorderRadius.circular(21),
                           elevation: 0,
                           child: GestureDetector(
-                            onTap: () {
+                            onTap: () {audioCache.play('tab3.mp3');
                               openPopup();
                             },
                             child: Container(

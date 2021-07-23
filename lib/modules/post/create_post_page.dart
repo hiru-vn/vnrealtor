@@ -159,6 +159,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           SizedBox(width: 12),
                           GestureDetector(
                             onTap: () {
+                              audioCache.play('tab3.mp3');
                               pickList(context, title: 'Chia sẻ với',
                                   onPicked: (value) {
                                 setState(() {
@@ -324,6 +325,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         left: 0,
                         child: GestureDetector(
                           onTap: () {
+                            audioCache.play('tab3.mp3');
                             FocusScope.of(context).requestFocus(FocusNode());
                             showModalBottomSheet(
                               isScrollControlled: true,
@@ -431,7 +433,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 children: [
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -466,7 +468,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
@@ -497,7 +499,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       PickCoordinates.navigate(
                               polygon: _polygonPoints, position: _pos)
                           .then((value) {
@@ -520,7 +522,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,

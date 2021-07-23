@@ -340,6 +340,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                         left: 0,
                         child: GestureDetector(
                           onTap: () {
+                            audioCache.play('tab3.mp3');
                             FocusScope.of(context).requestFocus(FocusNode());
                             showModalBottomSheet(
                               isScrollControlled: true,
@@ -448,6 +449,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                   SizedBox(width: 12),
                   GestureDetector(
                     onTap: () {
+                      audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -482,7 +484,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
@@ -513,7 +515,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       PickCoordinates.navigate(
                               polygon: _polygonPoints, position: _pos)
                           .then((value) => setState(() {
@@ -534,7 +536,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,

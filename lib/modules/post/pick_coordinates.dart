@@ -361,6 +361,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                       elevation: 0,
                       child: GestureDetector(
                         onTap: () {
+                          audioCache.play('tab3.mp3');
                           setState(() {
                             _mode = 'point';
                           });
@@ -391,6 +392,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                       elevation: 0,
                       child: GestureDetector(
                         onTap: () {
+                          audioCache.play('tab3.mp3');
                           setState(() {
                             _mode = 'polygon';
                           });
@@ -468,7 +470,10 @@ class PickCoordinatesState extends State<PickCoordinates>
                   borderRadius: BorderRadius.circular(21),
                   elevation: 4,
                   child: GestureDetector(
-                    onTap: _selectMyLocation,
+                    onTap: () {
+                      _selectMyLocation();
+                      audioCache.play('tab3.mp3');
+                    },
                     child: Container(
                       width: 42,
                       height: 42,
@@ -506,6 +511,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                     menuBuilder: (context, closePopup) {
                       return GestureDetector(
                         onTap: () {
+                          audioCache.play('tab3.mp3');
                           closePopup();
                         },
                         child: Padding(
@@ -538,6 +544,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                         elevation: 4,
                         child: GestureDetector(
                           onTap: () {
+                            audioCache.play('tab3.mp3');
                             openPopup();
                           },
                           child: Container(
@@ -566,7 +573,10 @@ class PickCoordinatesState extends State<PickCoordinates>
                   borderRadius: BorderRadius.circular(21),
                   elevation: 4,
                   child: GestureDetector(
-                    onTap: _clearMarkerPoligon,
+                    onTap: () {
+                      _clearMarkerPoligon();
+                      audioCache.play('tab3.mp3');
+                    },
                     child: Container(
                       width: 42,
                       height: 42,
@@ -654,7 +664,10 @@ class PickCoordinatesState extends State<PickCoordinates>
                   borderRadius: BorderRadius.circular(21),
                   elevation: 4,
                   child: GestureDetector(
-                    onTap: _redoMarkerPoligon,
+                    onTap: () {
+                      _redoMarkerPoligon();
+                      audioCache.play('tab3.mp3');
+                    },
                     child: Container(
                       width: 42,
                       height: 42,
@@ -683,8 +696,9 @@ class PickCoordinatesState extends State<PickCoordinates>
                   borderRadius: BorderRadius.circular(21),
                   elevation: 4,
                   child: GestureDetector(
-                    onTap: () async {
+                    onTap: () async {audioCache.play('tab3.mp3');
                       final center = await getCenter();
+                      
                       _addMarkerPoligon(center);
                     },
                     child: Container(

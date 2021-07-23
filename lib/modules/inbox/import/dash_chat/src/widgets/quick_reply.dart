@@ -27,6 +27,7 @@ class QuickReply extends StatelessWidget {
     final constraints = this.constraints ?? BoxConstraints(maxHeight: MediaQuery.of(context).size.height, maxWidth: MediaQuery.of(context).size.width);
     return GestureDetector(
       onTap: () {
+        
         onReply(reply);
       },
       child: quickReplyBuilder != null

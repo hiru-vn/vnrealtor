@@ -38,7 +38,7 @@ class _MyGroupPageState extends State<MyGroupPage> {
       ),
       body: RefreshIndicator(
           color: ptPrimaryColor(context),
-          onRefresh: () async {
+          onRefresh: () async {audioCache.play('tab3.mp3');
             return;
           },
           child: SingleChildScrollView(
@@ -119,7 +119,7 @@ class _MyGroupPageState extends State<MyGroupPage> {
 
   _buildGroupItem(GroupModel groupModel) {
     return GestureDetector(
-      onTap: () {
+      onTap: () {audioCache.play('tab3.mp3');
         DetailGroupPage.navigate(groupModel).then((value) {
           _groupBloc.getMyGroup();
         });

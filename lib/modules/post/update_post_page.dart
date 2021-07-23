@@ -204,6 +204,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                           SizedBox(width: 12),
                           GestureDetector(
                             onTap: () {
+                              audioCache.play('tab3.mp3');
                               pickList(context, title: 'Chia sẻ với',
                                   onPicked: (value) {
                                 setState(() {
@@ -384,7 +385,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                         height: 30,
                         left: 0,
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () {audioCache.play('tab3.mp3');
                             FocusScope.of(context).requestFocus(FocusNode());
                             showModalBottomSheet(
                               isScrollControlled: true,
@@ -494,7 +495,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                 children: [
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -529,7 +530,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
@@ -560,7 +561,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       PickCoordinates.navigate(
                               polygon: widget.post.polygonPoints,
                               position: LatLng(widget.post.locationLat,
@@ -585,7 +586,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,

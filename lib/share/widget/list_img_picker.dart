@@ -164,7 +164,7 @@ class _ImageButtonPickerState extends State<ImageButtonPicker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
-          onTap: () async {
+          onTap: () async {audioCache.play('tab3.mp3');
             imagePicker(
               context,
               onCameraPick: (str) {
@@ -467,7 +467,7 @@ class _AssetThumbnailState extends State<AssetThumbnail> {
   Widget build(BuildContext context) {
     // We're using a FutureBuilder since thumbData is a future
     return GestureDetector(
-      onTap: () {
+      onTap: () {audioCache.play('tab3.mp3');
         setState(() {
           isSelected = !isSelected;
         });
@@ -604,7 +604,7 @@ class _MediaPagePickerWidgetState extends State<MediaPagePickerWidget> {
                   width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: GestureDetector(
-                      onTap: () async {
+                      onTap: () async {audioCache.play('tab3.mp3');
                         try {
                           setState(() {
                             isSending = true;

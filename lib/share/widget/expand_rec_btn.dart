@@ -9,7 +9,10 @@ class ExpandRectangleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        audioCache.play('tab3.mp3');
+        onTap();
+      },
       child: Container(
         height: 55,
         width: deviceWidth(context),

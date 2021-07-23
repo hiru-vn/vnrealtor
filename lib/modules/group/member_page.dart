@@ -78,6 +78,7 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
             Center(
               child: GestureDetector(
                 onTap: () {
+                  audioCache.play('tab3.mp3');
                   setState(() {
                     enableManageUser = !enableManageUser;
                   });
@@ -114,7 +115,7 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
       ),
       body: RefreshIndicator(
           color: ptPrimaryColor(context),
-          onRefresh: () async {
+          onRefresh: () async {audioCache.play('tab3.mp3');
             return;
           },
           child: SingleChildScrollView(
@@ -295,7 +296,12 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
   Widget _buildActionBtn(
       bool enable, Function action, String text, BuildContext context) {
     return GestureDetector(
-      onTap: enable ? action : () {},
+      onTap: enable
+          ? () {
+              action();
+              audioCache.play('tab3.mp3');
+            }
+          : () {},
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
@@ -326,6 +332,7 @@ class MemberWidget extends StatelessWidget {
       padding: const EdgeInsets.all(5).copyWith(bottom: 0),
       child: GestureDetector(
         onTap: () {
+          audioCache.play('tab3.mp3');
           ProfileOtherPage.navigate(user);
         },
         child: Container(
@@ -333,7 +340,11 @@ class MemberWidget extends StatelessWidget {
           child: Row(children: [
             if (onSelect != null)
               GestureDetector(
-                  onTap: () => onSelect(user), child: _buildCheckBox(context)),
+                  onTap: () {
+                    audioCache.play('tab3.mp3');
+                    onSelect(user);
+                  },
+                  child: _buildCheckBox(context)),
             CircleAvatar(
               radius: 20,
               backgroundColor: Colors.white,
@@ -429,7 +440,7 @@ class MemberWidget extends StatelessWidget {
                 !_authBloc.userModel.followingIds.contains(user.id) &&
                 user.id != AuthBloc.instance.userModel.id)
               GestureDetector(
-                onTap: () {
+                onTap: () {audioCache.play('tab3.mp3');
                   _authBloc.userModel.followingIds.add(user.id);
                   user.followerIds.add(_authBloc.userModel.id);
                   _userBloc.followUser(user.id);

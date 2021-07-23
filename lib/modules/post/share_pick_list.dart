@@ -61,7 +61,10 @@ class SharePickList<T> extends StatelessWidget {
   _buildItem(String url, String title, Function onTap) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(

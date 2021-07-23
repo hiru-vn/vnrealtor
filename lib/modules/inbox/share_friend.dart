@@ -170,7 +170,10 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
         actions: [
           Center(
             child: GestureDetector(
-              onTap: _onShare,
+              onTap: () {
+                _onShare();
+                audioCache.play('tab3.mp3');
+              },
               behavior: HitTestBehavior.translucent,
               child: Padding(
                 padding: const EdgeInsets.all(10).copyWith(bottom: 13),
@@ -334,7 +337,10 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
   _buildUserItem(UserModel user, bool isSelect, Function onTap) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Row(
         children: [
           if (!isSelect)
@@ -389,7 +395,10 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
       nameGroup = group.pageName;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Row(
         children: [
           if (!isSelect)
@@ -595,7 +604,10 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
         actions: [
           Center(
             child: GestureDetector(
-              onTap: _onShare,
+              onTap: () {
+                _onShare();
+                audioCache.play('tab3.mp3');
+              },
               behavior: HitTestBehavior.translucent,
               child: Padding(
                 padding: const EdgeInsets.all(10).copyWith(bottom: 13),
@@ -738,7 +750,10 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
   _buildUserItem(UserModel user, bool isSelect, Function onTap) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Row(
         children: [
           if (!isSelect)
@@ -793,7 +808,10 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
       nameGroup = group.pageName;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Row(
         children: [
           if (!isSelect)

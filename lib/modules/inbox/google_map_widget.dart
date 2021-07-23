@@ -248,7 +248,9 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
             borderRadius: BorderRadius.circular(21),
             elevation: 4,
             child: GestureDetector(
-              onTap: _selectMyLocation,
+              onTap: () {
+                _selectMyLocation();audioCache.play('tab3.mp3');
+              },
               child: Container(
                 width: 42,
                 height: 42,

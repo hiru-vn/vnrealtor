@@ -167,6 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                               hintText: 'Mật khẩu',
                               suffixIcon: GestureDetector(
                                 onTap: () {
+                                  audioCache.play('tab3.mp3');
                                   setState(() {
                                     obscurePassword = !obscurePassword;
                                   });
@@ -198,6 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: GestureDetector(
                       onTap: () {
                         // if (TextF _nameC.text)
+                        audioCache.play('tab3.mp3');
                         showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -237,7 +239,10 @@ class _LoginPageState extends State<LoginPage> {
               width: deviceWidth(context) * 0.9,
               child: Center(
                 child: GestureDetector(
-                  onTap: () => RegisterPage.navigate(isCompany: true),
+                  onTap: () {
+                    RegisterPage.navigate(isCompany: true);
+                    audioCache.play('tab3.mp3');
+                  },
                   child: Text.rich(
                     TextSpan(
                       children: [

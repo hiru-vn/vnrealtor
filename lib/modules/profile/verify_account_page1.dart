@@ -211,7 +211,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               child: GestureDetector(
                 onTap: () => onCustomPersionRequest(
                     permission: Permission.camera,
-                    onGranted: () {
+                    onGranted: () {audioCache.play('tab3.mp3');
                       ImagePicker.pickImage(source: ImageSource.camera)
                           .then((value) async {
                         try {

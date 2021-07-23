@@ -118,7 +118,10 @@ class _InviteGroupWidgetState extends State<InviteGroupWidget> {
                 ),
                 Expanded(
                     child: GestureDetector(
-                  onTap: () => DetailGroupPage.navigate(group),
+                  onTap: () {
+                    DetailGroupPage.navigate(group);
+                    audioCache.play('tab3.mp3');
+                  },
                   child: Container(
                     height: deviceWidth(context) / 4 - 10,
                     child: Column(

@@ -157,7 +157,7 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
 
   Widget _buildCoverImage() => GestureDetector(
         onTap: !_pagesBloc.isLoadingSubmitCreatePage
-            ? () {
+            ? () {audioCache.play('tab3.mp3');
                 imagePicker(context,
                     onImagePick: _updateCover, onCameraPick: _updateCover);
               }
@@ -191,7 +191,7 @@ class _ChooseImageCreatePageState extends State<ChooseImageCreatePage> {
         bottom: -70,
         child: GestureDetector(
           onTap: !_pagesBloc.isLoadingSubmitCreatePage
-              ? () {
+              ? () {audioCache.play('tab3.mp3');
                   imagePicker(context,
                       onImagePick: _updateAvatar, onCameraPick: _updateAvatar);
                 }

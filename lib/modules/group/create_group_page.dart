@@ -178,7 +178,10 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 Text('Ảnh bìa', style: ptTitle()),
                 SizedBox(height: 5),
                 GestureDetector(
-                  onTap: _pickImageCover,
+                  onTap: () {
+                    _pickImageCover();
+                  audioCache.play('tab3.mp3');
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -227,6 +230,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 SizedBox(height: 15),
                 GestureDetector(
                   onTap: () {
+                    audioCache.play('tab3.mp3');
                     FocusScope.of(context).requestFocus(FocusNode());
                     PickCoordinates.navigate(hasPolygon: false).then((value) {
                       if (value == null) return;

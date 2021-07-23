@@ -107,8 +107,10 @@ class PostMapState extends State<PostMap> {
                       maxLines: 2,
                     ),
                     GestureDetector(
-                      onTap: () =>
-                          PostDetail.navigate(null, postId: element.id),
+                      onTap: () {
+                        PostDetail.navigate(null, postId: element.id);
+                        audioCache.play('tab3.mp3');
+                      },
                       child: SizedBox(
                         height: 25,
                         child: Center(
@@ -241,7 +243,6 @@ class PostMapState extends State<PostMap> {
         CustomFloatingSearchBar(
           onSearch: _onSearch,
         ),
-        
         Positioned(
             bottom: 120,
             right: 10,
@@ -249,7 +250,10 @@ class PostMapState extends State<PostMap> {
               borderRadius: BorderRadius.circular(21),
               elevation: 4,
               child: GestureDetector(
-                onTap: _selectMyLocation,
+                onTap: () {
+                  _selectMyLocation();
+                  audioCache.play('tab3.mp3');
+                },
                 child: Container(
                   width: 42,
                   height: 42,

@@ -39,7 +39,10 @@ class _InfoPostPageState extends State<InfoPostPage> {
           actions: [
             GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: _onDone,
+              onTap: () {
+                _onDone();
+                audioCache.play('tab3.mp3');
+              },
               child: Center(
                 child: SizedBox(
                   width: 50,
@@ -195,7 +198,10 @@ class _InfoPostPageState extends State<InfoPostPage> {
   _buildItem(String value, String selectedValue, Function(String) onTap) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: () => onTap(value),
+      onTap: () {
+        onTap(value);
+      audioCache.play('tab3.mp3');
+      },
       child: Container(
         height: 44,
         padding: const EdgeInsets.symmetric(vertical: 6),

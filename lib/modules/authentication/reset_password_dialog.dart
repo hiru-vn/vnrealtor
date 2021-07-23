@@ -276,6 +276,7 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
               child: GestureDetector(
                 onTap: () {
                   navigatorKey.currentState.maybePop();
+                  audioCache.play('tab3.mp3');
                 },
                 child: Container(
                   height: 48,

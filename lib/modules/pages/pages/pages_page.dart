@@ -48,19 +48,19 @@ class _PagesPageState extends State<PagesPage> {
   }
 
   Future<void> _fetchDataCompany() async {
-    setState(() =>  isDataPageLoading = true);
+    setState(() => isDataPageLoading = true);
     await _getSuggestFollow();
     await _getAllPageCreated();
     await _getAllPageFollow();
     await _pagesBloc.getAllHashTagTP();
-    setState(() =>  isDataPageLoading = false);
+    setState(() => isDataPageLoading = false);
   }
 
   Future<void> _fetchData() async {
-    setState(() =>  isDataPageLoading = true);
+    setState(() => isDataPageLoading = true);
     await _getSuggestFollow();
     await _getAllPageFollow();
-    setState(() =>  isDataPageLoading = false);
+    setState(() => isDataPageLoading = false);
   }
 
   Future<void> _getAllPageCreated() async => await _pagesBloc.getMyPage();
@@ -83,7 +83,7 @@ class _PagesPageState extends State<PagesPage> {
         ),
         body: RefreshIndicator(
           color: ptPrimaryColor(context),
-          onRefresh: () async {
+          onRefresh: () async {audioCache.play('tab3.mp3');
             if (AuthBloc.instance.userModel.role == 'COMPANY') {
               _fetchDataCompany();
             } else {
@@ -247,7 +247,10 @@ class _PagesPageState extends State<PagesPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           GestureDetector(
-            onTap: action,
+            onTap: () {
+              action();
+              audioCache.play('tab3.mp3');
+            },
             child: Container(
               child: ClipRRect(
                 borderRadius: BorderRadius.only(
@@ -294,7 +297,10 @@ class _PagesPageState extends State<PagesPage> {
   Widget _itemBodySectionOwnPage(String image, String title, int number,
           bool isLast, VoidCallback callback) =>
       GestureDetector(
-        onTap: callback,
+        onTap: () {
+          callback();
+          audioCache.play('tab3.mp3');
+        },
         child: Container(
           padding: const EdgeInsets.only(bottom: 19, top: 11),
           decoration: BoxDecoration(
@@ -375,7 +381,10 @@ class _PagesPageState extends State<PagesPage> {
   Widget _itemBodySectionPageFollow(String image, String title, int number,
           bool isLast, VoidCallback callback) =>
       GestureDetector(
-        onTap: callback,
+        onTap: () {
+          callback();
+          audioCache.play('tab3.mp3');
+        },
         child: Container(
           padding: const EdgeInsets.only(bottom: 19, top: 11),
           decoration: BoxDecoration(

@@ -91,7 +91,7 @@ class _SuggestGroupState extends State<SuggestGroup> {
 
   _buildGroupItem(GroupModel group) {
     return GestureDetector(
-      onTap: () {
+      onTap: () {audioCache.play('tab3.mp3');
         DetailGroupPage.navigate(group);
       },
       child: Container(
@@ -127,7 +127,9 @@ class _SuggestGroupState extends State<SuggestGroup> {
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                audioCache.play('tab3.mp3');
+              },
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),

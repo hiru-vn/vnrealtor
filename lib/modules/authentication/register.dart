@@ -123,6 +123,7 @@ class _RegisterPageState extends State<RegisterPage> {
               child: GestureDetector(
                 onTap: () {
                   PolicyPage.navigate();
+                  audioCache.play('tab3.mp3');
                 },
                 child: RichText(
                   maxLines: null,
@@ -368,6 +369,7 @@ class _OtpDialogState extends State<OtpDialog> {
                 child: GestureDetector(
                   onTap: () {
                     navigatorKey.currentState.maybePop();
+                    audioCache.play('tab3.mp3');
                   },
                   child: Container(
                     height: 48,

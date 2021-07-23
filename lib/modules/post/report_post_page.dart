@@ -179,7 +179,7 @@ class _ReportPostPageState extends State<ReportPostPage> {
 
   _buildTag(String title, String value) {
     return GestureDetector(
-      onTap: () {
+      onTap: () {audioCache.play('tab3.mp3');
         setState(() {
           _type = value;
         });

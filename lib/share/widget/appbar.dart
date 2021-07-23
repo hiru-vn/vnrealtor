@@ -93,7 +93,7 @@ innerAppBar(BuildContext context, String title,
             color: Colors.white, fontWeight: FontWeight.w400),
       ),
       leading: GestureDetector(
-        onTap: () {
+        onTap: () {audioCache.play('tab3.mp3');
           navigatorKey.currentState.maybePop();
         },
         child: SizedBox(

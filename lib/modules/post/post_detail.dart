@@ -306,7 +306,7 @@ class _PostDetailState extends State<PostDetail> {
                         decoration: InputDecoration(
                           suffixIcon: GestureDetector(
                               behavior: HitTestBehavior.translucent,
-                              onTap: () {
+                              onTap: () {audioCache.play('tab3.mp3');
                                 (isReply)
                                     ? _reply(_commentC.text)
                                     : _comment(_commentC.text);

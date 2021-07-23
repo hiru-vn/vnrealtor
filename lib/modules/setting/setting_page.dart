@@ -199,6 +199,7 @@ class _SettingPageState extends State<SettingPage> {
                         SizedBox(height: 3),
                         GestureDetector(
                           onTap: () {
+                            audioCache.play('tab3.mp3');
                             UpdateProfilePage.navigate()
                                 .then((value) => setState(() {}));
                           },
@@ -223,6 +224,7 @@ class _SettingPageState extends State<SettingPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
                     onTap: () {
+                      audioCache.play('tab3.mp3');
                       if (_authBloc.userModel.role == 'COMPANY') {
                         VerifyCompany.navigate();
                         return;
@@ -386,7 +388,10 @@ class ProfileItemCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(6),
       child: GestureDetector(
-        onTap: onTap,
+        onTap: () {
+          onTap();
+          audioCache.play('tab3.mp3');
+        },
         child: Card(
           // elevation: 3,
           shape: RoundedRectangleBorder(

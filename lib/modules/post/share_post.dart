@@ -187,7 +187,9 @@ class _SharePostState extends State<SharePost> {
 
   Widget _builtTile(IconData icon, String text, Function onTap) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        onTap();audioCache.play('tab3.mp3');
+      },
       child: Padding(
         padding: const EdgeInsets.all(13),
         child: Row(

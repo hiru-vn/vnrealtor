@@ -74,7 +74,10 @@ class _TagUserListPageState extends State<TagUserListPage> {
           actions: [
             GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () => navigatorKey.currentState.pop(tagUsers),
+              onTap: () {
+                navigatorKey.currentState.pop(tagUsers);
+                audioCache.play('tab3.mp3');
+              },
               child: Center(
                 child: SizedBox(
                   width: 50,
@@ -215,7 +218,9 @@ class _TagUserListPageState extends State<TagUserListPage> {
   _buildUserItem(UserModel user, bool isSelect, Function onTap) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+      },
       child: Row(
         children: [
           if (!isSelect)

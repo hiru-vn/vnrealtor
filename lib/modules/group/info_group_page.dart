@@ -196,7 +196,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                 Text(group.owner.name),
                 Spacer(),
                 GestureDetector(
-                  onTap: () {
+                  onTap: () {audioCache.play('tab3.mp3');
                     GroupMemberPage.navigate(widget.groupModel);
                   },
                   child: Container(
@@ -243,7 +243,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
       ),
       if (group.isOwner || group.isAdmin)
         GestureDetector(
-          onTap: () async {
+          onTap: () async {audioCache.play('tab3.mp3');
             UpdateGroupPage.navigate(group);
           },
           child: Container(

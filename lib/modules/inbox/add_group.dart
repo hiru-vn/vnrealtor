@@ -90,6 +90,7 @@ class _AddGroupState extends State<AddGroup> {
           Center(
             child: GestureDetector(
               onTap: () async {
+                audioCache.play('tab3.mp3');
                 if (tagUsers.length <= 1) {
                   showToast('Cần mời ít nhất 2 người khác', context);
                   return;
@@ -262,7 +263,10 @@ class _AddGroupState extends State<AddGroup> {
   _buildUserItem(UserModel user, bool isSelect, Function onTap) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Row(
         children: [
           if (!isSelect)
