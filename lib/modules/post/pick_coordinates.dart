@@ -701,7 +701,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                     ),
                   ),
                 )),
-            if (polygonPoints.length > 0)
+            if (polygonPoints.length > 0 && center != null)
               Center(
                 child: Container(
                   margin: const EdgeInsets.only(top: 80.0),

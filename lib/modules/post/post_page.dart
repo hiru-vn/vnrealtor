@@ -321,6 +321,7 @@ class CreatePostCard extends StatelessWidget {
               ),
               child: GestureDetector(
                 onTap: () {
+                  audioCache.play('buttons/tab3.mp3');
                   pageController
                       .animateToPage(1,
                           duration: Duration(milliseconds: 300),
