@@ -185,7 +185,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   Text(
                                     _shareWith == 'public'
                                         ? 'Tất cả'
-                                        : 'Bạn bè',
+                                        : _shareWith == 'friend'
+                                            ? 'Bạn bè'
+                                            : 'Chỉ mình tôi',
                                     style: ptTiny()
                                         .copyWith(color: Colors.black54),
                                   ),

@@ -230,7 +230,9 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                                   Text(
                                     _shareWith == 'public'
                                         ? 'Tất cả'
-                                        : 'Bạn bè',
+                                        : _shareWith == 'friend'
+                                            ? 'Bạn bè'
+                                            : 'Chỉ mình tôi',
                                     style: ptTiny()
                                         .copyWith(color: Colors.black54),
                                   ),
