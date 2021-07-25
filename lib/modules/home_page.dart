@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -75,6 +77,7 @@ class _HomePageState extends State<HomePage>
             BottomTabModel(0, 'Menu', Icons.menu, Icons.menu_outlined),
           ],
           onSelect: (index) {
+            if (Platform.isIOS) audioCache.play('tab3.mp3');
             if (index == 0 && _selectedIndex == 0) {
               if (PostBloc.instance.feedScrollController != null) {
                 PostBloc.instance.getNewFeed(
