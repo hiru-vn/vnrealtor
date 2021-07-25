@@ -155,6 +155,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
+  csslib:
+    dependency: transitive
+    description:
+      name: csslib
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.16.2"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -336,12 +343,19 @@ packages:
     source: hosted
     version: "0.5.0"
   flutter_cache_manager:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_cache_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.2"
+  flutter_cache_store:
+    dependency: transitive
+    description:
+      name: flutter_cache_store
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.2"
   flutter_callkeep:
     dependency: "direct main"
     description:
@@ -539,6 +553,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.8"
+  html:
+    dependency: "direct main"
+    description:
+      name: html
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.14.0+4"
   http:
     dependency: transitive
     description:
@@ -889,6 +910,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.2"
+  simple_url_preview:
+    dependency: "direct main"
+    description:
+      name: simple_url_preview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   skeleton_loader:
     dependency: "direct main"
     description:
@@ -957,6 +985,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0-nullsafety.1"
+  string_validator:
+    dependency: transitive
+    description:
+      name: string_validator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.4"
   synchronized:
     dependency: transitive
     description:

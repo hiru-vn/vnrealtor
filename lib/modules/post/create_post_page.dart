@@ -1,6 +1,8 @@
+import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/info_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/share/function/preview_url.dart';
 import 'package:flutter/gestures.dart';
 import 'package:path/path.dart' as Path;
 import 'package:datcao/modules/inbox/import/detail_media.dart';
@@ -15,6 +17,7 @@ import 'package:hashtagable/hashtagable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import './tag_user_list_page.dart';
+import 'package:simple_url_preview/simple_url_preview.dart';
 
 class CreatePostPage extends StatefulWidget {
   final PageController pageController;
@@ -41,6 +44,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   double _area;
   String _type;
   String _need;
+  List<UrlPreviewData> links = [];
 
   @override
   void didChangeDependencies() {
@@ -298,26 +302,93 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   constraints: BoxConstraints(minHeight: 170),
                   child: Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12)
-                            .copyWith(bottom: 32),
-                        child: HashTagTextField(
-                          maxLength: 500,
-                          maxLines: 15,
-                          minLines: 8,
-                          controller: _contentC,
-                          onChanged: (value) => setState(() {}),
-                          basicStyle:
-                              ptBigBody().copyWith(color: Colors.black54),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Nội dung bài viết...',
-                            hintStyle: ptBigTitle().copyWith(
-                                color: Colors.black38,
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.w500),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: HashTagTextField(
+                              maxLength: 500,
+                              maxLines: 15,
+                              minLines: 5,
+                              controller: _contentC,
+                              onChanged: (value) async {
+                                setState(() {});
+                                RegExp exp = new RegExp(
+                                    r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
+                                Iterable<RegExpMatch> matches =
+                                    exp.allMatches(value);
+                                links.clear();
+                                for (var match in matches) {
+                                  final data = await getUrlData(
+                                      value.substring(match.start, match.end));
+                                  if (data != null) links.add(data);
+                                }
+                                setState(() {});
+                              },
+                              basicStyle:
+                                  ptBigBody().copyWith(color: Colors.black54),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Nội dung bài viết...',
+                                hintStyle: ptBigTitle().copyWith(
+                                    color: Colors.black38,
+                                    letterSpacing: 1,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
                           ),
-                        ),
+                          if (links.length > 0)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: GestureDetector(
+                                onTap: () {
+                                  audioCache.play('tab3.mp3');
+                                  launchURL(links[0].url);
+                                },
+                                child: Column(
+                                  children: [
+                                    if (links[0].image != null)
+                                      CachedNetworkImage(
+                                          imageUrl: links[0].image,
+                                          fit: BoxFit.cover),
+                                    Container(
+                                      color: Colors.grey[100],
+                                      width: double.infinity,
+                                      padding: EdgeInsets.all(12),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if (links[0].title != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8.0),
+                                              child: Text(
+                                                links[0].title,
+                                                style: ptTitle().copyWith(
+                                                    color: Colors.black87),
+                                              ),
+                                            ),
+                                          if (links[0].description != null)
+                                            Text(
+                                              links[0].description +
+                                                  (links[0].siteName != null
+                                                      ? '  - từ ${links[0].siteName}'
+                                                      : ''),
+                                              style: ptSmall().copyWith(
+                                                  color: Colors.black54),
+                                            ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          SizedBox(
+                            height: 30,
+                          )
+                        ],
                       ),
                       Positioned(
                         bottom: 0,
@@ -433,7 +504,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 children: [
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -468,7 +540,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
@@ -499,7 +572,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       PickCoordinates.navigate(
                               polygon: _polygonPoints, position: _pos)
                           .then((value) {
@@ -522,7 +596,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,

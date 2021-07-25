@@ -1,3 +1,4 @@
+import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
@@ -5,6 +6,7 @@ import 'package:datcao/modules/pages/widget/page_create_post_appbar.dart';
 import 'package:datcao/modules/post/info_post_page.dart';
 import 'package:datcao/modules/post/tag_user_list_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/share/function/preview_url.dart';
 import 'package:flutter/gestures.dart';
 import 'package:path/path.dart' as Path;
 import 'package:datcao/modules/inbox/import/detail_media.dart';
@@ -54,6 +56,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
   double _area;
   String _type;
   String _need;
+  List<UrlPreviewData> links = [];
 
   String get pageId => widget.page.id;
   PagesCreate get page => widget.page;
@@ -310,26 +313,79 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   constraints: BoxConstraints(minHeight: 170),
                   child: Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12)
-                            .copyWith(bottom: 32),
-                        child: HashTagTextField(
-                          maxLength: 500,
-                          maxLines: 15,
-                          minLines: 8,
-                          controller: _contentC,
-                          onChanged: (value) => setState(() {}),
-                          basicStyle:
-                              ptBigBody().copyWith(color: Colors.black54),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Nội dung bài viết...',
-                            hintStyle: ptBigTitle().copyWith(
-                                color: Colors.black38,
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.w500),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12)
+                                .copyWith(bottom: 32),
+                            child: HashTagTextField(
+                              maxLength: 500,
+                              maxLines: 15,
+                              minLines: 8,
+                              controller: _contentC,
+                              onChanged: (value) => setState(() {}),
+                              basicStyle:
+                                  ptBigBody().copyWith(color: Colors.black54),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Nội dung bài viết...',
+                                hintStyle: ptBigTitle().copyWith(
+                                    color: Colors.black38,
+                                    letterSpacing: 1,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
                           ),
-                        ),
+                          if (links.length > 0)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: GestureDetector(
+                                onTap: () {
+                                  audioCache.play('tab3.mp3');
+                                  launchURL(links[0].url);
+                                },
+                                child: Column(
+                                  children: [
+                                    if (links[0].image != null)
+                                      Image.network(links[0].image),
+                                    Container(
+                                      color: Colors.grey[100],
+                                      width: double.infinity,
+                                      padding: EdgeInsets.all(12),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if (links[0].title != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8.0),
+                                              child: Text(
+                                                links[0].title,
+                                                style: ptTitle().copyWith(
+                                                    color: Colors.black87),
+                                              ),
+                                            ),
+                                          if (links[0].description != null)
+                                            Text(
+                                              links[0].description +
+                                                  (links[0].siteName != null
+                                                      ? '  - từ ${links[0].siteName}'
+                                                      : ''),
+                                              style: ptSmall().copyWith(
+                                                  color: Colors.black54),
+                                            ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          SizedBox(
+                            height: 30,
+                          )
+                        ],
                       ),
                       Positioned(
                         bottom: 0,
