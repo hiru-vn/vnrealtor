@@ -268,7 +268,8 @@ class CreatePostCardGuest extends StatelessWidget {
                         ),
                         Spacer(),
                         GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
                             if (AuthBloc.instance.userModel == null) {
                               LoginPage.navigatePush();
                               return;
@@ -388,6 +389,8 @@ class GuestFeedPageAppBar extends StatelessWidget
             FlatButton(
                 color: ptPrimaryColor(context),
                 onPressed: () {
+                  audioCache.play('tab3.mp3');
+
                   LoginPage.navigatePush();
                 },
                 child: Text(

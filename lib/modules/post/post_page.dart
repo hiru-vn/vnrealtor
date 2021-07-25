@@ -424,7 +424,7 @@ buildStoryWidget(PostModel postModel) {
               image: DecorationImage(
                   fit: BoxFit.cover,
                   image: CachedNetworkImageProvider(postModel.storyImages[0] ??
-                      postModel.mediaPosts[0].url))),
+                      postModel.mediaPosts[0].halfUrl))),
           child: Column(children: [
             Padding(
               padding: const EdgeInsets.all(4),
