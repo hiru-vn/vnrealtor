@@ -276,8 +276,8 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
-  Future submitOtpRegisterCompany(String name, String ownerName, String email,
-      String password, String phone, String otp) async {
+  Future<BaseResponse> submitOtpRegisterCompany(String name, String ownerName,
+      String email, String password, String phone, String otp) async {
     try {
       authCredential = PhoneAuthProvider.credential(
           verificationId: smsVerifyCode, smsCode: otp);
@@ -289,8 +289,10 @@ class AuthBloc extends ChangeNotifier {
       } else {
         authStatusSink.add(AuthResponse.fail(res.errMessage));
       }
+      return res;
     } catch (e) {
       authStatusSink.add(AuthResponse.fail(e?.toString()));
+      return BaseResponse.fail(e?.toString());
     }
   }
 

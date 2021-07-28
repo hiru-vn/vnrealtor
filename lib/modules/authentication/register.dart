@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/home_page.dart';
+import 'package:datcao/modules/profile/verify_company.dart';
 import 'package:datcao/modules/setting/policy_page.dart';
 import 'package:datcao/share/import.dart';
 
@@ -42,7 +43,8 @@ class _RegisterPageState extends State<RegisterPage> {
           navigatorKey.currentState.maybePop();
         }
         if (event.status == AuthStatus.authSucces) {
-          HomePage.navigate();
+          await HomePage.navigate();
+          if (widget.isCompany) VerifyCompany.navigate();
         }
         if (event.status == AuthStatus.otpSent) {
           closeLoading();
@@ -164,13 +166,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
   List<Widget> _buildCompanyForm() {
     return [
-      _buildFormField(context, 'Tên công ty', _nameC,
-          validator: TextFieldValidator.notEmptyValidator,
-          icon: MdiIcons.officeBuilding),
-      SpacingBox(h: 1.2),
-      _buildFormField(context, 'Tên quản trị', _ownerName,
-          validator: TextFieldValidator.notEmptyValidator, icon: Icons.person),
-      SpacingBox(h: 1.2),
+      // _buildFormField(context, 'Tên công ty', _nameC,
+      //     validator: TextFieldValidator.notEmptyValidator,
+      //     icon: MdiIcons.officeBuilding),
+      // SpacingBox(h: 1.2),
+      // _buildFormField(context, 'Tên quản trị', _ownerName,
+      //     validator: TextFieldValidator.notEmptyValidator, icon: Icons.person),
+      // SpacingBox(h: 1.2),
       _buildFormField(context, 'Email quản trị', _emailC,
           validator: TextFieldValidator.emailValidator, icon: Icons.mail),
       SpacingBox(h: 1.2),
