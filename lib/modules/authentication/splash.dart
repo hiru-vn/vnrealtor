@@ -52,7 +52,8 @@ class _SplashPageState extends State<SplashPage> {
               ]);
               HomePage.navigate();
               if (_authBloc.userModel.role == 'COMPANY' &&
-                  !_authBloc.userModel.isVerify) VerifyCompany.navigate();
+                  !_authBloc.userModel.isVerify &&
+                  _authBloc.userModel.isPendingVerify) VerifyCompany.navigate();
               Future.delayed(Duration(milliseconds: 600),
                   () => NotificationBloc.handleInitActions());
             } else

@@ -1,5 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/verification_bloc.dart';
+import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/modules/profile/verify_account_page2.dart';
 import 'package:datcao/share/import.dart';
 
@@ -34,7 +35,7 @@ class _VerifyCompanyState extends State<VerifyCompany> {
     closeLoading();
     if (res.isSuccess) {
       showToast('Gửi yêu cầu xác minh thành công', context, isSuccess: true);
-      await navigatorKey.currentState.maybePop();
+      await HomePage.navigate();
     } else {
       showToast(res.errMessage, context);
     }

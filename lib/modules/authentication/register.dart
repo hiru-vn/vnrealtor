@@ -43,8 +43,10 @@ class _RegisterPageState extends State<RegisterPage> {
           navigatorKey.currentState.maybePop();
         }
         if (event.status == AuthStatus.authSucces) {
-          await HomePage.navigate();
-          if (widget.isCompany) VerifyCompany.navigate();
+          if (widget.isCompany)
+            VerifyCompany.navigate();
+          else
+            HomePage.navigate();
         }
         if (event.status == AuthStatus.otpSent) {
           closeLoading();
@@ -173,8 +175,8 @@ class _RegisterPageState extends State<RegisterPage> {
       // _buildFormField(context, 'Tên quản trị', _ownerName,
       //     validator: TextFieldValidator.notEmptyValidator, icon: Icons.person),
       // SpacingBox(h: 1.2),
-      _buildFormField(context, 'Email quản trị', _emailC,
-          validator: TextFieldValidator.emailValidator, icon: Icons.mail),
+      _buildFormField(context, 'Email quản trị (không bắt buộc)', _emailC,
+          icon: Icons.mail),
       SpacingBox(h: 1.2),
       _buildFormField(context, 'Số điện thoại', _phoneC,
           validator: TextFieldValidator.phoneValidator, icon: Icons.phone),
@@ -195,8 +197,8 @@ class _RegisterPageState extends State<RegisterPage> {
       _buildFormField(context, 'Tên gọi', _nameC,
           validator: TextFieldValidator.notEmptyValidator, icon: Icons.person),
       SpacingBox(h: 1.2),
-      _buildFormField(context, 'Email', _emailC,
-          validator: TextFieldValidator.emailValidator, icon: Icons.mail),
+      _buildFormField(context, 'Email (không bắt buộc)', _emailC,
+          icon: Icons.mail),
       SpacingBox(h: 1.2),
       _buildFormField(context, 'Số điện thoại', _phoneC,
           validator: TextFieldValidator.phoneValidator, icon: Icons.phone),

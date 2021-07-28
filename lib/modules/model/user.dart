@@ -25,6 +25,7 @@ class UserModel {
   String facebookUrl;
   SettingModel setting;
   bool isVerify;
+  bool isPendingVerify;
   int messNotiCount;
   bool isMod;
   DynamicLink dynamicLink;
@@ -53,6 +54,7 @@ class UserModel {
       this.setting,
       this.messNotiCount,
       this.isVerify,
+      this.isPendingVerify,
       this.isMod,
       this.dynamicLink});
 
@@ -84,6 +86,7 @@ class UserModel {
     facebookUrl = json['facebookUrl'];
     isMod = json['isMod'] ?? false;
     isVerify = json['isVerify'] ?? false;
+    isPendingVerify = json['isPendingVerify'] ?? false;
     if (json['settings'] != null)
       setting = SettingModel.fromJson(json['settings']);
 

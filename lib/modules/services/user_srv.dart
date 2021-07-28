@@ -30,6 +30,7 @@ notiCount
 description
 facebookUrl
 isVerify
+isPendingVerify 
 settings {
 likeNoti
 shareNoti

@@ -20,7 +20,7 @@ class UserRepo {
         'registerWithPhone',
         '''
 name: "${name.trim()}"
-email: "$email"
+email: ${(email != null && email.trim() != '') ? "\"$email\"" : null}
 password: "$password"
 phone: "$phone"
 idToken: "$idToken"
@@ -36,7 +36,7 @@ idToken: "$idToken"
         ''' data : {
 name: "${name.trim()}"
 ownerName: "$ownerName"
-email: "$email"
+email: ${(email != null && email.trim() != '') ? "\"$email\"" : null}
 password: "$password"
 phone: "$phone"
 idToken: "$idToken"
@@ -170,7 +170,7 @@ Page: "$page"
 
   Future checkValidUser(String email, String phone) async {
     final res = await UserSrv().mutate('checkValidUser', '''
-email: "$email"
+email: ${(email != null && email.trim() != '') ? "\"$email\"" : null}
 phone: "$phone"
     ''');
     return res['checkValidUser'];
