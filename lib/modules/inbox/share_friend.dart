@@ -547,6 +547,14 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
           final list = [e.id, _authBloc.userModel.id];
           list.sort();
           final groupId = list.join("-");
+          InboxBloc.instance.addMessage(
+              groupId,
+              widget.post.dynamicLink.shortLink + '\n${widget.post.content}',
+              DateTime.now(),
+              _authBloc.userModel.id,
+              _authBloc.userModel.name,
+              _authBloc.userModel.avatar);
+
           InboxBloc.instance.updateGroupOnMessage(
               groupId,
               _authBloc.userModel.name,
@@ -554,15 +562,25 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
               AuthBloc.instance.userModel.name + 'đã chia sẻ 1 bài viết',
               [],
               [AuthBloc.instance.userModel.id]);
+
           return InboxBloc.instance.addMessage(
-              groupId,
-              widget.post.dynamicLink.shortLink,
+              e.id,
+              '',
               DateTime.now(),
               _authBloc.userModel.id,
               _authBloc.userModel.name,
-              _authBloc.userModel.avatar);
+              _authBloc.userModel.avatar,
+              filePaths: widget.post.mediaPosts.map((e) => e.url).toList());
         }),
         ...tagGroups.map((e) {
+          InboxBloc.instance.addMessage(
+              e.id,
+              widget.post.dynamicLink.shortLink + '\n${widget.post.content}',
+              DateTime.now(),
+              _authBloc.userModel.id,
+              _authBloc.userModel.name,
+              _authBloc.userModel.avatar);
+
           InboxBloc.instance.updateGroupOnMessage(
               e.id,
               _authBloc.userModel.name,
@@ -572,11 +590,12 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
               [AuthBloc.instance.userModel.id]);
           return InboxBloc.instance.addMessage(
               e.id,
-              widget.post.dynamicLink.shortLink,
+              '',
               DateTime.now(),
               _authBloc.userModel.id,
               _authBloc.userModel.name,
-              _authBloc.userModel.avatar);
+              _authBloc.userModel.avatar,
+              filePaths: widget.post.mediaPosts.map((e) => e.url).toList());
         }),
       ]);
 

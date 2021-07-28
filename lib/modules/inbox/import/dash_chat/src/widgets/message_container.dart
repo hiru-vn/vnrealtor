@@ -264,6 +264,8 @@ class _UrlPreviewContainerState extends State<UrlPreviewContainer> {
   @override
   Widget build(BuildContext context) {
     if (links.length == 0) return SizedBox.shrink();
+    if (links[0].image == null && links[0].title == null)
+      return SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15),
       child: GestureDetector(
