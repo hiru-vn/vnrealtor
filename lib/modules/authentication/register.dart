@@ -39,8 +39,8 @@ class _RegisterPageState extends State<RegisterPage> {
       _authBloc = Provider.of<AuthBloc>(context);
       listener = _authBloc.authStatusStream.listen((event) async {
         if (event.status == AuthStatus.authFail) {
+          closeLoading();
           showToast(event.errMessage, context);
-          navigatorKey.currentState.maybePop();
         }
         if (event.status == AuthStatus.authSucces) {
           if (widget.isCompany)
@@ -56,8 +56,10 @@ class _RegisterPageState extends State<RegisterPage> {
               context: context,
               builder: (context) => _buildOtpDialog());
         }
-        if (event.status == AuthStatus.requestOtp) {
-          showWaitingDialog(context);
+        if (event.status == AuthStatus.requestOtp) {}
+        if (event.status == AuthStatus.successOtp) {
+          closeLoading();
+          navigatorKey.currentState.maybePop();
         }
       });
     }
@@ -70,13 +72,13 @@ class _RegisterPageState extends State<RegisterPage> {
     _authBloc.authStatusSink.add(AuthResponse.unAuthed());
   }
 
-  _submit() async {
+  _submitPhone() async {
     if (!_formKey.currentState.validate()) return;
+    showWaitingDialog(context);
     final res =
         await UserBloc.instance.checkValidUser(_emailC.text, _phoneC.text);
     if (res.isSuccess) {
-      _authBloc.requestOtpRegister(
-          _nameC.text, _emailC.text, _passC.text, _phoneC.text);
+      _authBloc.requestOtpRegister(_phoneC.text);
     } else {
       showToast(res.errMessage, context);
     }
@@ -84,10 +86,21 @@ class _RegisterPageState extends State<RegisterPage> {
     // HomePage.navigate();
   }
 
+  _submitRegister() async {
+    if (!_formKey.currentState.validate()) return;
+    showWaitingDialog(context);
+
+    if (!widget.isCompany)
+      _authBloc.submitRegister(
+          _nameC.text, _emailC.text, _passC.text, _phoneC.text);
+    else
+      _authBloc.submitRegisterCompany(_nameC.text, _ownerName.text,
+          _emailC.text, _passC.text, _phoneC.text);
+  }
+
   _codeSubmit() async {
     if (!widget.isCompany) {
-      await _authBloc.submitOtpRegister(
-          _nameC.text, _emailC.text, _passC.text, _phoneC.text, _otpC.text);
+      await _authBloc.submitOtpRegister(_phoneC.text, _otpC.text);
     } else {
       await _authBloc.submitOtpRegisterCompany(_nameC.text, _ownerName.text,
           _emailC.text, _passC.text, _phoneC.text, _otpC.text);
@@ -117,10 +130,28 @@ class _RegisterPageState extends State<RegisterPage> {
                         width: deviceWidth(context) / 2,
                         child: Image.asset('assets/image/logo_full.png'))),
             SpacingBox(h: 2),
-            if (!widget.isCompany)
-              ..._buildUserForm()
-            else
-              ..._buildCompanyForm(),
+            StreamBuilder(
+              stream: _authBloc.authStatusStream,
+              initialData: AuthResponse(status: AuthStatus.unAuthed),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if ((snapshot.data as AuthResponse).status ==
+                    AuthStatus.successOtp) {
+                  if (widget.isCompany)
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: _buildCompanyForm(),
+                    );
+                  else
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: _buildUserForm(),
+                    );
+                }
+                return _buildFormField(context, 'Số điện thoại', _phoneC,
+                    validator: TextFieldValidator.phoneValidator,
+                    icon: Icons.phone);
+              },
+            ),
             SpacingBox(h: 4),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30),
@@ -153,10 +184,21 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: ExpandBtn(
-                    text: 'Đăng kí',
-                    onPress: _submit,
-                  ),
+                  child: StreamBuilder<Object>(
+                      stream: _authBloc.authStatusStream,
+                      initialData: AuthResponse(status: AuthStatus.unAuthed),
+                      builder: (context, snapshot) {
+                        if ((snapshot.data as AuthResponse).status ==
+                            AuthStatus.successOtp)
+                          return ExpandBtn(
+                            text: 'Đăng kí tài khoản',
+                            onPress: _submitRegister,
+                          );
+                        return ExpandBtn(
+                          text: 'Gửi mã đến điện thoại',
+                          onPress: _submitPhone,
+                        );
+                      }),
                 ),
               ),
             ),
@@ -175,12 +217,12 @@ class _RegisterPageState extends State<RegisterPage> {
       // _buildFormField(context, 'Tên quản trị', _ownerName,
       //     validator: TextFieldValidator.notEmptyValidator, icon: Icons.person),
       // SpacingBox(h: 1.2),
-      _buildFormField(context, 'Email quản trị (không bắt buộc)', _emailC,
-          icon: Icons.mail),
-      SpacingBox(h: 1.2),
-      _buildFormField(context, 'Số điện thoại', _phoneC,
-          validator: TextFieldValidator.phoneValidator, icon: Icons.phone),
-      SpacingBox(h: 1.2),
+      // _buildFormField(context, 'Email quản trị (không bắt buộc)', _emailC,
+      //     icon: Icons.mail),
+      // SpacingBox(h: 1.2),
+      // _buildFormField(context, 'Số điện thoại', _phoneC,
+      //     validator: TextFieldValidator.phoneValidator, icon: Icons.phone),
+      // SpacingBox(h: 1.2),
       _buildFormField(context, 'Mật khẩu', _passC,
           validator: TextFieldValidator.passValidator,
           obscureText: true,
@@ -199,9 +241,9 @@ class _RegisterPageState extends State<RegisterPage> {
       SpacingBox(h: 1.2),
       _buildFormField(context, 'Email (không bắt buộc)', _emailC,
           icon: Icons.mail),
-      SpacingBox(h: 1.2),
-      _buildFormField(context, 'Số điện thoại', _phoneC,
-          validator: TextFieldValidator.phoneValidator, icon: Icons.phone),
+      // SpacingBox(h: 1.2),
+      // _buildFormField(context, 'Số điện thoại', _phoneC,
+      //     validator: TextFieldValidator.phoneValidator, icon: Icons.phone),
       SpacingBox(h: 1.2),
       _buildFormField(context, 'Mật khẩu', _passC,
           validator: TextFieldValidator.passValidator,
@@ -291,109 +333,108 @@ class _OtpDialogState extends State<OtpDialog> {
     return Center(
       child: Padding(
         padding: EdgeInsets.only(bottom: Responsive.heightMultiplier * 10),
-        child: Stack(
-          // mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Material(
-                child: Container(
-                  color: Colors.white,
-                  width: deviceWidth(context) / 1.4,
-                  height: 220,
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          'Nhập OTP chúng tôi gửi qua tin nhắn cho bạn',
-                          textAlign: TextAlign.center,
+        child: Center(
+          child: Material(
+            child: Container(
+              color: Colors.white,
+              width: deviceWidth(context) / 1.4,
+              height: 260,
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 40, bottom: 20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            'Nhập OTP chúng tôi gửi qua tin nhắn cho bạn',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      ),
-                      SpacingBox(h: 2),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        SpacingBox(h: 2),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                color: ptBackgroundColor(context)),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: TextField(
+                                maxLength: 6,
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                onChanged: (str) async {
+                                  if (str.length == 6) {
+                                    widget.codeSubmit();
+                                  }
+                                },
+                                style: ptBigTitle().copyWith(letterSpacing: 10),
+                                controller: widget.otpC,
+                                decoration: InputDecoration(
+                                    counterText: "",
+                                    border: InputBorder.none,
+                                    hintText: ''),
+                              ),
+                            ),
+                          ),
+                        ),
+                        StreamBuilder(
+                            stream: _authBloc.authStatusStream,
+                            builder: (context, snap) {
+                              if (snap.hasData &&
+                                  (snap.data as AuthResponse).status ==
+                                      AuthStatus.successOtp)
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 15),
+                                  child: kLoadingBubbleSpinner,
+                                );
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 15),
+                                child: Text(
+                                  'Mã OTP gồm 6 chữ số\nmã sẽ hết hạn sau 60 giây',
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            })
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: GestureDetector(
+                        onTap: () {
+                          navigatorKey.currentState.maybePop();
+                          audioCache.play('tab3.mp3');
+                        },
                         child: Container(
+                          height: 48,
+                          width: 48,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3),
-                              color: ptBackgroundColor(context)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: TextField(
-                              maxLength: 6,
-                              textAlign: TextAlign.center,
-                              keyboardType: TextInputType.number,
-                              onChanged: (str) async {
-                                if (str.length == 6) {
-                                  widget.codeSubmit();
-                                }
-                              },
-                              style: ptBigTitle().copyWith(letterSpacing: 10),
-                              controller: widget.otpC,
-                              decoration: InputDecoration(
-                                  counterText: "",
-                                  border: InputBorder.none,
-                                  hintText: ''),
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.close,
+                              size: 25,
+                              color: ptPrimaryColor(context),
                             ),
                           ),
                         ),
                       ),
-                      StreamBuilder(
-                          stream: _authBloc.authStatusStream,
-                          builder: (context, snap) {
-                            if (snap.hasData &&
-                                (snap.data as AuthResponse).status ==
-                                    AuthStatus.successOtp)
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 15),
-                                child: kLoadingBubbleSpinner,
-                              );
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 15),
-                              child: Text(
-                                'Mã OTP gồm 6 chữ số\nmã sẽ hết hạn sau 60 giây',
-                                textAlign: TextAlign.center,
-                              ),
-                            );
-                          })
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              right:
-                  (deviceWidth(context) - deviceWidth(context) / 1.4) / 2 - 25,
-              top: (deviceHeight(context) - Responsive.heightMultiplier * 10) /
-                      2 -
-                  180,
-              child: Material(
-                color: Colors.transparent,
-                child: GestureDetector(
-                  onTap: () {
-                    navigatorKey.currentState.maybePop();
-                    audioCache.play('tab3.mp3');
-                  },
-                  child: Container(
-                    height: 48,
-                    width: 48,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.close,
-                        size: 25,
-                        color: ptPrimaryColor(context),
-                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

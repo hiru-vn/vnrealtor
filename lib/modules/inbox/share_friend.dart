@@ -582,12 +582,13 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
               _authBloc.userModel.avatar);
 
           InboxBloc.instance.updateGroupOnMessage(
-              e.id,
-              _authBloc.userModel.name,
-              DateTime.now(),
-              AuthBloc.instance.userModel.name + 'đã chia sẻ 1 bài viết',
-              [],
-              [AuthBloc.instance.userModel.id]);
+            e.id,
+            _authBloc.userModel.name,
+            DateTime.now(),
+            AuthBloc.instance.userModel.name + 'đã chia sẻ 1 bài viết',
+            [],
+            [AuthBloc.instance.userModel.id],
+          );
           return InboxBloc.instance.addMessage(
               e.id,
               '',

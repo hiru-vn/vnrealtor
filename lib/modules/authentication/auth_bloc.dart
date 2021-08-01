@@ -192,9 +192,7 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
-  Future requestOtpRegister(
-      String name, String email, String password, String phone,
-      {bool isResend = false}) async {
+  Future requestOtpRegister(String phone, {bool isResend = false}) async {
     try {
       final String phoneNumber =
           (phone.startsWith('+') ? "+" : "+84") + phone.toString().substring(1);
@@ -203,13 +201,13 @@ class AuthBloc extends ChangeNotifier {
         phoneNumber: phoneNumber,
         timeout: const Duration(seconds: 60),
         verificationCompleted: (authCredential) async {
-          final res = await registerWithPhoneAuth(
-              authCredential, name, email, password, phone);
-          if (res.isSuccess) {
-            authStatusSink.add(AuthResponse.success());
-          } else {
-            authStatusSink.add(AuthResponse.fail(res.errMessage));
-          }
+          // final res = await registerWithPhoneAuth(
+          //     authCredential, name, email, password, phone);
+          // if (res.isSuccess) {
+          //   authStatusSink.add(AuthResponse.success());
+          // } else {
+          //   authStatusSink.add(AuthResponse.fail(res.errMessage));
+          // }
         },
         verificationFailed: (e) {
           authStatusSink.add(AuthResponse.fail(
@@ -258,12 +256,20 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
-  Future submitOtpRegister(String name, String email, String password,
-      String phone, String otp) async {
+  Future submitOtpRegister(String phone, String otp) async {
     try {
       authCredential = PhoneAuthProvider.credential(
           verificationId: smsVerifyCode, smsCode: otp);
       authStatusSink.add(AuthResponse.successOtp());
+      authCredential = authCredential;
+    } catch (e) {
+      authStatusSink.add(AuthResponse.fail(e?.toString()));
+    }
+  }
+
+  Future<BaseResponse> submitRegister(
+      String name, String email, String password, String phone) async {
+    try {
       final res = await registerWithPhoneAuth(
           authCredential, name, email, password, phone);
       if (res.isSuccess) {
@@ -271,17 +277,28 @@ class AuthBloc extends ChangeNotifier {
       } else {
         authStatusSink.add(AuthResponse.fail(res.errMessage));
       }
+      return res;
+    } catch (e) {
+      authStatusSink.add(AuthResponse.fail(e?.toString()));
+      return BaseResponse.fail(e?.toString());
+    }
+  }
+
+  Future submitOtpRegisterCompany(String name, String ownerName, String email,
+      String password, String phone, String otp) async {
+    try {
+      authCredential = PhoneAuthProvider.credential(
+          verificationId: smsVerifyCode, smsCode: otp);
+      authStatusSink.add(AuthResponse.successOtp());
+      authCredential = authCredential;
     } catch (e) {
       authStatusSink.add(AuthResponse.fail(e?.toString()));
     }
   }
 
-  Future<BaseResponse> submitOtpRegisterCompany(String name, String ownerName,
-      String email, String password, String phone, String otp) async {
+  Future<BaseResponse> submitRegisterCompany(String name, String ownerName,
+      String email, String password, String phone) async {
     try {
-      authCredential = PhoneAuthProvider.credential(
-          verificationId: smsVerifyCode, smsCode: otp);
-      authStatusSink.add(AuthResponse.successOtp());
       final res = await registerCompanyWithPhoneAuth(
           authCredential, name, ownerName, email, password, phone);
       if (res.isSuccess) {
