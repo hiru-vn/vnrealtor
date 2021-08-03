@@ -102,7 +102,7 @@ class _PostWidgetState extends State<PostWidget> {
               padding: const EdgeInsets.all(15).copyWith(
                   top: 0, bottom: widget.post.postShareId != null ? 0 : 5),
               child: GestureDetector(
-                onTap: () {
+                onTap: () {audioCache.play('tab3.mp3');
                   if (!widget.isInDetailPage) PostDetail.navigate(widget.post);
                 },
                 child: Linkify(
@@ -154,7 +154,7 @@ class _PostWidgetState extends State<PostWidget> {
                 child: Wrap(
                   children: widget.post.hashTag
                       .map((e) => GestureDetector(
-                            onTap: () {
+                            onTap: () {audioCache.play('tab3.mp3');
                               SearchPostPage.navigate(hashTag: e);
                             },
                             child: Padding(
@@ -199,7 +199,7 @@ class _PostWidgetState extends State<PostWidget> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: GestureDetector(
-                          onTap: () async {
+                          onTap: () async {audioCache.play('tab3.mp3');
                             await showGoogleMapPoint(
                                 context,
                                 widget.post.locationLat,
@@ -228,7 +228,7 @@ class _PostWidgetState extends State<PostWidget> {
                     width: 15,
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       if (AuthBloc.instance.userModel == null) {
                         LoginPage.navigatePush();
                         return;
@@ -269,7 +269,7 @@ class _PostWidgetState extends State<PostWidget> {
                     width: 10,
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       // if (AuthBloc.instance.userModel == null) {
                       //   LoginPage.navigatePush();
                       //   return;
@@ -300,7 +300,7 @@ class _PostWidgetState extends State<PostWidget> {
                     width: 10,
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                           backgroundColor: Colors.transparent,
                           context: context,
@@ -328,7 +328,7 @@ class _PostWidgetState extends State<PostWidget> {
                   Spacer(),
                   if (AuthBloc.instance.userModel != null)
                     GestureDetector(
-                      onTap: () async {
+                      onTap: () async {audioCache.play('tab3.mp3');
                         if (AuthBloc.instance.userModel?.savedPostIds
                                 ?.contains(widget.post.id) ??
                             false) {
@@ -390,7 +390,7 @@ class _PostWidgetState extends State<PostWidget> {
     return Row(
       children: [
         GestureDetector(
-          onTap: () {
+          onTap: () {audioCache.play('tab3.mp3');
             widget.post.isPage
                 ? PageDetail.navigate(widget.post?.page)
                 : ProfileOtherPage.navigate(widget.post?.user);
@@ -566,7 +566,9 @@ class _PostWidgetState extends State<PostWidget> {
                           child: Text('Xóa bài'),
                           value: 'Xóa bài',
                         ),
-                        PopupMenuItem(child: Text('Sửa bài'), value: 'Sửa bài'),
+                        if (widget.post.postShareId == null)
+                          PopupMenuItem(
+                              child: Text('Sửa bài'), value: 'Sửa bài'),
                       ],
                       PopupMenuItem(
                           child: Text('Copy link'), value: 'Copy link'),
@@ -639,7 +641,7 @@ class _PostWidgetState extends State<PostWidget> {
     return Row(
       children: [
         GestureDetector(
-          onTap: () {
+          onTap: () {audioCache.play('tab3.mp3');
             widget.post.isPage
                 ? PageDetail.navigate(widget.post?.page)
                 : ProfileOtherPage.navigate(widget.post?.user);
@@ -677,7 +679,7 @@ class _PostWidgetState extends State<PostWidget> {
               children: [
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTap: () {
+                  onTap: () {audioCache.play('tab3.mp3');
                     widget.post.isPage
                         ? PageDetail.navigate(widget.post?.page)
                         : ProfileOtherPage.navigate(widget.post?.user);
@@ -786,7 +788,7 @@ class _PostWidgetState extends State<PostWidget> {
                           color: Colors.orange,
                         ),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                         child: Text(widget.post.category,
                             style: ptTiny().copyWith(
                                 color: Colors.white, fontSize: 10.5))),
@@ -798,7 +800,7 @@ class _PostWidgetState extends State<PostWidget> {
                           color: Colors.red,
                         ),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                         child: Text(widget.post.action,
                             style: ptTiny().copyWith(
                                 color: Colors.white, fontSize: 10.5))),
@@ -810,7 +812,7 @@ class _PostWidgetState extends State<PostWidget> {
                         color: Colors.green,
                       ),
                       padding:
-                          EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                          EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                       child: Text('${widget.post.area.floor()} m2',
                           style: ptTiny()
                               .copyWith(color: Colors.white, fontSize: 10.5)),
@@ -823,7 +825,7 @@ class _PostWidgetState extends State<PostWidget> {
                           color: Colors.blue,
                         ),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                         child: Text(
                             Formart.toVNDPrice(widget.post.price.toDouble()),
                             style: ptTiny()
@@ -877,7 +879,9 @@ class _PostWidgetState extends State<PostWidget> {
                           child: Text('Xóa bài'),
                           value: 'Xóa bài',
                         ),
-                        PopupMenuItem(child: Text('Sửa bài'), value: 'Sửa bài'),
+                        if (widget.post.postShareId == null)
+                          PopupMenuItem(
+                              child: Text('Sửa bài'), value: 'Sửa bài'),
                       ],
                       PopupMenuItem(
                           child: Text('Copy link'), value: 'Copy link'),
@@ -1055,7 +1059,7 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                 ),
                 Expanded(
                   child: GestureDetector(
-                      onTap: () {
+                      onTap: () {audioCache.play('tab3.mp3');
                         PostDetail.navigate(widget.post);
                       },
                       child: Column(

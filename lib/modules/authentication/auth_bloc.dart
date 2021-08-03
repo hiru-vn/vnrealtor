@@ -11,6 +11,7 @@ import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/utils/device_info.dart';
 import 'package:datcao/utils/formart.dart';
+import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 
 enum AuthStatus {
   unAuthed,
@@ -191,9 +192,7 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
-  Future requestOtpRegister(
-      String name, String email, String password, String phone,
-      {bool isResend = false}) async {
+  Future requestOtpRegister(String phone, {bool isResend = false}) async {
     try {
       final String phoneNumber =
           (phone.startsWith('+') ? "+" : "+84") + phone.toString().substring(1);
@@ -202,13 +201,13 @@ class AuthBloc extends ChangeNotifier {
         phoneNumber: phoneNumber,
         timeout: const Duration(seconds: 60),
         verificationCompleted: (authCredential) async {
-          final res = await registerWithPhoneAuth(
-              authCredential, name, email, password, phone);
-          if (res.isSuccess) {
-            authStatusSink.add(AuthResponse.success());
-          } else {
-            authStatusSink.add(AuthResponse.fail(res.errMessage));
-          }
+          // final res = await registerWithPhoneAuth(
+          //     authCredential, name, email, password, phone);
+          // if (res.isSuccess) {
+          //   authStatusSink.add(AuthResponse.success());
+          // } else {
+          //   authStatusSink.add(AuthResponse.fail(res.errMessage));
+          // }
         },
         verificationFailed: (e) {
           authStatusSink.add(AuthResponse.fail(
@@ -257,12 +256,20 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
-  Future submitOtpRegister(String name, String email, String password,
-      String phone, String otp) async {
+  Future submitOtpRegister(String phone, String otp) async {
     try {
       authCredential = PhoneAuthProvider.credential(
           verificationId: smsVerifyCode, smsCode: otp);
       authStatusSink.add(AuthResponse.successOtp());
+      authCredential = authCredential;
+    } catch (e) {
+      authStatusSink.add(AuthResponse.fail(e?.toString()));
+    }
+  }
+
+  Future<BaseResponse> submitRegister(
+      String name, String email, String password, String phone) async {
+    try {
       final res = await registerWithPhoneAuth(
           authCredential, name, email, password, phone);
       if (res.isSuccess) {
@@ -270,8 +277,10 @@ class AuthBloc extends ChangeNotifier {
       } else {
         authStatusSink.add(AuthResponse.fail(res.errMessage));
       }
+      return res;
     } catch (e) {
       authStatusSink.add(AuthResponse.fail(e?.toString()));
+      return BaseResponse.fail(e?.toString());
     }
   }
 
@@ -281,6 +290,15 @@ class AuthBloc extends ChangeNotifier {
       authCredential = PhoneAuthProvider.credential(
           verificationId: smsVerifyCode, smsCode: otp);
       authStatusSink.add(AuthResponse.successOtp());
+      authCredential = authCredential;
+    } catch (e) {
+      authStatusSink.add(AuthResponse.fail(e?.toString()));
+    }
+  }
+
+  Future<BaseResponse> submitRegisterCompany(String name, String ownerName,
+      String email, String password, String phone) async {
+    try {
       final res = await registerCompanyWithPhoneAuth(
           authCredential, name, ownerName, email, password, phone);
       if (res.isSuccess) {
@@ -288,8 +306,10 @@ class AuthBloc extends ChangeNotifier {
       } else {
         authStatusSink.add(AuthResponse.fail(res.errMessage));
       }
+      return res;
     } catch (e) {
       authStatusSink.add(AuthResponse.fail(e?.toString()));
+      return BaseResponse.fail(e?.toString());
     }
   }
 
@@ -335,6 +355,22 @@ class AuthBloc extends ChangeNotifier {
       final res = await _userRepo.getOneUserForClient(id: id);
       userModel = UserModel.fromJson(res);
       await loginFirebase(userModel);
+
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      setOnline();
+    }
+  }
+
+  Future<BaseResponse> setOnline() async {
+    try {
+      final deviceId = await DeviceInfo.instance.getDeviceId();
+      final deviceToken = await FcmService.instance.getDeviceToken();
+      final ip = await WifiInfo().getWifiIP();
+      final res = await _userRepo.setOnline(deviceId, deviceToken, ip);
+
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e?.toString());
@@ -353,6 +389,7 @@ class AuthBloc extends ChangeNotifier {
     firstLogin = false;
     await SPref.instance.remove('token');
     await SPref.instance.remove('id');
+    SPref.instance.remove('notShowRecomendAgain');
     AuthBloc.instance.userModel = null;
     FirebaseAuth.instance.signOut();
     print('User Sign Out');

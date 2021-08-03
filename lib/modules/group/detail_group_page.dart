@@ -175,7 +175,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                 bottom: 5,
                 right: 5,
                 child: GestureDetector(
-                  onTap: () async {
+                  onTap: () async {audioCache.play('tab3.mp3');
                     final confirm = await showConfirmDialog(
                         context, 'Xác nhận rời nhóm này?',
                         confirmTap: () {}, navigatorKey: navigatorKey);
@@ -209,7 +209,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                 top: 5,
                 right: 5,
                 child: GestureDetector(
-                  onTap: () async {
+                  onTap: () async {audioCache.play('tab3.mp3');
                     showSettingGroup(context, group).then((value) {
                       if (value is GroupModel) {
                         setState(() {
@@ -242,7 +242,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GestureDetector(
-              onTap: () {
+              onTap: () {audioCache.play('tab3.mp3');
                 InfoGroupPage.navigate(group);
               },
               child: Row(
@@ -279,7 +279,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                     style: ptBigBody().copyWith(fontSize: 14.6)),
                 Spacer(),
                 GestureDetector(
-                  onTap: () async {
+                  onTap: () async {audioCache.play('tab3.mp3');
                     showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,
@@ -379,7 +379,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                 Text(group.owner.name),
                 Spacer(),
                 GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       GroupMemberPage.navigate(widget.groupModel ?? group);
                     },
                     child: Container(
@@ -441,7 +441,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                           ))
                         : Spacer(),
                     GestureDetector(
-                      onTap: () async {
+                      onTap: () async {audioCache.play('tab3.mp3');
                         final users = await showChooseUsersPopup(
                             context, group.pendingMemberIds, 'Yêu cầu tham gia',
                             submitText: 'Duyệt');

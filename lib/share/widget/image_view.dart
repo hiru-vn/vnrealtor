@@ -16,7 +16,7 @@ class ImageViewNetwork extends StatelessWidget {
   Widget build(BuildContext context) {
     String genTag = tag ?? url + Random().nextInt(10000000).toString();
     return GestureDetector(
-      onTap: () {
+      onTap: () {audioCache.play('tab3.mp3');
         FocusScope.of(context).requestFocus(FocusNode());
         Navigator.push(context, MaterialPageRoute(builder: (_) {
           return DetailImageScreen(

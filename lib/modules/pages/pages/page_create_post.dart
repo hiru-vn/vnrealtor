@@ -1,3 +1,4 @@
+import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
@@ -5,6 +6,7 @@ import 'package:datcao/modules/pages/widget/page_create_post_appbar.dart';
 import 'package:datcao/modules/post/info_post_page.dart';
 import 'package:datcao/modules/post/tag_user_list_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/share/function/preview_url.dart';
 import 'package:flutter/gestures.dart';
 import 'package:path/path.dart' as Path;
 import 'package:datcao/modules/inbox/import/detail_media.dart';
@@ -54,6 +56,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
   double _area;
   String _type;
   String _need;
+  List<UrlPreviewData> links = [];
 
   String get pageId => widget.page.id;
   PagesCreate get page => widget.page;
@@ -78,7 +81,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
         showToast('Phải có ít nhất một hình ảnh hoặc video', context);
         return;
       }
-      showSimpleLoadingDialog(context, canDismiss: false);
+      showWaitingDialog(context);
 
       while (_urlMedias.length < _cacheMedias.length + _cachePic.length) {
         await Future.delayed(Duration(milliseconds: 500));
@@ -105,8 +108,9 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
         _need,
         _area,
         _price,
+        _shareWith == 'onlyme'
       );
-      navigatorKey.currentState.maybePop();
+      closeLoading();
       if (res.isSuccess) {
         navigatorKey.currentState.pop();
         FocusScope.of(context).requestFocus(FocusNode());
@@ -171,11 +175,12 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                           ),
                           SizedBox(width: 12),
                           GestureDetector(
-                            onTap: () {
+                            onTap: () {audioCache.play('tab3.mp3');
                               pickList(context, title: 'Chia sẻ với',
                                   onPicked: (value) {
                                 setState(() {
                                   _shareWith = value;
+
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
                                 });
@@ -183,6 +188,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                                 PickListItem('public', 'Tất cả mọi người'),
                                 PickListItem(
                                     'friend', 'Chỉ bạn bè mới nhìn thấy'),
+                                PickListItem('onlyme', 'Chỉ mình tôi')
                               ], closeText: 'Xong');
                             },
                             child: Container(
@@ -307,33 +313,86 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   constraints: BoxConstraints(minHeight: 170),
                   child: Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12)
-                            .copyWith(bottom: 32),
-                        child: HashTagTextField(
-                          maxLength: 500,
-                          maxLines: 15,
-                          minLines: 8,
-                          controller: _contentC,
-                          onChanged: (value) => setState(() {}),
-                          basicStyle:
-                              ptBigBody().copyWith(color: Colors.black54),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Nội dung bài viết...',
-                            hintStyle: ptBigTitle().copyWith(
-                                color: Colors.black38,
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.w500),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12)
+                                .copyWith(bottom: 32),
+                            child: HashTagTextField(
+                              maxLength: 500,
+                              maxLines: 15,
+                              minLines: 8,
+                              controller: _contentC,
+                              onChanged: (value) => setState(() {}),
+                              basicStyle:
+                                  ptBigBody().copyWith(color: Colors.black54),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Nội dung bài viết...',
+                                hintStyle: ptBigTitle().copyWith(
+                                    color: Colors.black38,
+                                    letterSpacing: 1,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
                           ),
-                        ),
+                          if (links.length > 0)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: GestureDetector(
+                                onTap: () {
+                                  audioCache.play('tab3.mp3');
+                                  launchURL(links[0].url);
+                                },
+                                child: Column(
+                                  children: [
+                                    if (links[0].image != null)
+                                      Image.network(links[0].image),
+                                    Container(
+                                      color: Colors.grey[100],
+                                      width: double.infinity,
+                                      padding: EdgeInsets.all(12),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if (links[0].title != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8.0),
+                                              child: Text(
+                                                links[0].title,
+                                                style: ptTitle().copyWith(
+                                                    color: Colors.black87),
+                                              ),
+                                            ),
+                                          if (links[0].description != null)
+                                            Text(
+                                              links[0].description +
+                                                  (links[0].siteName != null
+                                                      ? '  - từ ${links[0].siteName}'
+                                                      : ''),
+                                              style: ptSmall().copyWith(
+                                                  color: Colors.black54),
+                                            ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          SizedBox(
+                            height: 30,
+                          )
+                        ],
                       ),
                       Positioned(
                         bottom: 0,
                         height: 30,
                         left: 0,
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () {audioCache.play('tab3.mp3');
                             FocusScope.of(context).requestFocus(FocusNode());
                             showModalBottomSheet(
                               isScrollControlled: true,
@@ -442,7 +501,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                 children: [
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -477,7 +536,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
@@ -508,13 +567,16 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
-                      PickCoordinates.navigate().then((value) => setState(() {
-                            _pos = value[0];
-                            _placeName = value[1];
-                            _polygonPoints = value[2];
-                            FocusScope.of(context).requestFocus(FocusNode());
-                          }));
+                    onTap: () {audioCache.play('tab3.mp3');
+                      PickCoordinates.navigate(
+                              polygon: _polygonPoints, position: _pos)
+                          .then((value) => setState(() {
+                                _pos = value[0];
+                                _placeName = value[1];
+                                _polygonPoints = value[2];
+                                FocusScope.of(context)
+                                    .requestFocus(FocusNode());
+                              }));
                     },
                     child: SizedBox(
                         height: 40,
@@ -526,7 +588,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,

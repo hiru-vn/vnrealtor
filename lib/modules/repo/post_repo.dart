@@ -1,3 +1,4 @@
+import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/services/comment_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/modules/services/group_srv.dart';
@@ -220,6 +221,7 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
       String action,
       double area,
       double price,
+      bool onlyMe,
       {String groupId,
       String pageId}) async {
     String polygonStr = '''{
@@ -235,6 +237,7 @@ publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}
 tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
+onlyMe: $onlyMe
     ''';
 
     if (groupId != null) {
@@ -269,6 +272,8 @@ tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
         await PostSrv().mutate('createPost', 'data: {$data}', fragment: '''
 ${postFragment.replaceAll('\n', ' ')}
     ''');
+
+    PostBloc.counterCreatPostIn1Session++;
     return res["createPost"];
   }
 
@@ -287,6 +292,7 @@ ${postFragment.replaceAll('\n', ' ')}
     String action,
     double area,
     double price,
+    bool onlyMe
   ) async {
     String polygonStr = '''{
       paths: [
@@ -301,6 +307,7 @@ publicity: $publicity
 videos: ${GraphqlHelper.listStringToGraphqlString(videos)}
 images: ${GraphqlHelper.listStringToGraphqlString(images)}
 tagUserIds : ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
+onlyMe: $onlyMe
     ''';
 
     if (expirationDate != null) {

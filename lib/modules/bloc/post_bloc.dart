@@ -24,6 +24,7 @@ class PostBloc extends ChangeNotifier {
   bool isEndFeed = false;
   DateTime lastFetchFeedPage1;
   int feedPage = 1;
+  static int counterCreatPostIn1Session = 0;
 
   List<PostModel> feed = [];
   List<PostModel> myPosts;
@@ -352,7 +353,8 @@ class PostBloc extends ChangeNotifier {
       String type,
       String need,
       double area,
-      double price) async {
+      double price,
+      bool onlyMe) async {
     try {
       final res = await PostRepo().createPost(
           content,
@@ -367,7 +369,8 @@ class PostBloc extends ChangeNotifier {
           type,
           need,
           area,
-          price);
+          price,
+          onlyMe);
       feed.insert(0, PostModel.fromJson(res));
       myPosts.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
@@ -393,7 +396,8 @@ class PostBloc extends ChangeNotifier {
       String type,
       String need,
       double area,
-      double price) async {
+      double price,
+      bool onlyMe) async {
     try {
       final res = await PostRepo().updatePost(
           id,
@@ -409,7 +413,7 @@ class PostBloc extends ChangeNotifier {
           type,
           need,
           area,
-          price);
+          price,onlyMe);
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());

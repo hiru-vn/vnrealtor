@@ -316,7 +316,7 @@ class _PointInfoWidgetState extends State<PointInfoWidget>
   Widget _buildOptionHeader(String title, String asset, int index) {
     return Expanded(
       child: GestureDetector(
-        onTap: () {
+        onTap: () {audioCache.play('tab3.mp3');
           setState(() {
             selectTab = index;
           });

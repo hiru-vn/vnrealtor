@@ -78,7 +78,7 @@ class _TagUserFieldState extends State<TagUserField> {
                 .where((s) => ('@' + s.name).toLowerCase().contains(str))
                 .map((e) => KeepKeyboardPopupMenuItem(
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () {audioCache.play('tab3.mp3');
                         setState(() {
                           widget.controller
                               .text = widget.controller.text.substring(0,

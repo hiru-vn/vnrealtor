@@ -320,6 +320,7 @@ class _CommentPageState extends State<CommentPage> {
                               suffixIcon: GestureDetector(
                                   behavior: HitTestBehavior.translucent,
                                   onTap: () {
+                                    audioCache.play('tab3.mp3');
                                     (isReply)
                                         ? _reply(_commentC.text)
                                         : _comment(_commentC.text);
@@ -562,7 +563,10 @@ class _CommentWidgetState extends State<CommentWidget> {
             padding: EdgeInsets.only(top: 15),
             alignment: Alignment.topCenter,
             child: GestureDetector(
-              onTap: () => ProfileOtherPage.navigate(widget.comment.user),
+              onTap: () {
+                ProfileOtherPage.navigate(widget.comment.user);
+                audioCache.play('tab3.mp3');
+              },
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -578,7 +582,10 @@ class _CommentWidgetState extends State<CommentWidget> {
             ),
           ),
           title: GestureDetector(
-            onTap: () => ProfileOtherPage.navigate(widget.comment.user),
+            onTap: () {
+              ProfileOtherPage.navigate(widget.comment.user);
+              audioCache.play('tab3.mp3');
+            },
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -643,6 +650,7 @@ class _CommentWidgetState extends State<CommentWidget> {
               if (AuthBloc.instance.userModel != null) button,
               GestureDetector(
                 onTap: () async {
+                  audioCache.play('tab3.mp3');
                   if (AuthBloc.instance.userModel == null) {
                     await navigatorKey.currentState.maybePop();
                     LoginPage.navigatePush();
@@ -699,6 +707,7 @@ class _CommentWidgetState extends State<CommentWidget> {
             padding: const EdgeInsets.only(left: 65),
             child: GestureDetector(
               onTap: () {
+                audioCache.play('tab3.mp3');
                 if (isExpandReply) {
                   if (canExpand) {
                     setState(() {
@@ -812,6 +821,7 @@ class _ReplyWidgetState extends State<ReplyWidget> {
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onLongPress: () {
+          audioCache.play('tab3.mp3');
           if (AuthBloc.instance.userModel == null) return;
           dynamic state = _menuKey.currentState;
           state?.showButtonMenu();
@@ -824,7 +834,10 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                 shape: BoxShape.circle,
               ),
               child: GestureDetector(
-                onTap: () => ProfileOtherPage.navigate(widget.reply.user),
+                onTap: () {
+                  audioCache.play('tab3.mp3');
+                  ProfileOtherPage.navigate(widget.reply.user);
+                },
                 child: CircleAvatar(
                   radius: 13,
                   backgroundColor: Colors.white,
@@ -843,7 +856,10 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: () => ProfileOtherPage.navigate(widget.reply.user),
+                    onTap: () {
+                      ProfileOtherPage.navigate(widget.reply.user);
+                      audioCache.play('tab3.mp3');
+                    },
                     child: Text(
                       widget.reply.user?.name ?? '',
                       style: ptBody().copyWith(fontWeight: FontWeight.w500),

@@ -135,6 +135,7 @@ class MessageContainer extends StatelessWidget {
               _buildMessageImage()
             else
               _buildMessageText(),
+            _buildMessageUrlLink(),
             if (buttons != null)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -198,6 +199,17 @@ class MessageContainer extends StatelessWidget {
       );
   }
 
+  Widget _buildMessageUrlLink() {
+    RegExp exp =
+        new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
+    Iterable<RegExpMatch> matches = exp.allMatches(message.text);
+    if (matches.length > 0)
+      return UrlPreviewContainer(
+        message: message,
+      );
+    return SizedBox.shrink();
+  }
+
   Widget _buildMessageImage() {
     if (message.image != null) {
       if (messageImageBuilder != null)
@@ -215,5 +227,85 @@ class MessageContainer extends StatelessWidget {
         );
     }
     return Container(width: 0, height: 0);
+  }
+}
+
+class UrlPreviewContainer extends StatefulWidget {
+  final ChatMessage message;
+  UrlPreviewContainer({Key key, @required this.message}) : super(key: key);
+
+  @override
+  _UrlPreviewContainerState createState() => _UrlPreviewContainerState();
+}
+
+class _UrlPreviewContainerState extends State<UrlPreviewContainer> {
+  List<UrlPreviewData> links = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    await Future.delayed(Duration(milliseconds: 200));
+    RegExp exp =
+        new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
+    Iterable<RegExpMatch> matches = exp.allMatches(widget.message.text);
+    links.clear();
+    for (var match in matches) {
+      final data = await getUrlData(
+          widget.message.text.substring(match.start, match.end));
+      if (data != null) links.add(data);
+    }
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (links.length == 0) return SizedBox.shrink();
+    if (links[0].image == null && links[0].title == null)
+      return SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      child: GestureDetector(
+        onTap: () {
+          audioCache.play('tab3.mp3');
+          launchURL(links[0].url);
+        },
+        child: Column(
+          children: [
+            if (links[0].image != null)
+              CachedNetworkImage(imageUrl: links[0].image, fit: BoxFit.cover),
+            Container(
+              color: Colors.grey[100],
+              width: double.infinity,
+              padding: EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (links[0].title != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        links[0].title,
+                        style: ptTitle().copyWith(color: Colors.black87),
+                      ),
+                    ),
+                  if (links[0].description != null)
+                    Text(
+                      links[0].description +
+                          (links[0].siteName != null
+                              ? '  - từ ${links[0].siteName}'
+                              : ''),
+                      style: ptSmall().copyWith(color: Colors.black54),
+                    ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

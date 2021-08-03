@@ -84,7 +84,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                 height: 12,
                               ),
                               GestureDetector(
-                                onTap: () {
+                                onTap: () {audioCache.play('tab3.mp3');
                                   ProfileOtherPage.navigate(
                                       widget.users[index]);
                                 },
@@ -104,7 +104,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   GestureDetector(
-                                    onTap: () {
+                                    onTap: () {audioCache.play('tab3.mp3');
                                       ProfileOtherPage.navigate(
                                           widget.users[index]);
                                     },
@@ -116,7 +116,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap: () {
+                                    onTap: () {audioCache.play('tab3.mp3');
                                       ProfileOtherPage.navigate(
                                           widget.users[index]);
                                     },
@@ -138,7 +138,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                 ],
                               )),
                               GestureDetector(
-                                onTap: () async {
+                                onTap: () async {audioCache.play('tab3.mp3');
                                   if (AuthBloc.instance.userModel == null) {
                                     LoginPage.navigatePush();
                                     return;

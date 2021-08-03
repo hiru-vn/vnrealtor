@@ -75,13 +75,16 @@ class _ChooseUsersPageState extends State<ChooseUsersPage> {
           actions: [
             GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () =>
-                  navigatorKey.currentState.pop(chooseUsers ?? <UserModel>[]),
+              onTap: () {
+                navigatorKey.currentState.pop(chooseUsers ?? <UserModel>[]);
+
+                audioCache.play('tab3.mp3');
+              },
               child: Center(
                 child: SizedBox(
                   width: 50,
                   child: Text(
-                    widget.submitText??'Xong',
+                    widget.submitText ?? 'Xong',
                     style: ptTitle(),
                   ),
                 ),
@@ -144,7 +147,10 @@ class _ChooseUsersPageState extends State<ChooseUsersPage> {
   _buildUserItem(UserModel user, bool isSelect, Function onTap) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Row(
         children: [
           if (!isSelect)

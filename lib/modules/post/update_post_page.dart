@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:datcao/modules/inbox/import/detail_media.dart';
+import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/info_post_page.dart';
 import 'package:datcao/modules/post/tag_user_list_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/share/function/preview_url.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
@@ -52,6 +54,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
   double _area;
   String _type;
   String _need;
+  List<UrlPreviewData> links = [];
 
   @override
   void initState() {
@@ -87,7 +90,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         showToast('Phải có ít nhất một hình ảnh hoặc video', context);
         return;
       }
-      showSimpleLoadingDialog(context, canDismiss: false);
+      showWaitingDialog(context);
 
       while (_urlMedias.length < _cacheMedias.length + _cachePic.length) {
         await Future.delayed(Duration(milliseconds: 500));
@@ -114,9 +117,10 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         _need,
         _area,
         _price,
+        _shareWith == 'onlyme',
       );
 
-      await navigatorKey.currentState.maybePop();
+      closeLoading();
       if (res.isSuccess) {
         final index = _postBloc.feed
             .indexWhere((element) => element.id == widget.post.id);
@@ -203,6 +207,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                           SizedBox(width: 12),
                           GestureDetector(
                             onTap: () {
+                              audioCache.play('tab3.mp3');
                               pickList(context, title: 'Chia sẻ với',
                                   onPicked: (value) {
                                 setState(() {
@@ -214,6 +219,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                                 PickListItem('public', 'Tất cả mọi người'),
                                 PickListItem(
                                     'friend', 'Chỉ bạn bè mới nhìn thấy'),
+                                PickListItem('onlyme', 'Chỉ mình tôi')
                               ], closeText: 'Xong');
                             },
                             child: Container(
@@ -228,7 +234,9 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                                   Text(
                                     _shareWith == 'public'
                                         ? 'Tất cả'
-                                        : 'Bạn bè',
+                                        : _shareWith == 'friend'
+                                            ? 'Bạn bè'
+                                            : 'Chỉ mình tôi',
                                     style: ptTiny()
                                         .copyWith(color: Colors.black54),
                                   ),
@@ -354,33 +362,86 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   constraints: BoxConstraints(minHeight: 170),
                   child: Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12)
-                            .copyWith(bottom: 32),
-                        child: HashTagTextField(
-                          maxLength: 500,
-                          maxLines: 15,
-                          minLines: 8,
-                          controller: _contentC,
-                          onChanged: (value) => setState(() {}),
-                          basicStyle:
-                              ptBigBody().copyWith(color: Colors.black54),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Nội dung bài viết...',
-                            hintStyle: ptBigTitle().copyWith(
-                                color: Colors.black38,
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.w500),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12)
+                                .copyWith(bottom: 32),
+                            child: HashTagTextField(
+                              maxLength: 500,
+                              maxLines: 15,
+                              minLines: 8,
+                              controller: _contentC,
+                              onChanged: (value) => setState(() {}),
+                              basicStyle:
+                                  ptBigBody().copyWith(color: Colors.black54),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Nội dung bài viết...',
+                                hintStyle: ptBigTitle().copyWith(
+                                    color: Colors.black38,
+                                    letterSpacing: 1,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
                           ),
-                        ),
+                          if (links.length > 0)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: GestureDetector(
+                                onTap: () {
+                                  audioCache.play('tab3.mp3');
+                                  launchURL(links[0].url);
+                                },
+                                child: Column(
+                                  children: [
+                                    if (links[0].image != null)
+                                      Image.network(links[0].image),
+                                    Container(
+                                      color: Colors.grey[100],
+                                      width: double.infinity,
+                                      padding: EdgeInsets.all(12),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if (links[0].title != null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8.0),
+                                              child: Text(
+                                                links[0].title,
+                                                style: ptTitle().copyWith(
+                                                    color: Colors.black87),
+                                              ),
+                                            ),
+                                          if (links[0].description != null)
+                                            Text(
+                                              links[0].description +
+                                                  (links[0].siteName != null
+                                                      ? '  - từ ${links[0].siteName}'
+                                                      : ''),
+                                              style: ptSmall().copyWith(
+                                                  color: Colors.black54),
+                                            ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          SizedBox(
+                            height: 30,
+                          )
+                        ],
                       ),
                       Positioned(
                         bottom: 0,
                         height: 30,
                         left: 0,
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () {audioCache.play('tab3.mp3');
                             FocusScope.of(context).requestFocus(FocusNode());
                             showModalBottomSheet(
                               isScrollControlled: true,
@@ -490,7 +551,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                 children: [
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -525,7 +586,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
@@ -556,8 +617,12 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
-                      PickCoordinates.navigate().then((value) {
+                    onTap: () {audioCache.play('tab3.mp3');
+                      PickCoordinates.navigate(
+                              polygon: widget.post.polygonPoints,
+                              position: LatLng(widget.post.locationLat,
+                                  widget.post.locationLong))
+                          .then((value) {
                         if (value == null) return;
                         setState(() {
                           _pos = value[0];
@@ -577,7 +642,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,

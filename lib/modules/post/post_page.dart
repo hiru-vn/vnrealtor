@@ -3,6 +3,7 @@ import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/post/suggest_list.dart';
+import 'package:datcao/modules/profile/recomend_dialog.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:datcao/share/widget/load_more.dart';
 import 'package:flutter/rendering.dart';
@@ -39,6 +40,7 @@ class _PostPageState extends State<PostPage> {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
       _authBloc = Provider.of(context);
+      Future.delayed(Duration(seconds: 5), () => _showRecomendDialog(context));
     }
     super.didChangeDependencies();
   }
@@ -93,7 +95,7 @@ class _PostPageState extends State<PostPage> {
               },
               list: RefreshIndicator(
                 color: ptPrimaryColor(context),
-                onRefresh: () async {
+                onRefresh: () async {audioCache.play('tab3.mp3');
                   setState(() {
                     isFilterDistance = false;
                   });
@@ -275,6 +277,27 @@ class _PostPageState extends State<PostPage> {
   }
 }
 
+Future<bool> _showRecomendDialog(BuildContext context) async {
+  final notShowRecomendAgain =
+      await SPref.instance.getBool('notShowRecomendAgain');
+  if (notShowRecomendAgain) return Future.value(false);
+  if (AuthBloc.firstLogin) return Future.value(false);
+  if (PostBloc.instance.myPosts
+          .where((element) =>
+              DateTime.tryParse(element.createdAt)
+                  .compareTo(DateTime.now().subtract(Duration(days: 1))) >=
+              0)
+          .length ==
+      0) return Future.value(false);
+  if (AuthBloc.instance.userModel.role != 'EDITOR') return Future.value(false);
+
+  return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return FunkyOverlay();
+      });
+}
+
 class CreatePostCard extends StatelessWidget {
   final PostBloc postBloc;
   final PageController pageController;
@@ -298,9 +321,12 @@ class CreatePostCard extends StatelessWidget {
               ),
               child: GestureDetector(
                 onTap: () {
-                  pageController.animateToPage(1,
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.decelerate);
+                  audioCache.play('tab3.mp3');
+                  pageController
+                      .animateToPage(1,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.decelerate)
+                      .then((value) => null);
                 },
                 child: Material(
                   borderRadius: BorderRadius.circular(0),
@@ -316,7 +342,7 @@ class CreatePostCard extends StatelessWidget {
                         ),
                         Spacer(),
                         GestureDetector(
-                          onTap: () {
+                          onTap: () {audioCache.play('tab3.mp3');
                             pageController.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
@@ -334,7 +360,7 @@ class CreatePostCard extends StatelessWidget {
                           width: 5,
                         ),
                         GestureDetector(
-                          onTap: () {
+                          onTap: () {audioCache.play('tab3.mp3');
                             pageController.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
@@ -384,7 +410,7 @@ class CreatePostCard extends StatelessWidget {
 buildStoryWidget(PostModel postModel) {
   return Center(
     child: GestureDetector(
-      onTap: () {
+      onTap: () {audioCache.play('tab3.mp3');
         PostDetail.navigate(postModel);
       },
       child: Material(
@@ -398,7 +424,7 @@ buildStoryWidget(PostModel postModel) {
               image: DecorationImage(
                   fit: BoxFit.cover,
                   image: CachedNetworkImageProvider(postModel.storyImages[0] ??
-                      postModel.mediaPosts[0].url))),
+                      postModel.mediaPosts[0].halfUrl))),
           child: Column(children: [
             Padding(
               padding: const EdgeInsets.all(4),
@@ -502,7 +528,7 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
           Padding(
             padding: const EdgeInsets.only(top: 12, bottom: 10),
             child: GestureDetector(
-              onTap: () {
+              onTap: () {audioCache.play('tab3.mp3');
                 SearchPostPage.navigate().then((value) =>
                     FocusScope.of(context).requestFocus(FocusNode()));
               },
@@ -517,7 +543,7 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           GestureDetector(
-            onTap: () {
+            onTap: () {audioCache.play('tab3.mp3');
               AuthBloc.instance.userModel.messNotiCount = 0;
               UserBloc.instance.seenNotiMess();
               InboxList.navigate();

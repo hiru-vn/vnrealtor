@@ -270,6 +270,7 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
             Divider(height: 1),
             GestureDetector(
               onTap: () {
+                audioCache.play('tab3.mp3');
                 showModalBottomSheet(
                   isScrollControlled: true,
                   context: context,
@@ -558,6 +559,7 @@ class _SharePostPageContentState extends State<SharePostPageContent> {
             Divider(height: 1),
             GestureDetector(
               onTap: () {
+                audioCache.play('tab3.mp3');
                 showModalBottomSheet(
                   isScrollControlled: true,
                   context: context,

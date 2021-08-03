@@ -11,18 +11,27 @@ import '../../share/widget/keep_keyboard_popup_menu/keep_keyboard_popup_menu.dar
 
 class PickCoordinates extends StatefulWidget {
   final bool hasPolygon;
+  final LatLng position;
+  final List<LatLng> polygon;
 
-  const PickCoordinates({Key key, this.hasPolygon = true}) : super(key: key);
-  static Future navigate({bool hasPolygon}) {
-    return navigatorKey.currentState
-        .push(pageBuilder(PickCoordinates(hasPolygon: hasPolygon)));
+  const PickCoordinates(
+      {Key key, this.hasPolygon = true, this.position, this.polygon})
+      : super(key: key);
+  static Future navigate(
+      {bool hasPolygon = true, LatLng position, List<LatLng> polygon}) {
+    return navigatorKey.currentState.push(pageBuilder(PickCoordinates(
+      hasPolygon: hasPolygon,
+      polygon: polygon.length > 0 ? polygon : null,
+      position: position,
+    )));
   }
 
   @override
   State<PickCoordinates> createState() => PickCoordinatesState();
 }
 
-class PickCoordinatesState extends State<PickCoordinates> {
+class PickCoordinatesState extends State<PickCoordinates>
+    with SingleTickerProviderStateMixin {
   Completer<GoogleMapController> _controller = Completer();
   CameraPosition _initPos = CameraPosition(
     target: LatLng(16.04, 108.19),
@@ -32,10 +41,21 @@ class PickCoordinatesState extends State<PickCoordinates> {
   String _placeName;
   String _mode = 'point';
   List<LatLng> polygonPoints = [];
+  LatLng center;
   Function _openPopup;
+  bool readedInstructionPolygon = false;
+  AnimationController animationController;
 
   @override
   void initState() {
+    if (widget.position != null) {
+      Future.delayed(
+          Duration(milliseconds: 500), () => _selectMarker(widget.position));
+    }
+    if (widget.polygon != null) {
+      polygonPoints = widget.polygon;
+      _mode = 'polygon';
+    }
     _getInitPosPrefs();
     getDevicePosition().then((value) async {
       CameraPosition _curPos = CameraPosition(
@@ -46,6 +66,16 @@ class PickCoordinatesState extends State<PickCoordinates> {
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(_curPos));
     });
+    animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 600))
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              animationController.reverse();
+            } else if (status == AnimationStatus.dismissed) {
+              animationController.forward();
+            }
+          })
+          ..forward();
     super.initState();
   }
 
@@ -105,6 +135,19 @@ class PickCoordinatesState extends State<PickCoordinates> {
         });
       }
     });
+  }
+
+  Future<LatLng> getCenter() async {
+    final GoogleMapController controller = await _controller.future;
+    LatLngBounds visibleRegion = await controller.getVisibleRegion();
+    LatLng centerLatLng = LatLng(
+      (visibleRegion.northeast.latitude + visibleRegion.southwest.latitude) / 2,
+      (visibleRegion.northeast.longitude + visibleRegion.southwest.longitude) /
+          2,
+    );
+    center = centerLatLng;
+
+    return centerLatLng;
   }
 
   void _redoMarkerPoligon() {
@@ -197,6 +240,9 @@ class PickCoordinatesState extends State<PickCoordinates> {
     final double perimeter = edges.fold(0, (e1, e2) => e1 + e2);
 
     final double area = getAreaInMeter(polygonPoints);
+    final shouldShowInstructionPolygon = _mode == 'polygon' &&
+        polygonPoints.length == 0 &&
+        !readedInstructionPolygon;
     return Scaffold(
       body: Stack(
         children: [
@@ -208,7 +254,25 @@ class PickCoordinatesState extends State<PickCoordinates> {
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
             },
-            onTap: _mode == 'point' ? _selectMarker : _addMarkerPoligon,
+            onCameraMove: (_) {
+              if (_mode == 'polygon' && polygonPoints.length > 0) {
+                getCenter().then((value) => setState(() {}));
+              }
+            },
+            polylines:
+                _mode == 'polygon' && polygonPoints.length > 0 && center != null
+                    ? <Polyline>{
+                        Polyline(
+                            color: Colors.red,
+                            width: 1,
+                            polylineId: PolylineId('PolylineId'),
+                            points: <LatLng>[
+                              center,
+                              polygonPoints[polygonPoints.length - 1]
+                            ])
+                      }
+                    : null,
+            onTap: _mode == 'point' ? _selectMarker : (LatLng _) {},
             markers: _mode == 'point'
                 ? (selectedMarker != null ? <Marker>{selectedMarker} : null)
                 : (polygonPoints
@@ -224,7 +288,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
                     Polygon(
                       polygonId: PolygonId('PolygonId'),
                       points: polygonPoints,
-                      consumeTapEvents: true,
+                      consumeTapEvents: false,
                       strokeColor: Colors.redAccent,
                       strokeWidth: 1,
                       fillColor: Colors.redAccent.withOpacity(0.5),
@@ -235,53 +299,125 @@ class PickCoordinatesState extends State<PickCoordinates> {
           CustomFloatingSearchBar(
             onSearch: _onSearch,
             automaticallyImplyBackButton: true,
-            actions: [
-              if (widget.hasPolygon ?? false)
-                FloatingSearchBarAction(
-                  showIfOpened: false,
-                  child: PopupMenuButton(
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (_) => <PopupMenuItem<String>>[
-                      PopupMenuItem(
-                        height: 36,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Đánh vị trí'),
-                            if (_mode == 'point') Icon(Icons.check),
-                          ],
-                        ),
-                        value: 'point',
-                      ),
-                      PopupMenuItem(
-                        height: 36,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Mô phỏng diện tích'),
-                            if (_mode == 'polygon') Icon(Icons.check),
-                          ],
-                        ),
-                        value: 'polygon',
-                      )
-                    ],
-                    onSelected: (val) {
-                      if (_mode != val)
-                        setState(() {
-                          _mode = val;
-                        });
-                    },
-                    child: SizedBox(
-                      child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Icon(Icons.more_vert)),
-                      height: 45,
-                      width: 30,
-                    ),
-                  ),
-                ),
-            ],
+            //   actions: [
+            //     if (widget.hasPolygon ?? false)
+            //       FloatingSearchBarAction(
+            //         showIfOpened: false,
+            //         child: PopupMenuButton(
+            //           padding: EdgeInsets.zero,
+            //           itemBuilder: (_) => <PopupMenuItem<String>>[
+            //             PopupMenuItem(
+            //               height: 36,
+            //               child: Row(
+            //                 mainAxisSize: MainAxisSize.min,
+            //                 children: [
+            //                   Text('Đánh vị trí'),
+            //                   if (_mode == 'point') Icon(Icons.check),
+            //                 ],
+            //               ),
+            //               value: 'point',
+            //             ),
+            //             PopupMenuItem(
+            //               height: 36,
+            //               child: Row(
+            //                 mainAxisSize: MainAxisSize.min,
+            //                 children: [
+            //                   Text('Mô phỏng diện tích'),
+            //                   if (_mode == 'polygon') Icon(Icons.check),
+            //                 ],
+            //               ),
+            //               value: 'polygon',
+            //             )
+            //           ],
+            //           onSelected: (val) {
+            //             if (_mode != val)
+            //               setState(() {
+            //                 _mode = val;
+            //               });
+            //           },
+            //           child: SizedBox(
+            //             child: Align(
+            //                 alignment: Alignment.centerRight,
+            //                 child: Icon(Icons.more_vert)),
+            //             height: 45,
+            //             width: 30,
+            //           ),
+            //         ),
+            //       ),
+            //   ],
           ),
+          Positioned(
+              bottom: 180,
+              right: 8,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.white),
+                child: Column(
+                  children: [
+                    Material(
+                      borderRadius: BorderRadius.circular(21),
+                      elevation: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          audioCache.play('tab3.mp3');
+                          setState(() {
+                            _mode = 'point';
+                          });
+                        },
+                        child: Container(
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _mode == 'point'
+                                ? ptPrimaryColor(context)
+                                : Colors.white,
+                          ),
+                          child: Center(
+                            child: Icon(MdiIcons.mapMarker,
+                                color: _mode == 'point'
+                                    ? Colors.white
+                                    : ptPrimaryColor(context)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Material(
+                      borderRadius: BorderRadius.circular(21),
+                      elevation: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          audioCache.play('tab3.mp3');
+                          setState(() {
+                            _mode = 'polygon';
+                          });
+                        },
+                        child: Container(
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _mode == 'polygon'
+                                ? ptPrimaryColor(context)
+                                : Colors.white,
+                          ),
+                          child: Center(
+                            child: Icon(MdiIcons.vectorPolygon,
+                                color: _mode == 'polygon'
+                                    ? Colors.white
+                                    : ptPrimaryColor(context)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
           Positioned(
             bottom: 15,
             left: 12,
@@ -299,7 +435,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
                 elevation: 4,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: ptPrimaryColor(context),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   height: 40,
@@ -308,12 +444,15 @@ class PickCoordinatesState extends State<PickCoordinates> {
                     children: [
                       Icon(
                         Icons.send,
-                        color: Colors.blue,
+                        color: Colors.white,
                       ),
                       SizedBox(
                         width: 8,
                       ),
-                      Text('Lưu vị trí này'),
+                      Text(
+                        'Lưu vị trí này',
+                        style: ptBody().copyWith(color: Colors.white),
+                      ),
                       SizedBox(
                         width: 3,
                       ),
@@ -331,7 +470,10 @@ class PickCoordinatesState extends State<PickCoordinates> {
                   borderRadius: BorderRadius.circular(21),
                   elevation: 4,
                   child: GestureDetector(
-                    onTap: _selectMyLocation,
+                    onTap: () {
+                      _selectMyLocation();
+                      audioCache.play('tab3.mp3');
+                    },
                     child: Container(
                       width: 42,
                       height: 42,
@@ -369,6 +511,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
                     menuBuilder: (context, closePopup) {
                       return GestureDetector(
                         onTap: () {
+                          audioCache.play('tab3.mp3');
                           closePopup();
                         },
                         child: Padding(
@@ -401,6 +544,7 @@ class PickCoordinatesState extends State<PickCoordinates> {
                         elevation: 4,
                         child: GestureDetector(
                           onTap: () {
+                            audioCache.play('tab3.mp3');
                             openPopup();
                           },
                           child: Container(
@@ -429,7 +573,10 @@ class PickCoordinatesState extends State<PickCoordinates> {
                   borderRadius: BorderRadius.circular(21),
                   elevation: 4,
                   child: GestureDetector(
-                    onTap: _clearMarkerPoligon,
+                    onTap: () {
+                      _clearMarkerPoligon();
+                      audioCache.play('tab3.mp3');
+                    },
                     child: Container(
                       width: 42,
                       height: 42,
@@ -517,7 +664,10 @@ class PickCoordinatesState extends State<PickCoordinates> {
                   borderRadius: BorderRadius.circular(21),
                   elevation: 4,
                   child: GestureDetector(
-                    onTap: _redoMarkerPoligon,
+                    onTap: () {
+                      _redoMarkerPoligon();
+                      audioCache.play('tab3.mp3');
+                    },
                     child: Container(
                       width: 42,
                       height: 42,
@@ -535,6 +685,149 @@ class PickCoordinatesState extends State<PickCoordinates> {
                   ),
                 )),
           ],
+          if (_mode == 'polygon') ...[
+            Center(
+              child: Icon(MdiIcons.target, size: 50, color: Colors.white),
+            ),
+            Positioned(
+                top: 280,
+                right: 10,
+                child: Material(
+                  borderRadius: BorderRadius.circular(21),
+                  elevation: 4,
+                  child: GestureDetector(
+                    onTap: () async {audioCache.play('tab3.mp3');
+                      final center = await getCenter();
+                      
+                      _addMarkerPoligon(center);
+                    },
+                    child: Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ptPrimaryColor(context),
+                      ),
+                      child: Center(
+                        child: Icon(MdiIcons.vectorPolylinePlus,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                )),
+            if (polygonPoints.length > 0 && center != null)
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 80.0),
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.black54),
+                  child: Text(
+                    '${() {
+                      final distance = getCoordinateDistanceInKm(
+                          polygonPoints[polygonPoints.length - 1], center);
+                      return (distance * 1000).toStringAsFixed(1);
+                    }()} m',
+                    style: ptBody().copyWith(color: Colors.white),
+                  ),
+                ),
+              ),
+          ],
+          if (shouldShowInstructionPolygon) ...[
+            IgnorePointer(
+              child: ColorFiltered(
+                colorFilter: ColorFilter.mode(Colors.black45,
+                    BlendMode.srcOut), // This one will create the magic
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black45,
+                          backgroundBlendMode: BlendMode
+                              .dstOut), // This one will handle background + difference out
+                    ),
+                    Positioned(
+                      top: 270,
+                      right: 0,
+                      width: 64,
+                      height: 64,
+                      child: Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape
+                                .circle), // This one will handle background + difference out
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape
+                                .circle), // This one will handle background + difference out
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+                right: 15,
+                top: 240,
+                child: ScaleTransition(
+                    scale: Tween(
+                      begin: 0.9,
+                      end: 1.0,
+                    ).animate(CurvedAnimation(
+                      parent: animationController,
+                      curve: Curves.easeInCubic,
+                    )),
+                    child: Text(
+                      '2. Nhấn để chọn điểm',
+                      style: ptTitle().copyWith(
+                        color: Colors.white,
+                      ),
+                    ))),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 110.0),
+                child: ScaleTransition(
+                    scale: Tween(
+                      begin: 0.9,
+                      end: 1.0,
+                    ).animate(CurvedAnimation(
+                      parent: animationController,
+                      curve: Curves.easeInCubic,
+                    )),
+                    child: Text(
+                      '1. Di chuyển bản đồ\nđể căn điểm',
+                      style: ptTitle().copyWith(
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    )),
+              ),
+            ),
+            Center(
+                child: Padding(
+                    padding: const EdgeInsets.only(top: 140.0),
+                    child: FlatButton(
+                      child: Text(
+                        'Đã hiểu',
+                      ),
+                      color: Colors.black54,
+                      onPressed: () {
+                        setState(() {
+                          readedInstructionPolygon = true;
+                        });
+                      },
+                    )))
+          ]
         ],
       ),
     );

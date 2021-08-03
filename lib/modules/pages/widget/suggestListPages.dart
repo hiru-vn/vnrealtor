@@ -105,7 +105,10 @@ class PageItem extends StatelessWidget {
               height: 12,
             ),
             GestureDetector(
-              onTap: () => PageDetail.navigate(page),
+              onTap: () {
+                PageDetail.navigate(page);
+                audioCache.play('tab3.mp3');
+              },
               child: CircleAvatar(
                 radius: 30,
                 backgroundColor: Colors.white,
@@ -119,7 +122,10 @@ class PageItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
-                  onTap: () => PageDetail.navigate(page),
+                  onTap: () {
+                    PageDetail.navigate(page);
+                    audioCache.play('tab3.mp3');
+                  },
                   child: Text(
                     page.name,
                     style: ptBody().copyWith(fontWeight: FontWeight.w600),
@@ -130,6 +136,7 @@ class PageItem extends StatelessWidget {
             )),
             GestureDetector(
               onTap: () async {
+                audioCache.play('tab3.mp3');
                 final res = await pagesBloc.followPage(page.id);
                 if (res.isSuccess) {
                   pagesBloc.suggestFollowPage.forEach((element) {
@@ -196,7 +203,10 @@ class PageWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(5).copyWith(bottom: 0),
       child: GestureDetector(
-        onTap: () => PageDetail.navigate(page),
+        onTap: () {
+          PageDetail.navigate(page);
+          audioCache.play('tab3.mp3');
+        },
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -276,6 +286,7 @@ class PageWidget extends StatelessWidget {
                       .contains(page.id))
                 GestureDetector(
                   onTap: () async {
+                    audioCache.play('tab3.mp3');
                     page.followerIds.add(AuthBloc.instance.userModel.id);
                     final res = await pagesBloc.followPage(page.id);
                     if (!res.isSuccess) showToast(res.errMessage, context);

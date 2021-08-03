@@ -117,6 +117,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                   borderRadius: BorderRadius.circular(60),
                   child: GestureDetector(
                     onTap: () {
+                      audioCache.play('tab3.mp3');
                       imagePicker(context,
                           onImagePick: _updateAvatar,
                           onCameraPick: _updateAvatar);
@@ -182,7 +183,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                           height: 20,
                         ),
                         GestureDetector(
-                          onTap: () => UpdatePasswordPage.navigate(),
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
+                            UpdatePasswordPage.navigate();
+                          },
                           child: Container(
                             height: 65,
                             margin: EdgeInsets.symmetric(vertical: 1),

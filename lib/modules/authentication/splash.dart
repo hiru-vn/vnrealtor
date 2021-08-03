@@ -5,6 +5,7 @@ import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/guest/guest_feed_page.dart';
 import 'package:datcao/modules/home_page.dart';
+import 'package:datcao/modules/profile/verify_company.dart';
 import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/share/import.dart';
 
@@ -50,6 +51,9 @@ class _SplashPageState extends State<SplashPage> {
                 UserBloc.instance.init(),
               ]);
               HomePage.navigate();
+              if (_authBloc.userModel.role == 'COMPANY' &&
+                  !_authBloc.userModel.isVerify &&
+                  _authBloc.userModel.isPendingVerify) VerifyCompany.navigate();
               Future.delayed(Duration(milliseconds: 600),
                   () => NotificationBloc.handleInitActions());
             } else

@@ -275,6 +275,7 @@ class GroupBloc extends ChangeNotifier {
       String type,
       String need,
       double area,
+      bool onlyMe,
       double price) async {
     try {
       final res = await PostRepo().createPost(
@@ -291,6 +292,7 @@ class GroupBloc extends ChangeNotifier {
           need,
           area,
           price,
+          onlyMe,
           groupId: groupId);
       feed.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));

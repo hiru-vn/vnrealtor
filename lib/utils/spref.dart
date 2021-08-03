@@ -34,8 +34,13 @@ class SPref {
   }
 
   Future<bool> getBool(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(key);
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final val = prefs.getBool(key);
+      return val ?? false;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future remove(String key) async {

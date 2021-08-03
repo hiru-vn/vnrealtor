@@ -37,3 +37,4 @@ export 'package:datcao/share/widget/verified_icon.dart';
 export 'package:flutter_linkify/flutter_linkify.dart';
 export 'package:google_maps_flutter/google_maps_flutter.dart';
 export 'package:datcao/share/widget/floating_search_bar.dart';
+export 'package:datcao/modules/services/audio.dart';

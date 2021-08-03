@@ -20,7 +20,7 @@ class UserRepo {
         'registerWithPhone',
         '''
 name: "${name.trim()}"
-email: "$email"
+email: ${(email != null && email.trim() != '') ? "\"$email\"" : null}
 password: "$password"
 phone: "$phone"
 idToken: "$idToken"
@@ -36,7 +36,7 @@ idToken: "$idToken"
         ''' data : {
 name: "${name.trim()}"
 ownerName: "$ownerName"
-email: "$email"
+email: ${(email != null && email.trim() != '') ? "\"$email\"" : null}
 password: "$password"
 phone: "$phone"
 idToken: "$idToken"
@@ -130,6 +130,22 @@ Page: "$page"
     return res['setUserlocation'];
   }
 
+  Future setOnline(
+    String deviceId,
+    String deviceToken,
+    String ip,
+  ) async {
+    final res = await UserSrv().mutate(
+        'setOnline',
+        '''
+    deviceId: "$deviceId"
+    deviceToken: "$deviceToken"
+  	ip: "$ip"
+    ''',
+        fragment: 'id');
+    return res['setOnline'];
+  }
+
   Future getListUserIn(List<String> ids) async {
     final res = await UserSrv().query('getAllUserForClient',
         'q:{order: {createdAt: 1} filter: {_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}}',
@@ -154,7 +170,7 @@ Page: "$page"
 
   Future checkValidUser(String email, String phone) async {
     final res = await UserSrv().mutate('checkValidUser', '''
-email: "$email"
+email: ${(email != null && email.trim() != '') ? "\"$email\"" : null}
 phone: "$phone"
     ''');
     return res['checkValidUser'];

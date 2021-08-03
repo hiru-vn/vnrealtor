@@ -16,7 +16,7 @@ class PeopleWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(5).copyWith(bottom: 0),
       child: GestureDetector(
-        onTap: () {
+        onTap: () {audioCache.play('tab3.mp3');
           ProfileOtherPage.navigate(user);
         },
         child: Card(
@@ -118,7 +118,7 @@ class PeopleWidget extends StatelessWidget {
                   !_authBloc.userModel.followingIds.contains(user.id) &&
                   user.id != AuthBloc.instance.userModel.id)
                 GestureDetector(
-                  onTap: () {
+                  onTap: () {audioCache.play('tab3.mp3');
                     _authBloc.userModel.followingIds.add(user.id);
                     user.followerIds.add(_authBloc.userModel.id);
                     _userBloc.followUser(user.id);

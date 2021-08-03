@@ -157,9 +157,10 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               onTap: () {
                 showDatePicker(
                   context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now().subtract(Duration(days: 5475)),
-                  lastDate: DateTime.now(),
+                  locale: Locale('vi', 'VN'),
+                  initialDate: DateTime.now().subtract(Duration(days: 10000)),
+                  firstDate: DateTime.now().subtract(Duration(days: 29200)),
+                  lastDate: DateTime.now().subtract(Duration(days: 6570)),
                 ).then((value) => onChange(value.toIso8601String()));
               },
               readOnly: true,
@@ -210,7 +211,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               child: GestureDetector(
                 onTap: () => onCustomPersionRequest(
                     permission: Permission.camera,
-                    onGranted: () {
+                    onGranted: () {audioCache.play('tab3.mp3');
                       ImagePicker.pickImage(source: ImageSource.camera)
                           .then((value) async {
                         try {

@@ -39,8 +39,12 @@ class InboxBloc extends ChangeNotifier {
 
   Future<String> checkChatable(BuildContext context, String id) async {
     final res = await UserBloc.instance.checkChatAble(id);
-    if (!res.isSuccess || res.data == false) {
-      showToast(res.errMessage, context);
+    if (!res.isSuccess) {
+      // showToast(res.errMessage, context);
+      return res.data;
+    }
+    if (res.data == false) {
+      showToast('Người này không nhận tin nhắn', context);
       return res.data;
     }
     return res.data;

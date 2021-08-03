@@ -47,7 +47,7 @@ class _GroupPageState extends State<GroupPage> {
             },
             list: RefreshIndicator(
                 color: ptPrimaryColor(context),
-                onRefresh: () async {
+                onRefresh: () async {audioCache.play('tab3.mp3');
                   _groupBloc.getNewFeedGroup(
                       filter:
                           GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
@@ -103,6 +103,7 @@ class _GroupPageState extends State<GroupPage> {
               SizedBox(width: 27),
               GestureDetector(
                 onTap: () {
+                  audioCache.play('tab3.mp3');
                   CreateGroupPage.navigate();
                 },
                 child: Container(
@@ -119,11 +120,13 @@ class _GroupPageState extends State<GroupPage> {
               ),
               GestureDetector(
                   onTap: () {
+                    audioCache.play('tab3.mp3');
                     CreateGroupPage.navigate();
                   },
                   child: SizedBox(width: 15)),
               GestureDetector(
                   onTap: () {
+                    audioCache.play('tab3.mp3');
                     CreateGroupPage.navigate();
                   },
                   child: Text('Tạo nhóm mới', style: ptTitle())),
@@ -169,7 +172,10 @@ class _GroupPageState extends State<GroupPage> {
   Widget _buildButton(String text, IconData icon, Function onTap,
       {int counter}) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Container(
         height: 36,
         decoration: BoxDecoration(

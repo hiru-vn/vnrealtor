@@ -173,7 +173,7 @@ class _NotificationTabState extends State<NotificationTab> {
     return list.length > 0
         ? RefreshIndicator(
             color: ptPrimaryColor(context),
-            onRefresh: () async {
+            onRefresh: () async {audioCache.play('tab3.mp3');
               await Future.wait([
                 _notificationBloc.getListNotification(
                   filter: GraphqlFilter(order: '{createdAt: -1}'),
@@ -297,7 +297,7 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
     return _userBloc.friendRequestFromOtherUsers.length != 0
         ? RefreshIndicator(
             color: ptPrimaryColor(context),
-            onRefresh: () async {
+            onRefresh: () async {audioCache.play('tab3.mp3');
               await _userBloc.getFriendRequestFromOtherUsers();
               return;
             },
@@ -414,7 +414,7 @@ class FollowTab extends StatelessWidget {
     return list.length > 0
         ? RefreshIndicator(
             color: ptPrimaryColor(context),
-            onRefresh: () async {
+            onRefresh: () async {audioCache.play('tab3.mp3');
               await NotificationBloc.instance.getListNotification(
                   filter: GraphqlFilter(order: '{createdAt: -1}'));
               return;

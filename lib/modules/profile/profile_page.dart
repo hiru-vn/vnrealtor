@@ -80,6 +80,7 @@ class _ProfilePageState extends State<ProfilePage>
                       ? RefreshIndicator(
                           color: ptPrimaryColor(context),
                           onRefresh: () async {
+                            audioCache.play('tab3.mp3');
                             final res = await _postBloc.getMyPost();
                             if (!res.isSuccess)
                               showToast(res.errMessage, context);
@@ -307,6 +308,7 @@ class _ProfileCardState extends State<ProfileCard> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
+                                    audioCache.play('tab3.mp3');
                                     FollowPage.navigate(widget.user, 0);
                                   },
                                   child: Column(
@@ -336,6 +338,7 @@ class _ProfileCardState extends State<ProfileCard> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
+                                    audioCache.play('tab3.mp3');
                                     FollowPage.navigate(widget.user, 1);
                                   },
                                   child: Column(
@@ -397,6 +400,7 @@ class _ProfileCardState extends State<ProfileCard> {
                             if (snapshot.data == true)
                               return GestureDetector(
                                 onTap: () {
+                                  audioCache.play('tab3.mp3');
                                   launch(widget.user.facebookUrl);
                                 },
                                 child: SizedBox(
@@ -411,6 +415,7 @@ class _ProfileCardState extends State<ProfileCard> {
                     if (widget.user.email != null)
                       GestureDetector(
                         onTap: () {
+                          audioCache.play('tab3.mp3');
                           launch(_emailLaunchUri.toString());
                         },
                         child: SizedBox(
@@ -422,6 +427,7 @@ class _ProfileCardState extends State<ProfileCard> {
                     if (widget.user.dynamicLink != null)
                       GestureDetector(
                         onTap: () {
+                          audioCache.play('tab3.mp3');
                           showToast('Đã copy đường dẫn tài khoản', context,
                               isSuccess: true);
                           Clipboard.setData(ClipboardData(

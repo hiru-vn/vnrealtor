@@ -170,7 +170,10 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
         actions: [
           Center(
             child: GestureDetector(
-              onTap: _onShare,
+              onTap: () {
+                _onShare();
+                audioCache.play('tab3.mp3');
+              },
               behavior: HitTestBehavior.translucent,
               child: Padding(
                 padding: const EdgeInsets.all(10).copyWith(bottom: 13),
@@ -334,7 +337,10 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
   _buildUserItem(UserModel user, bool isSelect, Function onTap) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Row(
         children: [
           if (!isSelect)
@@ -389,7 +395,10 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
       nameGroup = group.pageName;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Row(
         children: [
           if (!isSelect)
@@ -538,6 +547,14 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
           final list = [e.id, _authBloc.userModel.id];
           list.sort();
           final groupId = list.join("-");
+          InboxBloc.instance.addMessage(
+              groupId,
+              widget.post.dynamicLink.shortLink + '\n${widget.post.content}',
+              DateTime.now(),
+              _authBloc.userModel.id,
+              _authBloc.userModel.name,
+              _authBloc.userModel.avatar);
+
           InboxBloc.instance.updateGroupOnMessage(
               groupId,
               _authBloc.userModel.name,
@@ -545,29 +562,41 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
               AuthBloc.instance.userModel.name + 'đã chia sẻ 1 bài viết',
               [],
               [AuthBloc.instance.userModel.id]);
+
           return InboxBloc.instance.addMessage(
-              groupId,
-              widget.post.dynamicLink.shortLink,
+              e.id,
+              '',
               DateTime.now(),
               _authBloc.userModel.id,
               _authBloc.userModel.name,
-              _authBloc.userModel.avatar);
+              _authBloc.userModel.avatar,
+              filePaths: widget.post.mediaPosts.map((e) => e.url).toList());
         }),
         ...tagGroups.map((e) {
-          InboxBloc.instance.updateGroupOnMessage(
+          InboxBloc.instance.addMessage(
               e.id,
-              _authBloc.userModel.name,
-              DateTime.now(),
-              AuthBloc.instance.userModel.name + 'đã chia sẻ 1 bài viết',
-              [],
-              [AuthBloc.instance.userModel.id]);
-          return InboxBloc.instance.addMessage(
-              e.id,
-              widget.post.dynamicLink.shortLink,
+              widget.post.dynamicLink.shortLink + '\n${widget.post.content}',
               DateTime.now(),
               _authBloc.userModel.id,
               _authBloc.userModel.name,
               _authBloc.userModel.avatar);
+
+          InboxBloc.instance.updateGroupOnMessage(
+            e.id,
+            _authBloc.userModel.name,
+            DateTime.now(),
+            AuthBloc.instance.userModel.name + 'đã chia sẻ 1 bài viết',
+            [],
+            [AuthBloc.instance.userModel.id],
+          );
+          return InboxBloc.instance.addMessage(
+              e.id,
+              '',
+              DateTime.now(),
+              _authBloc.userModel.id,
+              _authBloc.userModel.name,
+              _authBloc.userModel.avatar,
+              filePaths: widget.post.mediaPosts.map((e) => e.url).toList());
         }),
       ]);
 
@@ -595,7 +624,10 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
         actions: [
           Center(
             child: GestureDetector(
-              onTap: _onShare,
+              onTap: () {
+                _onShare();
+                audioCache.play('tab3.mp3');
+              },
               behavior: HitTestBehavior.translucent,
               child: Padding(
                 padding: const EdgeInsets.all(10).copyWith(bottom: 13),
@@ -738,7 +770,10 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
   _buildUserItem(UserModel user, bool isSelect, Function onTap) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Row(
         children: [
           if (!isSelect)
@@ -793,7 +828,10 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
       nameGroup = group.pageName;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        audioCache.play('tab3.mp3');
+      },
       child: Row(
         children: [
           if (!isSelect)

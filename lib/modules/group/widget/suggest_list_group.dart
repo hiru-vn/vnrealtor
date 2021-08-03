@@ -46,6 +46,7 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                 children: [
                   GestureDetector(
                     onTap: () {
+                      audioCache.play('tab3.mp3');
                       // ProfileOtherPage.navigate(
                       //     widget.users[index]);
                     },
@@ -56,7 +57,7 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                       child: Stack(
                         children: [
                           GestureDetector(
-                            onTap: () {
+                            onTap: () {audioCache.play('tab3.mp3');
                               DetailGroupPage.navigate(null,
                                   groupId: groupBloc.suggestGroup[index].id);
                             },
@@ -110,7 +111,7 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                     ],
                   )),
                   GestureDetector(
-                    onTap: () async {
+                    onTap: () async {audioCache.play('tab3.mp3');
                       if (AuthBloc.instance.userModel == null) {
                         LoginPage.navigatePush();
                         return;

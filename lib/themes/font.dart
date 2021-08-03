@@ -24,22 +24,22 @@ TextStyle ptBigTitle() => TextStyle(
 TextStyle ptTitle() => TextStyle(
     fontSize: 14.3, fontWeight: FontWeight.w600, color: HexColor('#05515e'));
 
-TextStyle ptButton() => GoogleFonts.nunito(
-    letterSpacing: 0.1,
+TextStyle ptButton() => GoogleFonts.roboto(
+    letterSpacing: 0.2,
     fontSize: 15.5,
     fontWeight: FontWeight.w600,
     color: Colors.white);
 
-TextStyle ptBigBody() => GoogleFonts.nunito(
+TextStyle ptBigBody() => GoogleFonts.roboto(
     fontSize: 15.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
 
-TextStyle ptBody() => GoogleFonts.nunito(
+TextStyle ptBody() => GoogleFonts.roboto(
     fontSize: 13.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
 
-TextStyle ptSmall() => GoogleFonts.nunito(
+TextStyle ptSmall() => GoogleFonts.roboto(
     fontSize: 12.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
 
-TextStyle ptTiny() => GoogleFonts.nunito(
+TextStyle ptTiny() => GoogleFonts.roboto(
     fontSize: 11.5, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
 
 TextStyle typeError() {

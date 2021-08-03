@@ -332,7 +332,7 @@ class MediaPostWidget extends StatefulWidget {
   MediaPostWidget(
       {@required this.post,
       @required this.onTapPostCallBack,
-      this.autoPlayVideo});
+      this.autoPlayVideo = false});
 
   @override
   _MediaPostWidgetState createState() => _MediaPostWidgetState();
@@ -383,9 +383,9 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () {audioCache.play('tab3.mp3');
         widget.onTapPostCallBack();
-
+  
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: _getWidget(type),
@@ -573,7 +573,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () {audioCache.play('tab3.mp3');
                         if (AuthBloc.instance.userModel == null) {
                           LoginPage.navigatePush();
                           return;
@@ -614,7 +614,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () async {
+                      onTap: () async {audioCache.play('tab3.mp3');
                         // if (AuthBloc.instance.userModel == null) {
                         //   await navigatorKey.currentState.maybePop();
                         //   LoginPage.navigatePush();
@@ -643,7 +643,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () {audioCache.play('tab3.mp3');
                         String content =
                             widget.post.dynamicLink?.shortLink ?? '';
                         shareTo(context,
@@ -700,7 +700,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                   ),
                   Spacer(),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showComment(widget.post, context);
                     },
                     child: Text(
@@ -834,7 +834,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () {audioCache.play('tab3.mp3');
                         if (AuthBloc.instance.userModel == null) {
                           LoginPage.navigatePush();
                           return;
@@ -875,7 +875,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () {audioCache.play('tab3.mp3');
                         showComment(_post, context);
                       },
                       child: Row(
@@ -899,7 +899,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () {audioCache.play('tab3.mp3');
                         String content =
                             widget.post.dynamicLink?.shortLink ?? '';
                         shareTo(context,
@@ -956,7 +956,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                   ),
                   Spacer(),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () {audioCache.play('tab3.mp3');
                       showComment(widget.post, context);
                     },
                     child: Text(
