@@ -72,7 +72,7 @@ class Validator {
 
   static bool isPhone(String phone) {
     final regexPhone = RegExp(r'^[0-9]{10}$');
-    return regexPhone.hasMatch(phone);
+    return regexPhone.hasMatch(phone.replaceAll(' ', ''));
   }
 
   static bool isPin(String pin) {
