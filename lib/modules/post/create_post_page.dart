@@ -17,7 +17,6 @@ import 'package:hashtagable/hashtagable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import './tag_user_list_page.dart';
-import 'package:simple_url_preview/simple_url_preview.dart';
 
 class CreatePostPage extends StatefulWidget {
   final PageController pageController;

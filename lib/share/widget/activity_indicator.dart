@@ -1,4 +1,3 @@
-import 'package:datcao/resources/styles/colors.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../import.dart';

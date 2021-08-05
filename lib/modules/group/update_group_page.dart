@@ -1,5 +1,4 @@
 import 'package:datcao/modules/bloc/group_bloc.dart';
-import 'package:datcao/modules/inbox/google_map_widget.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/post/pick_coordinates.dart';
 import 'package:datcao/share/import.dart';

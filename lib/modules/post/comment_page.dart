@@ -4,7 +4,6 @@ import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
-import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/share/widget/tag_user_field.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';

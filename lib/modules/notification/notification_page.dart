@@ -1,9 +1,7 @@
-import 'package:datcao/main.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/group/detail_group_page.dart';
 import 'package:datcao/modules/inbox/import/app_bar.dart';
-import 'package:datcao/modules/model/notification.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';

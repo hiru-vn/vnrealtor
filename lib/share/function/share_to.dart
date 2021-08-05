@@ -1,7 +1,5 @@
 import '../import.dart';
 import 'package:share/share.dart';
-import 'package:mime/mime.dart';
-import 'down_load_url_file.dart';
 
 // void shareTo(BuildContext context,
 //     {String content = '', List<String> image, List<String> video}) async {

@@ -12,7 +12,6 @@ import 'app_id.dart';
 import 'dial_screen.dart';
 import 'import/page_builder.dart';
 import 'inbox_model.dart';
-import 'video_call_page.dart';
 
 /// MultiChannel Example
 class VoiceCallPage extends StatefulWidget {

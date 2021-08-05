@@ -7,7 +7,6 @@ import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/profile/follow_page.dart';
 import 'package:datcao/modules/profile/profile_page.dart';
-import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:datcao/share/widget/empty_widget.dart';

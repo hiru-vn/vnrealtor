@@ -2,7 +2,6 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
-import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/post/post_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/post/search_post_page.dart';

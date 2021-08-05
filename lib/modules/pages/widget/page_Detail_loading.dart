@@ -1,4 +1,3 @@
-import 'package:datcao/resources/styles/colors.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
 import 'package:flutter/material.dart';

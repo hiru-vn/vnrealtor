@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:datcao/share/widget/keep_keyboard_popup_menu/keep_keyboard_popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';

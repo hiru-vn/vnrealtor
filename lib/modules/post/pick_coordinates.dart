@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:math';
-import 'dart:typed_data';
 import 'dart:ui';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/share/import.dart';

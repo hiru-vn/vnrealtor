@@ -6,7 +6,6 @@ import 'package:datcao/modules/model/media_post.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
-import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
 import 'package:geolocator/geolocator.dart';
@@ -413,7 +412,8 @@ class PostBloc extends ChangeNotifier {
           type,
           need,
           area,
-          price,onlyMe);
+          price,
+          onlyMe);
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());
@@ -759,6 +759,8 @@ class PostBloc extends ChangeNotifier {
       final res = PostRepo().subscriptionCommentByPostId(id);
       commentSubcription = res;
       return res;
-    } catch (e) {} finally {}
+    } catch (e) {
+      return null;
+    } finally {}
   }
 }

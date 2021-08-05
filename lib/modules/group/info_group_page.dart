@@ -1,15 +1,12 @@
 import 'dart:async';
 
 import 'package:datcao/modules/bloc/group_bloc.dart';
-import 'package:datcao/modules/group/create_group_page.dart';
-import 'package:datcao/modules/group/create_post_group_page.dart';
 import 'package:datcao/modules/group/member_page.dart';
 import 'package:datcao/modules/group/update_group_page.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/widget/page_skeleton.dart';
-import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 

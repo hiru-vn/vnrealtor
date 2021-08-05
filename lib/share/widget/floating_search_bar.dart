@@ -1,7 +1,6 @@
 import 'package:datcao/modules/inbox/import/color.dart';
 import 'package:datcao/modules/inbox/import/font.dart';
 import 'package:datcao/modules/services/credential_key.dart';
-import 'package:datcao/navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:dio/dio.dart';

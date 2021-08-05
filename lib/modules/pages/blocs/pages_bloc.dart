@@ -4,7 +4,6 @@ import 'package:datcao/modules/pages/models/followModel.dart';
 import 'package:datcao/modules/pages/models/pages_category_model.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/models/receive_notify_page_model.dart';
-import 'package:datcao/modules/pages/models/suggestModel.dart';
 import 'package:datcao/modules/pages/repos/pages_repo.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/share/import.dart';

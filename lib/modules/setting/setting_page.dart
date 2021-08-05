@@ -5,7 +5,6 @@ import 'package:datcao/modules/profile/update_profile_page.dart';
 import 'package:datcao/modules/profile/verify_account_page1.dart';
 import 'package:datcao/modules/profile/verify_company.dart';
 import 'package:datcao/modules/setting/about_page.dart';
-import 'package:datcao/modules/setting/point_page.dart';
 import 'package:datcao/modules/setting/policy_page.dart';
 import 'package:datcao/modules/setting/saved_post_page.dart';
 import 'package:datcao/share/function/share_to.dart';
