@@ -98,288 +98,315 @@ class _PostWidgetState extends State<PostWidget> {
                 child: widget.post.group == null
                     ? _buildUserOrPageTile()
                     : _buildGroupTile()),
-            Padding(
-              padding: const EdgeInsets.all(15).copyWith(
-                  top: 0, bottom: widget.post.postShareId != null ? 0 : 5),
-              child: GestureDetector(
-                onTap: () {audioCache.play('tab3.mp3');
-                  if (!widget.isInDetailPage) PostDetail.navigate(widget.post);
-                },
-                child: Linkify(
-                  onOpen: (link) async {
-                    // if (Validator.isUrl(link.url)) {
-                    if (await canLaunch(link.url)) {
-                      await launch(link.url);
-                    } else {
-                      showToastNoContext('Đường dẫn hết hiệu lực');
-                    }
-                    // }
-                  },
-                  text: (widget.post?.content?.trim() ?? ''),
-                  // trimLines: 5,
-                  // trimLength: 1000,
-                  style: ptBody().copyWith(color: Colors.black87),
-                  textAlign: TextAlign.start,
-                  // colorClickableText: Colors.pink,
-                  // trimMode: TrimMode.Length,
-                  // trimCollapsedText: 'Xem thêm',
-                  // trimExpandedText: 'Rút gọn',
-                  // moreStyle: TextStyle(
-                  //   fontSize: 14,
-                  //   fontWeight: FontWeight.bold,
-                  // ),
-                ),
-              ),
-            ),
-            if (widget.post.tagUsers != null && widget.post.tagUsers.length > 0)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15)
-                    .copyWith(bottom: 7),
-                child: Text.rich(TextSpan(children: [
-                  TextSpan(
-                      text: 'Cùng với: ',
-                      style: ptSmall().copyWith(color: Colors.black)),
-                  ...widget.post.tagUsers.map(
-                    (e) => TextSpan(
-                        text: '${e.name}, ',
-                        recognizer: new TapGestureRecognizer()
-                          ..onTap = () => ProfileOtherPage.navigate(e),
-                        style: ptSmall().copyWith(fontStyle: FontStyle.italic)),
-                  )
-                ])),
-              ),
-            if ((widget.post?.hashTag?.length ?? 0) > 0)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Wrap(
-                  children: widget.post.hashTag
-                      .map((e) => GestureDetector(
-                            onTap: () {audioCache.play('tab3.mp3');
-                              SearchPostPage.navigate(hashTag: e);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(5).copyWith(top: 0),
-                              child: Text(e),
-                            ),
-                          ))
-                      .toList(),
-                ),
-              ),
-            if (widget.post.postShareId != null && _sharePost == null)
-              SizedBox(
-                  width: deviceWidth(context),
-                  height: 170,
-                  child: kLoadingSpinner)
-            else if (widget.post.postShareId != null && _sharePost != null)
+            if (widget.post.isBlock)
               Container(
-                  margin: EdgeInsets.symmetric(horizontal: 7),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black12),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Transform.scale(
-                      scale: 0.93,
-                      child: PostWidget(_sharePost, isSharedPost: true)))
-            else if ((widget.post?.mediaPosts?.length ?? 0) > 0)
-              Stack(
-                children: [
-                  GroupMediaPostWidget(
-                    posts: widget.post?.mediaPosts,
-                    autoPlayVideo: true,
+                margin: const EdgeInsets.symmetric(vertical: 20),
+                width: deviceWidth(context),
+                height: 150,
+                decoration: BoxDecoration(color: Colors.black),
+                child: Center(
+                  child: Text(
+                    'Bài viết đã bị xoá do vi phạm quy chuẩn cộng đồng',
+                    style: ptBigBody().copyWith(color: Colors.white),
+                    textAlign: TextAlign.center,
                   ),
-                  if (widget.post.locationLat != null &&
-                      widget.post.locationLong != null)
-                    Positioned(
-                      bottom: 10,
-                      right: 10,
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: GestureDetector(
-                          onTap: () async {audioCache.play('tab3.mp3');
-                            await showGoogleMapPoint(
-                                context,
-                                widget.post.locationLat,
-                                widget.post.locationLong,
-                                widget.post.polygonPoints);
-                            FocusScope.of(context).requestFocus(FocusNode());
-                          },
-                          child: Text(
-                            'Xem vị trí',
-                            style: TextStyle(
-                                fontSize: 12.5,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 1),
+                ),
+              )
+            else ...[
+              Padding(
+                padding: const EdgeInsets.all(15).copyWith(
+                    top: 0, bottom: widget.post.postShareId != null ? 0 : 5),
+                child: GestureDetector(
+                  onTap: () {
+                    audioCache.play('tab3.mp3');
+                    if (!widget.isInDetailPage)
+                      PostDetail.navigate(widget.post);
+                  },
+                  child: Linkify(
+                    onOpen: (link) async {
+                      // if (Validator.isUrl(link.url)) {
+                      if (await canLaunch(link.url)) {
+                        await launch(link.url);
+                      } else {
+                        showToastNoContext('Đường dẫn hết hiệu lực');
+                      }
+                      // }
+                    },
+                    text: (widget.post?.content?.trim() ?? ''),
+                    // trimLines: 5,
+                    // trimLength: 1000,
+                    style: ptBody().copyWith(color: Colors.black87),
+                    textAlign: TextAlign.start,
+                    // colorClickableText: Colors.pink,
+                    // trimMode: TrimMode.Length,
+                    // trimCollapsedText: 'Xem thêm',
+                    // trimExpandedText: 'Rút gọn',
+                    // moreStyle: TextStyle(
+                    //   fontSize: 14,
+                    //   fontWeight: FontWeight.bold,
+                    // ),
+                  ),
+                ),
+              ),
+              if (widget.post.tagUsers != null &&
+                  widget.post.tagUsers.length > 0)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15)
+                      .copyWith(bottom: 7),
+                  child: Text.rich(TextSpan(children: [
+                    TextSpan(
+                        text: 'Cùng với: ',
+                        style: ptSmall().copyWith(color: Colors.black)),
+                    ...widget.post.tagUsers.map(
+                      (e) => TextSpan(
+                          text: '${e.name}, ',
+                          recognizer: new TapGestureRecognizer()
+                            ..onTap = () => ProfileOtherPage.navigate(e),
+                          style:
+                              ptSmall().copyWith(fontStyle: FontStyle.italic)),
+                    )
+                  ])),
+                ),
+              if ((widget.post?.hashTag?.length ?? 0) > 0)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Wrap(
+                    children: widget.post.hashTag
+                        .map((e) => GestureDetector(
+                              onTap: () {
+                                audioCache.play('tab3.mp3');
+                                SearchPostPage.navigate(hashTag: e);
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.all(5).copyWith(top: 0),
+                                child: Text(e),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                ),
+              if (widget.post.postShareId != null && _sharePost == null)
+                SizedBox(
+                    width: deviceWidth(context),
+                    height: 170,
+                    child: kLoadingSpinner)
+              else if (widget.post.postShareId != null && _sharePost != null)
+                Container(
+                    margin: EdgeInsets.symmetric(horizontal: 7),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black12),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Transform.scale(
+                        scale: 0.95,
+                        child: PostWidget(_sharePost, isSharedPost: true)))
+              else if ((widget.post?.mediaPosts?.length ?? 0) > 0)
+                Stack(
+                  children: [
+                    GroupMediaPostWidget(
+                      posts: widget.post?.mediaPosts,
+                      autoPlayVideo: true,
+                    ),
+                    if (widget.post.locationLat != null &&
+                        widget.post.locationLong != null)
+                      Positioned(
+                        bottom: 10,
+                        right: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: GestureDetector(
+                            onTap: () async {
+                              audioCache.play('tab3.mp3');
+                              await showGoogleMapPoint(
+                                  context,
+                                  widget.post.locationLat,
+                                  widget.post.locationLong,
+                                  widget.post.polygonPoints);
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            },
+                            child: Text(
+                              'Xem vị trí',
+                              style: TextStyle(
+                                  fontSize: 12.5,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 1),
+                            ),
                           ),
                         ),
                       ),
+                  ],
+                ),
+              SizedBox(height: 10),
+              if (!widget.isSharedPost)
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 15,
                     ),
-                ],
-              ),
-            SizedBox(height: 10),
-            if (!widget.isSharedPost)
-              Row(
-                children: [
-                  SizedBox(
-                    width: 15,
-                  ),
-                  GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
-                      if (AuthBloc.instance.userModel == null) {
-                        LoginPage.navigatePush();
-                        return;
-                      }
-                      widget.post.isUserLike = !widget.post.isUserLike;
-
-                      if (widget.post.isUserLike) {
-                        _postBloc.likePost(widget.post);
-                      } else {
-                        _postBloc.unlikePost(widget.post);
-                      }
-                      setState(() {});
-                    },
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          !widget.post.isUserLike
-                              ? Icon(
-                                  MdiIcons.heartOutline,
-                                  size: 22,
-                                  color: ptPrimaryColor(context),
-                                )
-                              : Icon(
-                                  MdiIcons.heart,
-                                  size: 22,
-                                  color: Colors.red,
-                                ),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text('${widget.post.like} lượt thích',
-                              style: ptTiny()
-                                  .copyWith(color: ptPrimaryColor(context))),
-                        ]),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
-                      // if (AuthBloc.instance.userModel == null) {
-                      //   LoginPage.navigatePush();
-                      //   return;
-                      // }
-                      if (widget.commentCallBack != null)
-                        widget.commentCallBack();
-                      else
-                        showComment(widget.post);
-                    },
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            MdiIcons.chatOutline,
-                            color: ptPrimaryColor(context),
-                            size: 22,
-                          ),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text('${widget.post.numberOfComment} bình luận',
-                              style: ptTiny()
-                                  .copyWith(color: ptPrimaryColor(context))),
-                        ]),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
-                      showModalBottomSheet(
-                          backgroundColor: Colors.transparent,
-                          context: context,
-                          builder: (context) {
-                            return SharePost(widget.post);
-                          });
-                    },
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            MdiIcons.shareOutline,
-                            color: ptPrimaryColor(context),
-                            size: 22,
-                          ),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text('${widget.post.share} chia sẻ',
-                              style: ptTiny()
-                                  .copyWith(color: ptPrimaryColor(context))),
-                        ]),
-                  ),
-                  Spacer(),
-                  if (AuthBloc.instance.userModel != null)
                     GestureDetector(
-                      onTap: () async {audioCache.play('tab3.mp3');
-                        if (AuthBloc.instance.userModel?.savedPostIds
-                                ?.contains(widget.post.id) ??
-                            false) {
-                          showToast('Bài viết đã được lưu', context,
-                              isSuccess: true);
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
+                        if (AuthBloc.instance.userModel == null) {
+                          LoginPage.navigatePush();
                           return;
                         }
+                        widget.post.isUserLike = !widget.post.isUserLike;
 
-                        final res = await _postBloc.savePost(widget.post);
-                        if (res.isSuccess) {
+                        if (widget.post.isUserLike) {
+                          _postBloc.likePost(widget.post);
                         } else {
-                          setState(() {
-                            _postBloc.myPosts.remove(widget.post);
-                          });
-                          showToast(res.errMessage, context);
+                          _postBloc.unlikePost(widget.post);
                         }
+                        setState(() {});
                       },
                       child: Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            !(AuthBloc.instance.userModel?.savedPostIds
-                                        ?.contains(widget.post.id) ??
-                                    false)
+                            !widget.post.isUserLike
                                 ? Icon(
-                                    MdiIcons.bookmarkOutline,
-                                    color: ptPrimaryColor(context),
+                                    MdiIcons.heartOutline,
                                     size: 22,
+                                    color: ptPrimaryColor(context),
                                   )
                                 : Icon(
-                                    MdiIcons.bookmark,
-                                    color: ptPrimaryColor(context),
+                                    MdiIcons.heart,
                                     size: 22,
+                                    color: Colors.red,
                                   ),
                             SizedBox(
                               height: 3,
                             ),
-                            Text('Lưu',
+                            Text('${widget.post.like} lượt thích',
                                 style: ptTiny()
                                     .copyWith(color: ptPrimaryColor(context))),
                           ]),
                     ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                ],
-              ),
-            if (!widget.isSharedPost)
-              SizedBox(
-                height: 8,
-              ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
+                        // if (AuthBloc.instance.userModel == null) {
+                        //   LoginPage.navigatePush();
+                        //   return;
+                        // }
+                        if (widget.commentCallBack != null)
+                          widget.commentCallBack();
+                        else
+                          showComment(widget.post);
+                      },
+                      child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              MdiIcons.chatOutline,
+                              color: ptPrimaryColor(context),
+                              size: 22,
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
+                            Text('${widget.post.numberOfComment} bình luận',
+                                style: ptTiny()
+                                    .copyWith(color: ptPrimaryColor(context))),
+                          ]),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
+                        showModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            builder: (context) {
+                              return SharePost(widget.post);
+                            });
+                      },
+                      child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              MdiIcons.shareOutline,
+                              color: ptPrimaryColor(context),
+                              size: 22,
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
+                            Text('${widget.post.share} chia sẻ',
+                                style: ptTiny()
+                                    .copyWith(color: ptPrimaryColor(context))),
+                          ]),
+                    ),
+                    Spacer(),
+                    if (AuthBloc.instance.userModel != null)
+                      GestureDetector(
+                        onTap: () async {
+                          audioCache.play('tab3.mp3');
+                          if (AuthBloc.instance.userModel?.savedPostIds
+                                  ?.contains(widget.post.id) ??
+                              false) {
+                            showToast('Bài viết đã được lưu', context,
+                                isSuccess: true);
+                            return;
+                          }
+
+                          final res = await _postBloc.savePost(widget.post);
+                          if (res.isSuccess) {
+                          } else {
+                            setState(() {
+                              _postBloc.myPosts.remove(widget.post);
+                            });
+                            showToast(res.errMessage, context);
+                          }
+                        },
+                        child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              !(AuthBloc.instance.userModel?.savedPostIds
+                                          ?.contains(widget.post.id) ??
+                                      false)
+                                  ? Icon(
+                                      MdiIcons.bookmarkOutline,
+                                      color: ptPrimaryColor(context),
+                                      size: 22,
+                                    )
+                                  : Icon(
+                                      MdiIcons.bookmark,
+                                      color: ptPrimaryColor(context),
+                                      size: 22,
+                                    ),
+                              SizedBox(
+                                height: 3,
+                              ),
+                              Text('Lưu',
+                                  style: ptTiny().copyWith(
+                                      color: ptPrimaryColor(context))),
+                            ]),
+                      ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                ),
+              if (!widget.isSharedPost)
+                SizedBox(
+                  height: 8,
+                ),
+            ]
           ],
         ),
       ),
@@ -390,7 +417,8 @@ class _PostWidgetState extends State<PostWidget> {
     return Row(
       children: [
         GestureDetector(
-          onTap: () {audioCache.play('tab3.mp3');
+          onTap: () {
+            audioCache.play('tab3.mp3');
             widget.post.isPage
                 ? PageDetail.navigate(widget.post?.page)
                 : ProfileOtherPage.navigate(widget.post?.user);
@@ -641,7 +669,8 @@ class _PostWidgetState extends State<PostWidget> {
     return Row(
       children: [
         GestureDetector(
-          onTap: () {audioCache.play('tab3.mp3');
+          onTap: () {
+            audioCache.play('tab3.mp3');
             widget.post.isPage
                 ? PageDetail.navigate(widget.post?.page)
                 : ProfileOtherPage.navigate(widget.post?.user);
@@ -679,7 +708,8 @@ class _PostWidgetState extends State<PostWidget> {
               children: [
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTap: () {audioCache.play('tab3.mp3');
+                  onTap: () {
+                    audioCache.play('tab3.mp3');
                     widget.post.isPage
                         ? PageDetail.navigate(widget.post?.page)
                         : ProfileOtherPage.navigate(widget.post?.user);
@@ -1059,7 +1089,8 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                 ),
                 Expanded(
                   child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         PostDetail.navigate(widget.post);
                       },
                       child: Column(

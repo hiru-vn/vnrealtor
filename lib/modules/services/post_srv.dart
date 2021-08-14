@@ -5,6 +5,7 @@ class PostSrv extends BaseService {
  id
  price
  area
+ isBlock
  action
  category
 content

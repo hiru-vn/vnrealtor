@@ -2,6 +2,7 @@ import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/share/import.dart';
+import 'dart:math';
 
 import 'media_post.dart';
 
@@ -46,6 +47,7 @@ class PostModel {
   num area;
   String action;
   String category;
+  bool isBlock;
 
   PostModel(
       {this.id,
@@ -87,7 +89,8 @@ class PostModel {
       this.action,
       this.area,
       this.category,
-      this.price});
+      this.price,
+      this.isBlock});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -155,6 +158,7 @@ class PostModel {
     action = json['action'];
     price = json['price'];
     area = json['area'];
+    isBlock = json['isBlock'] ?? false;
   }
 
   Map<String, dynamic> toJson() {

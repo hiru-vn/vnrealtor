@@ -277,22 +277,21 @@ ${postFragment.replaceAll('\n', ' ')}
   }
 
   Future updatePost(
-    String id,
-    String content,
-    String expirationDate,
-    bool publicity,
-    double lat,
-    double long,
-    List<String> images,
-    List<String> videos,
-    List<LatLng> polygon,
-    List<String> tagUserIds,
-    String category,
-    String action,
-    double area,
-    double price,
-    bool onlyMe
-  ) async {
+      String id,
+      String content,
+      String expirationDate,
+      bool publicity,
+      double lat,
+      double long,
+      List<String> images,
+      List<String> videos,
+      List<LatLng> polygon,
+      List<String> tagUserIds,
+      String category,
+      String action,
+      double area,
+      double price,
+      bool onlyMe) async {
     String polygonStr = '''{
       paths: [
         ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
@@ -541,6 +540,7 @@ id
   String postFragment = '''
 id
 price
+isBlock
 area
 action
 category
