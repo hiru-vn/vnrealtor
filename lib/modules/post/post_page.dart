@@ -79,201 +79,215 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     _postBloc.pageController = PageController();
     _postBloc.feedScrollController = ScrollController();
-    return PageView(
-        controller: _postBloc.pageController,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          Scaffold(
-            backgroundColor: ptBackgroundColor(context),
-            appBar: showAppBar
-                ? PostPageAppBar(_authBloc.userModel.messNotiCount ?? 0)
-                : null,
-            body: LoadMoreScrollView(
-              scrollController: _postBloc.feedScrollController,
-              onLoadMore: () {
-                _postBloc.loadMoreNewFeed();
-              },
-              list: RefreshIndicator(
-                color: ptPrimaryColor(context),
-                onRefresh: () async {audioCache.play('tab3.mp3');
-                  setState(() {
-                    isFilterDistance = false;
-                  });
-                  await Future.wait([
-                    _postBloc.getNewFeed(
-                        filter:
-                            GraphqlFilter(limit: 10, order: "{updatedAt: -1}")),
-                    _postBloc.getStoryFollowing()
-                  ]);
-
-                  return;
+    return SafeArea(
+      child: PageView(
+          controller: _postBloc.pageController,
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            Scaffold(
+              backgroundColor: HexColor.fromHex("#E5E5E5"),
+              appBar: showAppBar
+                  ? PostPageAppBar(_authBloc.userModel.messNotiCount ?? 0)
+                  : null,
+              body: LoadMoreScrollView(
+                scrollController: _postBloc.feedScrollController,
+                onLoadMore: () {
+                  _postBloc.loadMoreNewFeed();
                 },
-                child: InViewNotifierCustomScrollView(
-                    // physics: const BouncingScrollPhysics(
-                    //     parent: AlwaysScrollableScrollPhysics()),
-                    isInViewPortCondition: (double deltaTop, double deltaBottom,
-                        double viewPortDimension) {
-                      return deltaTop < (0.5 * viewPortDimension) + 100.0 &&
-                          deltaBottom > (0.5 * viewPortDimension) - 100.0;
-                    },
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    controller: _postBloc.feedScrollController,
-                    slivers: <Widget>[
-                      SliverList(
-                          delegate: SliverChildListDelegate(
-                        [
-                          SizedBox(
-                            height: (!showAppBar)
-                                ? MediaQuery.of(context).padding.top +
-                                    kToolbarHeight
-                                : 0,
-                          ),
-                          CreatePostCard(
-                            postBloc: _postBloc,
-                            pageController: _postBloc.pageController,
-                          ),
-                          if (_postBloc.isReloadFeed) PostSkeleton(),
-                          if (_postBloc.hasTags != null &&
-                              _postBloc.hasTags.length > 0)
-                            Container(
-                              width: deviceWidth(context),
-                              height: 30,
-                              margin: EdgeInsets.only(top: 8),
-                              // padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: ListView.separated(
-                                // shrinkWrap: true,
-                                padding: EdgeInsets.only(left: 15),
-                                separatorBuilder: (context, index) {
-                                  return SizedBox(
-                                    width: 10,
-                                  );
-                                },
-                                itemBuilder: (context, index) {
-                                  if (index == 0) {
-                                    return PopupMenuButton(
-                                      itemBuilder: (_) => <PopupMenuItem<int>>[
-                                        PopupMenuItem(
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text('Bán kính 10 km'),
-                                              if (distance == 10)
-                                                Icon(Icons.check, size: 18)
-                                            ],
-                                          ),
-                                          value: 10,
-                                        ),
-                                        PopupMenuItem(
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text('Bán kính 20 km'),
-                                                if (distance == 20)
-                                                  Icon(Icons.check, size: 18)
-                                              ],
-                                            ),
-                                            value: 20),
-                                        PopupMenuItem(
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text('Bán kính 50 km'),
-                                                if (distance == 50)
-                                                  Icon(Icons.check, size: 18)
-                                              ],
-                                            ),
-                                            value: 50),
-                                      ],
-                                      onSelected: (val) async {
-                                        setState(() {
-                                          isFilterDistance = true;
-                                          distance = val;
-                                        });
-                                        _getPostLocal();
-                                      },
-                                      padding: EdgeInsets.zero,
-                                      child: Center(
-                                        child: Icon(Icons.my_location,
-                                            color: !isFilterDistance
-                                                ? Colors.black54
-                                                : ptPrimaryColor(context)),
-                                      ),
-                                    );
-                                  }
-                                  return InkWell(
-                                    borderRadius: BorderRadius.circular(15),
-                                    onTap: () {
-                                      SearchPostPage.navigate(
-                                          hashTag: _postBloc.hasTags[index - 1]
-                                              ['value']);
-                                    },
-                                    child: Container(
-                                      height: 30,
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      decoration: BoxDecoration(
-                                          color: ptSecondaryColor(context),
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: Center(
-                                        child: Text(
-                                          _postBloc.hasTags[index - 1]['value']
-                                              .toString(),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                itemCount: _postBloc.hasTags.length,
-                                scrollDirection: Axis.horizontal,
+                list: RefreshIndicator(
+                  color: ptPrimaryColor(context),
+                  onRefresh: () async {
+                    audioCache.play('tab3.mp3');
+                    setState(() {
+                      isFilterDistance = false;
+                    });
+                    await Future.wait([
+                      _postBloc.getNewFeed(
+                          filter: GraphqlFilter(
+                              limit: 10, order: "{updatedAt: -1}")),
+                      _postBloc.getStoryFollowing()
+                    ]);
+
+                    return;
+                  },
+                  child: InViewNotifierCustomScrollView(
+                      // physics: const BouncingScrollPhysics(
+                      //     parent: AlwaysScrollableScrollPhysics()),
+                      isInViewPortCondition: (double deltaTop,
+                          double deltaBottom, double viewPortDimension) {
+                        return deltaTop < (0.5 * viewPortDimension) + 100.0 &&
+                            deltaBottom > (0.5 * viewPortDimension) - 100.0;
+                      },
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      controller: _postBloc.feedScrollController,
+                      slivers: <Widget>[
+                        SliverList(
+                            delegate: SliverChildListDelegate(
+                          [
+                            SizedBox(
+                              height: (!showAppBar)
+                                  ? MediaQuery.of(context).padding.top +
+                                      kToolbarHeight
+                                  : 0,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: CreatePostCard(
+                                postBloc: _postBloc,
+                                pageController: _postBloc.pageController,
                               ),
                             ),
-                          _postBloc.feed.length == 0
-                              ? EmptyWidget(
-                                  assetImg: 'assets/image/no_post.png',
-                                  title: 'Không tìm thấy bài đăng',
-                                )
-                              : ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: _postBloc.feed.length,
-                                  itemBuilder: (context, index) {
-                                    final item = _postBloc.feed[index];
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        if (index ==
-                                                (AuthBloc.firstLogin ? 0 : 5) &&
-                                            UserBloc.instance
-                                                    .suggestFollowUsers !=
-                                                null &&
-                                            UserBloc.instance.suggestFollowUsers
-                                                    .length >
-                                                0)
-                                          SuggestListUser(
-                                            users: UserBloc
-                                                .instance.suggestFollowUsers,
-                                          ),
-                                        PostWidget(item),
-                                      ],
-                                    );
-                                  },
-                                ),
-                          if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
-                            PostSkeleton(
-                              count: 1,
+                            if (_postBloc.isReloadFeed) PostSkeleton(),
+                            // if (_postBloc.hasTags != null &&
+                            //     _postBloc.hasTags.length > 0)
+                            //   Container(
+                            //     width: deviceWidth(context),
+                            //     height: 30,
+                            //     margin: EdgeInsets.only(top: 8),
+                            //     // padding: EdgeInsets.symmetric(horizontal: 20),
+                            //     child: ListView.separated(
+                            //       // shrinkWrap: true,
+                            //       padding: EdgeInsets.only(left: 15),
+                            //       separatorBuilder: (context, index) {
+                            //         return SizedBox(
+                            //           width: 10,
+                            //         );
+                            //       },
+                            //       itemBuilder: (context, index) {
+                            //         if (index == 0) {
+                            //           return PopupMenuButton(
+                            //             itemBuilder: (_) =>
+                            //                 <PopupMenuItem<int>>[
+                            //               PopupMenuItem(
+                            //                 child: Row(
+                            //                   mainAxisSize: MainAxisSize.min,
+                            //                   children: [
+                            //                     Text('Bán kính 10 km'),
+                            //                     if (distance == 10)
+                            //                       Icon(Icons.check, size: 18)
+                            //                   ],
+                            //                 ),
+                            //                 value: 10,
+                            //               ),
+                            //               PopupMenuItem(
+                            //                   child: Row(
+                            //                     mainAxisSize: MainAxisSize.min,
+                            //                     children: [
+                            //                       Text('Bán kính 20 km'),
+                            //                       if (distance == 20)
+                            //                         Icon(Icons.check, size: 18)
+                            //                     ],
+                            //                   ),
+                            //                   value: 20),
+                            //               PopupMenuItem(
+                            //                   child: Row(
+                            //                     mainAxisSize: MainAxisSize.min,
+                            //                     children: [
+                            //                       Text('Bán kính 50 km'),
+                            //                       if (distance == 50)
+                            //                         Icon(Icons.check, size: 18)
+                            //                     ],
+                            //                   ),
+                            //                   value: 50),
+                            //             ],
+                            //             onSelected: (val) async {
+                            //               setState(() {
+                            //                 isFilterDistance = true;
+                            //                 distance = val;
+                            //               });
+                            //               _getPostLocal();
+                            //             },
+                            //             padding: EdgeInsets.zero,
+                            //             child: Center(
+                            //               child: Icon(Icons.my_location,
+                            //                   color: !isFilterDistance
+                            //                       ? Colors.black54
+                            //                       : ptPrimaryColor(context)),
+                            //             ),
+                            //           );
+                            //         }
+                            //         return InkWell(
+                            //           borderRadius: BorderRadius.circular(15),
+                            //           onTap: () {
+                            //             SearchPostPage.navigate(
+                            //                 hashTag: _postBloc
+                            //                     .hasTags[index - 1]['value']);
+                            //           },
+                            //           child: Container(
+                            //             height: 30,
+                            //             padding: EdgeInsets.symmetric(
+                            //                 horizontal: 10),
+                            //             decoration: BoxDecoration(
+                            //                 color: ptSecondaryColor(context),
+                            //                 borderRadius:
+                            //                     BorderRadius.circular(15)),
+                            //             child: Center(
+                            //               child: Text(
+                            //                 _postBloc.hasTags[index - 1]
+                            //                         ['value']
+                            //                     .toString(),
+                            //               ),
+                            //             ),
+                            //           ),
+                            //         );
+                            //       },
+                            //       itemCount: _postBloc.hasTags.length,
+                            //       scrollDirection: Axis.horizontal,
+                            //     ),
+                            //   ),
+                            _postBloc.feed.length == 0
+                                ? EmptyWidget(
+                                    assetImg: 'assets/image/no_post.png',
+                                    title: 'Không tìm thấy bài đăng',
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: _postBloc.feed.length,
+                                    itemBuilder: (context, index) {
+                                      final item = _postBloc.feed[index];
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          if (index ==
+                                                  (AuthBloc.firstLogin
+                                                      ? 0
+                                                      : 5) &&
+                                              UserBloc.instance
+                                                      .suggestFollowUsers !=
+                                                  null &&
+                                              UserBloc
+                                                      .instance
+                                                      .suggestFollowUsers
+                                                      .length >
+                                                  0)
+                                            SuggestListUser(
+                                              users: UserBloc
+                                                  .instance.suggestFollowUsers,
+                                            ),
+                                          PostWidget(item),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                            if (_postBloc.isLoadMoreFeed &&
+                                !_postBloc.isEndFeed)
+                              PostSkeleton(
+                                count: 1,
+                              ),
+                            SizedBox(
+                              height: 70,
                             ),
-                          SizedBox(
-                            height: 70,
-                          ),
-                        ],
-                      ))
-                    ]),
+                          ],
+                        ))
+                      ]),
+                ),
               ),
             ),
-          ),
-          CreatePostPage(_postBloc.pageController)
-        ]);
+            CreatePostPage(_postBloc.pageController)
+          ]),
+    );
   }
 }
 
@@ -315,91 +329,95 @@ class CreatePostCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  audioCache.play('tab3.mp3');
-                  pageController
-                      .animateToPage(1,
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.decelerate)
-                      .then((value) => null);
-                },
-                child: Material(
-                  borderRadius: BorderRadius.circular(0),
-                  //elevation: 5,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Đăng tin của bạn',
-                          style: ptTitle(),
-                        ),
-                        Spacer(),
-                        GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
-                            pageController.animateToPage(1,
-                                duration: Duration(milliseconds: 300),
-                                curve: Curves.decelerate);
-                          },
-                          child: SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: Icon(
-                              Icons.location_pin,
-                              size: 21,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
-                            pageController.animateToPage(1,
-                                duration: Duration(milliseconds: 300),
-                                curve: Curves.decelerate);
-                          },
-                          child: SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: Icon(
-                              MdiIcons.image,
-                              size: 21,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(
+            //     horizontal: 15,
+            //   ),
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       audioCache.play('tab3.mp3');
+            //       pageController
+            //           .animateToPage(1,
+            //               duration: Duration(milliseconds: 300),
+            //               curve: Curves.decelerate)
+            //           .then((value) => null);
+            //     },
+            //     child: Material(
+            //       borderRadius: BorderRadius.circular(0),
+            //       //elevation: 5,
+            //       child: Padding(
+            //         padding:
+            //             const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            //         child: Row(
+            //           children: [
+            //             Text(
+            //               'Đăng tin của bạn',
+            //               style: ptTitle(),
+            //             ),
+            //             Spacer(),
+            //             GestureDetector(
+            //               onTap: () {
+            //                 audioCache.play('tab3.mp3');
+            //                 pageController.animateToPage(1,
+            //                     duration: Duration(milliseconds: 300),
+            //                     curve: Curves.decelerate);
+            //               },
+            //               child: SizedBox(
+            //                 width: 30,
+            //                 height: 30,
+            //                 child: Icon(
+            //                   Icons.location_pin,
+            //                   size: 21,
+            //                 ),
+            //               ),
+            //             ),
+            //             SizedBox(
+            //               width: 5,
+            //             ),
+            //             GestureDetector(
+            //               onTap: () {
+            //                 audioCache.play('tab3.mp3');
+            //                 pageController.animateToPage(1,
+            //                     duration: Duration(milliseconds: 300),
+            //                     curve: Curves.decelerate);
+            //               },
+            //               child: SizedBox(
+            //                 width: 30,
+            //                 height: 30,
+            //                 child: Icon(
+            //                   MdiIcons.image,
+            //                   size: 21,
+            //                 ),
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             if ((postBloc.stories?.length ?? 0) > 0 || postBloc.isLoadStory)
-              Divider(
-                height: 10,
-              ),
-            postBloc.isLoadStory
-                ? StorySkeleton()
-                : postBloc.stories.length == 0
-                    ? SizedBox.shrink()
-                    : SizedBox(
-                        height: 150,
-                        child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.symmetric(horizontal: 15),
-                            itemCount: postBloc.stories.length,
-                            separatorBuilder: (context, index) =>
-                                SizedBox(width: 8),
-                            itemBuilder: (context, index) {
-                              return buildStoryWidget(postBloc.stories[index]);
-                            }),
-                      ),
+              // Divider(
+              //   height: 10,
+              // ),
+              postBloc.isLoadStory
+                  ? StorySkeleton()
+                  : postBloc.stories.length == 0
+                      ? SizedBox.shrink()
+                      : Container(
+                          height: 85,
+                          color: Colors.white,
+                          child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              itemCount: postBloc.stories.length,
+                              separatorBuilder: (context, index) =>
+                                  SizedBox(width: 8),
+                              itemBuilder: (context, index) {
+                                return buildStoryWidget(
+                                    postBloc.stories[index]);
+                              }),
+                        ),
           ],
         ),
       ),
@@ -410,103 +428,164 @@ class CreatePostCard extends StatelessWidget {
 buildStoryWidget(PostModel postModel) {
   return Center(
     child: GestureDetector(
-      onTap: () {audioCache.play('tab3.mp3');
+      onTap: () {
+        audioCache.play('tab3.mp3');
         PostDetail.navigate(postModel);
       },
-      child: Material(
-        elevation: 0,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          height: 144,
-          width: 109,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(postModel.storyImages[0] ??
-                      postModel.mediaPosts[0].halfUrl))),
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.all(4),
-              child: Row(
-                children: [
-                  Container(
-                    width: 25,
-                    height: 25,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(width: 1.5, color: Colors.white),
-                    ),
-                    child: Center(
-                      child: CircleAvatar(
-                        radius: 13,
-                        backgroundColor: Colors.white,
-                        backgroundImage: postModel.isPage
-                            ? postModel.page.avartar != null &&
-                                    postModel.page.avartar != 'null'
-                                ? CachedNetworkImageProvider(
-                                    postModel.page.avartar)
-                                : AssetImage('assets/image/default_avatar.png')
-                            : postModel.user.avatar != null &&
-                                    postModel.user.avatar != 'null'
-                                ? CachedNetworkImageProvider(
-                                    postModel.user.avatar)
-                                : AssetImage('assets/image/default_avatar.png'),
-                      ),
-                    ),
+      child: Container(
+        child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.all(4),
+            child: Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(width: 1.5, color: ptMainColor()),
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: CircleAvatar(
+                    radius: 55,
+                    backgroundColor: Colors.white,
+                    backgroundImage: postModel.isPage
+                        ? postModel.page.avartar != null &&
+                                postModel.page.avartar != 'null'
+                            ? CachedNetworkImageProvider(postModel.page.avartar)
+                            : AssetImage('assets/image/default_avatar.png')
+                        : postModel.user.avatar != null &&
+                                postModel.user.avatar != 'null'
+                            ? CachedNetworkImageProvider(postModel.user.avatar)
+                            : AssetImage('assets/image/default_avatar.png'),
                   ),
-                  SizedBox(
-                    width: 3,
-                  ),
-                  Expanded(
-                    child: Text(
-                      postModel.isPage
-                          ? postModel.page.name
-                          : postModel.user.name ?? '',
-                      overflow: TextOverflow.fade,
-                      style: ptTiny().copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-            SizedBox(height: 6),
-            if (postModel.district != null && postModel.district.trim() != "")
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colors.white,
+          ),
+          SizedBox(height: 3),
+          if (postModel.district != null && postModel.district.trim() != "")
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 3, vertical: 0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 84),
+                child: Text(
+                  postModel.district,
+                  style: ptTiny().copyWith(
+                    fontSize: 11,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.location_pin, size: 14.5),
-                    Row(
-                      children: [
-                        ConstrainedBox(
-                          constraints: BoxConstraints(maxWidth: 84),
-                          child: Text(
-                            postModel.district,
-                            style: ptTiny().copyWith(fontSize: 11),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              )
-          ]),
-        ),
+              ),
+            )
+        ]),
       ),
     ),
   );
 }
+
+// buildStoryWidget(PostModel postModel) {
+//   return Center(
+//     child: GestureDetector(
+//       onTap: () {
+//         audioCache.play('tab3.mp3');
+//         PostDetail.navigate(postModel);
+//       },
+//       child: Material(
+//         elevation: 0,
+//         borderRadius: BorderRadius.circular(8),
+//         child: Container(
+//           height: 144,
+//           width: 109,
+//           decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(8),
+//               image: DecorationImage(
+//                   fit: BoxFit.cover,
+//                   image: CachedNetworkImageProvider(postModel.storyImages[0] ??
+//                       postModel.mediaPosts[0].halfUrl))),
+//           child: Column(children: [
+//             Padding(
+//               padding: const EdgeInsets.all(4),
+//               child: Row(
+//                 children: [
+//                   Container(
+//                     width: 25,
+//                     height: 25,
+//                     decoration: BoxDecoration(
+//                       shape: BoxShape.circle,
+//                       border: Border.all(width: 1.5, color: Colors.white),
+//                     ),
+//                     child: Center(
+//                       child: CircleAvatar(
+//                         radius: 13,
+//                         backgroundColor: Colors.white,
+//                         backgroundImage: postModel.isPage
+//                             ? postModel.page.avartar != null &&
+//                                     postModel.page.avartar != 'null'
+//                                 ? CachedNetworkImageProvider(
+//                                     postModel.page.avartar)
+//                                 : AssetImage('assets/image/default_avatar.png')
+//                             : postModel.user.avatar != null &&
+//                                     postModel.user.avatar != 'null'
+//                                 ? CachedNetworkImageProvider(
+//                                     postModel.user.avatar)
+//                                 : AssetImage('assets/image/default_avatar.png'),
+//                       ),
+//                     ),
+//                   ),
+//                   SizedBox(
+//                     width: 3,
+//                   ),
+//                   Expanded(
+//                     child: Text(
+//                       postModel.isPage
+//                           ? postModel.page.name
+//                           : postModel.user.name ?? '',
+//                       overflow: TextOverflow.fade,
+//                       style: ptTiny().copyWith(
+//                         color: Colors.white,
+//                         fontWeight: FontWeight.w500,
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             SizedBox(height: 6),
+//             if (postModel.district != null && postModel.district.trim() != "")
+//               Container(
+//                 decoration: BoxDecoration(
+//                   borderRadius: BorderRadius.circular(15),
+//                   color: Colors.white,
+//                 ),
+//                 padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+//                 child: Row(
+//                   mainAxisSize: MainAxisSize.min,
+//                   children: [
+//                     Icon(Icons.location_pin, size: 14.5),
+//                     Row(
+//                       children: [
+//                         ConstrainedBox(
+//                           constraints: BoxConstraints(maxWidth: 84),
+//                           child: Text(
+//                             postModel.district,
+//                             style: ptTiny().copyWith(fontSize: 11),
+//                             maxLines: 1,
+//                             overflow: TextOverflow.ellipsis,
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
+//               )
+//           ]),
+//         ),
+//       ),
+//     ),
+//   );
+// }
 
 class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
@@ -516,34 +595,64 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final count = unReadCount > 9 ? '9+' : unReadCount.toString();
     return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [ptMainColor(), ptSecondColor()],
+        ),
+      ),
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Row(
         children: [
           Padding(
             padding:
                 const EdgeInsets.only(left: 15, top: 12, bottom: 10, right: 12),
-            child: Image.asset('assets/image/logo_full.png'),
+            child: Icon(
+              Icons.account_circle_outlined,
+              size: 32,
+              color: Colors.white,
+            ),
           ),
-          Spacer(),
-          Padding(
-            padding: const EdgeInsets.only(top: 12, bottom: 10),
-            child: GestureDetector(
-              onTap: () {audioCache.play('tab3.mp3');
-                SearchPostPage.navigate().then((value) =>
-                    FocusScope.of(context).requestFocus(FocusNode()));
-              },
-              child: SizedBox(
-                width: 42,
-                height: 42,
-                child: Icon(
-                  Icons.search,
-                  size: 26,
-                ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.white),
+                child: TextFormField(
+                    decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  border: InputBorder.none,
+                  hintText: 'Tìm kiếm',
+                  suffixIcon: Icon(Icons.qr_code),
+                )),
               ),
             ),
           ),
+          // Spacer(),
+          // Padding(
+          //   padding: const EdgeInsets.only(top: 12, bottom: 10),
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       audioCache.play('tab3.mp3');
+          //       SearchPostPage.navigate().then((value) =>
+          //           FocusScope.of(context).requestFocus(FocusNode()));
+          //     },
+          //     child: SizedBox(
+          //       width: 42,
+          //       height: 42,
+          //       child: Icon(
+          //         Icons.search,
+          //         size: 26,
+          //       ),
+          //     ),
+          //   ),
+          // ),
           GestureDetector(
-            onTap: () {audioCache.play('tab3.mp3');
+            onTap: () {
+              audioCache.play('tab3.mp3');
               AuthBloc.instance.userModel.messNotiCount = 0;
               UserBloc.instance.seenNotiMess();
               InboxList.navigate();
@@ -557,8 +666,9 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                       width: 42,
                       height: 42,
                       child: Icon(
-                        MdiIcons.chatProcessing,
-                        size: 26,
+                        MdiIcons.chatProcessingOutline,
+                        size: 32,
+                        color: Colors.white,
                       )),
                 ),
                 if (unReadCount > 0)
@@ -583,7 +693,6 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
           )
         ],
       ),
-      color: ptSecondaryColor(context),
     );
   }
 }

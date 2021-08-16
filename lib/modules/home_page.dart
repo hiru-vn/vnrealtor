@@ -63,58 +63,70 @@ class _HomePageState extends State<HomePage>
           ],
         ),
         extendBody: true,
-        bottomNavigationBar: BottomNavigator(
-          selectedIndex: _selectedIndex,
-          list: [
-            BottomTabModel(0, 'Trang chủ', MdiIcons.homeOutline, MdiIcons.home),
-            BottomTabModel(_authBloc.userModel?.notiCount ?? 0, 'Thông báo',
-                MdiIcons.bellOutline, MdiIcons.bell),
-            BottomTabModel(
-                0, 'Nhóm', MdiIcons.accountGroupOutline, MdiIcons.accountGroup),
-            BottomTabModel(0, 'Trang', Icons.flag_outlined, Icons.flag_rounded),
-            BottomTabModel(0, 'Hồ sơ', Icons.person_outline, Icons.person),
-            BottomTabModel(0, 'Menu', Icons.menu, Icons.menu_outlined),
-          ],
-          onSelect: (index) {
-            if (Platform.isIOS) audioCache.play('tab3.mp3');
-            if (index == 0 && _selectedIndex == 0) {
-              if (PostBloc.instance.feedScrollController != null) {
-                PostBloc.instance.getNewFeed(
-                    filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
-                PostBloc.instance.feedScrollController.animateTo(0,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.decelerate);
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [ptMainColor(), ptSecondColor()],
+            ),
+          ),
+          child: BottomNavigator(
+            selectedIndex: _selectedIndex,
+            list: [
+              BottomTabModel(
+                  0, 'Trang chủ', MdiIcons.homeOutline, MdiIcons.home),
+              BottomTabModel(_authBloc.userModel?.notiCount ?? 0, 'Thông báo',
+                  MdiIcons.bellOutline, MdiIcons.bell),
+              BottomTabModel(0, 'Nhóm', MdiIcons.accountGroupOutline,
+                  MdiIcons.accountGroup),
+              BottomTabModel(
+                  0, 'Trang', Icons.flag_outlined, Icons.flag_rounded),
+              BottomTabModel(0, 'Hồ sơ', Icons.person_outline, Icons.person),
+              BottomTabModel(0, 'Menu', Icons.menu, Icons.menu_outlined),
+            ],
+            onSelect: (index) {
+              if (Platform.isIOS) audioCache.play('tab3.mp3');
+              if (index == 0 && _selectedIndex == 0) {
+                if (PostBloc.instance.feedScrollController != null) {
+                  PostBloc.instance.getNewFeed(
+                      filter:
+                          GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
+                  PostBloc.instance.feedScrollController.animateTo(0,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.decelerate);
+                }
               }
-            }
-            if (index == 1 && _selectedIndex == 1) {
-              if (UserBloc.instance.profileScrollController != null) {
-                NotificationBloc.instance.notiScrollController.animateTo(0,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.decelerate);
+              if (index == 1 && _selectedIndex == 1) {
+                if (UserBloc.instance.profileScrollController != null) {
+                  NotificationBloc.instance.notiScrollController.animateTo(0,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.decelerate);
+                }
               }
-            }
-            if (index == 4 && _selectedIndex == 4) {
-              if (UserBloc.instance.profileScrollController != null) {
-                UserBloc.instance.profileScrollController.animateTo(0,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.decelerate);
+              if (index == 4 && _selectedIndex == 4) {
+                if (UserBloc.instance.profileScrollController != null) {
+                  UserBloc.instance.profileScrollController.animateTo(0,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.decelerate);
+                }
               }
-            }
 
-            setState(() {
-              _selectedIndex = index;
-            });
+              setState(() {
+                _selectedIndex = index;
+              });
 
-            if (index == 1) {
-              UserBloc.instance.seenAllNoti();
-            }
-            // if (index == 1) {
-            //   if (AuthBloc.instance.userModel.messNotiCount != 0) {
-            //     AuthBloc.instance.userModel.messNotiCount = 0;
-            //     UserBloc.instance.seenNotiMess();
-            //   }
-            // }
-          },
+              if (index == 1) {
+                UserBloc.instance.seenAllNoti();
+              }
+              // if (index == 1) {
+              //   if (AuthBloc.instance.userModel.messNotiCount != 0) {
+              //     AuthBloc.instance.userModel.messNotiCount = 0;
+              //     UserBloc.instance.seenNotiMess();
+              //   }
+              // }
+            },
+          ),
         ),
       ),
     );

@@ -7,6 +7,7 @@ class ExpandBtn extends StatelessWidget {
   final Color borderColor;
   final Color textColor;
   final double height;
+  final double width;
   final int elevation;
   final double borderRadius;
   final bool isLoading;
@@ -21,31 +22,36 @@ class ExpandBtn extends StatelessWidget {
       this.elevation,
       this.borderColor,
       this.isLoading = false,
-      this.height})
+      this.height,
+      this.width})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
+      width: width ?? double.infinity,
       height: height ?? 45,
-      child: FlatButton(
+      child: GestureDetector(
         // elevation: elevation?.toDouble() ?? 5,
 
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius ?? 0),
-        ),
-        color: color ?? ptPrimaryColor(context),
-
-        onPressed: onPress,
-        child: isLoading
-            ? kLoadingSpinner
-            : SizedBox(
-                height: 20,
-                child: Text(
-                  text,
-                  style: ptButton().copyWith(color: textColor ?? Colors.white),
-                ),
+        onTap: onPress,
+        child: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [ptMainColor(), ptSecondColor()],
               ),
+              borderRadius: BorderRadius.circular(10)),
+          child: isLoading
+              ? kLoadingSpinner
+              : Center(
+                  child: Text(
+                    text,
+                    style:
+                        ptButton().copyWith(color: textColor ?? Colors.white),
+                  ),
+                ),
+        ),
       ),
     );
   }

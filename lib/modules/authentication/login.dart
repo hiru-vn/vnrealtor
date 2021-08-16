@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:datcao/main.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/register.dart';
 import 'package:datcao/modules/authentication/reset_password_dialog.dart';
 import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/share/import.dart';
+import 'package:flutter/gestures.dart';
 
 class LoginPage extends StatefulWidget {
   static Future navigate() async {
@@ -44,9 +46,81 @@ class _LoginPageState extends State<LoginPage> {
       final res = await _authBloc.signIn(_nameC.text, _passC.text);
       closeLoading();
       if (res.isSuccess) {
-        HomePage.navigate();
+        showModalBottomSheet(
+          backgroundColor: Colors.transparent,
+          context: context,
+          builder: (context) => Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(15),
+              ),
+            ),
+            child: Column(
+              children: [
+                Container(
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: ptMainColor(),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(15),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text("ĐĂNG NHẬP THÀNH CÔNG!",
+                          style: roboto_18_700()
+                              .copyWith(fontSize: 20, color: Colors.white)),
+                    )),
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "ĐĂNG KÝ ĐỂ TẠO TRANG VÀ NHÓM CHO CÔNG TY",
+                        textAlign: TextAlign.center,
+                        style: roboto_18_700().copyWith(
+                          fontSize: 20,
+                          color: HexColor.fromHex("#505050"),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 40),
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(text: 'Bật thông báo ', style: ptBody()),
+                              TextSpan(
+                                  text: 'tại đây',
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      print('Tap');
+                                    },
+                                  style: ptBody().copyWith(color: Colors.blue)),
+                              TextSpan(
+                                  text: ' để nhận được thông tin mới nhất ',
+                                  style: ptBody()),
+                            ],
+                          ),
+                        ),
+                      ),
+                      ExpandBtn(
+                          text: "TRANG CHỦ",
+                          width: 100,
+                          onPress: () => HomePage.navigate())
+                    ],
+                  ),
+                ))
+              ],
+            ),
+          ),
+        );
       } else {
-        showToast(res.errMessage, context);
+        // showToast(res.errMessage, context);
       }
     } catch (e) {} finally {}
   }
@@ -55,212 +129,156 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
+        title: Center(
+            child: Text(
+          "ĐĂNG NHẬP",
+          style: roboto_18_700().copyWith(color: ptMainColor()),
+        )),
         brightness: Brightness.light,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
+        automaticallyImplyLeading: false,
       ),
       extendBodyBehindAppBar: true,
       backgroundColor: ptSecondaryColor(context),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(children: [
-            SizedBox(
-              height: MediaQuery.of(context).viewInsets.bottom != 0
-                  ? kToolbarHeight + 20
-                  : 0,
-              child: MediaQuery.of(context).viewInsets.bottom != 0
-                  ? Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        'Đăng nhập',
-                        style: ptBigTitle()
-                            .copyWith(color: ptPrimaryColor(context)),
-                      ),
-                    )
-                  : null,
+      body: Container(
+        height: deviceHeight(context),
+        color: Colors.white,
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(width: deviceWidth(context), child: splash),
             ),
-            Stack(
-              children: [
-                Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Image.asset(
-                      'assets/image/bg_login.png',
-                      fit: BoxFit.fitWidth,
-                    )),
-                Container(
-                  height: MediaQuery.of(context).viewInsets.bottom == 0
-                      ? deviceHeight(context) / 3
-                      : 0,
-                  //color: ptPrimaryColor(context),
-                  child: Stack(
+            Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Center(
-                          child: SizedBox(
-                              width: deviceWidth(context) / 5,
-                              child:
-                                  Image.asset('assets/image/icon_white.png'))),
-                      Positioned(
-                        bottom: deviceHeight(context) / 6 -
-                            deviceWidth(context) / 5,
-                        width: deviceWidth(context),
-                        child: Center(
-                          child: Text(
-                            'Chào mừng bạn đến với DATCAO',
-                            style: ptTitle().copyWith(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SpacingBox(h: 2.5),
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              margin: const EdgeInsets.all(18),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 23),
-                    child: Material(
-                        elevation: 0,
-                        color: ptSecondaryColor(context),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 25),
-                          child: TextFormField(
-                            validator: TextFieldValidator.notEmptyValidator,
-                            controller: _nameC,
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Số điện thoại'),
-                          ),
-                        )),
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 23),
-                    child: Material(
-                      elevation: 0,
-                      color: ptSecondaryColor(context),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 25)
-                            .copyWith(right: 10),
-                        child: TextFormField(
-                            obscureText: obscurePassword,
-                            controller: _passC,
-                            validator: TextFieldValidator.passValidator,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Mật khẩu',
-                              suffixIcon: GestureDetector(
-                                onTap: () {
-                                  audioCache.play('tab3.mp3');
-                                  setState(() {
-                                    obscurePassword = !obscurePassword;
-                                  });
-                                },
-                                child: Icon(
-                                  obscurePassword
-                                      ? MdiIcons.eye
-                                      : MdiIcons.eyeOff,
+                      SpacingBox(h: 12),
+                      Container(
+                        color: Colors.transparent,
+                        padding: const EdgeInsets.symmetric(vertical: 50),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 23),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    color: ptSecondaryColor(context),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: TextFormField(
+                                    validator:
+                                        TextFieldValidator.notEmptyValidator,
+                                    controller: _nameC,
+                                    decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.phone),
+                                        border: InputBorder.none,
+                                        hintText: 'Số điện thoại'),
+                                  )),
+                            ),
+                            SizedBox(
+                              height: 12,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 23),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: ptSecondaryColor(context),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: TextFormField(
+                                    obscureText: obscurePassword,
+                                    controller: _passC,
+                                    validator: TextFieldValidator.passValidator,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Mật khẩu',
+                                      prefixIcon: Icon(Icons.lock),
+                                      suffixIcon: GestureDetector(
+                                        onTap: () {
+                                          audioCache.play('tab3.mp3');
+                                          setState(() {
+                                            obscurePassword = !obscurePassword;
+                                          });
+                                        },
+                                        child: Icon(
+                                          obscurePassword
+                                              ? MdiIcons.eye
+                                              : MdiIcons.eyeOff,
+                                        ),
+                                      ),
+                                    )),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: SizedBox(
+                                width: deviceWidth(context) * 1,
+                                child: Center(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      RegisterPage.navigate(isCompany: true);
+                                      audioCache.play('tab3.mp3');
+                                    },
+                                    child: Text(
+                                      'Chưa có tài khoản? Tạo tài khoản mới',
+                                      style: ptBody().copyWith(
+                                          fontWeight: FontWeight.w600),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            )),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 23),
-                      child: ExpandBtn(
-                        text: 'Đăng nhập',
-                        onPress: _submit,
-                      ),
-                    ),
-                  ),
-                  SpacingBox(h: 2),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        // if (TextF _nameC.text)
-                        audioCache.play('tab3.mp3');
-                        showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) => ResetPasswordDialog());
-                      },
-                      child: Text(
-                        'Quên mật khẩu?',
-                        style: ptTitle().copyWith(color: Colors.black54),
-                      ),
-                    ),
-                  ),
-                  SpacingBox(h: 1),
-                  Center(
-                    child: SizedBox(
-                      width: deviceWidth(context) - 100,
-                      child: Divider(),
-                    ),
-                  ),
-                  SpacingBox(h: 1),
-                  Center(
-                    child: FlatButton(
-                      color: Colors.cyanAccent,
-                      onPressed: () {
-                        RegisterPage.navigate();
-                      },
-                      child: Text(
-                        'Tạo tài khoản mới',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SpacingBox(h: 2.5),
-            SizedBox(
-              width: deviceWidth(context) * 0.9,
-              child: Center(
-                child: GestureDetector(
-                  onTap: () {
-                    RegisterPage.navigate(isCompany: true);
-                    audioCache.play('tab3.mp3');
-                  },
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(text: 'Tạo '),
-                        TextSpan(
-                          text: 'tài khoản',
-                          style: ptBody().copyWith(fontWeight: FontWeight.w600),
+                            ),
+                            Center(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 23),
+                                child: ExpandBtn(
+                                  text: 'Đăng nhập',
+                                  onPress: _submit,
+                                ),
+                              ),
+                            ),
+                            SpacingBox(h: 2),
+                            Center(
+                              child: GestureDetector(
+                                onTap: () {
+                                  // if (TextF _nameC.text)
+                                  audioCache.play('tab3.mp3');
+                                  showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) =>
+                                          ResetPasswordDialog());
+                                },
+                                child: Text(
+                                  'Quên mật khẩu?',
+                                  style:
+                                      ptTitle().copyWith(color: Colors.black54),
+                                ),
+                              ),
+                            ),
+                            SpacingBox(h: 1),
+                          ],
                         ),
-                        TextSpan(text: ' dành cho doanh nghiệp của bạn'),
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+                      ),
+                    ]),
               ),
             ),
-            SpacingBox(h: 2.5),
-          ]),
+          ],
         ),
       ),
     );

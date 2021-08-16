@@ -74,21 +74,27 @@ class _SplashPageState extends State<SplashPage> {
             width: deviceWidth(context),
           ),
           Positioned(
-            bottom: -150,
             child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(width: deviceWidth(context), child: splash)),
           ),
           Center(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: deviceHeight(context) / 6),
-              child: SizedBox(
-                width: deviceWidth(context) / 2.5,
-                child: ShowUp(
-                  child: Image.asset('assets/image/logo_full_white.png'),
-                  delay: 100,
-                ),
+            child: ShowUp(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 200),
+                    child: Image.asset('assets/image/vertical_logo.png'),
+                  ),
+                  Text(
+                    "Uy tín - Nhanh chóng - An toàn",
+                    style: roboto_18_700()
+                        .copyWith(color: HexColor.fromHex("#2A2A72")),
+                  ),
+                  Spacer(),
+                ],
               ),
+              delay: 100,
             ),
           ),
         ],

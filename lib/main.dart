@@ -48,7 +48,7 @@ void main() async {
 }
 
 Image splash = Image.asset(
-  'assets/image/bg_splash.png',
+  'assets/image/bg_splash_2.png',
   fit: BoxFit.fitWidth,
 );
 

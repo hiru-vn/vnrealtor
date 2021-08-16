@@ -119,7 +119,8 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
         },
         list: RefreshIndicator(
           color: ptPrimaryColor(context),
-          onRefresh: () async {audioCache.play('tab3.mp3');
+          onRefresh: () async {
+            audioCache.play('tab3.mp3');
             final res = await _postBloc.getNewFeedGuest(1);
             if (res.isSuccess) {
               setState(() {
@@ -244,7 +245,8 @@ class CreatePostCardGuest extends StatelessWidget {
                 horizontal: 15,
               ),
               child: GestureDetector(
-                onTap: () {audioCache.play('tab3.mp3');
+                onTap: () {
+                  audioCache.play('tab3.mp3');
                   if (AuthBloc.instance.userModel == null) {
                     LoginPage.navigatePush();
                     return;
@@ -290,7 +292,8 @@ class CreatePostCardGuest extends StatelessWidget {
                           width: 5,
                         ),
                         GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
                             if (AuthBloc.instance.userModel == null) {
                               LoginPage.navigatePush();
                               return;
@@ -385,17 +388,13 @@ class GuestFeedPageAppBar extends StatelessWidget
           children: [
             Image.asset('assets/image/logo_full.png'),
             Spacer(),
-            FlatButton(
-                color: ptPrimaryColor(context),
-                onPressed: () {
+            ExpandBtn(
+                text: "Đăng nhập",
+                width: 100,
+                onPress: () {
                   audioCache.play('tab3.mp3');
-
                   LoginPage.navigatePush();
-                },
-                child: Text(
-                  'Đăng nhập',
-                  style: ptTitle().copyWith(color: Colors.white),
-                )),
+                }),
           ],
         ),
       ),
