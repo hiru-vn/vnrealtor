@@ -37,9 +37,7 @@ flutter run # make sure your mobile device is connected
 
 ## Showcase
 
-![p1] ![p2] 
-![p3] ![p4] 
-
+![p5]
 
 ## Support 
 
@@ -55,3 +53,4 @@ flutter run # make sure your mobile device is connected
 [p2]: https://drive.google.com/uc?export=view&id=1aUtDjkRjGD6EXDehhKn3ldJ95ZFe0JlO
 [p3]: https://drive.google.com/uc?export=view&id=1SbRxjF8778F9MzpXr6R_ss_b26hZWj10
 [p4]: https://drive.google.com/uc?export=view&id=1enE9Ccn9XQGofclTO7jteGfOaEmDvsDU
+[p5]: https://drive.google.com/uc?export=view&id=124k4uQdLAmbGQcB8ENKd2R_ewZEa4n_s
