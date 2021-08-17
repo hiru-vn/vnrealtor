@@ -86,23 +86,29 @@ class GroupMediaPostWidget extends StatelessWidget {
           ),
           Row(
             children: [
-              SizedBox(
-                width: deviceWidth(context) / 2 - 1.5,
-                height: deviceWidth(context) / 2.5,
-                child: MediaPostWidget(
-                  post: posts[1],
-                  onTapPostCallBack: () => callBack(1),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 2 - 1.5,
+                  height: deviceWidth(context) / 2.5,
+                  child: MediaPostWidget(
+                    post: posts[1],
+                    onTapPostCallBack: () => callBack(1),
+                  ),
                 ),
               ),
               SizedBox(
                 width: 3,
               ),
-              SizedBox(
-                width: deviceWidth(context) / 2 - 1.5,
-                height: deviceWidth(context) / 2.5,
-                child: MediaPostWidget(
-                  post: posts[2],
-                  onTapPostCallBack: () => callBack(2),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 2 - 1.5,
+                  height: deviceWidth(context) / 2.5,
+                  child: MediaPostWidget(
+                    post: posts[2],
+                    onTapPostCallBack: () => callBack(2),
+                  ),
                 ),
               ),
             ],
@@ -126,34 +132,43 @@ class GroupMediaPostWidget extends StatelessWidget {
           ),
           Row(
             children: [
-              SizedBox(
-                width: deviceWidth(context) / 3 - 2,
-                height: deviceWidth(context) / 3,
-                child: MediaPostWidget(
-                  post: posts[1],
-                  onTapPostCallBack: () => callBack(1),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 3 - 2,
+                  height: deviceWidth(context) / 3,
+                  child: MediaPostWidget(
+                    post: posts[1],
+                    onTapPostCallBack: () => callBack(1),
+                  ),
                 ),
               ),
               SizedBox(
                 width: 3,
               ),
-              SizedBox(
-                width: deviceWidth(context) / 3 - 2,
-                height: deviceWidth(context) / 3,
-                child: MediaPostWidget(
-                  post: posts[2],
-                  onTapPostCallBack: () => callBack(2),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 3 - 2,
+                  height: deviceWidth(context) / 3,
+                  child: MediaPostWidget(
+                    post: posts[2],
+                    onTapPostCallBack: () => callBack(2),
+                  ),
                 ),
               ),
               SizedBox(
                 width: 3,
               ),
-              SizedBox(
-                width: deviceWidth(context) / 3 - 2,
-                height: deviceWidth(context) / 3,
-                child: MediaPostWidget(
-                  post: posts[3],
-                  onTapPostCallBack: () => callBack(3),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 3 - 2,
+                  height: deviceWidth(context) / 3,
+                  child: MediaPostWidget(
+                    post: posts[3],
+                    onTapPostCallBack: () => callBack(3),
+                  ),
                 ),
               ),
             ],
@@ -166,23 +181,29 @@ class GroupMediaPostWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              SizedBox(
-                width: deviceWidth(context) / 2 - 1.5,
-                height: deviceWidth(context) / 2,
-                child: MediaPostWidget(
-                  post: posts[0],
-                  onTapPostCallBack: () => callBack(0),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 2 - 1.5,
+                  height: deviceWidth(context) / 2,
+                  child: MediaPostWidget(
+                    post: posts[0],
+                    onTapPostCallBack: () => callBack(0),
+                  ),
                 ),
               ),
               SizedBox(
                 width: 3,
               ),
-              SizedBox(
-                width: deviceWidth(context) / 2 - 1.5,
-                height: deviceWidth(context) / 2,
-                child: MediaPostWidget(
-                  post: posts[1],
-                  onTapPostCallBack: () => callBack(1),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 2 - 1.5,
+                  height: deviceWidth(context) / 2,
+                  child: MediaPostWidget(
+                    post: posts[1],
+                    onTapPostCallBack: () => callBack(1),
+                  ),
                 ),
               ),
             ],
@@ -192,34 +213,43 @@ class GroupMediaPostWidget extends StatelessWidget {
           ),
           Row(
             children: [
-              SizedBox(
-                width: deviceWidth(context) / 3 - 2,
-                height: deviceWidth(context) / 3,
-                child: MediaPostWidget(
-                  post: posts[2],
-                  onTapPostCallBack: () => callBack(2),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 3 - 2,
+                  height: deviceWidth(context) / 3,
+                  child: MediaPostWidget(
+                    post: posts[2],
+                    onTapPostCallBack: () => callBack(2),
+                  ),
                 ),
               ),
               SizedBox(
                 width: 3,
               ),
-              SizedBox(
-                width: deviceWidth(context) / 3 - 2,
-                height: deviceWidth(context) / 3,
-                child: MediaPostWidget(
-                  post: posts[3],
-                  onTapPostCallBack: () => callBack(3),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 3 - 2,
+                  height: deviceWidth(context) / 3,
+                  child: MediaPostWidget(
+                    post: posts[3],
+                    onTapPostCallBack: () => callBack(3),
+                  ),
                 ),
               ),
               SizedBox(
                 width: 3,
               ),
-              SizedBox(
-                width: deviceWidth(context) / 3 - 2,
-                height: deviceWidth(context) / 3,
-                child: MediaPostWidget(
-                  post: posts[4],
-                  onTapPostCallBack: () => callBack(4),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 3 - 2,
+                  height: deviceWidth(context) / 3,
+                  child: MediaPostWidget(
+                    post: posts[4],
+                    onTapPostCallBack: () => callBack(4),
+                  ),
                 ),
               ),
             ],
@@ -233,23 +263,29 @@ class GroupMediaPostWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              SizedBox(
-                width: deviceWidth(context) / 2 - 1.5,
-                height: deviceWidth(context) / 2,
-                child: MediaPostWidget(
-                  post: posts[0],
-                  onTapPostCallBack: () => callBack(0),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 2 - 1.5,
+                  height: deviceWidth(context) / 2,
+                  child: MediaPostWidget(
+                    post: posts[0],
+                    onTapPostCallBack: () => callBack(0),
+                  ),
                 ),
               ),
               SizedBox(
                 width: 3,
               ),
-              SizedBox(
-                width: deviceWidth(context) / 2 - 1.5,
-                height: deviceWidth(context) / 2,
-                child: MediaPostWidget(
-                  post: posts[1],
-                  onTapPostCallBack: () => callBack(1),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 2 - 1.5,
+                  height: deviceWidth(context) / 2,
+                  child: MediaPostWidget(
+                    post: posts[1],
+                    onTapPostCallBack: () => callBack(1),
+                  ),
                 ),
               ),
             ],
@@ -259,61 +295,70 @@ class GroupMediaPostWidget extends StatelessWidget {
           ),
           Row(
             children: [
-              SizedBox(
-                width: deviceWidth(context) / 3 - 2,
-                height: deviceWidth(context) / 3,
-                child: MediaPostWidget(
-                  post: posts[2],
-                  onTapPostCallBack: () => callBack(2),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 3 - 2,
+                  height: deviceWidth(context) / 3,
+                  child: MediaPostWidget(
+                    post: posts[2],
+                    onTapPostCallBack: () => callBack(2),
+                  ),
                 ),
               ),
               SizedBox(
                 width: 3,
               ),
-              SizedBox(
-                width: deviceWidth(context) / 3 - 2,
-                height: deviceWidth(context) / 3,
-                child: MediaPostWidget(
-                  post: posts[3],
-                  onTapPostCallBack: () => callBack(3),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 3 - 2,
+                  height: deviceWidth(context) / 3,
+                  child: MediaPostWidget(
+                    post: posts[3],
+                    onTapPostCallBack: () => callBack(3),
+                  ),
                 ),
               ),
               SizedBox(
                 width: 3,
               ),
-              SizedBox(
-                width: deviceWidth(context) / 3 - 2,
-                height: deviceWidth(context) / 3,
-                child: Stack(
-                  children: [
-                    SizedBox(
-                      width: deviceWidth(context) / 3 - 2,
-                      height: deviceWidth(context) / 3,
-                      child: MediaPostWidget(
-                        post: posts[4],
-                        onTapPostCallBack: () => callBack(4),
-                      ),
-                    ),
-                    IgnorePointer(
-                      child: Container(
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: deviceWidth(context) / 3 - 2,
+                  height: deviceWidth(context) / 3,
+                  child: Stack(
+                    children: [
+                      SizedBox(
                         width: deviceWidth(context) / 3 - 2,
                         height: deviceWidth(context) / 3,
-                        color: Colors.black45,
-                      ),
-                    ),
-                    IgnorePointer(
-                      child: Center(
-                        child: Text(
-                          '+' + (posts.length - 4).toString(),
-                          style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 40,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 1),
+                        child: MediaPostWidget(
+                          post: posts[4],
+                          onTapPostCallBack: () => callBack(4),
                         ),
                       ),
-                    )
-                  ],
+                      IgnorePointer(
+                        child: Container(
+                          width: deviceWidth(context) / 3 - 2,
+                          height: deviceWidth(context) / 3,
+                          color: Colors.black45,
+                        ),
+                      ),
+                      IgnorePointer(
+                        child: Center(
+                          child: Text(
+                            '+' + (posts.length - 4).toString(),
+                            style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 40,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -383,9 +428,10 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {audioCache.play('tab3.mp3');
+      onTap: () {
+        audioCache.play('tab3.mp3');
         widget.onTapPostCallBack();
-  
+
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: _getWidget(type),
@@ -573,7 +619,8 @@ class _DetailImagePostState extends State<DetailImagePost> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         if (AuthBloc.instance.userModel == null) {
                           LoginPage.navigatePush();
                           return;
@@ -614,7 +661,8 @@ class _DetailImagePostState extends State<DetailImagePost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () async {audioCache.play('tab3.mp3');
+                      onTap: () async {
+                        audioCache.play('tab3.mp3');
                         // if (AuthBloc.instance.userModel == null) {
                         //   await navigatorKey.currentState.maybePop();
                         //   LoginPage.navigatePush();
@@ -643,7 +691,8 @@ class _DetailImagePostState extends State<DetailImagePost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         String content =
                             widget.post.dynamicLink?.shortLink ?? '';
                         shareTo(context,
@@ -700,7 +749,8 @@ class _DetailImagePostState extends State<DetailImagePost> {
                   ),
                   Spacer(),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showComment(widget.post, context);
                     },
                     child: Text(
@@ -834,7 +884,8 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         if (AuthBloc.instance.userModel == null) {
                           LoginPage.navigatePush();
                           return;
@@ -875,7 +926,8 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         showComment(_post, context);
                       },
                       child: Row(
@@ -899,7 +951,8 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         String content =
                             widget.post.dynamicLink?.shortLink ?? '';
                         shareTo(context,
@@ -956,7 +1009,8 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                   ),
                   Spacer(),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showComment(widget.post, context);
                     },
                     child: Text(

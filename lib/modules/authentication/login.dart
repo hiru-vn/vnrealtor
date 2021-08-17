@@ -247,6 +247,7 @@ class _LoginPageState extends State<LoginPage> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 23),
                                 child: ExpandBtn(
+                                  width: 150,
                                   text: 'Đăng nhập',
                                   onPress: _submit,
                                 ),

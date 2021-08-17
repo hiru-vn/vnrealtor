@@ -1,3 +1,4 @@
+import 'package:datcao/share/widget/loading_widgets/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:skeleton_loader/skeleton_loader.dart';
 
@@ -48,64 +49,48 @@ class PostSkeleton extends StatelessWidget {
   const PostSkeleton({Key key, this.count = 2}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return SkeletonLoader(
-      builder: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        child: Column(
-          children: [
-            Row(
-              children: <Widget>[
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 30,
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      child: Column(
+        children: [
+          Row(
+            children: <Widget>[
+              ShimmerWidget.cirular(width: 50, height: 50),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    ShimmerWidget.rectangular(
+                      height: 15,
+                      width: 120,
+                    ),
+                    SizedBox(height: 10),
+                    ShimmerWidget.rectangular(
+                      height: 12,
+                      width: 70,
+                    ),
+                  ],
                 ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        width: 120,
-                        height: 15,
-                        color: Colors.white,
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: 70,
-                        height: 12,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-                Spacer(),
-              ],
-            ),
-            SizedBox(height: 15),
-            Container(
-              width: double.infinity,
-              height: 12,
-              color: Colors.white,
-            ),
-            SizedBox(height: 10),
-            Container(
-              width: double.infinity,
-              height: 12,
-              color: Colors.white,
-            ),
-            SizedBox(height: 15),
-            Container(
-              width: double.infinity,
-              height: 150,
-              color: Colors.white,
-            ),
-          ],
-        ),
+              ),
+              Spacer(),
+            ],
+          ),
+          SizedBox(height: 15),
+          ShimmerWidget.rectangular(
+            height: 12,
+          ),
+          SizedBox(height: 10),
+          ShimmerWidget.rectangular(
+            height: 12,
+          ),
+          SizedBox(height: 15),
+          ShimmerWidget.rectangular(
+            height: 150,
+          ),
+        ],
       ),
-      items: count,
-      period: Duration(seconds: 2),
-      highlightColor: Colors.grey[200],
-      direction: SkeletonDirection.ltr,
     );
   }
 }
@@ -113,56 +98,20 @@ class PostSkeleton extends StatelessWidget {
 class StorySkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SkeletonLoader(
-      builder: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: <Widget>[
-              Container(
-                height: 144,
-                width: 109,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(width: 8),
-              Container(
-                height: 144,
-                width: 109,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(width: 8),
-              Container(
-                height: 144,
-                width: 109,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(width: 8),
-              Container(
-                height: 144,
-                width: 109,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: Colors.white,
-                ),
-              ),
-            ],
+    return Container(
+      height: 70,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: ListView.separated(
+          separatorBuilder: (context, index) => SizedBox(
+            width: 12,
           ),
+          scrollDirection: Axis.horizontal,
+          itemCount: 10,
+          itemBuilder: (context, index) =>
+              ShimmerWidget.cirular(width: 70, height: 70),
         ),
       ),
-      items: 1,
-      period: Duration(seconds: 2),
-      highlightColor: Colors.grey[200],
-      direction: SkeletonDirection.ltr,
     );
   }
 }

@@ -355,7 +355,7 @@ class CreatePostCardGuest extends StatelessWidget {
                 : stories.length == 0
                     ? SizedBox.shrink()
                     : SizedBox(
-                        height: 150,
+                        height: 85,
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(horizontal: 15),

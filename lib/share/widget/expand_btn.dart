@@ -29,7 +29,7 @@ class ExpandBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width ?? double.infinity,
-      height: height ?? 45,
+      height: height ?? 40,
       child: GestureDetector(
         // elevation: elevation?.toDouble() ?? 5,
 
