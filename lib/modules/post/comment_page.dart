@@ -4,6 +4,7 @@ import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/share/function/time_ago.dart';
 import 'package:datcao/share/widget/tag_user_field.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
@@ -547,144 +548,259 @@ class _CommentWidgetState extends State<CommentWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomListTile(
-          onTap: () {
-            if (widget.tapCallBack != null) widget.tapCallBack();
-          },
-          onLongPress: () {
-            if (AuthBloc.instance.userModel == null) return;
-            dynamic state = _menuKey.currentState;
-            state.showButtonMenu();
-          },
-          tileColor: Colors.white,
-          leading: Container(
-            width: 36,
-            padding: EdgeInsets.only(top: 15),
-            alignment: Alignment.topCenter,
-            child: GestureDetector(
-              onTap: () {
-                ProfileOtherPage.navigate(widget.comment.user);
-                audioCache.play('tab3.mp3');
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                child: CircleAvatar(
-                  radius: 18,
-                  backgroundColor: Colors.white,
-                  backgroundImage: widget.comment.user.avatar != null
-                      ? CachedNetworkImageProvider(widget.comment.user.avatar)
-                      : AssetImage('assets/image/default_avatar.png'),
-                ),
-              ),
-            ),
-          ),
-          title: GestureDetector(
-            onTap: () {
-              ProfileOtherPage.navigate(widget.comment.user);
-              audioCache.play('tab3.mp3');
-            },
+        Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            width: deviceWidth(context),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  widget.comment.user?.name ?? '',
-                  style: ptBody().copyWith(fontWeight: FontWeight.w500),
+                Container(
+                  width: 36,
+                  padding: const EdgeInsets.only(top: 5),
+                  alignment: Alignment.topCenter,
+                  child: GestureDetector(
+                    onTap: () {
+                      ProfileOtherPage.navigate(widget.comment.user);
+                      audioCache.play('tab3.mp3');
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Colors.white,
+                        backgroundImage: widget.comment.user.avatar != null
+                            ? CachedNetworkImageProvider(
+                                widget.comment.user.avatar)
+                            : AssetImage('assets/image/default_avatar.png'),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: HexColor.fromHex("#ECECEC"),
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          bottom: 10.0, left: 10, top: 3, right: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.comment.user?.name ?? '',
+                                    style: roboto_18_700().copyWith(
+                                        fontSize: 16,
+                                        color: HexColor.fromHex("#505050")),
+                                  ),
+                                  Text(TimeAgo.timeAgoSinceDate(
+                                      DateTime.tryParse(
+                                          widget.comment.updatedAt)))
+                                ],
+                              ),
+                              IconButton(
+                                  icon: Icon(Icons.more_vert), onPressed: null)
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text.rich(TextSpan(children: [
+                            if ((contentSplit?.length ?? 0) < 1)
+                              TextSpan(
+                                text: (widget.comment.content ?? ''),
+                                style: ptBody().copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black87),
+                              )
+                            else
+                              ...contentSplit.map((e) {
+                                print(contentSplit);
+                                if (widget.comment.userTags?.containsKey(e) ??
+                                    false) {
+                                  return TextSpan(
+                                      text: (contentSplit.indexOf(e) == 0
+                                              ? ''
+                                              : ' ') +
+                                          widget.comment.userTags[e] +
+                                          (contentSplit.indexOf(e) ==
+                                                  contentSplit.length - 1
+                                              ? ''
+                                              : ' '),
+                                      style: ptBody().copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.blue),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          ProfileOtherPage.navigate(null,
+                                              userId: e);
+                                        });
+                                } else
+                                  return TextSpan(
+                                    text: (e),
+                                    style: ptBody().copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black87),
+                                  );
+                              }).toList(),
+                          ])),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ],
-            ),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text.rich(TextSpan(children: [
-                if ((contentSplit?.length ?? 0) < 1)
-                  TextSpan(
-                    text: (widget.comment.content ?? ''),
-                    style: ptBody().copyWith(
-                        fontWeight: FontWeight.w500, color: Colors.black87),
-                  )
-                else
-                  ...contentSplit.map((e) {
-                    print(contentSplit);
-                    if (widget.comment.userTags?.containsKey(e) ?? false) {
-                      return TextSpan(
-                          text: (contentSplit.indexOf(e) == 0 ? '' : ' ') +
-                              widget.comment.userTags[e] +
-                              (contentSplit.indexOf(e) ==
-                                      contentSplit.length - 1
-                                  ? ''
-                                  : ' '),
-                          style: ptBody().copyWith(
-                              fontWeight: FontWeight.w500, color: Colors.blue),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              ProfileOtherPage.navigate(null, userId: e);
-                            });
-                    } else
-                      return TextSpan(
-                        text: (e),
-                        style: ptBody().copyWith(
-                            fontWeight: FontWeight.w500, color: Colors.black87),
-                      );
-                  }).toList(),
-                TextSpan(
-                  text: '  ' +
-                      Formart.timeByDayViShort(
-                          DateTime.tryParse(widget.comment.updatedAt)),
-                  style: ptTiny().copyWith(color: Colors.black54),
-                ),
-                if (AuthBloc.instance.userModel != null)
-                  TextSpan(
-                    text: '   ' + 'Trả lời',
-                    style: ptTiny(),
-                  ),
-              ])),
-            ],
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (AuthBloc.instance.userModel != null) button,
-              GestureDetector(
-                onTap: () async {
-                  audioCache.play('tab3.mp3');
-                  if (AuthBloc.instance.userModel == null) {
-                    await navigatorKey.currentState.maybePop();
-                    LoginPage.navigatePush();
-                    return;
-                  }
-                  setState(() {
-                    _isLike = !_isLike;
-                  });
-                  if (_isLike) {
-                    widget.comment.userLikeIds
-                        .add(AuthBloc.instance.userModel.id);
-                    widget.comment.like++;
-                    _postBloc.likeComment(widget.comment.id);
-                  } else {
-                    if (widget.comment.like > 0) widget.comment.like--;
-                    _postBloc.unlikeComment(widget.comment.id);
-                  }
-                  setState(() {});
-                },
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(
-                    MdiIcons.thumbUp,
-                    size: 17,
-                    color: _isLike ? ptPrimaryColor(context) : Colors.grey[200],
-                  ),
-                  SizedBox(width: 4),
-                  Text(
-                    widget.comment.like.toString(),
-                    style: ptTiny(),
-                  )
-                ]),
-              ),
-            ],
-          ),
-        ),
+            )),
+        // CustomListTile(
+        //   onTap: () {
+        //     if (widget.tapCallBack != null) widget.tapCallBack();
+        //   },
+        //   onLongPress: () {
+        //     if (AuthBloc.instance.userModel == null) return;
+        //     dynamic state = _menuKey.currentState;
+        //     state.showButtonMenu();
+        //   },
+        //   tileColor: Colors.white,
+        //   leading: Container(
+        //     width: 36,
+        //     padding: EdgeInsets.only(top: 15),
+        //     alignment: Alignment.topCenter,
+        //     child: GestureDetector(
+        //       onTap: () {
+        //         ProfileOtherPage.navigate(widget.comment.user);
+        //         audioCache.play('tab3.mp3');
+        //       },
+        //       child: Container(
+        //         decoration: BoxDecoration(
+        //           shape: BoxShape.circle,
+        //         ),
+        //         child: CircleAvatar(
+        //           radius: 18,
+        //           backgroundColor: Colors.white,
+        //           backgroundImage: widget.comment.user.avatar != null
+        //               ? CachedNetworkImageProvider(widget.comment.user.avatar)
+        //               : AssetImage('assets/image/default_avatar.png'),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        //   title: GestureDetector(
+        //     onTap: () {
+        //       ProfileOtherPage.navigate(widget.comment.user);
+        //       audioCache.play('tab3.mp3');
+        //     },
+        //     child: Row(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: [
+        //         Text(
+        //           widget.comment.user?.name ?? '',
+        //           style: roboto_18_700().copyWith(
+        //               fontSize: 16, color: HexColor.fromHex("#505050")),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        //   subtitle: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     children: [
+        //       Text.rich(TextSpan(children: [
+        //         if ((contentSplit?.length ?? 0) < 1)
+        //           TextSpan(
+        //             text: (widget.comment.content ?? ''),
+        //             style: ptBody().copyWith(
+        //                 fontWeight: FontWeight.w500, color: Colors.black87),
+        //           )
+        //         else
+        //           ...contentSplit.map((e) {
+        //             print(contentSplit);
+        //             if (widget.comment.userTags?.containsKey(e) ?? false) {
+        //               return TextSpan(
+        //                   text: (contentSplit.indexOf(e) == 0 ? '' : ' ') +
+        //                       widget.comment.userTags[e] +
+        //                       (contentSplit.indexOf(e) ==
+        //                               contentSplit.length - 1
+        //                           ? ''
+        //                           : ' '),
+        //                   style: ptBody().copyWith(
+        //                       fontWeight: FontWeight.w500, color: Colors.blue),
+        //                   recognizer: TapGestureRecognizer()
+        //                     ..onTap = () {
+        //                       ProfileOtherPage.navigate(null, userId: e);
+        //                     });
+        //             } else
+        //               return TextSpan(
+        //                 text: (e),
+        //                 style: ptBody().copyWith(
+        //                     fontWeight: FontWeight.w500, color: Colors.black87),
+        //               );
+        //           }).toList(),
+        //         TextSpan(
+        //           text: '  ' +
+        //               Formart.timeByDayViShort(
+        //                   DateTime.tryParse(widget.comment.updatedAt)),
+        //           style: ptTiny().copyWith(color: Colors.black54),
+        //         ),
+        //         if (AuthBloc.instance.userModel != null)
+        //           TextSpan(
+        //             text: '   ' + 'Trả lời',
+        //             style: ptTiny(),
+        //           ),
+        //       ])),
+        //     ],
+        //   ),
+        //   trailing: Row(
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       if (AuthBloc.instance.userModel != null) button,
+        //       GestureDetector(
+        //         onTap: () async {
+        //           audioCache.play('tab3.mp3');
+        //           if (AuthBloc.instance.userModel == null) {
+        //             await navigatorKey.currentState.maybePop();
+        //             LoginPage.navigatePush();
+        //             return;
+        //           }
+        //           setState(() {
+        //             _isLike = !_isLike;
+        //           });
+        //           if (_isLike) {
+        //             widget.comment.userLikeIds
+        //                 .add(AuthBloc.instance.userModel.id);
+        //             widget.comment.like++;
+        //             _postBloc.likeComment(widget.comment.id);
+        //           } else {
+        //             if (widget.comment.like > 0) widget.comment.like--;
+        //             _postBloc.unlikeComment(widget.comment.id);
+        //           }
+        //           setState(() {});
+        //         },
+        //         child: Row(mainAxisSize: MainAxisSize.min, children: [
+        //           Icon(
+        //             MdiIcons.thumbUp,
+        //             size: 17,
+        //             color: _isLike ? ptPrimaryColor(context) : Colors.grey[200],
+        //           ),
+        //           SizedBox(width: 4),
+        //           Text(
+        //             widget.comment.like.toString(),
+        //             style: ptTiny(),
+        //           )
+        //         ]),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         isExpandReply || widget.shouldExpand
             ? Padding(
                 padding: const EdgeInsets.only(left: 65),
@@ -818,134 +934,259 @@ class _ReplyWidgetState extends State<ReplyWidget> {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onLongPress: () {
-          audioCache.play('tab3.mp3');
-          if (AuthBloc.instance.userModel == null) return;
-          dynamic state = _menuKey.currentState;
-          state?.showButtonMenu();
-        },
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  audioCache.play('tab3.mp3');
-                  ProfileOtherPage.navigate(widget.reply.user);
-                },
-                child: CircleAvatar(
-                  radius: 13,
-                  backgroundColor: Colors.white,
-                  backgroundImage: widget.reply.user?.avatar != null
-                      ? CachedNetworkImageProvider(widget.reply.user.avatar)
-                      : AssetImage('assets/image/default_avatar.png'),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      ProfileOtherPage.navigate(widget.reply.user);
-                      audioCache.play('tab3.mp3');
-                    },
-                    child: Text(
-                      widget.reply.user?.name ?? '',
-                      style: ptBody().copyWith(fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  Text.rich(
-                    TextSpan(children: [
-                      if ((contentSplit?.length ?? 0) < 1)
-                        TextSpan(
-                          text: (widget.reply.content ?? ''),
-                          style: ptBody().copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black87),
-                        )
-                      else
-                        ...contentSplit.map((e) {
-                          print(contentSplit);
-                          if (widget.reply.userTags?.containsKey(e) ?? false) {
-                            return TextSpan(
-                                text:
-                                    (contentSplit.indexOf(e) == 0 ? '' : ' ') +
-                                        widget.reply.userTags[e] +
-                                        (contentSplit.indexOf(e) ==
-                                                contentSplit.length - 1
-                                            ? ''
-                                            : ' '),
-                                style: ptBody().copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.blue),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    ProfileOtherPage.navigate(null, userId: e);
-                                  });
-                          } else
-                            return TextSpan(
-                              text: (e),
-                              style: ptBody().copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black87),
-                            );
-                        }).toList(),
-                      TextSpan(
-                        text: '  ' +
-                            Formart.timeByDayViShort(
-                                DateTime.tryParse(widget.reply.updatedAt)),
-                        style: ptTiny().copyWith(color: Colors.black54),
+          behavior: HitTestBehavior.translucent,
+          onLongPress: () {
+            audioCache.play('tab3.mp3');
+            if (AuthBloc.instance.userModel == null) return;
+            dynamic state = _menuKey.currentState;
+            state?.showButtonMenu();
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  width: deviceWidth(context),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 36,
+                        padding: const EdgeInsets.only(top: 5),
+                        alignment: Alignment.topCenter,
+                        child: GestureDetector(
+                          onTap: () {
+                            ProfileOtherPage.navigate(widget.reply.user);
+                            audioCache.play('tab3.mp3');
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: CircleAvatar(
+                              radius: 18,
+                              backgroundColor: Colors.white,
+                              backgroundImage: widget.reply.user.avatar != null
+                                  ? CachedNetworkImageProvider(
+                                      widget.reply.user.avatar)
+                                  : AssetImage(
+                                      'assets/image/default_avatar.png'),
+                            ),
+                          ),
+                        ),
                       ),
-                    ]),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuButton(
-                child: SizedBox.shrink(),
-                key: _menuKey,
-                itemBuilder: (_) => <PopupMenuItem<String>>[
-                      if (AuthBloc.instance.userModel?.id ==
-                          widget.reply.userId)
-                        PopupMenuItem<String>(
-                            child: Text(
-                              'Xóa',
-                              style: ptBody(),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: HexColor.fromHex("#ECECEC"),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: 10.0, left: 10, top: 3, right: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          widget.reply.user?.name ?? '',
+                                          style: roboto_18_700().copyWith(
+                                              fontSize: 16,
+                                              color:
+                                                  HexColor.fromHex("#505050")),
+                                        ),
+                                        Text(TimeAgo.timeAgoSinceDate(
+                                            DateTime.tryParse(
+                                                widget.reply.updatedAt)))
+                                      ],
+                                    ),
+                                    IconButton(
+                                        icon: Icon(Icons.more_vert),
+                                        onPressed: null)
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text.rich(TextSpan(children: [
+                                  if ((contentSplit?.length ?? 0) < 1)
+                                    TextSpan(
+                                      text: (widget.reply.content ?? ''),
+                                      style: ptBody().copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black87),
+                                    )
+                                  else
+                                    ...contentSplit.map((e) {
+                                      print(contentSplit);
+                                      if (widget.reply.userTags
+                                              ?.containsKey(e) ??
+                                          false) {
+                                        return TextSpan(
+                                            text: (contentSplit.indexOf(e) == 0
+                                                    ? ''
+                                                    : ' ') +
+                                                widget.reply.userTags[e] +
+                                                (contentSplit.indexOf(e) ==
+                                                        contentSplit.length - 1
+                                                    ? ''
+                                                    : ' '),
+                                            style: ptBody().copyWith(
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.blue),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () {
+                                                ProfileOtherPage.navigate(null,
+                                                    userId: e);
+                                              });
+                                      } else
+                                        return TextSpan(
+                                          text: (e),
+                                          style: ptBody().copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black87),
+                                        );
+                                    }).toList(),
+                                ])),
+                              ],
                             ),
-                            value: 'delete'),
-                      if (AuthBloc.instance.userModel?.id !=
-                          widget.reply.userId)
-                        PopupMenuItem<String>(
-                            child: Text(
-                              'Báo xấu',
-                              style: ptBody(),
-                            ),
-                            value: 'report'),
+                          ),
+                        ),
+                      ),
                     ],
-                onSelected: (val) {
-                  if (val == 'report')
-                    showToast('Đã gửi yêu cầu', context, isSuccess: true);
-                  if (val == 'delete') {
-                    showConfirmDialog(context, 'Bạn muốn xóa bình luận này?',
-                        confirmTap: () {
-                      widget.deleteCallBack();
-                      FocusScope.of(context).requestFocus(FocusNode());
-                    }, navigatorKey: navigatorKey);
-                  }
-                })
-          ],
-        ),
-      ),
+                  )),
+            ],
+          )
+// child: Row(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     Container(
+          //       decoration: BoxDecoration(
+          //         shape: BoxShape.circle,
+          //       ),
+          //       child: GestureDetector(
+          //         onTap: () {
+          //           audioCache.play('tab3.mp3');
+          //           ProfileOtherPage.navigate(widget.reply.user);
+          //         },
+          //         child: CircleAvatar(
+          //           radius: 13,
+          //           backgroundColor: Colors.white,
+          //           backgroundImage: widget.reply.user?.avatar != null
+          //               ? CachedNetworkImageProvider(widget.reply.user.avatar)
+          //               : AssetImage('assets/image/default_avatar.png'),
+          //         ),
+          //       ),
+          //     ),
+          //     SizedBox(
+          //       width: 10,
+          //     ),
+          //     Expanded(
+          //       child: Column(
+          //         mainAxisSize: MainAxisSize.min,
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           GestureDetector(
+          //             onTap: () {
+          //               ProfileOtherPage.navigate(widget.reply.user);
+          //               audioCache.play('tab3.mp3');
+          //             },
+          //             child: Text(widget.reply.user?.name ?? '',
+          //                 style: roboto_18_700().copyWith(
+          //                     fontSize: 16, color: HexColor.fromHex("#505050"))),
+          //           ),
+          //           Text.rich(
+          //             TextSpan(children: [
+          //               if ((contentSplit?.length ?? 0) < 1)
+          //                 TextSpan(
+          //                   text: (widget.reply.content ?? ''),
+          //                   style: ptBody().copyWith(
+          //                       fontWeight: FontWeight.w500,
+          //                       color: Colors.black87),
+          //                 )
+          //               else
+          //                 ...contentSplit.map((e) {
+          //                   print(contentSplit);
+          //                   if (widget.reply.userTags?.containsKey(e) ?? false) {
+          //                     return TextSpan(
+          //                         text:
+          //                             (contentSplit.indexOf(e) == 0 ? '' : ' ') +
+          //                                 widget.reply.userTags[e] +
+          //                                 (contentSplit.indexOf(e) ==
+          //                                         contentSplit.length - 1
+          //                                     ? ''
+          //                                     : ' '),
+          //                         style: ptBody().copyWith(
+          //                             fontWeight: FontWeight.w500,
+          //                             color: Colors.blue),
+          //                         recognizer: TapGestureRecognizer()
+          //                           ..onTap = () {
+          //                             ProfileOtherPage.navigate(null, userId: e);
+          //                           });
+          //                   } else
+          //                     return TextSpan(
+          //                       text: (e),
+          //                       style: ptBody().copyWith(
+          //                           fontWeight: FontWeight.w500,
+          //                           color: Colors.black87),
+          //                     );
+          //                 }).toList(),
+          //               TextSpan(
+          //                 text: '  ' +
+          //                     Formart.timeByDayViShort(
+          //                         DateTime.tryParse(widget.reply.updatedAt)),
+          //                 style: ptTiny().copyWith(color: Colors.black54),
+          //               ),
+          //             ]),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //     PopupMenuButton(
+          //         child: SizedBox.shrink(),
+          //         key: _menuKey,
+          //         itemBuilder: (_) => <PopupMenuItem<String>>[
+          //               if (AuthBloc.instance.userModel?.id ==
+          //                   widget.reply.userId)
+          //                 PopupMenuItem<String>(
+          //                     child: Text(
+          //                       'Xóa',
+          //                       style: ptBody(),
+          //                     ),
+          //                     value: 'delete'),
+          //               if (AuthBloc.instance.userModel?.id !=
+          //                   widget.reply.userId)
+          //                 PopupMenuItem<String>(
+          //                     child: Text(
+          //                       'Báo xấu',
+          //                       style: ptBody(),
+          //                     ),
+          //                     value: 'report'),
+          //             ],
+          //         onSelected: (val) {
+          //           if (val == 'report')
+          //             showToast('Đã gửi yêu cầu', context, isSuccess: true);
+          //           if (val == 'delete') {
+          //             showConfirmDialog(context, 'Bạn muốn xóa bình luận này?',
+          //                 confirmTap: () {
+          //               widget.deleteCallBack();
+          //               FocusScope.of(context).requestFocus(FocusNode());
+          //             }, navigatorKey: navigatorKey);
+          //           }
+          //         })
+          //   ],
+          // ),
+          ),
     );
   }
 }

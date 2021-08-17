@@ -8,7 +8,7 @@ TextStyle roboto_18_700() => TextStyle(
     fontWeight: FontWeight.w700,
     fontFamily: "Roboto",
     color: HexColor('#05515e'),
-    letterSpacing: 1.5);
+    letterSpacing: 1);
 TextStyle ptHeadLine() => TextStyle(
     fontSize: 39,
     fontWeight: FontWeight.w600,

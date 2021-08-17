@@ -127,6 +127,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(MediaQuery.of(context).viewInsets.bottom);
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -147,9 +148,11 @@ class _LoginPageState extends State<LoginPage> {
         child: Stack(
           children: [
             Positioned(
-              bottom: 0,
+              bottom: MediaQuery.of(context).viewInsets.bottom != 0
+                  ? -MediaQuery.of(context).viewInsets.bottom
+                  : 0,
               right: 0,
-              child: Container(width: deviceWidth(context), child: splash),
+              child: Container(width: deviceWidth(context), child: splash2),
             ),
             Form(
               key: _formKey,

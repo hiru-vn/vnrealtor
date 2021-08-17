@@ -233,32 +233,49 @@ class _PostDetailState extends State<PostDetail> {
                       : PostWidget(_post,
                           commentCallBack: () {}, isInDetailPage: true),
                   comments != null
-                      ? ListView.separated(
-                          padding: EdgeInsets.zero,
-                          itemCount: comments.length,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final comment = comments[index];
-                            return CommentWidget(
-                                comment: comment,
-                                userReplyCache: localReplies,
-                                shouldExpand:
-                                    comments[index].id == replyComment?.id,
-                                deleteCallBack: comments[index].userId ==
-                                        AuthBloc.instance.userModel?.id
-                                    ? () => _deleteComment(comments[index].id)
-                                    : () {},
-                                tapCallBack: () {
-                                  setState(() {
-                                    isReply = true;
-                                    replyComment = comments[index];
-                                  });
-                                  _focusNodeComment.requestFocus();
-                                });
-                          },
-                          separatorBuilder: (context, index) =>
-                              SizedBox.shrink(),
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Bình luận",
+                                style: roboto_18_700().copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 13,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            ListView.separated(
+                              padding: EdgeInsets.zero,
+                              itemCount: comments.length,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final comment = comments[index];
+                                return CommentWidget(
+                                    comment: comment,
+                                    userReplyCache: localReplies,
+                                    shouldExpand:
+                                        comments[index].id == replyComment?.id,
+                                    deleteCallBack: comments[index].userId ==
+                                            AuthBloc.instance.userModel?.id
+                                        ? () =>
+                                            _deleteComment(comments[index].id)
+                                        : () {},
+                                    tapCallBack: () {
+                                      setState(() {
+                                        isReply = true;
+                                        replyComment = comments[index];
+                                      });
+                                      _focusNodeComment.requestFocus();
+                                    });
+                              },
+                              separatorBuilder: (context, index) =>
+                                  SizedBox.shrink(),
+                            ),
+                          ],
                         )
                       : ListSkeleton(),
                 ],
@@ -306,7 +323,8 @@ class _PostDetailState extends State<PostDetail> {
                         decoration: InputDecoration(
                           suffixIcon: GestureDetector(
                               behavior: HitTestBehavior.translucent,
-                              onTap: () {audioCache.play('tab3.mp3');
+                              onTap: () {
+                                audioCache.play('tab3.mp3');
                                 (isReply)
                                     ? _reply(_commentC.text)
                                     : _comment(_commentC.text);

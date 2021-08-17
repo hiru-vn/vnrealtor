@@ -14,6 +14,7 @@ import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/modules/post/share_post.dart';
 import 'package:datcao/modules/post/update_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/share/function/time_ago.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 import 'package:flutter/gestures.dart';
@@ -244,161 +245,214 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
               SizedBox(height: 10),
               if (!widget.isSharedPost)
-                Row(
+                Column(
                   children: [
-                    SizedBox(
-                      width: 15,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        audioCache.play('tab3.mp3');
-                        if (AuthBloc.instance.userModel == null) {
-                          LoginPage.navigatePush();
-                          return;
-                        }
-                        widget.post.isUserLike = !widget.post.isUserLike;
-
-                        if (widget.post.isUserLike) {
-                          _postBloc.likePost(widget.post);
-                        } else {
-                          _postBloc.unlikePost(widget.post);
-                        }
-                        setState(() {});
-                      },
-                      child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            !widget.post.isUserLike
-                                ? Icon(
-                                    MdiIcons.heartOutline,
-                                    size: 22,
-                                    color: ptPrimaryColor(context),
-                                  )
-                                : Icon(
-                                    MdiIcons.heart,
-                                    size: 22,
-                                    color: Colors.red,
-                                  ),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            Text('${widget.post.like} lượt thích',
-                                style: ptTiny()
-                                    .copyWith(color: ptPrimaryColor(context))),
-                          ]),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        audioCache.play('tab3.mp3');
-                        // if (AuthBloc.instance.userModel == null) {
-                        //   LoginPage.navigatePush();
-                        //   return;
-                        // }
-                        if (widget.commentCallBack != null)
-                          widget.commentCallBack();
-                        else
-                          showComment(widget.post);
-                      },
-                      child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              MdiIcons.chatOutline,
-                              color: ptPrimaryColor(context),
-                              size: 22,
-                            ),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            Text('${widget.post.numberOfComment} bình luận',
-                                style: ptTiny()
-                                    .copyWith(color: ptPrimaryColor(context))),
-                          ]),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        audioCache.play('tab3.mp3');
-                        showModalBottomSheet(
-                            backgroundColor: Colors.transparent,
-                            context: context,
-                            builder: (context) {
-                              return SharePost(widget.post);
-                            });
-                      },
-                      child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              MdiIcons.shareOutline,
-                              color: ptPrimaryColor(context),
-                              size: 22,
-                            ),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            Text('${widget.post.share} chia sẻ',
-                                style: ptTiny()
-                                    .copyWith(color: ptPrimaryColor(context))),
-                          ]),
-                    ),
-                    Spacer(),
-                    if (AuthBloc.instance.userModel != null)
-                      GestureDetector(
-                        onTap: () async {
-                          audioCache.play('tab3.mp3');
-                          if (AuthBloc.instance.userModel?.savedPostIds
-                                  ?.contains(widget.post.id) ??
-                              false) {
-                            showToast('Bài viết đã được lưu', context,
-                                isSuccess: true);
-                            return;
-                          }
-
-                          final res = await _postBloc.savePost(widget.post);
-                          if (res.isSuccess) {
-                          } else {
-                            setState(() {
-                              _postBloc.myPosts.remove(widget.post);
-                            });
-                            showToast(res.errMessage, context);
-                          }
-                        },
-                        child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
                             children: [
-                              !(AuthBloc.instance.userModel?.savedPostIds
-                                          ?.contains(widget.post.id) ??
-                                      false)
-                                  ? Icon(
-                                      MdiIcons.bookmarkOutline,
-                                      color: ptPrimaryColor(context),
-                                      size: 22,
-                                    )
-                                  : Icon(
-                                      MdiIcons.bookmark,
-                                      color: ptPrimaryColor(context),
-                                      size: 22,
-                                    ),
-                              SizedBox(
-                                height: 3,
+                              Image.asset(
+                                "assets/image/like.png",
+                                width: 20,
                               ),
-                              Text('Lưu',
-                                  style: ptTiny().copyWith(
-                                      color: ptPrimaryColor(context))),
-                            ]),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                '${widget.post.like}',
+                                style: roboto_18_700().copyWith(
+                                  color: Colors.grey,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            '${widget.post.numberOfComment} bình luận',
+                            style: roboto_18_700().copyWith(
+                                color: Colors.grey,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w300),
+                          ),
+                        ],
                       ),
-                    SizedBox(
-                      width: 20,
+                    ),
+                    Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          child: SizedBox(
+                            width: deviceWidth(context) / 4,
+                            child: GestureDetector(
+                              onTap: () {
+                                audioCache.play('tab3.mp3');
+                                if (AuthBloc.instance.userModel == null) {
+                                  LoginPage.navigatePush();
+                                  return;
+                                }
+                                widget.post.isUserLike =
+                                    !widget.post.isUserLike;
+
+                                if (widget.post.isUserLike) {
+                                  _postBloc.likePost(widget.post);
+                                } else {
+                                  _postBloc.unlikePost(widget.post);
+                                }
+                                setState(() {});
+                              },
+                              child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    !widget.post.isUserLike
+                                        ? Image.asset(
+                                            "assets/image/unlike_icon.png",
+                                            width: 30,
+                                          )
+                                        : Image.asset(
+                                            "assets/image/like_icon.png",
+                                            width: 30,
+                                          ),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text('Thích',
+                                        style: ptTiny().copyWith(
+                                          color: Colors.grey,
+                                        )),
+                                  ]),
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: SizedBox(
+                            width: deviceWidth(context) / 4,
+                            child: GestureDetector(
+                              onTap: () {
+                                audioCache.play('tab3.mp3');
+                                // if (AuthBloc.instance.userModel == null) {
+                                //   LoginPage.navigatePush();
+                                //   return;
+                                // }
+                                if (widget.commentCallBack != null)
+                                  widget.commentCallBack();
+                                else
+                                  showComment(widget.post);
+                              },
+                              child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      "assets/image/message_circle_icon.png",
+                                      width: 30,
+                                    ),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text(
+                                      'Bình luận',
+                                      style: ptTiny().copyWith(
+                                        color: Colors.grey,
+                                      ),
+                                    )
+                                  ]),
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: SizedBox(
+                            width: deviceWidth(context) / 4,
+                            child: GestureDetector(
+                              onTap: () {
+                                audioCache.play('tab3.mp3');
+                                showModalBottomSheet(
+                                    backgroundColor: Colors.transparent,
+                                    context: context,
+                                    builder: (context) {
+                                      return SharePost(widget.post);
+                                    });
+                              },
+                              child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      "assets/image/navigation_icon.png",
+                                      width: 30,
+                                    ),
+                                    SizedBox(
+                                      height: 3,
+                                    ),
+                                    Text('Chia sẻ',
+                                        style: ptTiny()
+                                            .copyWith(color: Colors.grey)),
+                                  ]),
+                            ),
+                          ),
+                        ),
+                        if (AuthBloc.instance.userModel != null)
+                          Flexible(
+                            flex: 1,
+                            child: SizedBox(
+                              width: deviceWidth(context) / 4,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  audioCache.play('tab3.mp3');
+                                  if (AuthBloc.instance.userModel?.savedPostIds
+                                          ?.contains(widget.post.id) ??
+                                      false) {
+                                    showToast('Bài viết đã được lưu', context,
+                                        isSuccess: true);
+                                    return;
+                                  }
+
+                                  final res =
+                                      await _postBloc.savePost(widget.post);
+                                  if (res.isSuccess) {
+                                  } else {
+                                    setState(() {
+                                      _postBloc.myPosts.remove(widget.post);
+                                    });
+                                    showToast(res.errMessage, context);
+                                  }
+                                },
+                                child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      !(AuthBloc.instance.userModel
+                                                  ?.savedPostIds
+                                                  ?.contains(widget.post.id) ??
+                                              false)
+                                          ? Image.asset(
+                                              "assets/image/bookmark_icon.png",
+                                              width: 30,
+                                            )
+                                          : Image.asset(
+                                              "assets/image/bookmark_icon.png",
+                                              width: 30,
+                                              color: ptMainColor(),
+                                            ),
+                                      SizedBox(
+                                        height: 3,
+                                      ),
+                                      Text('Lưu',
+                                          style: ptTiny()
+                                              .copyWith(color: Colors.grey)),
+                                    ]),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),
@@ -775,15 +829,17 @@ class _PostWidgetState extends State<PostWidget> {
             Row(
               children: [
                 Text(
-                  DateTime.tryParse(widget.post?.createdAt)
-                              .add(Duration(days: 1))
-                              .compareTo(DateTime.now()) <
-                          0
-                      ? (Formart.formatToDateTime(
-                              DateTime.tryParse(widget.post?.createdAt)) ??
-                          '')
-                      : Formart.timeByDayVi(
-                          DateTime.tryParse(widget.post?.createdAt)),
+                  TimeAgo.timeAgoSinceDate(
+                      DateTime.tryParse(widget.post?.createdAt)),
+                  // DateTime.tryParse(widget.post?.createdAt)
+                  //             .add(Duration(days: 1))
+                  //             .compareTo(DateTime.now()) <
+                  //         0
+                  //     ? (Formart.formatToDateTime(
+                  //             DateTime.tryParse(widget.post?.createdAt)) ??
+                  //         '')
+                  //     : Formart.timeByDayVi(
+                  //         DateTime.tryParse(widget.post?.createdAt)),
                   style: ptTiny().copyWith(color: Colors.black54),
                 ),
                 SizedBox(width: 5),

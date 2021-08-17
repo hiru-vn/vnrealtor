@@ -76,7 +76,7 @@ class _SplashPageState extends State<SplashPage> {
           Positioned(
             child: Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(width: deviceWidth(context), child: splash)),
+                child: Container(width: deviceWidth(context), child: splash2)),
           ),
           Center(
             child: ShowUp(

@@ -47,7 +47,11 @@ void main() async {
   );
 }
 
-Image splash = Image.asset(
+Image splash1 = Image.asset(
+  'assets/image/bg_splash_1.png',
+  fit: BoxFit.fitWidth,
+);
+Image splash2 = Image.asset(
   'assets/image/bg_splash_2.png',
   fit: BoxFit.fitWidth,
 );
@@ -65,7 +69,8 @@ class _MyAppState extends State<MyApp> {
   @override
   initState() {
     super.initState();
-    precacheImage(splash.image, context);
+    precacheImage(splash1.image, context);
+    precacheImage(splash2.image, context);
     initMarkerIcon();
 
     ConnectionStatusSingleton connectionStatus =
