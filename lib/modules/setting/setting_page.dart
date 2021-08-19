@@ -352,7 +352,7 @@ class _SettingPageState extends State<SettingPage> {
                   },
                   color: ptGreyColor(context).withOpacity(0.6),
                   height: 45,
-                  textColor: Colors.black,
+                  textColor: Colors.white,
                 ),
               ),
               SizedBox(height: 10),

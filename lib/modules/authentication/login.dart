@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:datcao/main.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
-import 'package:datcao/modules/authentication/register.dart';
 import 'package:datcao/modules/authentication/reset_password_dialog.dart';
 import 'package:datcao/modules/home_page.dart';
+import 'package:datcao/modules/pages/models/registers/register_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:flutter/gestures.dart';
 
@@ -127,7 +127,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).viewInsets.bottom);
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -232,7 +231,7 @@ class _LoginPageState extends State<LoginPage> {
                                 child: Center(
                                   child: GestureDetector(
                                     onTap: () {
-                                      RegisterPage.navigate(isCompany: true);
+                                      RegisterPage.navigate();
                                       audioCache.play('tab3.mp3');
                                     },
                                     child: Text(
