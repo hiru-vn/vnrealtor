@@ -1,11 +1,20 @@
+import 'package:datcao/modules/registers/create_account_success_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_app_bar.dart';
+import 'package:datcao/utils/type.dart';
 import 'package:flutter/gestures.dart';
 
 class FormRegisterPage extends StatefulWidget {
-  const FormRegisterPage({Key key}) : super(key: key);
-  static Future navigate({String phoneNumber}) {
-    return navigatorKey.currentState.push(pageBuilder(FormRegisterPage(),
+  final String phoneNumber;
+  final String email;
+  const FormRegisterPage({Key key, this.phoneNumber, this.email})
+      : super(key: key);
+  static Future navigate({String phoneNumber, String email}) {
+    return navigatorKey.currentState.push(pageBuilder(
+        FormRegisterPage(
+          phoneNumber: phoneNumber,
+          email: email,
+        ),
         transitionBuilder: transitionRightBuilder));
   }
 
@@ -15,12 +24,17 @@ class FormRegisterPage extends StatefulWidget {
 
 class _FormRegisterPageState extends State<FormRegisterPage> {
   bool _agree;
+  TypeRegister _typeRegister;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _agree = false;
+    if (widget.email == null) {
+      _typeRegister = TypeRegister.ByPhone;
+    } else
+      _typeRegister = TypeRegister.ByEmail;
   }
 
   @override
@@ -30,7 +44,10 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
         child: Scaffold(
           appBar: CustomAppBar(
             leading: IconButton(
-              icon: Icon(Icons.navigate_before),
+              icon: Icon(
+                Icons.navigate_before,
+                color: Colors.white,
+              ),
               onPressed: () => Navigator.pop(context),
             ),
             title: Center(
@@ -88,13 +105,21 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                 ),
                                 hintText: "Họ tên",
                               ),
-                              CustomInputField(
-                                icon: Image.asset(
-                                  "assets/image/email_icon.png",
-                                  width: 25,
-                                ),
-                                hintText: "Email",
-                              ),
+                              _typeRegister == TypeRegister.ByPhone
+                                  ? CustomInputField(
+                                      icon: Image.asset(
+                                        "assets/image/email_icon.png",
+                                        width: 25,
+                                      ),
+                                      hintText: "Email",
+                                    )
+                                  : CustomInputField(
+                                      icon: Image.asset(
+                                        "assets/image/phone_icon.png",
+                                        width: 25,
+                                      ),
+                                      hintText: "Phone",
+                                    ),
                               CustomInputField(
                                 icon: Image.asset(
                                   "assets/image/password_icon.png",
@@ -147,7 +172,10 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                               ),
                               ExpandBtn(
                                 text: "ĐĂNG KÝ",
-                                onPress: null,
+                                onPress: () =>
+                                    CreateAccountSuccessPage.navigate(
+                                        phoneNumber: widget.phoneNumber,
+                                        email: widget.email),
                                 width: 200,
                               ),
                               Padding(
@@ -226,6 +254,7 @@ class CustomInputField extends StatelessWidget {
               child: TextFormField(
                 cursorColor: ptMainColor(),
                 obscureText: obscureText,
+                controller: controller,
                 decoration: InputDecoration(
                   hintText: hintText,
                   hintStyle: roboto_18_700().copyWith(

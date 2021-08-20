@@ -83,6 +83,7 @@ dependencies:
   html: ^0.14.0+4
   intl_phone_number_input: ^0.6.0
   pin_code_fields: ^6.1.0
+  auto_size_text: ^2.1.0
   
   # call
   

@@ -1,0 +1,4 @@
+enum TypeRegister {
+  ByEmail,
+  ByPhone,
+}

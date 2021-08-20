@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:datcao/modules/authentication/login.dart';
+import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
@@ -507,6 +508,8 @@ class _CommentWidgetState extends State<CommentWidget> {
         height: 0,
         child: PopupMenuButton(
             padding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
             child: SizedBox.shrink(),
             key: _menuKey,
             itemBuilder: (_) => <PopupMenuItem<String>>[
@@ -519,13 +522,42 @@ class _CommentWidgetState extends State<CommentWidget> {
                         value: 'delete'),
                   if (AuthBloc.instance.userModel?.id != widget.comment.userId)
                     PopupMenuItem<String>(
-                        child: Text(
-                          'Báo xấu',
-                          style: ptBody(),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              "assets/image/report_icon.png",
+                              width: 17,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'Báo xấu',
+                              style: ptBody(),
+                            ),
+                          ],
                         ),
                         value: 'report'),
+                  if (AuthBloc.instance.userModel?.id != widget.comment.userId)
+                    PopupMenuItem<String>(
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              "assets/image/messenger_icon.png",
+                              width: 17,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'Gửi tin nhắn cho ${widget.comment.user.name}',
+                              style: ptBody(),
+                            ),
+                          ],
+                        ),
+                        value: 'sendMessage'),
                 ],
-            onSelected: (val) {
+            onSelected: (val) async {
               if (val == 'report')
                 showToast('Đã gửi yêu cầu', context, isSuccess: true);
               if (val == 'delete') {
@@ -534,6 +566,22 @@ class _CommentWidgetState extends State<CommentWidget> {
                   widget.deleteCallBack();
                   FocusScope.of(context).requestFocus(FocusNode());
                 }, navigatorKey: navigatorKey);
+              }
+              if (val == 'sendMessage') {
+                audioCache.play('tab3.mp3');
+                showWaitingDialog(context);
+                await InboxBloc.instance.navigateToChatWith(
+                    widget.comment.user.name,
+                    widget.comment.user.avatar,
+                    DateTime.now(),
+                    widget.comment.user.avatar, [
+                  AuthBloc.instance.userModel.id,
+                  widget.comment.user.id,
+                ], [
+                  AuthBloc.instance.userModel.avatar,
+                  widget.comment.user.avatar,
+                ]);
+                closeLoading();
               }
             }));
     final List<ReplyModel> mergeReplies = [
@@ -549,7 +597,10 @@ class _CommentWidgetState extends State<CommentWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 5,
+            ),
             width: deviceWidth(context),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -606,11 +657,24 @@ class _CommentWidgetState extends State<CommentWidget> {
                                   ),
                                   Text(TimeAgo.timeAgoSinceDate(
                                       DateTime.tryParse(
-                                          widget.comment.updatedAt)))
+                                          widget.comment.createdAt)))
                                 ],
                               ),
-                              IconButton(
-                                  icon: Icon(Icons.more_vert), onPressed: null)
+                              Column(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.more_vert),
+                                    onPressed: () {
+                                      if (AuthBloc.instance.userModel == null)
+                                        return;
+                                      dynamic state = _menuKey.currentState;
+                                      state.showButtonMenu();
+                                    },
+                                  ),
+                                  if (AuthBloc.instance.userModel != null)
+                                    button,
+                                ],
+                              )
                             ],
                           ),
                           SizedBox(
@@ -662,6 +726,89 @@ class _CommentWidgetState extends State<CommentWidget> {
                 ),
               ],
             )),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 70,
+          ),
+          child: Row(
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      audioCache.play('tab3.mp3');
+                      if (AuthBloc.instance.userModel == null) {
+                        await navigatorKey.currentState.maybePop();
+                        LoginPage.navigatePush();
+                        return;
+                      }
+                      setState(() {
+                        _isLike = !_isLike;
+                      });
+                      if (_isLike) {
+                        widget.comment.userLikeIds
+                            .add(AuthBloc.instance.userModel.id);
+                        widget.comment.like++;
+                        _postBloc.likeComment(widget.comment.id);
+                      } else {
+                        if (widget.comment.like > 0) widget.comment.like--;
+                        _postBloc.unlikeComment(widget.comment.id);
+                      }
+                      setState(() {});
+                    },
+                    child: Container(
+                      height: 20,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Thích",
+                            style: roboto_18_700().copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w100,
+                              color: _isLike
+                                  ? ptPrimaryColor(context)
+                                  : HexColor.fromHex("#505050"),
+                            ),
+                          ),
+                          Image.asset(
+                            "assets/image/like.png",
+                            width: 20,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            widget.comment.like.toString(),
+                            style: ptTiny(),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Container(
+                      width: 1,
+                      height: 25,
+                      color: HexColor.fromHex("#505050"),
+                    ),
+                  ),
+                ],
+              ),
+              if (AuthBloc.instance.userModel != null)
+                GestureDetector(
+                  onTap: () {
+                    if (widget.tapCallBack != null) widget.tapCallBack();
+                  },
+                  child: Text(
+                    'Trả lời',
+                    style: ptTiny(),
+                  ),
+                ),
+            ],
+          ),
+        ),
+
         // CustomListTile(
         //   onTap: () {
         //     if (widget.tapCallBack != null) widget.tapCallBack();
@@ -906,6 +1053,8 @@ class _ReplyWidgetState extends State<ReplyWidget> {
   final GlobalKey _menuKey = new GlobalKey();
   List<String> contentSplit;
 
+  bool _isLike = false;
+
   @override
   void initState() {
     String content = widget.reply.content;
@@ -931,6 +1080,72 @@ class _ReplyWidgetState extends State<ReplyWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final button = SizedBox(
+        width: 0,
+        height: 0,
+        child: PopupMenuButton(
+            padding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            child: SizedBox.shrink(),
+            key: _menuKey,
+            itemBuilder: (_) => <PopupMenuItem<String>>[
+                  if (AuthBloc.instance.userModel?.id == widget.reply.user.id)
+                    PopupMenuItem<String>(
+                        child: Text(
+                          'Xóa',
+                          style: ptBody(),
+                        ),
+                        value: 'delete'),
+                  if (AuthBloc.instance.userModel?.id != widget.reply.user.id)
+                    PopupMenuItem<String>(
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              "assets/image/report_icon.png",
+                              width: 17,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'Báo xấu',
+                              style: ptBody(),
+                            ),
+                          ],
+                        ),
+                        value: 'report'),
+                  if (AuthBloc.instance.userModel?.id != widget.reply.user.id)
+                    PopupMenuItem<String>(
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              "assets/image/messenger_icon.png",
+                              width: 17,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'Gửi tin nhắn cho ${widget.reply.user.name}',
+                              style: ptBody(),
+                            ),
+                          ],
+                        ),
+                        value: 'sendMessage'),
+                ],
+            onSelected: (val) {
+              if (val == 'report')
+                showToast('Đã gửi yêu cầu', context, isSuccess: true);
+              if (val == 'delete') {
+                showConfirmDialog(context, 'Bạn muốn xóa bình luận này?',
+                    confirmTap: () {
+                  widget.deleteCallBack();
+                  FocusScope.of(context).requestFocus(FocusNode());
+                }, navigatorKey: navigatorKey);
+              }
+            }));
+
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: GestureDetector(
@@ -1010,9 +1225,22 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                                                 widget.reply.updatedAt)))
                                       ],
                                     ),
-                                    IconButton(
-                                        icon: Icon(Icons.more_vert),
-                                        onPressed: null)
+                                    Column(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.more_vert),
+                                          onPressed: () {
+                                            if (AuthBloc.instance.userModel ==
+                                                null) return;
+                                            dynamic state =
+                                                _menuKey.currentState;
+                                            state.showButtonMenu();
+                                          },
+                                        ),
+                                        if (AuthBloc.instance.userModel != null)
+                                          button,
+                                      ],
+                                    )
                                   ],
                                 ),
                                 SizedBox(
@@ -1065,6 +1293,89 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                       ),
                     ],
                   )),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 70,
+                ),
+                child: Row(
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: () async {
+                            audioCache.play('tab3.mp3');
+                            if (AuthBloc.instance.userModel == null) {
+                              await navigatorKey.currentState.maybePop();
+                              LoginPage.navigatePush();
+                              return;
+                            }
+                            setState(() {
+                              _isLike = !_isLike;
+                            });
+                            // if (_isLike) {
+                            //   widget.comment.userLikeIds
+                            //       .add(AuthBloc.instance.userModel.id);
+                            //   widget.comment.like++;
+                            //   _postBloc.likeComment(widget.comment.id);
+                            // } else {
+                            //   if (widget.comment.like > 0)
+                            //     widget.comment.like--;
+                            //   _postBloc.unlikeComment(widget.comment.id);
+                            // }
+                            // setState(() {});
+                          },
+                          child: Container(
+                            height: 20,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "Thích",
+                                  style: roboto_18_700().copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w100,
+                                    color: _isLike
+                                        ? ptPrimaryColor(context)
+                                        : HexColor.fromHex("#505050"),
+                                  ),
+                                ),
+                                Image.asset(
+                                  "assets/image/like.png",
+                                  width: 20,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  "0",
+                                  style: ptTiny(),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Container(
+                            width: 1,
+                            height: 25,
+                            color: HexColor.fromHex("#505050"),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (AuthBloc.instance.userModel != null)
+                      GestureDetector(
+                        // onTap: () {
+                        //   if (widget.tapCallBack != null) widget.tapCallBack();
+                        // },
+                        child: Text(
+                          'Trả lời',
+                          style: ptTiny(),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             ],
           )
 // child: Row(

@@ -1,21 +1,25 @@
 import 'package:datcao/main.dart';
 import 'package:datcao/modules/inbox/import/page_builder.dart';
-import 'package:datcao/modules/pages/models/registers/register_success_page.dart';
+import 'package:datcao/modules/registers/register_success_page.dart';
 import 'package:datcao/navigator.dart';
 import 'package:datcao/share/widget/expand_btn.dart';
 import 'package:datcao/themes/color.dart';
 import 'package:datcao/themes/font.dart';
 import 'package:datcao/utils/constants.dart';
+import 'package:datcao/utils/type.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class InputPinCodePage extends StatefulWidget {
   final String phoneNumber;
-  const InputPinCodePage({Key key, this.phoneNumber}) : super(key: key);
-  static Future navigate({String phoneNumber}) {
+  final String email;
+  const InputPinCodePage({Key key, this.phoneNumber, this.email})
+      : super(key: key);
+  static Future navigate({String phoneNumber, String email}) {
     return navigatorKey.currentState.push(pageBuilder(
         InputPinCodePage(
           phoneNumber: phoneNumber,
+          email: email,
         ),
         transitionBuilder: transitionRightBuilder));
   }
@@ -25,6 +29,17 @@ class InputPinCodePage extends StatefulWidget {
 }
 
 class _InputPinCodePageState extends State<InputPinCodePage> {
+  TypeRegister _typeRegister;
+  @override
+  void initState() {
+    // TODO: implement initState
+    if (widget.email == null) {
+      _typeRegister = TypeRegister.ByPhone;
+    } else
+      _typeRegister = TypeRegister.ByEmail;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,29 +73,44 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
                 height: deviceHeight(context),
                 child: Column(
                   children: [
-                    Container(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 65, vertical: 20),
-                        child: Text(
-                          "Mã xác nhận đã được gửi đến số điện thoại:",
-                          style: roboto_18_700().copyWith(
-                              fontWeight: FontWeight.w600, fontSize: 16),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 65, vertical: 20),
-                        child: Text(
-                          widget.phoneNumber,
-                          style: roboto_18_700(),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
+                    _typeRegister == TypeRegister.ByPhone
+                        ? Container(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 65, vertical: 20),
+                              child: Text(
+                                "Mã xác nhận đã được gửi đến số điện thoại:",
+                                style: roboto_18_700().copyWith(
+                                    fontWeight: FontWeight.w600, fontSize: 16),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 65, vertical: 20),
+                              child: Text(
+                                "Mã code đã được gửi đến email ${widget.email}, kiểm tra hòm thư và nhập vào bên dưới",
+                                style: roboto_18_700().copyWith(
+                                    fontWeight: FontWeight.w600, fontSize: 16),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                    _typeRegister == TypeRegister.ByPhone
+                        ? Container(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 65, vertical: 20),
+                              child: Text(
+                                widget.phoneNumber,
+                                style: roboto_18_700(),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          )
+                        : SizedBox.shrink(),
                     Padding(
                       padding: const EdgeInsets.all(30.0),
                       child: PinCodeTextField(
@@ -92,6 +122,7 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
                         length: 6,
                         obscureText: true,
                         obscuringCharacter: '*',
+
                         blinkWhenObscuring: true,
                         animationType: AnimationType.fade,
                         validator: (v) {
@@ -130,6 +161,11 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
                         ],
                         onCompleted: (v) {
                           print("Completed");
+                          _typeRegister == TypeRegister.ByPhone
+                              ? RegisterSuccessPage.navigate(
+                                  phoneNumber: widget.phoneNumber)
+                              : RegisterSuccessPage.navigate(
+                                  email: widget.email);
                         },
                         // onTap: () {
                         //   print("Pressed");

@@ -1,13 +1,18 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/comment_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/model/reply.dart';
+import 'package:datcao/modules/post/users_liked_post_page.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/custom_app_bar.dart';
 import 'package:graphql/client.dart';
 import 'dart:async';
 import 'package:datcao/share/widget/tag_user_field.dart';
@@ -205,15 +210,47 @@ class _PostDetailState extends State<PostDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar1(
-        centerTitle: true,
-        title: _post != null
-            ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
-            : '',
-        automaticallyImplyLeading: true,
-        bgColor: ptSecondaryColor(context),
-        textColor: ptPrimaryColor(context),
+      appBar: CustomAppBar(
+        leading: GestureDetector(
+          onTap: () {
+            audioCache.play('tab3.mp3');
+            Navigator.pop(context);
+          },
+          child: Image.asset(
+            "assets/image/back_icon.png",
+            width: 30,
+          ),
+        ),
+        title: Expanded(
+          child: Center(
+            child: AutoSizeText(
+              _post != null
+                  ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
+                  : '',
+              style:
+                  roboto_18_700().copyWith(color: Colors.white, fontSize: 15),
+            ),
+          ),
+        ),
+        actions: [
+          IconButton(
+              icon: Icon(
+                Icons.more_vert,
+                color: Colors.white,
+                size: 20,
+              ),
+              onPressed: null)
+        ],
       ),
+      // AppBar1(
+      //   centerTitle: true,
+      //   title: _post != null
+      //       ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
+      //       : '',
+      //   automaticallyImplyLeading: true,
+      //   bgColor: ptSecondaryColor(context),
+      //   textColor: ptPrimaryColor(context),
+      // ),
       body: Stack(
         children: [
           Container(
@@ -232,6 +269,11 @@ class _PostDetailState extends State<PostDetail> {
                         )
                       : PostWidget(_post,
                           commentCallBack: () {}, isInDetailPage: true),
+                  _post != null
+                      ? ListUsersLikedPost(
+                          postModel: _post,
+                        )
+                      : StorySkeleton(),
                   comments != null
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,6 +355,7 @@ class _PostDetailState extends State<PostDetail> {
                         keyboardPadding:
                             MediaQuery.of(context).viewInsets.bottom,
                         onTap: () {
+                          audioCache.play('tab3.mp3');
                           if (AuthBloc.instance.userModel == null) {
                             LoginPage.navigatePush();
                             return;
@@ -367,6 +410,140 @@ class _PostDetailState extends State<PostDetail> {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class ListUsersLikedPost extends StatefulWidget {
+  final PostModel postModel;
+  const ListUsersLikedPost({Key key, this.postModel}) : super(key: key);
+
+  @override
+  _ListUsersLikedPostState createState() => _ListUsersLikedPostState();
+}
+
+class _ListUsersLikedPostState extends State<ListUsersLikedPost> {
+  UserBloc _userBloc;
+
+  List<UserModel> _users;
+
+  _getUsersLikedPost() async {
+    BaseResponse res =
+        await _userBloc.getListUserIn(widget.postModel.userLikeIds);
+    if (res.isSuccess) {
+      if (mounted)
+        setState(() {
+          _users = res.data;
+        });
+    } else {
+      showToast('Có lỗi khi lấy dữ liệu', context);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_userBloc == null) {
+      _userBloc = Provider.of<UserBloc>(context);
+      _getUsersLikedPost();
+    }
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        (_users != null && _users.length > 0)
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Lượt tương tác",
+                  style: roboto().copyWith(fontSize: 13),
+                ),
+              )
+            : SizedBox(),
+        Container(
+            height: 50,
+            child: _users != null
+                ? (_users.length > 0)
+                    ? GestureDetector(
+                        onTap: () {
+                          audioCache.play('tab3.mp3');
+                          UsersLikePostPage.navigate(
+                              postID: widget.postModel.id);
+                        },
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount:
+                                      _users.length <= 6 ? _users.length : 6,
+                                  itemBuilder: (context, index) =>
+                                      UserLikePostAvatar(user: _users[index])),
+                            ),
+                            IconButton(
+                                icon: Image.asset(
+                                  "assets/image/more_hor_icon.png",
+                                  width: 50,
+                                ),
+                                onPressed: () {
+                                  UsersLikePostPage.navigate(
+                                      postID: widget.postModel.id);
+                                })
+                          ],
+                        ),
+                      )
+                    : SizedBox()
+                : StorySkeleton()),
+      ],
+    );
+  }
+}
+
+class UserLikePostAvatar extends StatelessWidget {
+  final UserModel user;
+  const UserLikePostAvatar({Key key, this.user});
+
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10.0),
+      child: GestureDetector(
+        onTap: () {
+          audioCache.play('tab3.mp3');
+          ProfileOtherPage.navigate(user);
+          audioCache.play('tab3.mp3');
+        },
+        child: Container(
+          child: Stack(
+            children: [
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  backgroundImage: user.avatar != null
+                      ? CachedNetworkImageProvider(user.avatar)
+                      : AssetImage('assets/image/default_avatar.png'),
+                ),
+              ),
+              Positioned(
+                  bottom: 3,
+                  right: 0,
+                  child: Image.asset(
+                    "assets/image/like.png",
+                    width: 20,
+                  ))
+            ],
+          ),
+        ),
       ),
     );
   }

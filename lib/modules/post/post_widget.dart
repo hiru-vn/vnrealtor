@@ -117,35 +117,38 @@ class _PostWidgetState extends State<PostWidget> {
               Padding(
                 padding: const EdgeInsets.all(15).copyWith(
                     top: 0, bottom: widget.post.postShareId != null ? 0 : 5),
-                child: GestureDetector(
-                  onTap: () {
-                    audioCache.play('tab3.mp3');
-                    if (!widget.isInDetailPage)
-                      PostDetail.navigate(widget.post);
-                  },
-                  child: Linkify(
-                    onOpen: (link) async {
-                      // if (Validator.isUrl(link.url)) {
-                      if (await canLaunch(link.url)) {
-                        await launch(link.url);
-                      } else {
-                        showToastNoContext('Đường dẫn hết hiệu lực');
-                      }
-                      // }
+                child: Container(
+                  width: deviceWidth(context),
+                  child: GestureDetector(
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
+                      if (!widget.isInDetailPage)
+                        PostDetail.navigate(widget.post);
                     },
-                    text: (widget.post?.content?.trim() ?? ''),
-                    // trimLines: 5,
-                    // trimLength: 1000,
-                    style: ptBody().copyWith(color: Colors.black87),
-                    textAlign: TextAlign.start,
-                    // colorClickableText: Colors.pink,
-                    // trimMode: TrimMode.Length,
-                    // trimCollapsedText: 'Xem thêm',
-                    // trimExpandedText: 'Rút gọn',
-                    // moreStyle: TextStyle(
-                    //   fontSize: 14,
-                    //   fontWeight: FontWeight.bold,
-                    // ),
+                    child: Linkify(
+                      onOpen: (link) async {
+                        // if (Validator.isUrl(link.url)) {
+                        if (await canLaunch(link.url)) {
+                          await launch(link.url);
+                        } else {
+                          showToastNoContext('Đường dẫn hết hiệu lực');
+                        }
+                        // }
+                      },
+                      text: (widget.post?.content?.trim() ?? ''),
+                      // trimLines: 5,
+                      // trimLength: 1000,
+                      style: ptBody().copyWith(color: Colors.black87),
+                      textAlign: TextAlign.start,
+                      // colorClickableText: Colors.pink,
+                      // trimMode: TrimMode.Length,
+                      // trimCollapsedText: 'Xem thêm',
+                      // trimExpandedText: 'Rút gọn',
+                      // moreStyle: TextStyle(
+                      //   fontSize: 14,
+                      //   fontWeight: FontWeight.bold,
+                      // ),
+                    ),
                   ),
                 ),
               ),

@@ -1,9 +1,8 @@
 import 'package:datcao/main.dart';
-import 'package:datcao/modules/pages/models/registers/form_register_page.dart';
-import 'package:datcao/modules/pages/models/registers/input_code_page.dart';
+import 'package:datcao/modules/registers/form_register_page.dart';
+import 'package:datcao/modules/registers/input_code_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:sentry/sentry.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key key}) : super(key: key);
@@ -145,11 +144,12 @@ class ResisterByPhoneForm extends StatefulWidget {
 
 class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
   PhoneNumber _initPhoneNumber = PhoneNumber(isoCode: 'VN');
-
+  TextEditingController _controller;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _controller = TextEditingController();
   }
 
   @override
@@ -165,10 +165,12 @@ class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
             child: InternationalPhoneNumberInput(
               onInputChanged: (PhoneNumber number) {
                 print(number.phoneNumber);
+                _initPhoneNumber = number;
               },
               onInputValidated: (bool value) {
                 print(value);
               },
+              textFieldController: _controller,
               initialValue: _initPhoneNumber,
               selectorConfig: SelectorConfig(
                 selectorType: PhoneInputSelectorType.DIALOG,
@@ -181,7 +183,6 @@ class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
               selectorTextStyle: TextStyle(
                 color: HexColor.fromHex("#BBBBBB"),
               ),
-              // textFieldController: controller,
               formatInput: false,
               hintText: "Số điện thoại",
               keyboardType:
@@ -198,21 +199,36 @@ class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
           ExpandBtn(
               width: 200,
               text: "TIẾP THEO",
-              onPress: () =>
-                  InputPinCodePage.navigate(phoneNumber: "+84375475075"))
+              onPress: () => InputPinCodePage.navigate(
+                  phoneNumber: _initPhoneNumber.phoneNumber))
         ],
       ),
     );
   }
 }
 
-class ResisterByEmailForm extends StatelessWidget {
+class ResisterByEmailForm extends StatefulWidget {
+  @override
+  _ResisterByEmailFormState createState() => _ResisterByEmailFormState();
+}
+
+class _ResisterByEmailFormState extends State<ResisterByEmailForm> {
+  TextEditingController _controller;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _controller = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
         children: [
           CustomInputField(
+            controller: _controller,
             icon: Image.asset(
               "assets/image/email_icon.png",
               width: 30,
@@ -222,7 +238,11 @@ class ResisterByEmailForm extends StatelessWidget {
           SizedBox(
             height: 150,
           ),
-          ExpandBtn(width: 200, text: "TIẾP THEO", onPress: null)
+          ExpandBtn(
+            width: 200,
+            text: "TIẾP THEO",
+            onPress: () => InputPinCodePage.navigate(email: _controller.text),
+          )
         ],
       ),
     );

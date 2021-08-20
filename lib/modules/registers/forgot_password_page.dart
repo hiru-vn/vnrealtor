@@ -1,19 +1,26 @@
 import 'package:datcao/main.dart';
-import 'package:datcao/modules/pages/models/registers/form_register_page.dart';
+import 'package:datcao/modules/registers/form_register_page.dart';
 import 'package:datcao/share/import.dart';
 
-class RegisterSuccessPage extends StatefulWidget {
-  const RegisterSuccessPage({Key key}) : super(key: key);
-  static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(RegisterSuccessPage(),
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({
+    Key key,
+  }) : super(key: key);
+  static Future navigate({String phoneNumber, String email}) {
+    return navigatorKey.currentState.push(pageBuilder(ForgotPasswordPage(),
         transitionBuilder: transitionRightBuilder));
   }
 
   @override
-  _RegisterSuccessPageState createState() => _RegisterSuccessPageState();
+  _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
 }
 
-class _RegisterSuccessPageState extends State<RegisterSuccessPage> {
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,10 +44,16 @@ class _RegisterSuccessPageState extends State<RegisterSuccessPage> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 80),
+                      padding:
+                          const EdgeInsets.only(left: 40, right: 40, top: 40),
+                      child: Center(
+                          child: Image.asset("assets/image/security.png")),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 40, right: 40, bottom: 40, top: 20),
                       child: Text(
-                        "ĐĂNG KÝ THÀNH CÔNG!",
+                        "QUÊN MẬT KHẨU?",
                         style: roboto_18_700().copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 20,
@@ -50,27 +63,19 @@ class _RegisterSuccessPageState extends State<RegisterSuccessPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40),
-                      child: Text(
-                        "Bây giờ bạn có thể điền các thông tin cơ bản để hoàn thiện tài khoản!",
-                        style: roboto_18_700().copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 14,
-                          color: Colors.black,
+                      padding: const EdgeInsets.only(
+                          left: 40, right: 40, bottom: 40),
+                      child: CustomInputField(
+                        icon: Image.asset(
+                          "assets/image/phone_icon.png",
+                          width: 25,
                         ),
-                        textAlign: TextAlign.center,
+                        hintText: "Số điện thoại hoặc email",
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 30),
-                      child: Center(
-                          child: Image.asset("assets/image/success.png")),
-                    ),
                     ExpandBtn(
-                      text: "Bắt đầu",
-                      onPress: () => {FormRegisterPage.navigate()},
+                      text: "Khôi phục mật khẩu",
+                      onPress: null,
                       width: 200,
                     )
                   ],
