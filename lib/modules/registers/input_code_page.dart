@@ -1,7 +1,9 @@
 import 'package:datcao/main.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/inbox/import/page_builder.dart';
 import 'package:datcao/modules/registers/register_success_page.dart';
 import 'package:datcao/navigator.dart';
+import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/widget/expand_btn.dart';
 import 'package:datcao/themes/color.dart';
 import 'package:datcao/themes/font.dart';
@@ -9,6 +11,7 @@ import 'package:datcao/utils/constants.dart';
 import 'package:datcao/utils/type.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:provider/provider.dart';
 
 class InputPinCodePage extends StatefulWidget {
   final String phoneNumber;
@@ -30,6 +33,10 @@ class InputPinCodePage extends StatefulWidget {
 
 class _InputPinCodePageState extends State<InputPinCodePage> {
   TypeRegister _typeRegister;
+  AuthBloc _authBloc;
+
+  TextEditingController _otpC;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -37,7 +44,23 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
       _typeRegister = TypeRegister.ByPhone;
     } else
       _typeRegister = TypeRegister.ByEmail;
+    _otpC = TextEditingController();
     super.initState();
+  }
+
+  _codeSubmit() async {
+    print(_otpC.text);
+    showWaitingDialog(context);
+    await _authBloc.submitOtpRegister(widget.phoneNumber, _otpC.text);
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    if (_authBloc == null) {
+      _authBloc = Provider.of<AuthBloc>(context);
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -122,12 +145,12 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
                         length: 6,
                         obscureText: true,
                         obscuringCharacter: '*',
-
+                        controller: _otpC,
                         blinkWhenObscuring: true,
                         animationType: AnimationType.fade,
                         validator: (v) {
                           if (v.length < 3) {
-                            return "I'm from validator";
+                            return "Invalid code";
                           } else {
                             return null;
                           }
@@ -160,12 +183,8 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
                           )
                         ],
                         onCompleted: (v) {
-                          print("Completed");
-                          _typeRegister == TypeRegister.ByPhone
-                              ? RegisterSuccessPage.navigate(
-                                  phoneNumber: widget.phoneNumber)
-                              : RegisterSuccessPage.navigate(
-                                  email: widget.email);
+                          print(v);
+                          _codeSubmit();
                         },
                         // onTap: () {
                         //   print("Pressed");
@@ -173,7 +192,7 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
                         onChanged: (value) {
                           print(value);
                           setState(() {
-                            // currentText = value;
+                            // _otpC.text = value;
                           });
                         },
                         beforeTextPaste: (text) {
@@ -186,7 +205,7 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
                     ),
                     ExpandBtn(
                       text: "XÁC NHẬN",
-                      onPress: () => RegisterSuccessPage.navigate(),
+                      onPress: () => _codeSubmit(),
                       width: 200,
                     ),
                     Padding(

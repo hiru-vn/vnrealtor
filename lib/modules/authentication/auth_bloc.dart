@@ -195,7 +195,7 @@ class AuthBloc extends ChangeNotifier {
   Future requestOtpRegister(String phone, {bool isResend = false}) async {
     try {
       final String phoneNumber =
-          (phone.startsWith('+') ? "+" : "+84") + phone.toString().substring(1);
+          (phone.startsWith('+') ? "+" : "+84") + phone.toString();
       authStatusSink.add(AuthResponse.requestOtp());
       _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
@@ -260,10 +260,17 @@ class AuthBloc extends ChangeNotifier {
     try {
       authCredential = PhoneAuthProvider.credential(
           verificationId: smsVerifyCode, smsCode: otp);
-      authStatusSink.add(AuthResponse.successOtp());
+      final authCredentia = await _auth.signInWithCredential(authCredential);
+      if (authCredentia?.user != null) {
+        authStatusSink.add(AuthResponse.successOtp());
+      } else {
+        authStatusSink.add(AuthResponse.fail("OTP không hợp lệ"));
+      }
       authCredential = authCredential;
     } catch (e) {
-      authStatusSink.add(AuthResponse.fail(e?.toString()));
+      print(e.code);
+      authStatusSink.add(
+          AuthResponse.fail(Formart.formatErrFirebaseLoginToString(e.code)));
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/registers/create_account_success_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_app_bar.dart';
@@ -25,7 +26,15 @@ class FormRegisterPage extends StatefulWidget {
 class _FormRegisterPageState extends State<FormRegisterPage> {
   bool _agree;
   TypeRegister _typeRegister;
+  TextEditingController _passC = TextEditingController(),
+      _rePassC = TextEditingController(),
+      _usernameC = TextEditingController(),
+      _nameC = TextEditingController(),
+      _phoneC = TextEditingController(),
+      _emailC = TextEditingController();
 
+  final _formKey = GlobalKey<FormState>();
+  AuthBloc _authBloc;
   @override
   void initState() {
     // TODO: implement initState
@@ -35,6 +44,22 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
       _typeRegister = TypeRegister.ByPhone;
     } else
       _typeRegister = TypeRegister.ByEmail;
+  }
+
+  _submitRegister() async {
+    if (!_formKey.currentState.validate()) return;
+    showWaitingDialog(context);
+    _authBloc.submitRegister(
+        _nameC.text, _emailC.text, _passC.text, widget.phoneNumber);
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    if (_authBloc == null) {
+      _authBloc = Provider.of<AuthBloc>(context);
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -89,6 +114,7 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                       Padding(
                         padding: const EdgeInsets.all(30.0),
                         child: Form(
+                          key: _formKey,
                           child: Column(
                             children: [
                               CustomInputField(
@@ -96,13 +122,17 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                   "assets/image/name_icon.png",
                                   width: 25,
                                 ),
+                                validator: TextFieldValidator.notEmptyValidator,
                                 hintText: "Username",
+                                controller: _usernameC,
                               ),
                               CustomInputField(
                                 icon: Image.asset(
                                   "assets/image/user_icon.png",
                                   width: 25,
                                 ),
+                                controller: _nameC,
+                                validator: TextFieldValidator.notEmptyValidator,
                                 hintText: "Họ tên",
                               ),
                               _typeRegister == TypeRegister.ByPhone
@@ -111,6 +141,9 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                         "assets/image/email_icon.png",
                                         width: 25,
                                       ),
+                                      controller: _emailC,
+                                      validator:
+                                          TextFieldValidator.emailValidator,
                                       hintText: "Email",
                                     )
                                   : CustomInputField(
@@ -118,6 +151,9 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                         "assets/image/phone_icon.png",
                                         width: 25,
                                       ),
+                                      controller: _phoneC,
+                                      validator:
+                                          TextFieldValidator.phoneValidator,
                                       hintText: "Phone",
                                     ),
                               CustomInputField(
@@ -126,6 +162,8 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                   width: 25,
                                 ),
                                 hintText: "Mật khẩu",
+                                controller: _passC,
+                                validator: TextFieldValidator.passValidator,
                                 obscureText: true,
                               ),
                               CustomInputField(
@@ -133,6 +171,7 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                   "assets/image/password_icon.png",
                                   width: 25,
                                 ),
+                                controller: _rePassC,
                                 hintText: "Nhập lại mật khẩu",
                                 obscureText: true,
                               ),
@@ -172,10 +211,8 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                               ),
                               ExpandBtn(
                                 text: "ĐĂNG KÝ",
-                                onPress: () =>
-                                    CreateAccountSuccessPage.navigate(
-                                        phoneNumber: widget.phoneNumber,
-                                        email: widget.email),
+                                onPress:
+                                    _agree ? () => _submitRegister() : null,
                                 width: 200,
                               ),
                               Padding(
@@ -224,13 +261,14 @@ class CustomInputField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
   final TextEditingController controller;
-
+  final Function(String) validator;
   const CustomInputField({
     Key key,
     this.icon,
     this.hintText,
     this.controller,
     this.obscureText = false,
+    this.validator,
   }) : super(key: key);
 
   @override
@@ -255,6 +293,7 @@ class CustomInputField extends StatelessWidget {
                 cursorColor: ptMainColor(),
                 obscureText: obscureText,
                 controller: controller,
+                validator: validator,
                 decoration: InputDecoration(
                   hintText: hintText,
                   hintStyle: roboto_18_700().copyWith(

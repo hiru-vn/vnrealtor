@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:datcao/main.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/modules/registers/form_register_page.dart';
 import 'package:datcao/modules/registers/input_code_page.dart';
+import 'package:datcao/modules/registers/register_success_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
@@ -144,12 +149,61 @@ class ResisterByPhoneForm extends StatefulWidget {
 
 class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
   PhoneNumber _initPhoneNumber = PhoneNumber(isoCode: 'VN');
-  TextEditingController _controller;
+  AuthBloc _authBloc;
+  StreamSubscription listener;
+  bool _validPhone = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _controller = TextEditingController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_authBloc == null) {
+      _authBloc = Provider.of<AuthBloc>(context);
+      listener = _authBloc.authStatusStream.listen((event) async {
+        if (event.status == AuthStatus.authFail) {
+          closeLoading();
+          showToast(event.errMessage, context);
+        }
+        if (event.status == AuthStatus.authSucces) {
+          HomePage.navigate();
+        }
+        if (event.status == AuthStatus.otpSent) {
+          closeLoading();
+          InputPinCodePage.navigate(
+            phoneNumber: "0" + _initPhoneNumber.parseNumber(),
+          );
+        }
+        if (event.status == AuthStatus.requestOtp) {}
+        if (event.status == AuthStatus.successOtp) {
+          closeLoading();
+          RegisterSuccessPage.navigate(
+              phoneNumber: "0" + _initPhoneNumber.parseNumber());
+          // navigatorKey.currentState.maybePop();
+        }
+      });
+    }
+    super.didChangeDependencies();
+  }
+
+  void _submitPhoneNumber() {
+    if (_validPhone) {
+      showWaitingDialog(context);
+      print(_initPhoneNumber.phoneNumber);
+      _authBloc.requestOtpRegister(_initPhoneNumber.parseNumber());
+    } else {
+      showToast("Số điện thoại không hợp lệ", context);
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    listener.cancel();
+    _authBloc.authStatusSink.add(AuthResponse.unAuthed());
+    super.dispose();
   }
 
   @override
@@ -169,8 +223,12 @@ class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
               },
               onInputValidated: (bool value) {
                 print(value);
+                _validPhone = value;
               },
-              textFieldController: _controller,
+              validator: (value) {
+                if (value.length < 10) return "Số điện thoại không hợp lệ";
+                return null;
+              },
               initialValue: _initPhoneNumber,
               selectorConfig: SelectorConfig(
                 selectorType: PhoneInputSelectorType.DIALOG,
@@ -179,12 +237,16 @@ class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
                 hintText: "Tìm kiếm",
               ),
               ignoreBlank: false,
+              maxLength: 11,
               autoValidateMode: AutovalidateMode.disabled,
               selectorTextStyle: TextStyle(
                 color: HexColor.fromHex("#BBBBBB"),
               ),
               formatInput: false,
               hintText: "Số điện thoại",
+              onSubmit: () {
+                print(_initPhoneNumber.phoneNumber);
+              },
               keyboardType:
                   TextInputType.numberWithOptions(signed: true, decimal: true),
               inputBorder: InputBorder.none,
@@ -197,10 +259,10 @@ class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
             height: 150,
           ),
           ExpandBtn(
-              width: 200,
-              text: "TIẾP THEO",
-              onPress: () => InputPinCodePage.navigate(
-                  phoneNumber: _initPhoneNumber.phoneNumber))
+            width: 200,
+            text: "TIẾP THEO",
+            onPress: () => _submitPhoneNumber(),
+          ),
         ],
       ),
     );

@@ -186,6 +186,9 @@ class Formart {
   static String formatErrFirebaseLoginToString(String err) {
     String message = "";
     switch (err) {
+      case "invalid-verification-code":
+        message = "Mã OTP không hợp lệ";
+        break;
       case "missing-client-identifier":
         message = "Thiếu mã SHA-1 trên thiết bị";
         break;
