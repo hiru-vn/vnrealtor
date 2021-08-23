@@ -1,4 +1,5 @@
 import 'package:datcao/main.dart';
+import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/modules/registers/form_register_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/utils/type.dart';
@@ -93,7 +94,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
                     ),
                     ExpandBtn(
                       text: "Bắt đầu",
-                      onPress: null,
+                      onPress: () => HomePage.navigate(),
                       width: 200,
                     )
                   ],

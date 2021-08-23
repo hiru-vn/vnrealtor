@@ -12,6 +12,7 @@ class UserRepo {
 
   Future registerWithPhone(
       {String name,
+      String username,
       String email,
       String password,
       String phone,
@@ -19,6 +20,7 @@ class UserRepo {
     final res = await UserSrv().mutate(
         'registerWithPhone',
         '''
+username: "${username.trim()}"
 name: "${name.trim()}"
 email: ${(email != null && email.trim() != '') ? "\"$email\"" : null}
 password: "$password"
@@ -27,6 +29,54 @@ idToken: "$idToken"
     ''',
         fragment: 'token user { $userFragment }');
     return res['registerWithPhone'];
+  }
+
+  Future registerWithEmail(
+      {String name,
+      String username,
+      String email,
+      String password,
+      String phone,
+      String emailToken}) async {
+    final res = await UserSrv().mutate(
+        'registerWithEmail',
+        '''
+username: "${username.trim()}"
+name: "${name.trim()}"
+email: ${(email != null && email.trim() != '') ? "\"$email\"" : null}
+password: "$password"
+phone: "$phone"
+emailToken: "$emailToken"
+    ''',
+        fragment: 'token user { $userFragment }');
+    print(res);
+    return res['registerWithEmail'];
+  }
+
+  Future sendMailVer({
+    String email,
+  }) async {
+    final res = await UserSrv().mutate(
+      'sendMailVer',
+      '''
+email: ${(email != null && email.trim() != '') ? "\"$email\"" : null}
+    ''',
+    );
+    print(res);
+    return res['sendMailVer'];
+  }
+
+  Future verifyMail({String email, String code}) async {
+    final res = await UserSrv().mutate(
+      'verifyMail',
+      '''
+email: ${(email != null && email.trim() != '') ? "\"$email\"" : null}
+code: "$code"
+
+    ''',
+    );
+    print(res);
+    return res['verifyMail'];
   }
 
   Future registerCompany(String name, String ownerName, String email,
@@ -168,9 +218,15 @@ Page: "$page"
   //   return res['getAllUserForClient'];
   // }
 
-  Future checkValidUser(String email, String phone) async {
+  Future checkValidByEmail(String email) async {
     final res = await UserSrv().mutate('checkValidUser', '''
 email: ${(email != null && email.trim() != '') ? "\"$email\"" : null}
+    ''');
+    return res['checkValidUser'];
+  }
+
+  Future checkValidByPhone(String phone) async {
+    final res = await UserSrv().mutate('checkValidUser', '''
 phone: "$phone"
     ''');
     return res['checkValidUser'];

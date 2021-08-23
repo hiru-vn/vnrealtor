@@ -123,13 +123,19 @@ class AuthBloc extends ChangeNotifier {
   }
 
   //Register with email & password
-  Future<BaseResponse> registerWithPhoneAuth(PhoneAuthCredential phoneAuth,
-      String name, String email, String password, String phone) async {
+  Future<BaseResponse> registerWithPhoneAuth(
+      {PhoneAuthCredential phoneAuth,
+      String name,
+      String email,
+      String password,
+      String phone,
+      String username}) async {
     try {
       final auth = await FirebaseAuth.instance.signInWithCredential(phoneAuth);
       if (auth == null) return BaseResponse.fail('Không tìm thấy tài khoản');
       final fbToken = await auth.user.getIdToken();
       final loginRes = await _userRepo.registerWithPhone(
+          username: username,
           name: name,
           email: email,
           password: password,
@@ -140,6 +146,34 @@ class AuthBloc extends ChangeNotifier {
       userModel = UserModel.fromJson(loginRes['user']);
       await loginFirebase(userModel);
 
+      UserBloc.instance.init();
+      PostBloc.instance.init();
+      firstLogin = true;
+      return BaseResponse.success(loginRes);
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    }
+  }
+
+  Future<BaseResponse> registerWithEmail(
+      {String name,
+      String email,
+      String password,
+      String phone,
+      String username}) async {
+    try {
+      final emailToken = await SPref.instance.get('emailToken');
+      final loginRes = await _userRepo.registerWithEmail(
+          username: username,
+          name: name,
+          email: email,
+          password: password,
+          phone: phone,
+          emailToken: emailToken);
+      await SPref.instance.set('token', loginRes['token']);
+      await SPref.instance.set('id', loginRes['user']["id"]);
+      userModel = UserModel.fromJson(loginRes['user']);
+      await loginFirebase(userModel);
       UserBloc.instance.init();
       PostBloc.instance.init();
       firstLogin = true;
@@ -189,6 +223,30 @@ class AuthBloc extends ChangeNotifier {
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e?.toString());
+    }
+  }
+
+  Future sendMailVer(String email) async {
+    try {
+      final sendMailRes = await _userRepo.sendMailVer(email: email);
+      if (sendMailRes) {
+        authStatusSink.add(AuthResponse.otpSent());
+      }
+    } catch (e) {
+      authStatusSink.add(AuthResponse.fail(e.toString()));
+    }
+  }
+
+  Future verifyMail(String email, String code) async {
+    try {
+      final verifyMailRes =
+          await _userRepo.verifyMail(email: email, code: code);
+      if (verifyMailRes != null) {
+        await SPref.instance.set('emailToken', verifyMailRes);
+        authStatusSink.add(AuthResponse.successOtp());
+      }
+    } catch (e) {
+      authStatusSink.add(AuthResponse.fail(e.toString()));
     }
   }
 
@@ -275,10 +333,46 @@ class AuthBloc extends ChangeNotifier {
   }
 
   Future<BaseResponse> submitRegister(
-      String name, String email, String password, String phone) async {
+      {String name,
+      String email,
+      String password,
+      String phone,
+      String username}) async {
     try {
       final res = await registerWithPhoneAuth(
-          authCredential, name, email, password, phone);
+        phoneAuth: authCredential,
+        name: name,
+        email: email,
+        password: password,
+        phone: phone,
+        username: username,
+      );
+      if (res.isSuccess) {
+        authStatusSink.add(AuthResponse.success());
+      } else {
+        authStatusSink.add(AuthResponse.fail(res.errMessage));
+      }
+      return res;
+    } catch (e) {
+      authStatusSink.add(AuthResponse.fail(e?.toString()));
+      return BaseResponse.fail(e?.toString());
+    }
+  }
+
+  Future<BaseResponse> submitRegisterByEmail(
+      {String name,
+      String email,
+      String password,
+      String phone,
+      String username}) async {
+    try {
+      final res = await registerWithEmail(
+          email: email,
+          name: name,
+          password: password,
+          phone: phone,
+          username: username);
+
       if (res.isSuccess) {
         authStatusSink.add(AuthResponse.success());
       } else {

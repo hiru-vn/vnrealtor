@@ -87,6 +87,12 @@ class TextFieldValidator {
     return null;
   }
 
+  static String usernameValidator(String string) {
+    if (RegExp("r^(?=[a-zA-Z0-9._]{8,20}\$)(?!.*[_.]{2})[^_.].*[^_.]\$")
+        .hasMatch(string)) return 'Username không hợp lệ';
+    return null;
+  }
+
   static String numberValidator(String string) {
     if (double.tryParse(string.replaceAll(',', '')) == null)
       return 'Số không hợp lệ';

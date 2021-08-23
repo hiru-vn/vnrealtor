@@ -75,8 +75,8 @@ class _RegisterPageState extends State<RegisterPage> {
   _submitPhone() async {
     if (!_formKey.currentState.validate()) return;
     showWaitingDialog(context);
-    final res = await UserBloc.instance
-        .checkValidUser(_emailC.text, _phoneC.text.replaceAll(' ', ''));
+    final res = await UserBloc.instance.checkValidUser(
+        email: _emailC.text, phone: _phoneC.text.replaceAll(' ', ''));
     if (res.isSuccess) {
       _authBloc.requestOtpRegister(_phoneC.text);
     } else {
@@ -89,10 +89,12 @@ class _RegisterPageState extends State<RegisterPage> {
   _submitRegister() async {
     if (!_formKey.currentState.validate()) return;
     showWaitingDialog(context);
-
     if (!widget.isCompany)
-      _authBloc.submitRegister(_nameC.text, _emailC.text, _passC.text,
-          _phoneC.text.replaceAll(' ', ''));
+      _authBloc.submitRegister(
+          name: _nameC.text,
+          email: _emailC.text,
+          password: _passC.text,
+          phone: _phoneC.text.replaceAll(' ', ''));
     else
       _authBloc.submitRegisterCompany(_nameC.text, _ownerName.text,
           _emailC.text, _passC.text, _phoneC.text.replaceAll(' ', ''));

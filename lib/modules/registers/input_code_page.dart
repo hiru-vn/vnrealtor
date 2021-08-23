@@ -51,7 +51,11 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
   _codeSubmit() async {
     print(_otpC.text);
     showWaitingDialog(context);
-    await _authBloc.submitOtpRegister(widget.phoneNumber, _otpC.text);
+    if (_typeRegister == TypeRegister.ByPhone) {
+      await _authBloc.submitOtpRegister(widget.phoneNumber, _otpC.text);
+    } else {
+      await _authBloc.verifyMail(widget.email, _otpC.text);
+    }
   }
 
   @override

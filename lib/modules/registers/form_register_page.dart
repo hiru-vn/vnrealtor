@@ -49,8 +49,22 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
   _submitRegister() async {
     if (!_formKey.currentState.validate()) return;
     showWaitingDialog(context);
-    _authBloc.submitRegister(
-        _nameC.text, _emailC.text, _passC.text, widget.phoneNumber);
+    if (_typeRegister == TypeRegister.ByPhone) {
+      _authBloc.submitRegister(
+        name: _nameC.text,
+        email: _emailC.text,
+        password: _passC.text,
+        phone: widget.phoneNumber,
+        username: _usernameC.text,
+      );
+    } else {
+      _authBloc.submitRegisterByEmail(
+          email: widget.email,
+          name: _nameC.text,
+          username: _usernameC.text,
+          password: _passC.text,
+          phone: _phoneC.text);
+    }
   }
 
   @override
@@ -122,7 +136,7 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                   "assets/image/name_icon.png",
                                   width: 25,
                                 ),
-                                validator: TextFieldValidator.notEmptyValidator,
+                                validator: TextFieldValidator.usernameValidator,
                                 hintText: "Username",
                                 controller: _usernameC,
                               ),

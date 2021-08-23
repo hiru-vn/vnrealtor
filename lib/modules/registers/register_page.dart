@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:datcao/main.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/home_page.dart';
+import 'package:datcao/modules/registers/create_account_success_page.dart';
 import 'package:datcao/modules/registers/form_register_page.dart';
 import 'package:datcao/modules/registers/input_code_page.dart';
 import 'package:datcao/modules/registers/register_success_page.dart';
@@ -168,7 +170,7 @@ class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
           showToast(event.errMessage, context);
         }
         if (event.status == AuthStatus.authSucces) {
-          HomePage.navigate();
+          CreateAccountSuccessPage.navigate();
         }
         if (event.status == AuthStatus.otpSent) {
           closeLoading();
@@ -188,11 +190,17 @@ class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
     super.didChangeDependencies();
   }
 
-  void _submitPhoneNumber() {
+  void _submitPhoneNumber() async {
     if (_validPhone) {
       showWaitingDialog(context);
-      print(_initPhoneNumber.phoneNumber);
-      _authBloc.requestOtpRegister(_initPhoneNumber.parseNumber());
+      final res = await UserBloc.instance
+          .checkValidUser(phone: "0" + _initPhoneNumber.parseNumber());
+      if (res.isSuccess) {
+        _authBloc.requestOtpRegister(_initPhoneNumber.parseNumber());
+      } else {
+        closeLoading();
+        showToast(res.errMessage, context);
+      }
     } else {
       showToast("Số điện thoại không hợp lệ", context);
     }
@@ -277,6 +285,10 @@ class ResisterByEmailForm extends StatefulWidget {
 class _ResisterByEmailFormState extends State<ResisterByEmailForm> {
   TextEditingController _controller;
 
+  AuthBloc _authBloc;
+  StreamSubscription listener;
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -285,27 +297,82 @@ class _ResisterByEmailFormState extends State<ResisterByEmailForm> {
   }
 
   @override
+  void didChangeDependencies() {
+    if (_authBloc == null) {
+      _authBloc = Provider.of<AuthBloc>(context);
+      listener = _authBloc.authStatusStream.listen((event) async {
+        if (event.status == AuthStatus.authFail) {
+          closeLoading();
+          showToast(event.errMessage, context);
+        }
+        if (event.status == AuthStatus.authSucces) {
+          CreateAccountSuccessPage.navigate();
+        }
+        if (event.status == AuthStatus.otpSent) {
+          closeLoading();
+          InputPinCodePage.navigate(
+            email: _controller.text,
+          );
+        }
+        if (event.status == AuthStatus.requestOtp) {}
+        if (event.status == AuthStatus.successOtp) {
+          closeLoading();
+          RegisterSuccessPage.navigate(email: _controller.text);
+          // navigatorKey.currentState.maybePop();
+        }
+      });
+    }
+    super.didChangeDependencies();
+  }
+
+  void _submitEmail() async {
+    if (!_formKey.currentState.validate()) return;
+    showWaitingDialog(context);
+    // _authBloc.sendMailVer(_controller.text);
+
+    final res = await UserBloc.instance.checkValidUser(email: _controller.text);
+    if (res.isSuccess) {
+      _authBloc.sendMailVer(_controller.text);
+    } else {
+      closeLoading();
+      showToast(res.errMessage, context);
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    listener.cancel();
+    _authBloc.authStatusSink.add(AuthResponse.unAuthed());
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        children: [
-          CustomInputField(
-            controller: _controller,
-            icon: Image.asset(
-              "assets/image/email_icon.png",
-              width: 30,
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            CustomInputField(
+              controller: _controller,
+              validator: TextFieldValidator.emailValidator,
+              icon: Image.asset(
+                "assets/image/email_icon.png",
+                width: 30,
+              ),
+              hintText: "Email",
             ),
-            hintText: "Email",
-          ),
-          SizedBox(
-            height: 150,
-          ),
-          ExpandBtn(
-            width: 200,
-            text: "TIẾP THEO",
-            onPress: () => InputPinCodePage.navigate(email: _controller.text),
-          )
-        ],
+            SizedBox(
+              height: 150,
+            ),
+            ExpandBtn(
+              width: 200,
+              text: "TIẾP THEO",
+              onPress: () => _submitEmail(),
+            )
+          ],
+        ),
       ),
     );
   }
