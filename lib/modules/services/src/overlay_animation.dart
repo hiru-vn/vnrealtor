@@ -28,7 +28,8 @@ class _AnimatedOverlay extends StatefulWidget {
   _AnimatedOverlayState createState() => _AnimatedOverlayState();
 }
 
-class _AnimatedOverlayState extends State<_AnimatedOverlay> with TickerProviderStateMixin {
+class _AnimatedOverlayState extends State<_AnimatedOverlay>
+    with TickerProviderStateMixin {
   AnimationController _controller;
 
   CancelableOperation _autoHideOperation;
@@ -42,7 +43,9 @@ class _AnimatedOverlayState extends State<_AnimatedOverlay> with TickerProviderS
   /// [immediately] True to dismiss notification immediately.
   ///
   Future hide({bool immediately = false}) async {
-    if (!immediately && !_controller.isDismissed && _controller.status == AnimationStatus.forward) {
+    if (!immediately &&
+        !_controller.isDismissed &&
+        _controller.status == AnimationStatus.forward) {
       await _controller.forward(from: _controller.value);
     }
     _autoHideOperation?.cancel();
@@ -52,17 +55,20 @@ class _AnimatedOverlayState extends State<_AnimatedOverlay> with TickerProviderS
   @override
   void initState() {
     _controller = AnimationController(
-        vsync: this, duration: widget.animationDuration, debugLabel: 'AnimatedOverlayShowHideAnimation');
+        vsync: this,
+        duration: widget.animationDuration,
+        debugLabel: 'AnimatedOverlayShowHideAnimation');
     super.initState();
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.dismissed) {
         OverlaySupportEntry._entriesGlobal[widget.key].dismiss(animate: false);
       } else if (status == AnimationStatus.completed) {
         if (widget.duration > Duration.zero) {
-          _autoHideOperation = CancelableOperation.fromFuture(Future.delayed(widget.duration))
-            ..value.whenComplete(() {
-              hide();
-            });
+          _autoHideOperation =
+              CancelableOperation.fromFuture(Future.delayed(widget.duration))
+                ..value.whenComplete(() {
+                  hide();
+                });
         }
       }
     });
@@ -81,7 +87,8 @@ class _AnimatedOverlayState extends State<_AnimatedOverlay> with TickerProviderS
     return AnimatedBuilder(
         animation: _controller,
         builder: (context, _) {
-          return widget.builder(context, widget.curve.transform(_controller.value));
+          return widget.builder(
+              context, widget.curve.transform(_controller.value));
         });
   }
 }

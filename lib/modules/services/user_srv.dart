@@ -27,6 +27,9 @@ followingIds: [ID]
 savedPostIds: [ID]
 totalPost
 notiCount
+sharePoint
+commentPoint
+likePoint
 description
 facebookUrl
 isVerify

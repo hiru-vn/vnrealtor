@@ -608,6 +608,9 @@ user {
   avatar
   totalPost
   facebookUrl
+  sharePoint
+  commentPoint
+  likePoint
   description
 }
 rawContent

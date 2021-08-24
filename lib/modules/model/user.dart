@@ -21,6 +21,10 @@ class UserModel {
   List<String> groupIds;
   int totalPost;
   int notiCount;
+  int likePoint;
+  int sharePoint;
+  int commentPoint;
+  int totalPoint;
   String description;
   String facebookUrl;
   SettingModel setting;
@@ -46,6 +50,10 @@ class UserModel {
       this.totalPost,
       this.followerIds,
       this.notiCount,
+      this.likePoint,
+      this.sharePoint,
+      this.commentPoint,
+      this.totalPoint,
       this.followingIds,
       this.savedPostIds,
       this.groupIds,
@@ -82,6 +90,10 @@ class UserModel {
     savedPostIds =
         json['savedPostIds'] != null ? json['savedPostIds'].cast<String>() : [];
     notiCount = json['notiCount'];
+    likePoint = json['likePoint'];
+    sharePoint = json['sharePoint'];
+    commentPoint = json['commentPoint'];
+    totalPoint = json['likePoint'] + json['sharePoint'] + json['commentPoint'];
     description = json['description'];
     facebookUrl = json['facebookUrl'];
     isMod = json['isMod'] ?? false;

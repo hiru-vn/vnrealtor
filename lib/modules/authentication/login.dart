@@ -121,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         );
       } else {
-        // showToast(res.errMessage, context);
+        showToast(res.errMessage, context);
       }
     } catch (e) {} finally {}
   }

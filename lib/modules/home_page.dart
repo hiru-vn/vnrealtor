@@ -7,6 +7,8 @@ import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/group/group_page.dart';
 import 'package:datcao/modules/notification/notification_page.dart';
 import 'package:datcao/modules/pages/pages/pages_page.dart';
+import 'package:datcao/modules/post/create_post_page.dart';
+import 'package:datcao/modules/post/create_post_screen.dart';
 import 'package:datcao/modules/post/post_page.dart';
 import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/modules/setting/setting_page.dart';
@@ -57,6 +59,7 @@ class _HomePageState extends State<HomePage>
             PostPage(),
             NotificationPage(),
             GroupPage(),
+            CreatePostScreen(),
             PagesPage(),
             ProfilePage(),
             SettingPage(),
@@ -80,6 +83,8 @@ class _HomePageState extends State<HomePage>
                   MdiIcons.bellOutline, MdiIcons.bell),
               BottomTabModel(0, 'Nhóm', MdiIcons.accountGroupOutline,
                   MdiIcons.accountGroup),
+              BottomTabModel(
+                  0, 'Đăng bài', Icons.add_box_outlined, Icons.add_box_rounded),
               BottomTabModel(
                   0, 'Trang', Icons.flag_outlined, Icons.flag_rounded),
               BottomTabModel(0, 'Hồ sơ', Icons.person_outline, Icons.person),

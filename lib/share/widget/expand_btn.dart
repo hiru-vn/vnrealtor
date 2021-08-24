@@ -131,3 +131,55 @@ class GoogleBtn extends StatelessWidget {
     );
   }
 }
+
+class CustomBtn extends StatelessWidget {
+  final String text;
+  final Function onPress;
+  final Color color;
+  final Color borderColor;
+  final Color textColor;
+  final double height;
+  final double width;
+  final int elevation;
+  final double borderRadius;
+  final bool isLoading;
+
+  const CustomBtn(
+      {Key key,
+      @required this.text,
+      @required this.onPress,
+      this.color,
+      this.textColor,
+      this.borderRadius,
+      this.elevation,
+      this.borderColor,
+      this.isLoading = false,
+      this.height,
+      this.width})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width ?? double.infinity,
+      height: height ?? 40,
+      child: GestureDetector(
+        // elevation: elevation?.toDouble() ?? 5,
+
+        onTap: onPress,
+        child: Container(
+          decoration: BoxDecoration(
+              color: color, borderRadius: BorderRadius.circular(10)),
+          child: isLoading
+              ? kLoadingSpinner
+              : Center(
+                  child: Text(
+                    text,
+                    style:
+                        ptButton().copyWith(color: textColor ?? Colors.white),
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+}

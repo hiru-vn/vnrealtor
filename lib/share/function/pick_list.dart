@@ -69,7 +69,6 @@ void pickList(BuildContext context,
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: ExpandBtn(
                 color: ptPrimaryColorLight(context),
-                textColor: Colors.black,
                 text: 'Hủy',
                 height: 50,
                 borderRadius: 4,

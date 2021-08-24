@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "259055496489-58m2quu8altddfkg7fufoqt457qm26ia.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datcao.mobile",
+            "certificate_hash": "3737516667b040b317687392d5496af0c8779f91"
+          }
+        },
+        {
           "client_id": "259055496489-9d6r2tovvct7oicdv6nqg3g72p3rkb49.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -46,6 +54,43 @@
             "certificate_hash": "4cd17c36f6303b4a935dfa725b609806ca7422ab"
           }
         },
+        {
+          "client_id": "259055496489-qc7leopq838len75t6hmudgq41khuqnk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlfwTbMaibFui5RlXhRMpxB-WNNrOv2iw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259055496489-qc7leopq838len75t6hmudgq41khuqnk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "259055496489-ml3ci8ch84tqeteu55gavhb6ln5mltpa.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.datcao.mobile",
+                "app_store_id": "1554414069"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259055496489:android:f75172e57e58a3c5ecdb38",
+        "android_client_info": {
+          "package_name": "com.uit.edu"
+        }
+      },
+      "oauth_client": [
         {
           "client_id": "259055496489-qc7leopq838len75t6hmudgq41khuqnk.apps.googleusercontent.com",
           "client_type": 3
@@ -97,6 +142,14 @@
           "android_info": {
             "package_name": "rexbix.app.vnrealtor",
             "certificate_hash": "29c5572815790610174102fa577c525343d98c0a"
+          }
+        },
+        {
+          "client_id": "259055496489-4ur9ie2035o2edb9u3gfd2enbtloqvci.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rexbix.app.vnrealtor",
+            "certificate_hash": "3737516667b040b317687392d5496af0c8779f91"
           }
         },
         {
