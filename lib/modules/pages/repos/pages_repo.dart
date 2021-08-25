@@ -269,6 +269,9 @@ String pageCreatePostFragment = '''
           createdAt 
           updatedAt 
           friendIds
+          sharePoint
+          commentPoint
+          likePoint
       avatar
       totalPost
           facebookUrl
@@ -343,6 +346,9 @@ user {
   updatedAt 
   friendIds
   avatar
+  sharePoint
+  commentPoint
+  likePoint
   totalPost
   facebookUrl
   description

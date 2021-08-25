@@ -329,73 +329,73 @@ class CreatePostCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(
-            //     horizontal: 15,
-            //   ),
-            //   child: GestureDetector(
-            //     onTap: () {
-            //       audioCache.play('tab3.mp3');
-            //       pageController
-            //           .animateToPage(1,
-            //               duration: Duration(milliseconds: 300),
-            //               curve: Curves.decelerate)
-            //           .then((value) => null);
-            //     },
-            //     child: Material(
-            //       borderRadius: BorderRadius.circular(0),
-            //       //elevation: 5,
-            //       child: Padding(
-            //         padding:
-            //             const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            //         child: Row(
-            //           children: [
-            //             Text(
-            //               'Đăng tin của bạn',
-            //               style: ptTitle(),
-            //             ),
-            //             Spacer(),
-            //             GestureDetector(
-            //               onTap: () {
-            //                 audioCache.play('tab3.mp3');
-            //                 pageController.animateToPage(1,
-            //                     duration: Duration(milliseconds: 300),
-            //                     curve: Curves.decelerate);
-            //               },
-            //               child: SizedBox(
-            //                 width: 30,
-            //                 height: 30,
-            //                 child: Icon(
-            //                   Icons.location_pin,
-            //                   size: 21,
-            //                 ),
-            //               ),
-            //             ),
-            //             SizedBox(
-            //               width: 5,
-            //             ),
-            //             GestureDetector(
-            //               onTap: () {
-            //                 audioCache.play('tab3.mp3');
-            //                 pageController.animateToPage(1,
-            //                     duration: Duration(milliseconds: 300),
-            //                     curve: Curves.decelerate);
-            //               },
-            //               child: SizedBox(
-            //                 width: 30,
-            //                 height: 30,
-            //                 child: Icon(
-            //                   MdiIcons.image,
-            //                   size: 21,
-            //                 ),
-            //               ),
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 15,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  audioCache.play('tab3.mp3');
+                  pageController
+                      .animateToPage(1,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.decelerate)
+                      .then((value) => null);
+                },
+                child: Material(
+                  borderRadius: BorderRadius.circular(0),
+                  //elevation: 5,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Đăng tin của bạn',
+                          style: ptTitle(),
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
+                            pageController.animateToPage(1,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.decelerate);
+                          },
+                          child: SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: Icon(
+                              Icons.location_pin,
+                              size: 21,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
+                            pageController.animateToPage(1,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.decelerate);
+                          },
+                          child: SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: Icon(
+                              MdiIcons.image,
+                              size: 21,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
             if ((postBloc.stories?.length ?? 0) > 0 || postBloc.isLoadStory)
               // Divider(
               //   height: 10,

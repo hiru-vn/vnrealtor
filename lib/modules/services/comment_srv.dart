@@ -22,6 +22,9 @@ user {
   createdAt 
   updatedAt 
   avatar
+  sharePoint
+  commentPoint
+  likePoint
   totalPost
   friendIds
   facebookUrl

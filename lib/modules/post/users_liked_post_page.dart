@@ -73,74 +73,79 @@ class _UsersLikePostPageState extends State<UsersLikePostPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: CustomAppBar(
-          leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Image.asset(
-              "assets/image/back_icon.png",
-              width: 30,
-            ),
-          ),
-          title: Expanded(
-            child: Center(
-              child: AutoSizeText(
-                "Xem tương tác",
-                style:
-                    roboto_18_700().copyWith(color: Colors.white, fontSize: 15),
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: CustomAppBar(
+            leading: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Image.asset(
+                "assets/image/back_icon.png",
+                width: 30,
               ),
             ),
-          ),
-          actions: [
-            IconButton(
-                icon: Icon(
-                  Icons.more_vert,
-                  color: Colors.white,
-                  size: 20,
+            title: Expanded(
+              child: Center(
+                child: AutoSizeText(
+                  "Xem tương tác",
+                  style: roboto_18_700()
+                      .copyWith(color: Colors.white, fontSize: 15),
                 ),
-                onPressed: null)
-          ],
-        ),
-        body: Container(
-          child: _users != null && _users.length > 0
-              ? ListView.separated(
-                  separatorBuilder: (context, index) => Divider(),
-                  itemCount: _users.length,
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 5,
-                    ),
-                    child: Row(
-                      children: [
-                        UserLikePostAvatar(
-                          user: _users[index],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _users[index].name,
-                                style: roboto().copyWith(
-                                    fontSize: 16, fontWeight: FontWeight.w700),
-                              ),
-                              Text(
-                                "Nhà môi giới",
-                                style: roboto().copyWith(
-                                    fontSize: 13, fontWeight: FontWeight.w100),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+              ),
+            ),
+            actions: [
+              IconButton(
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                    size: 20,
                   ),
-                )
-              : _users == null
-                  ? kLoadingSpinner
-                  : SizedBox(),
+                  onPressed: null)
+            ],
+          ),
+          body: Container(
+            child: _users != null && _users.length > 0
+                ? ListView.separated(
+                    separatorBuilder: (context, index) => Divider(),
+                    itemCount: _users.length,
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                      ),
+                      child: Row(
+                        children: [
+                          UserLikePostAvatar(
+                            user: _users[index],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _users[index].name,
+                                  style: roboto().copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Text(
+                                  "Nhà môi giới",
+                                  style: roboto().copyWith(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w100),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : _users == null
+                    ? kLoadingSpinner
+                    : SizedBox(),
+          ),
         ),
       ),
     );

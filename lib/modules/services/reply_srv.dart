@@ -23,7 +23,10 @@ user {
   facebookUrl
   description
   isVerify
-  followerIds 
+  followerIds
+  ssharePoint
+  commentPoint
+  likePoint 
   followingIds
 }
 createdAt: DateTime

@@ -48,6 +48,9 @@ user {
   updatedAt 
   friendIds
   avatar
+  sharePoint
+  commentPoint
+  likePoint
   totalPost
   facebookUrl
   description

@@ -26,6 +26,9 @@ class PagesCreatePostSrv extends BaseService {
           email 
           phone 
           role 
+          sharePoint
+          commentPoint
+          likePoint
           reputationScore 
           createdAt 
           updatedAt 

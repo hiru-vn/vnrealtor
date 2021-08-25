@@ -210,206 +210,212 @@ class _PostDetailState extends State<PostDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        leading: GestureDetector(
-          onTap: () {
-            audioCache.play('tab3.mp3');
-            Navigator.pop(context);
-          },
-          child: Image.asset(
-            "assets/image/back_icon.png",
-            width: 30,
-          ),
-        ),
-        title: Expanded(
-          child: Center(
-            child: AutoSizeText(
-              _post != null
-                  ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
-                  : '',
-              style:
-                  roboto_18_700().copyWith(color: Colors.white, fontSize: 15),
-            ),
-          ),
-        ),
-        actions: [
-          IconButton(
-              icon: Icon(
-                Icons.more_vert,
-                color: Colors.white,
-                size: 20,
+      body: SafeArea(
+        child: Scaffold(
+          appBar: CustomAppBar(
+            leading: GestureDetector(
+              onTap: () {
+                audioCache.play('tab3.mp3');
+                Navigator.pop(context);
+              },
+              child: Image.asset(
+                "assets/image/back_icon.png",
+                width: 30,
               ),
-              onPressed: null)
-        ],
-      ),
-      // AppBar1(
-      //   centerTitle: true,
-      //   title: _post != null
-      //       ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
-      //       : '',
-      //   automaticallyImplyLeading: true,
-      //   bgColor: ptSecondaryColor(context),
-      //   textColor: ptPrimaryColor(context),
-      // ),
-      body: Stack(
-        children: [
-          Container(
-            height: deviceHeight(context),
-            width: deviceWidth(context),
-          ),
-          SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(
-                  bottom: AuthBloc.instance.userModel == null ? 20 : 100),
-              child: Column(
-                children: [
-                  _post == null
-                      ? PostSkeleton(
-                          count: 1,
-                        )
-                      : PostWidget(_post,
-                          commentCallBack: () {}, isInDetailPage: true),
+            ),
+            title: Expanded(
+              child: Center(
+                child: AutoSizeText(
                   _post != null
-                      ? ListUsersLikedPost(
-                          postModel: _post,
-                        )
-                      : StorySkeleton(),
-                  comments != null
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Bình luận",
-                                style: roboto_18_700().copyWith(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 13,
-                                ),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                            ListView.separated(
-                              padding: EdgeInsets.zero,
-                              itemCount: comments.length,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                final comment = comments[index];
-                                return CommentWidget(
-                                    comment: comment,
-                                    userReplyCache: localReplies,
-                                    shouldExpand:
-                                        comments[index].id == replyComment?.id,
-                                    deleteCallBack: comments[index].userId ==
-                                            AuthBloc.instance.userModel?.id
-                                        ? () =>
-                                            _deleteComment(comments[index].id)
-                                        : () {},
-                                    tapCallBack: () {
-                                      setState(() {
-                                        isReply = true;
-                                        replyComment = comments[index];
-                                      });
-                                      _focusNodeComment.requestFocus();
-                                    });
-                              },
-                              separatorBuilder: (context, index) =>
-                                  SizedBox.shrink(),
-                            ),
-                          ],
-                        )
-                      : ListSkeleton(),
-                ],
-              ),
-            ),
-          ),
-          if (AuthBloc.instance.userModel != null)
-            Positioned(
-              bottom: 0,
-              child: Container(
-                width: deviceWidth(context),
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                color: Colors.white70,
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 21,
-                      backgroundColor: Colors.white,
-                      backgroundImage:
-                          AuthBloc.instance.userModel?.avatar != null
-                              ? CachedNetworkImageProvider(
-                                  AuthBloc.instance.userModel?.avatar)
-                              : AssetImage('assets/image/default_avatar.png'),
-                    ),
-                    SizedBox(
-                      width: 7,
-                    ),
-                    Expanded(
-                      child: TagUserField(
-                        onUpdateTags: (users) {
-                          tagUsers = users;
-                        },
-                        controller: _commentC,
-                        focusNode: _focusNodeComment,
-                        keyboardPadding:
-                            MediaQuery.of(context).viewInsets.bottom,
-                        onTap: () {
-                          audioCache.play('tab3.mp3');
-                          if (AuthBloc.instance.userModel == null) {
-                            LoginPage.navigatePush();
-                            return;
-                          }
-                        },
-                        // maxLength: 200,
-                        onSubmitted: _comment,
-                        decoration: InputDecoration(
-                          suffixIcon: GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: () {
-                                audioCache.play('tab3.mp3');
-                                (isReply)
-                                    ? _reply(_commentC.text)
-                                    : _comment(_commentC.text);
-                              },
-                              child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  child: Center(child: Icon(Icons.send)))),
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 15, vertical: 6),
-                          isDense: true,
-                          hintText: isReply
-                              ? 'Trả lời ${replyComment?.user?.name ?? ''}'
-                              : 'Viết bình luận.',
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                            ),
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                            ),
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                            ),
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          fillColor: ptSecondaryColor(context),
-                          filled: true,
-                        ),
-                      ),
-                    ),
-                  ],
+                      ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
+                      : '',
+                  style: roboto_18_700()
+                      .copyWith(color: Colors.white, fontSize: 15),
                 ),
               ),
             ),
-        ],
+            actions: [
+              IconButton(
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  onPressed: null)
+            ],
+          ),
+          // AppBar1(
+          //   centerTitle: true,
+          //   title: _post != null
+          //       ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
+          //       : '',
+          //   automaticallyImplyLeading: true,
+          //   bgColor: ptSecondaryColor(context),
+          //   textColor: ptPrimaryColor(context),
+          // ),
+          body: Stack(
+            children: [
+              Container(
+                height: deviceHeight(context),
+                width: deviceWidth(context),
+              ),
+              SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      bottom: AuthBloc.instance.userModel == null ? 20 : 100),
+                  child: Column(
+                    children: [
+                      _post == null
+                          ? PostSkeleton(
+                              count: 1,
+                            )
+                          : PostWidget(_post,
+                              commentCallBack: () {}, isInDetailPage: true),
+                      _post != null
+                          ? ListUsersLikedPost(
+                              postModel: _post,
+                            )
+                          : StorySkeleton(),
+                      comments != null
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Bình luận",
+                                    style: roboto_18_700().copyWith(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 13,
+                                    ),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                ListView.separated(
+                                  padding: EdgeInsets.zero,
+                                  itemCount: comments.length,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    final comment = comments[index];
+                                    return CommentWidget(
+                                        comment: comment,
+                                        userReplyCache: localReplies,
+                                        shouldExpand: comments[index].id ==
+                                            replyComment?.id,
+                                        deleteCallBack: comments[index]
+                                                    .userId ==
+                                                AuthBloc.instance.userModel?.id
+                                            ? () => _deleteComment(
+                                                comments[index].id)
+                                            : () {},
+                                        tapCallBack: () {
+                                          setState(() {
+                                            isReply = true;
+                                            replyComment = comments[index];
+                                          });
+                                          _focusNodeComment.requestFocus();
+                                        });
+                                  },
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox.shrink(),
+                                ),
+                              ],
+                            )
+                          : ListSkeleton(),
+                    ],
+                  ),
+                ),
+              ),
+              if (AuthBloc.instance.userModel != null)
+                Positioned(
+                  bottom: 0,
+                  child: Container(
+                    width: deviceWidth(context),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    color: Colors.white70,
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 21,
+                          backgroundColor: Colors.white,
+                          backgroundImage: AuthBloc
+                                      .instance.userModel?.avatar !=
+                                  null
+                              ? CachedNetworkImageProvider(
+                                  AuthBloc.instance.userModel?.avatar)
+                              : AssetImage('assets/image/default_avatar.png'),
+                        ),
+                        SizedBox(
+                          width: 7,
+                        ),
+                        Expanded(
+                          child: TagUserField(
+                            onUpdateTags: (users) {
+                              tagUsers = users;
+                            },
+                            controller: _commentC,
+                            focusNode: _focusNodeComment,
+                            keyboardPadding:
+                                MediaQuery.of(context).viewInsets.bottom,
+                            onTap: () {
+                              audioCache.play('tab3.mp3');
+                              if (AuthBloc.instance.userModel == null) {
+                                LoginPage.navigatePush();
+                                return;
+                              }
+                            },
+                            // maxLength: 200,
+                            onSubmitted: _comment,
+                            decoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: () {
+                                    audioCache.play('tab3.mp3');
+                                    (isReply)
+                                        ? _reply(_commentC.text)
+                                        : _comment(_commentC.text);
+                                  },
+                                  child: Container(
+                                      height: 35,
+                                      width: 35,
+                                      child: Center(child: Icon(Icons.send)))),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 6),
+                              isDense: true,
+                              hintText: isReply
+                                  ? 'Trả lời ${replyComment?.user?.name ?? ''}'
+                                  : 'Viết bình luận.',
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                ),
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                ),
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                ),
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              fillColor: ptSecondaryColor(context),
+                              filled: true,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
