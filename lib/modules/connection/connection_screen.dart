@@ -4,6 +4,8 @@ import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/post/post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/import.dart';
@@ -21,6 +23,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
   AuthBloc _authBloc;
   UserBloc _userBloc;
   GroupBloc _groupBloc;
+  PagesBloc _pagesBloc;
   TabController _tabController;
   int currentTab = 0;
 
@@ -46,6 +49,10 @@ class _ConnectionScreenState extends State<ConnectionScreen>
     if (_groupBloc == null) {
       _groupBloc = Provider.of<GroupBloc>(context);
       _groupBloc.getSuggestGroup();
+    }
+    if (_pagesBloc == null) {
+      _pagesBloc = Provider.of<PagesBloc>(context);
+      _pagesBloc.suggestFollow();
     }
 
     super.didChangeDependencies();
@@ -177,7 +184,11 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                           ],
                         );
                       } else
-                        return ListPageConnection();
+                        return _pagesBloc.suggestFollowPage.length > 0
+                            ? ListPageConnection(
+                                pages: _pagesBloc.suggestFollowPage,
+                              )
+                            : SizedBox();
                     }),
               )
             ],
@@ -260,8 +271,10 @@ class ListGroupConnection extends StatelessWidget {
 }
 
 class ListPageConnection extends StatelessWidget {
+  final List<PagesCreate> pages;
   const ListPageConnection({
     Key key,
+    this.pages,
   }) : super(key: key);
 
   @override
@@ -277,7 +290,11 @@ class ListPageConnection extends StatelessWidget {
             scrollDirection: Axis.vertical,
             physics: NeverScrollableScrollPhysics(),
             childAspectRatio: .8,
-            children: List.generate(100, (index) => PageSuggestItem()),
+            children: List.generate(
+                pages.length,
+                (index) => PageSuggestItem(
+                      page: pages[index],
+                    )),
           )),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -526,17 +543,31 @@ class GroupSuggestItem extends StatelessWidget {
         ], color: Colors.white, borderRadius: BorderRadius.circular(10)),
         child: Stack(
           children: [
+            Container(
+              width: 180,
+              child: Image.network(
+                group.coverImage,
+                fit: BoxFit.fill,
+                height: 60,
+              ),
+            ),
             Column(
               children: [
-                Image.asset(
-                  "assets/image/anhbia.png",
-                  height: 60,
+                Padding(
+                  padding: const EdgeInsets.only(top: 30.0),
+                  child: Image.network(
+                    group.coverImage,
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 SizedBox(
-                  height: 35,
+                  height: 5,
                 ),
                 Text(
                   group.name,
+                  textAlign: TextAlign.center,
                   style: roboto().copyWith(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -548,7 +579,7 @@ class GroupSuggestItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("14000 thành viên"),
+                    Text("${group.countMember} thành viên"),
                     SizedBox(
                       width: 5,
                     ),
@@ -576,14 +607,6 @@ class GroupSuggestItem extends StatelessWidget {
               ],
             ),
             Positioned(
-              top: 30,
-              left: 60,
-              child: Image.asset(
-                "assets/image/datcao_logo.png",
-                width: 60,
-              ),
-            ),
-            Positioned(
               top: 10,
               right: 10,
               child: Image.asset(
@@ -599,8 +622,10 @@ class GroupSuggestItem extends StatelessWidget {
 }
 
 class PageSuggestItem extends StatelessWidget {
+  final PagesCreate page;
   const PageSuggestItem({
     Key key,
+    this.page,
   }) : super(key: key);
 
   @override
@@ -625,11 +650,24 @@ class PageSuggestItem extends StatelessWidget {
                   "assets/image/anhbia.png",
                   height: 60,
                 ),
+              ],
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: Image.network(
+                    page.avartar,
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 SizedBox(
-                  height: 35,
+                  height: 5,
                 ),
                 Text(
-                  "DAT CAO PAGE",
+                  page.name,
                   style: roboto().copyWith(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -641,14 +679,14 @@ class PageSuggestItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("344 follow"),
+                    Text("${page.followers.length} follow"),
                     SizedBox(
                       width: 5,
                     ),
                     Row(
                       children: [
                         Text(
-                          AuthBloc.instance.userModel.totalPoint.toString(),
+                          "7",
                         ),
                         Image.asset(
                           "assets/image/guarantee.png",
@@ -678,14 +716,6 @@ class PageSuggestItem extends StatelessWidget {
                   ),
                 )
               ],
-            ),
-            Positioned(
-              top: 30,
-              left: 60,
-              child: Image.asset(
-                "assets/image/datcao_logo.png",
-                width: 60,
-              ),
             ),
             Positioned(
               top: 10,

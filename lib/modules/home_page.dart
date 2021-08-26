@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage>
           index: _selectedIndex,
           children: [
             PostPage(),
-            //  ConnectionScreen(),
+            ConnectionScreen(),
             CreatePostScreen(),
             NotificationPage(),
             ProfilePage(),
@@ -78,8 +78,8 @@ class _HomePageState extends State<HomePage>
             list: [
               BottomTabModel(
                   0, 'Trang chủ', MdiIcons.homeOutline, MdiIcons.home),
-              // BottomTabModel(
-              //     0, 'Liên kết', Icons.people_outlined, Icons.people_rounded),
+              BottomTabModel(
+                  0, 'Liên kết', Icons.people_outlined, Icons.people_rounded),
               BottomTabModel(
                   0, 'Đăng bài', Icons.add_box_outlined, Icons.add_box_rounded),
               BottomTabModel(_authBloc.userModel?.notiCount ?? 0, 'Thông báo',

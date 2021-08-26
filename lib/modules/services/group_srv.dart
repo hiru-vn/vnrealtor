@@ -25,6 +25,9 @@ owner {
   name: String
   avatar
   isMod
+  sharePoint
+  commentPoint
+  likePoint
 }
 memberIn24h
 postIn24h

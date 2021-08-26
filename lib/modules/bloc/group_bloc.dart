@@ -16,6 +16,7 @@ class GroupBloc extends ChangeNotifier {
   List<GroupModel> followingGroups;
 
   bool isReloadFeed = true;
+  bool isLoadGroupSuggest = true;
   bool isLoadMoreFeed = true;
   bool isLoadStory = true;
   bool isEndFeed = false;
@@ -69,6 +70,7 @@ class GroupBloc extends ChangeNotifier {
 
   Future<BaseResponse> getSuggestGroup() async {
     try {
+      isLoadGroupSuggest = true;
       final res = await GroupRepo().suggestGroup();
       final List listRaw = res;
       suggestGroup = listRaw.map((e) => GroupModel.fromJson(e)).toList();
@@ -76,6 +78,7 @@ class GroupBloc extends ChangeNotifier {
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
+      isLoadGroupSuggest = false;
       notifyListeners();
     }
   }

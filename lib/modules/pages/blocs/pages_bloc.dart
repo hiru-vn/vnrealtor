@@ -77,6 +77,7 @@ class PagesBloc extends ChangeNotifier {
   bool _isLoadingSubmitCreatePage = false;
 
   bool _isLoading = false;
+  bool _isLoadingSuggest = false;
 
   bool _isLoadingUploadCover = false;
 
@@ -111,6 +112,7 @@ class PagesBloc extends ChangeNotifier {
   String get website => _website;
 
   bool get isLoading => _isLoading;
+  bool get isLoadingSuggest => _isLoadingSuggest;
 
   bool get isLoadingSubmitCreatePage => _isLoadingSubmitCreatePage;
 
@@ -625,6 +627,7 @@ class PagesBloc extends ChangeNotifier {
 
   Future<BaseResponse> suggestFollow() async {
     try {
+      _isLoadingSuggest = true;
       _suggestFollowPage = [];
       final res = await PagesRepo().suggestFollowPage();
       final listRaw = res;
@@ -637,6 +640,7 @@ class PagesBloc extends ChangeNotifier {
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
+      _isLoadingSuggest = true;
       notifyListeners();
     }
   }
