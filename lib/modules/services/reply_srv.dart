@@ -24,7 +24,7 @@ user {
   description
   isVerify
   followerIds
-  ssharePoint
+  sharePoint
   commentPoint
   likePoint 
   followingIds

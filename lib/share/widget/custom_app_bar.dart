@@ -23,7 +23,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [leading, title, ...actions],
+        children: [
+          leading ?? SizedBox.shrink(),
+          title ?? SizedBox.shrink(),
+          ...actions
+        ],
       ),
     );
   }

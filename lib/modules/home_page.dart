@@ -4,6 +4,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/connection/connection_screen.dart';
 import 'package:datcao/modules/group/group_page.dart';
 import 'package:datcao/modules/notification/notification_page.dart';
 import 'package:datcao/modules/pages/pages/pages_page.dart';
@@ -57,12 +58,10 @@ class _HomePageState extends State<HomePage>
           index: _selectedIndex,
           children: [
             PostPage(),
-            NotificationPage(),
-            GroupPage(),
+            //  ConnectionScreen(),
             CreatePostScreen(),
-            PagesPage(),
+            NotificationPage(),
             ProfilePage(),
-            SettingPage(),
           ],
         ),
         extendBody: true,
@@ -79,16 +78,13 @@ class _HomePageState extends State<HomePage>
             list: [
               BottomTabModel(
                   0, 'Trang chủ', MdiIcons.homeOutline, MdiIcons.home),
-              BottomTabModel(_authBloc.userModel?.notiCount ?? 0, 'Thông báo',
-                  MdiIcons.bellOutline, MdiIcons.bell),
-              BottomTabModel(0, 'Nhóm', MdiIcons.accountGroupOutline,
-                  MdiIcons.accountGroup),
+              // BottomTabModel(
+              //     0, 'Liên kết', Icons.people_outlined, Icons.people_rounded),
               BottomTabModel(
                   0, 'Đăng bài', Icons.add_box_outlined, Icons.add_box_rounded),
-              BottomTabModel(
-                  0, 'Trang', Icons.flag_outlined, Icons.flag_rounded),
+              BottomTabModel(_authBloc.userModel?.notiCount ?? 0, 'Thông báo',
+                  MdiIcons.bellOutline, MdiIcons.bell),
               BottomTabModel(0, 'Hồ sơ', Icons.person_outline, Icons.person),
-              BottomTabModel(0, 'Menu', Icons.menu, Icons.menu_outlined),
             ],
             onSelect: (index) {
               if (Platform.isIOS) audioCache.play('tab3.mp3');

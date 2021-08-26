@@ -127,13 +127,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       child: SafeArea(
         child: Scaffold(
           appBar: CustomAppBar(
-            leading: IconButton(
-              icon: Icon(
-                Icons.highlight_off_rounded,
-                color: Colors.white,
-                size: 30,
-              ),
-              onPressed: null,
+            // leading: IconButton(
+            //   icon: Icon(
+            //     Icons.highlight_off_rounded,
+            //     color: Colors.white,
+            //     size: 30,
+            //   ),
+            //   onPressed: () => Navigator.pop(context),
+            // ),
+            leading: SizedBox(
+              width: 100,
             ),
             title: Center(
               child: Text(
@@ -145,12 +148,15 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               ),
             ),
             actions: [
-              CustomBtn(
-                  text: "ĐĂNG",
-                  textColor: Colors.grey,
-                  color: Colors.white,
-                  width: 100,
-                  onPress: null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                child: CustomBtn(
+                    text: "ĐĂNG",
+                    textColor: Colors.grey,
+                    color: Colors.white,
+                    width: 100,
+                    onPress: () => _createPost()),
+              )
             ],
           ),
           body: SingleChildScrollView(
@@ -230,9 +236,17 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   children: [
                                     Row(
                                       children: [
-                                        Icon(
-                                          Icons.public_outlined,
-                                        ),
+                                        _shareWith == 'public'
+                                            ? Icon(
+                                                Icons.public_outlined,
+                                              )
+                                            : _shareWith == 'friend'
+                                                ? Icon(
+                                                    Icons.people_outlined,
+                                                  )
+                                                : Icon(
+                                                    Icons.person_outlined,
+                                                  ),
                                         Text(
                                           _shareWith == 'public'
                                               ? 'Tất cả'

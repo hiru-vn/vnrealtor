@@ -19,7 +19,7 @@ enum UserRole {
 
 class UserBloc extends ChangeNotifier {
   UserBloc._privateConstructor() {
-    init();
+    //init();
   }
   static final UserBloc instance = UserBloc._privateConstructor();
 
@@ -67,6 +67,7 @@ class UserBloc extends ChangeNotifier {
   List<FriendshipModel> friendRequestFromOtherUsers = [];
   List<UserModel> followersIn7Days = [];
   List<UserModel> suggestFollowUsers = [];
+  bool isLoadingUserSuggest = true;
 
   Future init() async {
     final token = await SPref.instance.get('token');
@@ -306,6 +307,7 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> suggestFollow() async {
     try {
+      isLoadingUserSuggest = true;
       final res = await UserRepo().suggestFollow();
       final listRaw = res;
       suggestFollowUsers =
@@ -315,6 +317,7 @@ class UserBloc extends ChangeNotifier {
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
+      isLoadingUserSuggest = false;
       notifyListeners();
     }
   }

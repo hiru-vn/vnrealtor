@@ -90,10 +90,13 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   _deleteComment(String id) async {
-    comments.removeWhere((element) => element.id == id);
-    setState(() {});
     final res = await _postBloc.deleteComment(id);
-    if (!res.isSuccess) showToast(res.errMessage, context);
+    if (!res.isSuccess) {
+      showToast(res.errMessage, context);
+    } else {
+      comments.removeWhere((element) => element.id == id);
+      setState(() {});
+    }
   }
 
   _reply(String text) async {
