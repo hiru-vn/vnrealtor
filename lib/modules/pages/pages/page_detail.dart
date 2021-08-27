@@ -203,7 +203,8 @@ class _PageDetailState extends State<PageDetail> {
           },
           list: RefreshIndicator(
             color: ptPrimaryColor(context),
-            onRefresh: () async {audioCache.play('tab3.mp3');
+            onRefresh: () async {
+              audioCache.play('tab3.mp3');
               // await Future.wait([
               //   _postBloc.getNewFeed(
               //       filter:
@@ -249,7 +250,8 @@ class _PageDetailState extends State<PageDetail> {
 
   Widget _buildBanner() => GestureDetector(
         onTap: _pagesBloc.pageDetail.isOwner
-            ? () {audioCache.play('tab3.mp3');
+            ? () {
+                audioCache.play('tab3.mp3');
                 imagePicker(context,
                     onImagePick: _updateCover, onCameraPick: _updateCover);
               }
@@ -331,7 +333,8 @@ class _PageDetailState extends State<PageDetail> {
                 )
               : GestureDetector(
                   onTap: _pagesBloc.pageDetail.isOwner
-                      ? () {audioCache.play('tab3.mp3');
+                      ? () {
+                          audioCache.play('tab3.mp3');
                           imagePicker(context,
                               onImagePick: _updateAvatar,
                               onCameraPick: _updateAvatar);
@@ -402,7 +405,8 @@ class _PageDetailState extends State<PageDetail> {
       );
 
   Widget _itemButtonFollow() => GestureDetector(
-        onTap: () async {audioCache.play('tab3.mp3');
+        onTap: () async {
+          audioCache.play('tab3.mp3');
           if (_pagesBloc.isFollowed) {
             _pagesBloc.isFollowPageLoading = true;
             final res = await _pagesBloc.unFollowPage(_pageState.id);
@@ -428,6 +432,7 @@ class _PageDetailState extends State<PageDetail> {
 
             _pagesBloc.isFollowPageLoading = false;
           }
+          await _pagesBloc.suggestFollow();
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
@@ -536,7 +541,8 @@ class _PageDetailState extends State<PageDetail> {
       );
 
   Widget _buildButtonBell() => GestureDetector(
-        onTap: () async {audioCache.play('tab3.mp3');
+        onTap: () async {
+          audioCache.play('tab3.mp3');
           if (_pagesBloc.isReceiveNotified) {
             _pagesBloc.isReciveNotiPageLoading = true;
             final res = await _pagesBloc.unReceiveNotifyPage(_pageState.id);

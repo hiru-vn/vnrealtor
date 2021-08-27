@@ -14,11 +14,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Container(
       height: 70,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [ptMainColor(), ptSecondColor()],
-        ),
+        color: Colors.white,
       ),
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Row(

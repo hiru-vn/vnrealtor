@@ -83,6 +83,14 @@ class GroupBloc extends ChangeNotifier {
     }
   }
 
+  Future deleteSuggestGroup(String id) async {
+    try {
+      suggestGroup = suggestGroup.where((element) => element.id != id).toList();
+    } catch (e) {} finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> getListGroupIn(List<String> ids) async {
     try {
       final res = await GroupRepo().getListGroupIn(ids);
@@ -102,7 +110,7 @@ class GroupBloc extends ChangeNotifier {
       final group = GroupModel.fromJson(res);
       return BaseResponse.success(group);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail(e ?? e.toString());
     } finally {
       notifyListeners();
     }

@@ -595,13 +595,7 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final count = unReadCount > 9 ? '9+' : unReadCount.toString();
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [ptMainColor(), ptSecondColor()],
-        ),
-      ),
+      decoration: BoxDecoration(color: Colors.white),
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Row(
         children: [
@@ -611,7 +605,7 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: Icon(
               Icons.account_circle_outlined,
               size: 32,
-              color: Colors.white,
+              color: HexColor.fromHex("#BBBBBB"),
             ),
           ),
           Expanded(
@@ -619,6 +613,14 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Container(
                 decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 7,
+                        offset: Offset(0, 4), // changes position of shadow
+                      ),
+                    ],
                     borderRadius: BorderRadius.circular(30),
                     color: Colors.white),
                 child: TextFormField(
@@ -668,7 +670,7 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                       child: Icon(
                         MdiIcons.chatProcessingOutline,
                         size: 32,
-                        color: Colors.white,
+                        color: HexColor.fromHex("#BBBBBB"),
                       )),
                 ),
                 if (unReadCount > 0)

@@ -442,6 +442,15 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
+  Future deleteSuggestPage(String pageId) async {
+    try {
+      _suggestFollowPage =
+          _suggestFollowPage.where((element) => element.id != pageId).toList();
+    } catch (e) {} finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> unFollowPage(String pageId) async {
     try {
       final res = await PagesRepo().unFollowPage(pageId);
@@ -628,7 +637,6 @@ class PagesBloc extends ChangeNotifier {
   Future<BaseResponse> suggestFollow() async {
     try {
       _isLoadingSuggest = true;
-      _suggestFollowPage = [];
       final res = await PagesRepo().suggestFollowPage();
       final listRaw = res;
       List<PagesCreate> listModel =
@@ -640,7 +648,7 @@ class PagesBloc extends ChangeNotifier {
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
-      _isLoadingSuggest = true;
+      _isLoadingSuggest = false;
       notifyListeners();
     }
   }

@@ -322,6 +322,15 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
+  Future deleteSuggestFollow(String uID) async {
+    try {
+      suggestFollowUsers =
+          suggestFollowUsers.where((element) => element.id != uID).toList();
+    } catch (e) {} finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> suggestFollowGuest() async {
     try {
       final res = await UserRepo().suggestFollowGuest();
