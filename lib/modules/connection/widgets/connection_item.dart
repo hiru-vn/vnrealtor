@@ -18,7 +18,7 @@ class ConnectionItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).primaryColor,
         child: Padding(
           padding: const EdgeInsets.all(11.0),
           child: Row(
@@ -31,6 +31,7 @@ class ConnectionItem extends StatelessWidget {
                 text,
                 style: roboto().copyWith(
                   fontSize: 15,
+                  color: Theme.of(context).accentColor,
                   fontWeight: FontWeight.w500,
                 ),
               ),

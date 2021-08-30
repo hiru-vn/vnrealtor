@@ -157,7 +157,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: Container(
-                      color: Colors.white,
+                      color: Theme.of(context).primaryColor,
                       height: 50,
                       child: TabBar(
                         tabs: [
@@ -181,7 +181,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                         indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
                         controller: _tabController,
                         labelColor: ptSecondColor(),
-                        unselectedLabelColor: Colors.black54,
+                        unselectedLabelColor: Theme.of(context).accentColor,
                         unselectedLabelStyle:
                             TextStyle(fontSize: 14, color: Colors.black12),
                         labelStyle: TextStyle(

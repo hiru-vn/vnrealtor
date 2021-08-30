@@ -63,7 +63,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                         child: Text(
                           e.counter.toString(),
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Theme.of(context).primaryColor,
                             fontSize: 9.5,
                           ),
                           textAlign: TextAlign.center,
@@ -102,7 +102,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
         .toList();
     return cbn.BottomNavigationBar(
       elevation: 0,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).primaryColor,
       iconSize: 24,
       selectedFontSize: 25,
       selectedItemColor: ptMainColor(),
