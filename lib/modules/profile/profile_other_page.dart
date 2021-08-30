@@ -357,7 +357,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                 ),
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: () {audioCache.play('tab3.mp3');
+                                    onTap: () {
+                                      audioCache.play('tab3.mp3');
                                       if (AuthBloc.instance.userModel == null) {
                                         showToast('Vui lòng đăng nhập để xem',
                                             context,
@@ -386,7 +387,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                 ),
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: () {audioCache.play('tab3.mp3');
+                                    onTap: () {
+                                      audioCache.play('tab3.mp3');
                                       if (AuthBloc.instance.userModel == null) {
                                         showToast('Vui lòng đăng nhập để xem',
                                             context,
@@ -474,7 +476,8 @@ class _ProfileCardState extends State<ProfileCard> {
                       SizedBox(width: 15),
                       if (widget.user.email != null)
                         GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
                             launch(_emailLaunchUri.toString());
                           },
                           child: SizedBox(
@@ -486,7 +489,8 @@ class _ProfileCardState extends State<ProfileCard> {
                       SizedBox(width: 12),
                       if (widget.user.dynamicLink != null)
                         GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
                             showToast('Đã copy đường dẫn tài khoản', context,
                                 isSuccess: true);
                             Clipboard.setData(ClipboardData(
@@ -504,7 +508,8 @@ class _ProfileCardState extends State<ProfileCard> {
                       ? Row(children: [
                           Expanded(
                             child: GestureDetector(
-                              onTap: () async {audioCache.play('tab3.mp3');
+                              onTap: () async {
+                                audioCache.play('tab3.mp3');
                                 BaseResponse res;
                                 if (_authBloc.userModel.followingIds
                                     .contains(widget.user.id)) {
@@ -580,7 +585,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                   .contains(widget.user.id))
                             Expanded(
                               child: GestureDetector(
-                                onTap: () async {audioCache.play('tab3.mp3');
+                                onTap: () async {
+                                  audioCache.play('tab3.mp3');
                                   showWaitingDialog(context);
                                   await InboxBloc.instance.navigateToChatWith(
                                       widget.user.name,

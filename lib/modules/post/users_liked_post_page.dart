@@ -82,6 +82,7 @@ class _UsersLikePostPageState extends State<UsersLikePostPage> {
               onTap: () => Navigator.pop(context),
               child: Image.asset(
                 "assets/image/back_icon.png",
+                color: Colors.grey,
                 width: 30,
               ),
             ),
@@ -89,8 +90,7 @@ class _UsersLikePostPageState extends State<UsersLikePostPage> {
               child: Center(
                 child: AutoSizeText(
                   "Xem tương tác",
-                  style: roboto_18_700()
-                      .copyWith(color: Colors.white, fontSize: 15),
+                  style: roboto_18_700().copyWith(fontSize: 15),
                 ),
               ),
             ),
@@ -98,7 +98,6 @@ class _UsersLikePostPageState extends State<UsersLikePostPage> {
               IconButton(
                   icon: Icon(
                     Icons.more_vert,
-                    color: Colors.white,
                     size: 20,
                   ),
                   onPressed: null)
@@ -130,7 +129,7 @@ class _UsersLikePostPageState extends State<UsersLikePostPage> {
                                       fontWeight: FontWeight.w700),
                                 ),
                                 Text(
-                                  "Nhà môi giới",
+                                  "${_users[index].role}",
                                   style: roboto().copyWith(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w100),

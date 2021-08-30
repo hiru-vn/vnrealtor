@@ -114,7 +114,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor.fromHex("#E5E5E5"),
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: PostPageAppBar(_authBloc.userModel.messNotiCount ?? 0),
       body: RefreshIndicator(
         onRefresh: () => _refresh(),
@@ -199,36 +199,42 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                   animation: _tabController.animation,
                   builder: (ctx, child) {
                     if (_tabController.index == 0) {
-                      return Column(
-                        children: [
-                          _userBloc.suggestFollowUsers.length > 0
-                              ? ListUserConnection(
-                                  users: _userBloc.suggestFollowUsers,
-                                  onDeleteUser: (uID) {
-                                    onDeleteUser(uID);
-                                  },
-                                  onConnectUser: (id) {
-                                    onFolowUser(id);
-                                  },
-                                )
-                              : SizedBox(),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          _groupBloc.isLoadGroupSuggest ||
-                                  _groupBloc.suggestGroup.length > 0
-                              ? ListGroupConnection(
-                                  groups: _groupBloc.suggestGroup,
-                                  onDeleteGroup: (id) {
-                                    onDeleteGroup(id);
-                                  },
-                                  onConnectGroup: (id) {
-                                    onJoinGroup(id);
-                                  },
-                                )
-                              : SizedBox(),
-                        ],
-                      );
+                      return _userBloc.suggestFollowUsers.length == 0 &&
+                              _groupBloc.suggestGroup.length == 0
+                          ? Container(
+                              child: Center(
+                              child: Text("Danh sách trống"),
+                            ))
+                          : Column(
+                              children: [
+                                _userBloc.suggestFollowUsers.length > 0
+                                    ? ListUserConnection(
+                                        users: _userBloc.suggestFollowUsers,
+                                        onDeleteUser: (uID) {
+                                          onDeleteUser(uID);
+                                        },
+                                        onConnectUser: (id) {
+                                          onFolowUser(id);
+                                        },
+                                      )
+                                    : SizedBox(),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                _groupBloc.isLoadGroupSuggest ||
+                                        _groupBloc.suggestGroup.length > 0
+                                    ? ListGroupConnection(
+                                        groups: _groupBloc.suggestGroup,
+                                        onDeleteGroup: (id) {
+                                          onDeleteGroup(id);
+                                        },
+                                        onConnectGroup: (id) {
+                                          onJoinGroup(id);
+                                        },
+                                      )
+                                    : SizedBox(),
+                              ],
+                            );
                     } else
                       return (_pagesBloc.isLoadingSuggest ||
                               _pagesBloc.suggestFollowPage.length > 0)
@@ -242,7 +248,11 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                               },
                               pagesBloc: _pagesBloc,
                             )
-                          : SizedBox();
+                          : Container(
+                              child: Center(
+                                child: Text("Danh sách trống"),
+                              ),
+                            );
                   }),
             )
           ],

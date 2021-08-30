@@ -185,7 +185,7 @@ Future showAlertWithTitleDialog(
 
 showUndoneFeature(BuildContext context, List<String> features) {
   showAlertDialog(context,
-      'Tính năng:\n${features.map<String>((e) => " - " + e.toString() + "\n").toList().join()} chưa được phát triển',
+      'Tính năng:\n${features.map<String>((e) => " - " + e.toString() + "\n").toList().join()} đang được phát triển',
       navigatorKey: navigatorKey);
 }
 

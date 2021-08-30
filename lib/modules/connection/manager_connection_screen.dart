@@ -1,4 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/connection/connect_screen.dart';
+import 'package:datcao/modules/connection/list_following_screen.dart';
 import 'package:datcao/modules/connection/widgets/connection_item.dart';
 import 'package:datcao/share/import.dart';
 
@@ -24,6 +27,7 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
         child: Scaffold(
           backgroundColor: HexColor.fromHex("#E5E5E5"),
           appBar: AppBar(
+            elevation: 0,
             backgroundColor: Colors.white,
             leading: IconButton(
                 icon: Image.asset(
@@ -46,39 +50,44 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
+                  padding: const EdgeInsets.only(bottom: 8.0, top: 1.0),
                   child: ConnectionItem(
+                    onTap: () => ConnectScreen.navigate(),
                     preIcon: Image.asset(
                       "assets/image/icon_connect.png",
                       width: 30,
                       height: 30,
                     ),
                     text: "Kết nối",
-                    subIcon: Text("212"),
+                    subIcon: Text(
+                        "${AuthBloc.instance.userModel.followerIds.length}"),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: ConnectionItem(
+                    onTap: () => showUndoneFeature(context, ["Danh bạ"]),
                     preIcon: Image.asset(
                       "assets/image/phonebook_icon.png",
                       width: 30,
                       height: 30,
                     ),
                     text: "Danh bạ",
-                    subIcon: Text("212"),
+                    subIcon: Text("0"),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: ConnectionItem(
+                    onTap: () => ListFollowingScreen.navigate(),
                     preIcon: Image.asset(
                       "assets/image/group_icon.png",
                       width: 30,
                       height: 30,
                     ),
                     text: "Theo dõi",
-                    subIcon: Text("212"),
+                    subIcon: Text(
+                        "${AuthBloc.instance.userModel.followingIds.length}"),
                   ),
                 ),
                 Padding(

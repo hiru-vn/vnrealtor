@@ -85,7 +85,7 @@ class _PostPageState extends State<PostPage> {
           physics: NeverScrollableScrollPhysics(),
           children: [
             Scaffold(
-              backgroundColor: HexColor.fromHex("#E5E5E5"),
+              backgroundColor: Theme.of(context).backgroundColor,
               appBar: showAppBar
                   ? PostPageAppBar(_authBloc.userModel.messNotiCount ?? 0)
                   : null,

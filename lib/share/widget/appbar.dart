@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -93,7 +94,8 @@ innerAppBar(BuildContext context, String title,
             color: Colors.white, fontWeight: FontWeight.w400),
       ),
       leading: GestureDetector(
-        onTap: () {audioCache.play('tab3.mp3');
+        onTap: () {
+          audioCache.play('tab3.mp3');
           navigatorKey.currentState.maybePop();
         },
         child: SizedBox(
@@ -109,3 +111,28 @@ innerAppBar(BuildContext context, String title,
       centerTitle: true,
       actions: actions,
     );
+
+class SecondAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final Widget leading;
+  final Widget title;
+  final List<Widget> actions;
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  const SecondAppBar({
+    Key key,
+    this.leading,
+    this.title,
+    this.actions,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: Colors.white,
+      brightness: Theme.of(context).brightness,
+      leading: leading,
+      actions: actions,
+      title: title,
+    );
+  }
+}

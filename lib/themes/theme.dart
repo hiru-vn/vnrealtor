@@ -3,11 +3,8 @@ import './color.dart';
 import './font.dart';
 
 final lightTheme = ThemeData(
-  primaryColor: HexColor('#293079'),
-  accentColor: HexColor('#e4f4f7'),
   bottomAppBarColor: HexColor('#ffffff'),
   scaffoldBackgroundColor: HexColor('#ffffff'),
-  backgroundColor: HexColor('f7f7f7'),
   cardTheme: CardTheme(
     color: HexColor('#FEFEFE'),
     shadowColor: HexColor('#FEFEFE'),
@@ -27,11 +24,27 @@ final lightTheme = ThemeData(
   ),
   primaryColorLight: Colors.white,
   iconTheme: IconThemeData(size: 21, color: HexColor('#05515e')),
-  dividerColor: Colors.black.withOpacity(0.2),
   textTheme: TextTheme(
     bodyText2: ptBody(),
     bodyText1: ptSmall(),
     button: ptButton(),
   ),
   visualDensity: VisualDensity.adaptivePlatformDensity,
+  primarySwatch: Colors.grey,
+  primaryColor: Colors.black,
+  brightness: Brightness.light,
+  backgroundColor: HexColor.fromHex("#E5E5E5"),
+  accentColor: Colors.white,
+  accentIconTheme: IconThemeData(color: Colors.black),
+  dividerColor: Colors.black12,
+);
+
+final dartTheme = ThemeData(
+  primarySwatch: Colors.grey,
+  primaryColor: Colors.black,
+  brightness: Brightness.dark,
+  backgroundColor: Colors.black,
+  accentColor: Colors.white,
+  accentIconTheme: IconThemeData(color: Colors.black),
+  dividerColor: Colors.black12,
 );

@@ -68,6 +68,7 @@ class UserBloc extends ChangeNotifier {
   List<UserModel> followersIn7Days = [];
   List<UserModel> suggestFollowUsers = [];
   bool isLoadingUserSuggest = true;
+  bool isLoadingUsersIn = true;
 
   Future init() async {
     final token = await SPref.instance.get('token');
@@ -140,6 +141,7 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> getListUserIn(List<String> ids) async {
     try {
+      isLoadingUsersIn = true;
       if (ids.length == 0) return BaseResponse.success(<UserModel>[]);
       final res = await UserRepo().getListUserIn(ids);
       final List listRaw = res['data'];
@@ -148,6 +150,7 @@ class UserBloc extends ChangeNotifier {
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
+      isLoadingUsersIn = false;
       notifyListeners();
     }
   }

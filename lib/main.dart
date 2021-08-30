@@ -4,6 +4,7 @@ import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/modules/services/src/overlay.dart';
 import 'package:datcao/modules/setting/connectivity.dart';
+import 'package:datcao/themes/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sentry/sentry.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
@@ -13,7 +14,6 @@ import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/bloc/verification_bloc.dart';
 import 'package:datcao/share/import.dart';
-import 'package:datcao/themes/lightTheme.dart';
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:datcao/utils/app_internalization.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -149,6 +149,8 @@ class _MyAppState extends State<MyApp> {
                           Locale('vi', 'VN'),
                         ],
                         theme: ThemeProvider.of(context),
+                        themeMode: ThemeMode.system,
+                        darkTheme: dartTheme,
                         home: Material(
                           child: Center(
                             child: EmptyWidget(
@@ -176,6 +178,8 @@ class _MyAppState extends State<MyApp> {
                             Locale('vi', 'VN'),
                           ],
                           theme: ThemeProvider.of(context),
+                          themeMode: ThemeMode.system,
+                          darkTheme: dartTheme,
                           navigatorKey: navigatorKey,
                           home: SplashPage(),
                         ),

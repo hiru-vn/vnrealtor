@@ -224,6 +224,7 @@ class _PostDetailState extends State<PostDetail> {
               child: Image.asset(
                 "assets/image/back_icon.png",
                 width: 30,
+                color: Colors.grey,
               ),
             ),
             title: Expanded(
@@ -232,8 +233,7 @@ class _PostDetailState extends State<PostDetail> {
                   _post != null
                       ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
                       : '',
-                  style: roboto_18_700()
-                      .copyWith(color: Colors.white, fontSize: 15),
+                  style: roboto_18_700().copyWith(fontSize: 15),
                 ),
               ),
             ),
@@ -241,8 +241,8 @@ class _PostDetailState extends State<PostDetail> {
               IconButton(
                   icon: Icon(
                     Icons.more_vert,
-                    color: Colors.white,
                     size: 20,
+                    color: Colors.grey,
                   ),
                   onPressed: null)
             ],

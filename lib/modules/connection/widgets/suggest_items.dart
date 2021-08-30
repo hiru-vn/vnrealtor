@@ -8,6 +8,7 @@ import 'package:datcao/modules/pages/pages/page_detail.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/loading_widgets/shimmer_widget.dart';
+import 'package:datcao/utils/role_user.dart';
 
 class UserSuggestItem extends StatelessWidget {
   final Function(String) onConnect;
@@ -84,7 +85,9 @@ class UserSuggestItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Nhà môi giới"),
+                    Text(
+                      "${convertRoleUser(user.role)}",
+                    ),
                     SizedBox(
                       width: 5,
                     ),
