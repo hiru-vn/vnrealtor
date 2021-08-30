@@ -39,15 +39,10 @@ class _BottomNavigatorState extends State<BottomNavigator> {
             label: e.title,
             icon: Stack(
               children: [
-                Container(
-                  height: 28,
-                  width: 28,
-                  color: Colors.transparent,
-                  child: Center(
-                    child: Icon(
-                      e.icon,
-                      color: Colors.white,
-                    ),
+                Center(
+                  child: Icon(
+                    e.icon,
+                    color: HexColor.fromHex("#BBBBBB"),
                   ),
                 ),
                 if (e.counter > 0)
@@ -80,23 +75,11 @@ class _BottomNavigatorState extends State<BottomNavigator> {
             ),
             activeIcon: Stack(
               children: [
-                Container(
-                  height: 28,
-                  width: 28,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [ptMainColor(), ptSecondColor()],
-                      ),
-                      shape: BoxShape.circle,
-                      color: Colors.white),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Icon(
-                      e.iconActive,
-                      color: Colors.white,
-                    ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Icon(
+                    e.iconActive,
+                    color: ptMainColor(),
                   ),
                 ),
                 // if (e.counter > 0)
@@ -119,11 +102,11 @@ class _BottomNavigatorState extends State<BottomNavigator> {
         .toList();
     return cbn.BottomNavigationBar(
       elevation: 0,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       iconSize: 24,
       selectedFontSize: 25,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white,
+      selectedItemColor: ptMainColor(),
+      unselectedItemColor: HexColor.fromHex("#BBBBBB"),
       type: cbn.BottomNavigationBarType.fixed,
       items: bottomNavBarItems,
       currentIndex: widget.selectedIndex,

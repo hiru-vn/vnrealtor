@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage();
-  static Future navigate(UserModel user) {
+  static Future navigate() {
     return navigatorKey.currentState.push(pageBuilder(ProfilePage()));
   }
 

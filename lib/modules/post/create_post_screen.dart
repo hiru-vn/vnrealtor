@@ -142,7 +142,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               child: Text(
                 "Đăng bài",
                 style: roboto().copyWith(
-                    color: Colors.white,
+                    color: HexColor.fromHex("#BBBBBB"),
                     fontSize: 20,
                     fontWeight: FontWeight.w500),
               ),
@@ -150,10 +150,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             actions: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 3),
-                child: CustomBtn(
+                child: ExpandBtn(
                     text: "ĐĂNG",
-                    textColor: Colors.grey,
-                    color: Colors.white,
+                    textColor: Colors.white,
                     width: 100,
                     onPress: () => _createPost()),
               )

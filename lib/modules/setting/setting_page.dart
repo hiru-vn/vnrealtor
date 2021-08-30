@@ -1,6 +1,7 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/pages/pages/pages_page.dart';
+import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/modules/profile/update_profile_page.dart';
 import 'package:datcao/modules/profile/verify_account_page1.dart';
 import 'package:datcao/modules/profile/verify_company.dart';
@@ -148,71 +149,74 @@ class _SettingPageState extends State<SettingPage> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Center(
-                      child: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Colors.white,
-                        backgroundImage:
-                            AuthBloc.instance.userModel.avatar != null
-                                ? CachedNetworkImageProvider(
-                                    AuthBloc.instance.userModel.avatar)
-                                : AssetImage('assets/image/default_avatar.png'),
+              GestureDetector(
+                onTap: () => ProfilePage.navigate(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Center(
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: Colors.white,
+                          backgroundImage: AuthBloc.instance.userModel.avatar !=
+                                  null
+                              ? CachedNetworkImageProvider(
+                                  AuthBloc.instance.userModel.avatar)
+                              : AssetImage('assets/image/default_avatar.png'),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              _authBloc.userModel?.name ?? '',
-                              style: ptTitle()
-                                  .copyWith(fontWeight: FontWeight.w900),
-                            ),
-                            SizedBox(width: 8),
-                            if (UserBloc.isVerified(_authBloc.userModel))
-                              CustomTooltip(
-                                margin: EdgeInsets.only(top: 0),
-                                message: 'Tài khoản xác thực',
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.blue[600],
+                      SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                _authBloc.userModel?.name ?? '',
+                                style: ptTitle()
+                                    .copyWith(fontWeight: FontWeight.w900),
+                              ),
+                              SizedBox(width: 8),
+                              if (UserBloc.isVerified(_authBloc.userModel))
+                                CustomTooltip(
+                                  margin: EdgeInsets.only(top: 0),
+                                  message: 'Tài khoản xác thực',
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.blue[600],
+                                    ),
+                                    padding: EdgeInsets.all(1.3),
+                                    child: Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 11,
+                                    ),
                                   ),
-                                  padding: EdgeInsets.all(1.3),
-                                  child: Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 11,
-                                  ),
-                                ),
-                              )
-                          ],
-                        ),
-                        SizedBox(height: 3),
-                        GestureDetector(
-                          onTap: () {
-                            audioCache.play('tab3.mp3');
-                            UpdateProfilePage.navigate()
-                                .then((value) => setState(() {}));
-                          },
-                          child: Text(
-                            AuthBloc.instance.userModel.role == 'AGENT'
-                                ? 'Cập nhật thông tin'
-                                : 'Cập nhật thông tin',
-                            style: ptSmall()
-                                .copyWith(color: ptPrimaryColor(context)),
+                                )
+                            ],
                           ),
-                        ),
-                      ],
-                    )
-                  ],
+                          SizedBox(height: 3),
+                          GestureDetector(
+                            onTap: () {
+                              audioCache.play('tab3.mp3');
+                              UpdateProfilePage.navigate()
+                                  .then((value) => setState(() {}));
+                            },
+                            child: Text(
+                              AuthBloc.instance.userModel.role == 'AGENT'
+                                  ? 'Cập nhật thông tin'
+                                  : 'Cập nhật thông tin',
+                              style: ptSmall()
+                                  .copyWith(color: ptPrimaryColor(context)),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
               if ((AuthBloc.instance.userModel.role != 'COMPANY' ||

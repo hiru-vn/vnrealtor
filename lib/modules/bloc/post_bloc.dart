@@ -207,7 +207,7 @@ class PostBloc extends ChangeNotifier {
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail(e?.message ?? e.toString());
     } finally {}
   }
 
