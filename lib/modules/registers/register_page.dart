@@ -43,15 +43,15 @@ class _RegisterPageState extends State<RegisterPage>
           "ĐĂNG KÝ",
           style: roboto_18_700().copyWith(color: ptMainColor()),
         )),
-        brightness: Brightness.light,
-        backgroundColor: Colors.white,
+        brightness: ptBrightness(context),
+        backgroundColor: ptPrimaryColor(context),
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
       backgroundColor: ptSecondaryColor(context),
       body: Container(
         height: deviceHeight(context),
-        color: Colors.white,
+        color: ptPrimaryColor(context),
         child: Stack(
           children: [
             Positioned(
@@ -111,7 +111,7 @@ class _RegisterPageState extends State<RegisterPage>
                               EdgeInsets.symmetric(horizontal: 10),
                           controller: _tabController,
                           labelColor: ptSecondColor(),
-                          unselectedLabelColor: Colors.black54,
+                          unselectedLabelColor: ptSecondaryColor(context),
                           unselectedLabelStyle:
                               TextStyle(fontSize: 14, color: Colors.black12),
                           labelStyle: TextStyle(
@@ -221,7 +221,7 @@ class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
         children: [
           Container(
             decoration: BoxDecoration(
-                color: HexColor.fromHex("#F5F5F5"),
+                color: ptBackgroundColor(context),
                 border: Border.all(color: HexColor.fromHex("#E5E5E5")),
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             child: InternationalPhoneNumberInput(
@@ -248,7 +248,7 @@ class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
               maxLength: 11,
               autoValidateMode: AutovalidateMode.disabled,
               selectorTextStyle: TextStyle(
-                color: HexColor.fromHex("#BBBBBB"),
+                color: ptAccentColor(context),
               ),
               formatInput: false,
               hintText: "Số điện thoại",

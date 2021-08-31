@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
           context: context,
           builder: (context) => Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ptPrimaryColor(context),
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(15),
               ),
@@ -84,7 +84,6 @@ class _LoginPageState extends State<LoginPage> {
                         textAlign: TextAlign.center,
                         style: roboto_18_700().copyWith(
                           fontSize: 20,
-                          color: HexColor.fromHex("#505050"),
                         ),
                       ),
                       Padding(
@@ -94,17 +93,27 @@ class _LoginPageState extends State<LoginPage> {
                           textAlign: TextAlign.center,
                           text: TextSpan(
                             children: <TextSpan>[
-                              TextSpan(text: 'Bật thông báo ', style: ptBody()),
                               TextSpan(
-                                  text: 'tại đây',
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      print('Tap');
-                                    },
-                                  style: ptBody().copyWith(color: Colors.blue)),
+                                text: 'Bật thông báo ',
+                                style: roboto().copyWith(
+                                    fontWeight: FontWeight.w400, fontSize: 15),
+                              ),
                               TextSpan(
-                                  text: ' để nhận được thông tin mới nhất ',
-                                  style: ptBody()),
+                                text: 'tại đây',
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    print('Tap');
+                                  },
+                                style: roboto().copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 15,
+                                    color: Colors.blue),
+                              ),
+                              TextSpan(
+                                text: ' để nhận được thông tin mới nhất ',
+                                style: roboto().copyWith(
+                                    fontWeight: FontWeight.w400, fontSize: 15),
+                              ),
                             ],
                           ),
                         ),
@@ -135,8 +144,7 @@ class _LoginPageState extends State<LoginPage> {
           "ĐĂNG NHẬP",
           style: roboto_18_700().copyWith(color: ptMainColor()),
         )),
-        brightness: Brightness.light,
-        backgroundColor: Colors.white,
+        brightness: Theme.of(context).brightness,
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
@@ -144,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: ptSecondaryColor(context),
       body: Container(
         height: deviceHeight(context),
-        color: Colors.white,
+        color: ptBackgroundColor(context),
         child: Stack(
           children: [
             Positioned(
@@ -174,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                                   const EdgeInsets.symmetric(horizontal: 23),
                               child: Container(
                                   decoration: BoxDecoration(
-                                    color: ptSecondaryColor(context),
+                                    color: ptPrimaryColor(context),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: TextFormField(
@@ -195,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
                                   const EdgeInsets.symmetric(horizontal: 23),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: ptSecondaryColor(context),
+                                  color: ptPrimaryColor(context),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: TextFormField(

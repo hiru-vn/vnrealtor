@@ -11,6 +11,7 @@ Color ptPrimaryColorDark(BuildContext context) =>
     Theme.of(context).primaryColorDark;
 Color ptBackgroundColor(BuildContext context) =>
     Theme.of(context).backgroundColor;
+Brightness ptBrightness(BuildContext context) => Theme.of(context).brightness;
 Color ptAccentColor(BuildContext context) => HexColor('#ffe7e7');
 Color ptLineColor(BuildContext context) => Colors.black.withOpacity(0.2);
 Color ptGreyColor(BuildContext context) => HexColor('#d1d1d1');

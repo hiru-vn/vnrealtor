@@ -1,4 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/inbox/inbox_list.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -128,11 +131,100 @@ class SecondAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      backgroundColor: Colors.white,
+      backgroundColor: ptPrimaryColor(context),
       brightness: Theme.of(context).brightness,
       leading: leading,
       actions: actions,
       title: title,
+    );
+  }
+}
+
+class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final int unReadCount;
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  const MainAppBar({
+    Key key,
+    this.unReadCount,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final count = unReadCount > 9 ? '9+' : unReadCount.toString();
+    return AppBar(
+      elevation: 0,
+      backgroundColor: Theme.of(context).primaryColor,
+      brightness: Theme.of(context).brightness,
+      leading: IconButton(
+        icon: Icon(
+          Icons.account_circle_outlined,
+          size: 32,
+        ),
+        onPressed: null,
+      ),
+      title: Container(
+        decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 7,
+                offset: Offset(0, 4), // changes position of shadow
+              ),
+            ],
+            borderRadius: BorderRadius.circular(30),
+            color: ptPrimaryColor(context)),
+        child: TextFormField(
+            decoration: InputDecoration(
+          prefixIcon: Icon(Icons.search),
+          border: InputBorder.none,
+          hintText: 'Tìm kiếm',
+          hintStyle: roboto(),
+          suffixIcon: Icon(Icons.qr_code),
+        )),
+      ),
+      actions: [
+        GestureDetector(
+          onTap: () {
+            audioCache.play('tab3.mp3');
+            AuthBloc.instance.userModel.messNotiCount = 0;
+            UserBloc.instance.seenNotiMess();
+            InboxList.navigate();
+          },
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 12, bottom: 10, right: 12),
+                child: Container(
+                    width: 42,
+                    height: 42,
+                    child: Icon(
+                      MdiIcons.chatProcessingOutline,
+                      size: 32,
+                      color: HexColor.fromHex("#BBBBBB"),
+                    )),
+              ),
+              if (unReadCount > 0)
+                Positioned(
+                  top: 9,
+                  right: 11,
+                  child: Container(
+                    padding: EdgeInsets.all(count.length == 2 ? 3.5 : 5),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(count,
+                        style: ptTiny().copyWith(
+                            fontSize: 10.5,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600)),
+                  ),
+                ),
+            ],
+          ),
+        )
+      ],
     );
   }
 }

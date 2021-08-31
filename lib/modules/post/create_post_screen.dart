@@ -124,32 +124,25 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     return Container(
       width: deviceWidth(context),
       height: deviceHeight(context),
+      color: ptPrimaryColor(context),
       child: SafeArea(
         child: Scaffold(
-          appBar: CustomAppBar(
-            // leading: IconButton(
-            //   icon: Icon(
-            //     Icons.highlight_off_rounded,
-            //     color: Colors.white,
-            //     size: 30,
-            //   ),
-            //   onPressed: () => Navigator.pop(context),
-            // ),
+          backgroundColor: ptPrimaryColor(context),
+          appBar: SecondAppBar(
             leading: SizedBox(
               width: 100,
             ),
             title: Center(
               child: Text(
                 "Đăng bài",
-                style: roboto().copyWith(
-                    color: HexColor.fromHex("#BBBBBB"),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500),
+                style: roboto()
+                    .copyWith(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
             actions: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 3, vertical: 8.0),
                 child: ExpandBtn(
                     text: "ĐĂNG",
                     textColor: Colors.white,
@@ -226,8 +219,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               },
                               child: Container(
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(color: Colors.black12)),
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                      color: Theme.of(context).dividerColor),
+                                ),
                                 padding: EdgeInsets.symmetric(
                                         horizontal: 7, vertical: 2)
                                     .copyWith(right: 0),
@@ -252,14 +247,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                               : _shareWith == 'friend'
                                                   ? 'Bạn bè'
                                                   : 'Chỉ mình tôi',
-                                          style: ptTiny()
-                                              .copyWith(color: Colors.black54),
+                                          style: ptTiny(),
                                         ),
                                       ],
                                     ),
                                     Icon(
                                       Icons.arrow_drop_down,
-                                      color: Colors.black54,
                                       size: 15,
                                     ),
                                   ],
@@ -359,7 +352,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 child: Material(
                   borderRadius: BorderRadius.circular(10),
                   // elevation: 5,
-                  color: Colors.white,
+                  color: ptPrimaryColor(context),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(minHeight: 170),
                     child: Stack(
@@ -394,7 +387,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   border: InputBorder.none,
                                   hintText: 'Nội dung bài viết...',
                                   hintStyle: ptBigTitle().copyWith(
-                                      color: Colors.black38,
                                       letterSpacing: 1,
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -488,12 +480,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               padding: EdgeInsets.all(6),
                               child: Row(
                                 children: [
-                                  Icon(_area == null ? Icons.add : Icons.check,
-                                      size: 15, color: Colors.white),
+                                  Icon(
+                                    _area == null ? Icons.add : Icons.check,
+                                    size: 15,
+                                  ),
                                   SizedBox(width: 3),
-                                  Text('Mô tả chi tiết',
-                                      style: ptSmall()
-                                          .copyWith(color: Colors.white)),
+                                  Text('Mô tả chi tiết', style: ptSmall()),
                                   SizedBox(width: 5),
                                 ],
                               ),
@@ -506,59 +498,66 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 ),
               ),
               SizedBox(height: 5),
-              Container(
-                height: 30,
-                width: deviceWidth(context),
-                child: ListView.separated(
-                  // shrinkWrap: true,
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  separatorBuilder: (context, index) {
-                    return SizedBox(
-                      width: 10,
-                    );
-                  },
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(15),
-                      onTap: () {
-                        setState(() {
-                          _contentC.text = _contentC.text +
-                              ' ' +
+              if (_postBloc.hasTags
+                      .where((element) =>
+                          !_contentC.text.contains(element['value']))
+                      .toList()
+                      .length >
+                  0)
+                Container(
+                  height: 30,
+                  width: deviceWidth(context),
+                  child: ListView.separated(
+                    // shrinkWrap: true,
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    separatorBuilder: (context, index) {
+                      return SizedBox(
+                        width: 10,
+                      );
+                    },
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(15),
+                        onTap: () {
+                          setState(() {
+                            _contentC.text = _contentC.text +
+                                ' ' +
+                                _postBloc.hasTags
+                                    .where((element) => !_contentC.text
+                                        .contains(element['value']))
+                                    .toList()[index]['value']
+                                    .toString();
+                            _contentC.selection = TextSelection.fromPosition(
+                                TextPosition(offset: _contentC.text.length));
+                          });
+                        },
+                        child: Container(
+                          height: 30,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                              color: ptPrimaryColorLight(context),
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Center(
+                            child: Text(
                               _postBloc.hasTags
                                   .where((element) => !_contentC.text
                                       .contains(element['value']))
                                   .toList()[index]['value']
-                                  .toString();
-                          _contentC.selection = TextSelection.fromPosition(
-                              TextPosition(offset: _contentC.text.length));
-                        });
-                      },
-                      child: Container(
-                        height: 30,
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                            color: ptSecondaryColor(context),
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Center(
-                          child: Text(
-                            _postBloc.hasTags
-                                .where((element) =>
-                                    !_contentC.text.contains(element['value']))
-                                .toList()[index]['value']
-                                .toString(),
+                                  .toString(),
+                              style: roboto().copyWith(color: ptMainColor()),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                  itemCount: _postBloc.hasTags
-                      .where((element) =>
-                          !_contentC.text.contains(element['value']))
-                      .toList()
-                      .length,
-                  scrollDirection: Axis.horizontal,
+                      );
+                    },
+                    itemCount: _postBloc.hasTags
+                        .where((element) =>
+                            !_contentC.text.contains(element['value']))
+                        .toList()
+                        .length,
+                    scrollDirection: Axis.horizontal,
+                  ),
                 ),
-              ),
               SizedBox(
                 height: 10,
               ),

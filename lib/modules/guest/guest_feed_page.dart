@@ -100,119 +100,122 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ptBackgroundColor(context),
-      appBar: showAppBar ? GuestFeedPageAppBar() : null,
-      body: LoadMoreScrollView(
-        scrollController: _controller,
-        onLoadMore: () async {
-          final res = await _postBloc.getNewFeedGuest(page + 1);
-          if (res.isSuccess) {
-            setState(() {
-              page++;
-              posts.addAll(res.data);
-            });
-          } else {
-            showToast(res.errMessage, context);
-          }
-          return;
-        },
-        list: RefreshIndicator(
-          color: ptPrimaryColor(context),
-          onRefresh: () async {
-            audioCache.play('tab3.mp3');
-            final res = await _postBloc.getNewFeedGuest(1);
+    return Container(
+      color: ptPrimaryColor(context),
+      child: Scaffold(
+        backgroundColor: ptBackgroundColor(context),
+        appBar: showAppBar ? GuestFeedPageAppBar() : null,
+        body: LoadMoreScrollView(
+          scrollController: _controller,
+          onLoadMore: () async {
+            final res = await _postBloc.getNewFeedGuest(page + 1);
             if (res.isSuccess) {
               setState(() {
-                page = 1;
-                posts = res.data;
+                page++;
+                posts.addAll(res.data);
               });
             } else {
               showToast(res.errMessage, context);
             }
             return;
           },
-          child: SingleChildScrollView(
-            controller: _controller,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: (!showAppBar)
-                      ? MediaQuery.of(context).padding.top + kToolbarHeight
-                      : 0,
-                ),
-                CreatePostCardGuest(
-                  postBloc: _postBloc,
-                  pageController: _postBloc.pageController,
-                  stories: stories,
-                ),
-                if (_postBloc.hasTags != null && _postBloc.hasTags.length > 0)
-                  Container(
-                    width: deviceWidth(context),
-                    height: 30,
-                    margin: EdgeInsets.only(top: 8),
-                    // padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: ListView.separated(
-                      // shrinkWrap: true,
-                      padding: EdgeInsets.only(left: 15),
-                      separatorBuilder: (context, index) {
-                        return SizedBox(
-                          width: 10,
-                        );
-                      },
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          borderRadius: BorderRadius.circular(15),
-                          onTap: () {
-                            SearchPostPage.navigate(
-                                hashTag: _postBloc.hasTags[index]['value']);
-                          },
-                          child: Container(
-                            height: 30,
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                                color: ptSecondaryColor(context),
-                                borderRadius: BorderRadius.circular(15)),
-                            child: Center(
-                              child: Text(
-                                _postBloc.hasTags[index]['value'].toString(),
+          list: RefreshIndicator(
+            color: ptPrimaryColor(context),
+            onRefresh: () async {
+              audioCache.play('tab3.mp3');
+              final res = await _postBloc.getNewFeedGuest(1);
+              if (res.isSuccess) {
+                setState(() {
+                  page = 1;
+                  posts = res.data;
+                });
+              } else {
+                showToast(res.errMessage, context);
+              }
+              return;
+            },
+            child: SingleChildScrollView(
+              controller: _controller,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: (!showAppBar)
+                        ? MediaQuery.of(context).padding.top + kToolbarHeight
+                        : 0,
+                  ),
+                  CreatePostCardGuest(
+                    postBloc: _postBloc,
+                    pageController: _postBloc.pageController,
+                    stories: stories,
+                  ),
+                  if (_postBloc.hasTags != null && _postBloc.hasTags.length > 0)
+                    Container(
+                      width: deviceWidth(context),
+                      height: 30,
+                      margin: EdgeInsets.only(top: 8),
+                      // padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: ListView.separated(
+                        // shrinkWrap: true,
+                        padding: EdgeInsets.only(left: 15),
+                        separatorBuilder: (context, index) {
+                          return SizedBox(
+                            width: 10,
+                          );
+                        },
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            borderRadius: BorderRadius.circular(15),
+                            onTap: () {
+                              SearchPostPage.navigate(
+                                  hashTag: _postBloc.hasTags[index]['value']);
+                            },
+                            child: Container(
+                              height: 30,
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                  color: ptSecondaryColor(context),
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Center(
+                                child: Text(
+                                  _postBloc.hasTags[index]['value'].toString(),
+                                ),
                               ),
                             ),
-                          ),
+                          );
+                        },
+                        itemCount: _postBloc.hasTags.length,
+                        scrollDirection: Axis.horizontal,
+                      ),
+                    ),
+                  if (posts == null)
+                    PostSkeleton()
+                  else
+                    ListView.builder(
+                      padding: EdgeInsets.all(0),
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: posts.length,
+                      itemBuilder: (context, index) {
+                        final item = posts[index];
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            PostWidget(item),
+                            if (index == 1 &&
+                                suggestFollowUsers != null &&
+                                suggestFollowUsers.length > 0)
+                              SuggestListUser(
+                                users: suggestFollowUsers,
+                              ),
+                          ],
                         );
                       },
-                      itemCount: _postBloc.hasTags.length,
-                      scrollDirection: Axis.horizontal,
                     ),
+                  SizedBox(
+                    height: 70,
                   ),
-                if (posts == null)
-                  PostSkeleton()
-                else
-                  ListView.builder(
-                    padding: EdgeInsets.all(0),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: posts.length,
-                    itemBuilder: (context, index) {
-                      final item = posts[index];
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          PostWidget(item),
-                          if (index == 1 &&
-                              suggestFollowUsers != null &&
-                              suggestFollowUsers.length > 0)
-                            SuggestListUser(
-                              users: suggestFollowUsers,
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-                SizedBox(
-                  height: 70,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -379,26 +382,24 @@ class GuestFeedPageAppBar extends StatelessWidget
   GuestFeedPageAppBar();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      child: Padding(
-        padding:
-            const EdgeInsets.only(left: 15, top: 12, bottom: 10, right: 12),
-        child: Row(
-          children: [
-            Image.asset('assets/image/logo_full.png'),
-            Spacer(),
-            ExpandBtn(
-                text: "Đăng nhập",
-                width: 100,
-                onPress: () {
-                  audioCache.play('tab3.mp3');
-                  LoginPage.navigatePush();
-                }),
-          ],
-        ),
+    return AppBar(
+      brightness: Theme.of(context).brightness,
+      title: Row(
+        children: [
+          Image.asset(
+            'assets/image/logo_full.png',
+            width: 100,
+          ),
+          Spacer(),
+          ExpandBtn(
+              text: "Đăng nhập",
+              width: 100,
+              onPress: () {
+                audioCache.play('tab3.mp3');
+                LoginPage.navigatePush();
+              }),
+        ],
       ),
-      color: ptSecondaryColor(context),
     );
   }
 }

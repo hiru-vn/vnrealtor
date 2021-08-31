@@ -52,10 +52,11 @@ class _ConnectScreenState extends State<ConnectScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
+    return Container(
+      color: ptPrimaryColor(context),
+      child: SafeArea(
         child: Scaffold(
-          backgroundColor: HexColor.fromHex("#E5E5E5"),
+          backgroundColor: ptBackgroundColor(context),
           appBar: SecondAppBar(
             leading: IconButton(
               icon: Image.asset(
@@ -72,7 +73,6 @@ class _ConnectScreenState extends State<ConnectScreen> {
                 style: roboto().copyWith(
                   fontWeight: FontWeight.w500,
                   fontSize: 18,
-                  color: Colors.grey,
                 ),
               ),
             ),
@@ -85,7 +85,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Container(
-                    color: Colors.white,
+                    color: ptPrimaryColor(context),
                     child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: _users != null
@@ -316,7 +316,7 @@ class UserConnectItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8.0),
-      color: Colors.white,
+      color: ptPrimaryColor(context),
       child: Row(
         children: [
           Container(
@@ -402,7 +402,7 @@ class UserConnectItemLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8.0),
-      color: Colors.white,
+      color: ptPrimaryColor(context),
       child: Row(
         children: [
           ShimmerWidget.cirular(width: 40, height: 40),

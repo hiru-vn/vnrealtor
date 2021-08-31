@@ -22,11 +22,11 @@ class ListGroupConnection extends StatelessWidget {
   Widget build(BuildContext context) {
     final _groupBloc = GroupBloc.instance;
     return Container(
-      color: Colors.white,
+      color: ptPrimaryColor(context),
       child: Column(
         children: [
           Container(
-            color: HexColor.fromHex("#F0F6FB"),
+            color: ptPrimaryColorLight(context),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(
@@ -43,7 +43,6 @@ class ListGroupConnection extends StatelessWidget {
                     style: roboto().copyWith(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey,
                     ),
                   )
                 ],
@@ -108,7 +107,7 @@ class ListPageConnection extends StatelessWidget {
   Widget build(BuildContext context) {
     final _pageBloc = PagesBloc.instance;
     return Container(
-      color: Colors.white,
+      color: ptPrimaryColor(context),
       child: Column(
         children: [
           Container(
@@ -166,11 +165,11 @@ class ListUserConnection extends StatelessWidget {
     final _userBloc = UserBloc.instance;
 
     return Container(
-      color: Colors.white,
+      color: ptPrimaryColor(context),
       child: Column(
         children: [
           Container(
-            color: HexColor.fromHex("#F0F6FB"),
+            color: ptPrimaryColorLight(context),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(
@@ -187,7 +186,6 @@ class ListUserConnection extends StatelessWidget {
                     style: roboto().copyWith(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey,
                     ),
                   )
                 ],

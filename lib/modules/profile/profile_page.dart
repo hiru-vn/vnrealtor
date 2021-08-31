@@ -54,71 +54,75 @@ class _ProfilePageState extends State<ProfilePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ptBackgroundColor(context),
-      appBar: ProfilePageAppBar(canPop: canPop),
-      body: NestedScrollView(
-        controller: _userBloc.profileScrollController,
-        headerSliverBuilder: (context, value) {
-          return [
-            SliverToBoxAdapter(
-              child: ProfileCard(
-                user: _authBloc.userModel,
-                tabC: _tabController,
+    return Container(
+      color: ptPrimaryColor(context),
+      child: Scaffold(
+        backgroundColor: ptBackgroundColor(context),
+        appBar: ProfilePageAppBar(canPop: canPop),
+        body: NestedScrollView(
+          controller: _userBloc.profileScrollController,
+          headerSliverBuilder: (context, value) {
+            return [
+              SliverToBoxAdapter(
+                child: ProfileCard(
+                  user: _authBloc.userModel,
+                  tabC: _tabController,
+                ),
               ),
-            ),
-          ];
-        },
-        body: Container(
-          child: TabBarView(
-            controller: _tabController,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              _postBloc.myPosts == null
-                  ? kLoadingSpinner
-                  : (_postBloc.myPosts.length != 0
-                      ? RefreshIndicator(
-                          color: ptPrimaryColor(context),
-                          onRefresh: () async {
-                            audioCache.play('tab3.mp3');
-                            final res = await _postBloc.getMyPost();
-                            if (!res.isSuccess)
-                              showToast(res.errMessage, context);
-                          },
-                          child: ListView.separated(
+            ];
+          },
+          body: Container(
+            color: ptPrimaryColor(context),
+            child: TabBarView(
+              controller: _tabController,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                _postBloc.myPosts == null
+                    ? kLoadingSpinner
+                    : (_postBloc.myPosts.length != 0
+                        ? RefreshIndicator(
+                            color: ptPrimaryColor(context),
+                            onRefresh: () async {
+                              audioCache.play('tab3.mp3');
+                              final res = await _postBloc.getMyPost();
+                              if (!res.isSuccess)
+                                showToast(res.errMessage, context);
+                            },
+                            child: ListView.separated(
+                              // controller: _userBloc.profileScrollController,
+                              itemCount: _postBloc.myPosts.length,
+                              itemBuilder: (context, index) {
+                                final post = _postBloc.myPosts[index];
+                                return PostWidget(post);
+                              },
+                              separatorBuilder: (context, index) =>
+                                  SizedBox(height: 15),
+                            ),
+                          )
+                        : EmptyWidget(
+                            assetImg: 'assets/image/no_post.png',
+                            content: 'Bạn chưa có bài đăng nào.',
+                          )),
+                _postBloc.savePosts == null
+                    ? kLoadingSpinner
+                    : (_postBloc.savePosts.length != 0
+                        ? ListView.separated(
                             // controller: _userBloc.profileScrollController,
-                            itemCount: _postBloc.myPosts.length,
+                            padding: EdgeInsets.only(bottom: 20),
+                            itemCount: _postBloc.savePosts.length,
                             itemBuilder: (context, index) {
-                              final post = _postBloc.myPosts[index];
-                              return PostWidget(post);
+                              final post = _postBloc.savePosts[index];
+                              return PostSmallWidget(post);
                             },
                             separatorBuilder: (context, index) =>
-                                SizedBox(height: 15),
-                          ),
-                        )
-                      : EmptyWidget(
-                          assetImg: 'assets/image/no_post.png',
-                          content: 'Bạn chưa có bài đăng nào.',
-                        )),
-              _postBloc.savePosts == null
-                  ? kLoadingSpinner
-                  : (_postBloc.savePosts.length != 0
-                      ? ListView.separated(
-                          // controller: _userBloc.profileScrollController,
-                          padding: EdgeInsets.only(bottom: 20),
-                          itemCount: _postBloc.savePosts.length,
-                          itemBuilder: (context, index) {
-                            final post = _postBloc.savePosts[index];
-                            return PostSmallWidget(post);
-                          },
-                          separatorBuilder: (context, index) =>
-                              SizedBox(height: 0),
-                        )
-                      : EmptyWidget(
-                          assetImg: 'assets/image/no_post.png',
-                          content: 'Kho lưu trữ trống.',
-                        )),
-            ],
+                                SizedBox(height: 0),
+                          )
+                        : EmptyWidget(
+                            assetImg: 'assets/image/no_post.png',
+                            content: 'Kho lưu trữ trống.',
+                          )),
+              ],
+            ),
           ),
         ),
       ),
@@ -161,7 +165,7 @@ class ProfilePageAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
       ),
-      color: ptSecondaryColor(context),
+      color: ptPrimaryColor(context),
     );
   }
 }
@@ -206,6 +210,7 @@ class _ProfileCardState extends State<ProfileCard> {
         borderRadius: BorderRadius.circular(5),
         // elevation: 3,
         child: Container(
+          color: ptPrimaryColor(context),
           width: deviceWidth(context),
           padding: EdgeInsets.symmetric(horizontal: 25, vertical: 14)
               .copyWith(bottom: 0, right: 20),
@@ -382,7 +387,7 @@ class _ProfileCardState extends State<ProfileCard> {
                   children: [
                     Text(
                       'Điểm tương tác: ${widget.user.reputationScore.toString()}',
-                      style: ptBody().copyWith(color: Colors.black54),
+                      style: ptBody(),
                     ),
                     SizedBox(width: 5),
                     SizedBox(
@@ -467,10 +472,11 @@ class _ProfileCardState extends State<ProfileCard> {
                   child: TabBar(
                       indicatorSize: TabBarIndicatorSize.label,
                       indicatorWeight: 4,
-                      indicatorColor: ptPrimaryColor(context),
+                      indicatorColor: ptSecondaryColor(context),
                       controller: widget.tabC,
                       isScrollable: true,
-                      labelColor: Colors.black87,
+                      unselectedLabelColor: ptSecondaryColor(context),
+                      labelColor: ptSecondColor(),
                       unselectedLabelStyle: ptTitle(),
                       labelStyle: ptTitle(),
                       tabs: [
@@ -480,7 +486,7 @@ class _ProfileCardState extends State<ProfileCard> {
                           child: Tab(
                             child: Icon(
                               MdiIcons.postOutline,
-                              color: ptPrimaryColor(context),
+                              color: ptSecondaryColor(context),
                             ),
                           ),
                         ),
@@ -490,7 +496,7 @@ class _ProfileCardState extends State<ProfileCard> {
                           child: Tab(
                             child: Icon(
                               MdiIcons.bookmarkOutline,
-                              color: ptPrimaryColor(context),
+                              color: ptSecondaryColor(context),
                             ),
                           ),
                         ),

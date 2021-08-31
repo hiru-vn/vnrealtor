@@ -1,3 +1,4 @@
+import 'package:datcao/modules/inbox/import/color.dart';
 import 'package:datcao/share/widget/loading_widgets/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:skeleton_loader/skeleton_loader.dart';
@@ -50,7 +51,7 @@ class PostSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).primaryColor,
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Column(
         children: [

@@ -50,7 +50,7 @@ class _SettingPageState extends State<SettingPage> {
       },
       {
         "name": "Chia sẻ ứng dụng",
-        "img": "assets/image/share_app.png",
+        "img": "assets/image/saved_post.png",
         "action": () {
           shareTo(context,
               image: [
@@ -82,13 +82,13 @@ class _SettingPageState extends State<SettingPage> {
       //     PrivacyPage.navigate();
       //   }
       // },
-      {
-        "name": "Trang",
-        "img": "assets/image/page.png",
-        "action": () {
-          PagesPage.navigate();
-        }
-      },
+      // {
+      //   "name": "Trang",
+      //   "img": "assets/image/page.png",
+      //   "action": () {
+      //     PagesPage.navigate();
+      //   }
+      // },
       {
         "name": "Bài viết đã lưu",
         "img": "assets/image/saved_post.png",
@@ -136,7 +136,7 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
       appBar: AppBar(
-        backgroundColor: ptPrimaryColorLight(context),
+        backgroundColor: ptPrimaryColor(context),
         centerTitle: true,
         automaticallyImplyLeading: false,
         elevation: 1,
@@ -153,69 +153,76 @@ class _SettingPageState extends State<SettingPage> {
                 onTap: () => ProfilePage.navigate(),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Center(
-                        child: CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.white,
-                          backgroundImage: AuthBloc.instance.userModel.avatar !=
-                                  null
-                              ? CachedNetworkImageProvider(
-                                  AuthBloc.instance.userModel.avatar)
-                              : AssetImage('assets/image/default_avatar.png'),
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
+                  child: Card(
+                    // color: ptPrimaryColorLight(context),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                _authBloc.userModel?.name ?? '',
-                                style: ptTitle()
-                                    .copyWith(fontWeight: FontWeight.w900),
-                              ),
-                              SizedBox(width: 8),
-                              if (UserBloc.isVerified(_authBloc.userModel))
-                                CustomTooltip(
-                                  margin: EdgeInsets.only(top: 0),
-                                  message: 'Tài khoản xác thực',
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.blue[600],
-                                    ),
-                                    padding: EdgeInsets.all(1.3),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 11,
-                                    ),
-                                  ),
-                                )
-                            ],
-                          ),
-                          SizedBox(height: 3),
-                          GestureDetector(
-                            onTap: () {
-                              audioCache.play('tab3.mp3');
-                              UpdateProfilePage.navigate()
-                                  .then((value) => setState(() {}));
-                            },
-                            child: Text(
-                              AuthBloc.instance.userModel.role == 'AGENT'
-                                  ? 'Cập nhật thông tin'
-                                  : 'Cập nhật thông tin',
-                              style: ptSmall()
-                                  .copyWith(color: ptPrimaryColor(context)),
+                          Center(
+                            child: CircleAvatar(
+                              radius: 25,
+                              backgroundColor: Colors.white,
+                              backgroundImage:
+                                  AuthBloc.instance.userModel.avatar != null
+                                      ? CachedNetworkImageProvider(
+                                          AuthBloc.instance.userModel.avatar)
+                                      : AssetImage(
+                                          'assets/image/default_avatar.png'),
                             ),
                           ),
+                          SizedBox(width: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    _authBloc.userModel?.name ?? '',
+                                    style: ptTitle()
+                                        .copyWith(fontWeight: FontWeight.w900),
+                                  ),
+                                  SizedBox(width: 8),
+                                  if (UserBloc.isVerified(_authBloc.userModel))
+                                    CustomTooltip(
+                                      margin: EdgeInsets.only(top: 0),
+                                      message: 'Tài khoản xác thực',
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.blue[600],
+                                        ),
+                                        padding: EdgeInsets.all(1.3),
+                                        child: Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                          size: 11,
+                                        ),
+                                      ),
+                                    )
+                                ],
+                              ),
+                              SizedBox(height: 3),
+                              GestureDetector(
+                                onTap: () {
+                                  audioCache.play('tab3.mp3');
+                                  UpdateProfilePage.navigate()
+                                      .then((value) => setState(() {}));
+                                },
+                                child: Text(
+                                  AuthBloc.instance.userModel.role == 'AGENT'
+                                      ? 'Cập nhật thông tin'
+                                      : 'Cập nhật thông tin',
+                                  style: ptSmall()
+                                      .copyWith(color: ptPrimaryColor(context)),
+                                ),
+                              ),
+                            ],
+                          )
                         ],
-                      )
-                    ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -236,7 +243,7 @@ class _SettingPageState extends State<SettingPage> {
                     },
                     child: Card(
                       elevation: 0,
-                      color: ptSecondaryColor(context),
+                      // color: ptPrimaryColorLight(context),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -366,7 +373,7 @@ class _SettingPageState extends State<SettingPage> {
                     if (!snapshot.hasData) return SizedBox.shrink();
                     return Text(
                       'v${snapshot.data.version}',
-                      style: ptSmall().copyWith(color: Colors.black54),
+                      style: ptSmall(),
                     );
                   }),
               SizedBox(height: 50),

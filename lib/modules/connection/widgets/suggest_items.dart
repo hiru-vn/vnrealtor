@@ -27,14 +27,17 @@ class UserSuggestItem extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         width: 180,
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 7,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ], color: Colors.white, borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+            color: ptPrimaryColor(context),
+            borderRadius: BorderRadius.circular(10)),
         child: Stack(
           children: [
             Column(
@@ -186,14 +189,17 @@ class GroupSuggestItem extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           width: 180,
-          decoration: BoxDecoration(boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ], color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+              color: ptPrimaryColor(context),
+              borderRadius: BorderRadius.circular(10)),
           child: Stack(
             children: [
               Container(
@@ -330,14 +336,17 @@ class SuggestItemLoading extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         width: 180,
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 7,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ], color: Colors.white, borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+            color: ptPrimaryColor(context),
+            borderRadius: BorderRadius.circular(10)),
         child: Stack(
           children: [
             ShimmerWidget.rectangular(
@@ -412,14 +421,17 @@ class PageSuggestItem extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           width: 180,
-          decoration: BoxDecoration(boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ], color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+              color: ptPrimaryColor(context),
+              borderRadius: BorderRadius.circular(10)),
           child: Stack(
             children: [
               Column(

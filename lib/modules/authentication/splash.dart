@@ -72,6 +72,7 @@ class _SplashPageState extends State<SplashPage> {
           Container(
             height: deviceHeight(context),
             width: deviceWidth(context),
+            color: ptPrimaryColor(context),
           ),
           Positioned(
             child: Align(

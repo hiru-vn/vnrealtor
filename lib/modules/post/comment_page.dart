@@ -635,7 +635,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                        color: HexColor.fromHex("#ECECEC"),
+                        color: ptPrimaryColorLight(context),
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -652,12 +652,12 @@ class _CommentWidgetState extends State<CommentWidget> {
                                   Text(
                                     widget.comment.user?.name ?? '',
                                     style: roboto_18_700().copyWith(
-                                        fontSize: 16,
-                                        color: HexColor.fromHex("#505050")),
+                                      fontSize: 16,
+                                    ),
                                   ),
                                   Text(TimeAgo.timeAgoSinceDate(
-                                      DateTime.tryParse(
-                                          widget.comment.createdAt)))
+                                    DateTime.tryParse(widget.comment.createdAt),
+                                  ))
                                 ],
                               ),
                               Column(
@@ -685,8 +685,8 @@ class _CommentWidgetState extends State<CommentWidget> {
                               TextSpan(
                                 text: (widget.comment.content ?? ''),
                                 style: ptBody().copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black87),
+                                  fontWeight: FontWeight.w500,
+                                ),
                               )
                             else
                               ...contentSplit.map((e) {
@@ -766,10 +766,10 @@ class _CommentWidgetState extends State<CommentWidget> {
                             "Thích",
                             style: roboto_18_700().copyWith(
                               fontSize: 12,
-                              fontWeight: FontWeight.w100,
+                              fontWeight: FontWeight.w700,
                               color: _isLike
-                                  ? ptPrimaryColor(context)
-                                  : HexColor.fromHex("#505050"),
+                                  ? ptMainColor()
+                                  : ptSecondaryColor(context),
                             ),
                           ),
                           Image.asset(
@@ -802,7 +802,11 @@ class _CommentWidgetState extends State<CommentWidget> {
                   },
                   child: Text(
                     'Trả lời',
-                    style: ptTiny(),
+                    style: roboto_18_700().copyWith(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: ptSecondaryColor(context),
+                    ),
                   ),
                 ),
             ],
@@ -1196,7 +1200,7 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                              color: HexColor.fromHex("#ECECEC"),
+                              color: ptPrimaryColorLight(context),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10))),
                           child: Padding(
@@ -1216,9 +1220,8 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                                         Text(
                                           widget.reply.user?.name ?? '',
                                           style: roboto_18_700().copyWith(
-                                              fontSize: 16,
-                                              color:
-                                                  HexColor.fromHex("#505050")),
+                                            fontSize: 16,
+                                          ),
                                         ),
                                         Text(TimeAgo.timeAgoSinceDate(
                                             DateTime.tryParse(
@@ -1251,8 +1254,8 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                                     TextSpan(
                                       text: (widget.reply.content ?? ''),
                                       style: ptBody().copyWith(
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black87),
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     )
                                   else
                                     ...contentSplit.map((e) {
@@ -1281,8 +1284,8 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                                         return TextSpan(
                                           text: (e),
                                           style: ptBody().copyWith(
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black87),
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         );
                                     }).toList(),
                                 ])),
@@ -1337,7 +1340,7 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                                     fontWeight: FontWeight.w100,
                                     color: _isLike
                                         ? ptPrimaryColor(context)
-                                        : HexColor.fromHex("#505050"),
+                                        : ptSecondaryColor(context),
                                   ),
                                 ),
                                 Image.asset(

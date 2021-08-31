@@ -87,7 +87,7 @@ class _PostWidgetState extends State<PostWidget> {
       padding: EdgeInsets.only(top: widget.isSharedPost ? 0 : 8),
       child: Container(
         width: deviceWidth(context),
-        color: Colors.white,
+        color: ptPrimaryColor(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -138,7 +138,8 @@ class _PostWidgetState extends State<PostWidget> {
                       text: (widget.post?.content?.trim() ?? ''),
                       // trimLines: 5,
                       // trimLength: 1000,
-                      style: ptBody().copyWith(color: Colors.black87),
+                      style: roboto()
+                          .copyWith(fontWeight: FontWeight.w400, fontSize: 15),
                       textAlign: TextAlign.start,
                       // colorClickableText: Colors.pink,
                       // trimMode: TrimMode.Length,
@@ -843,7 +844,8 @@ class _PostWidgetState extends State<PostWidget> {
                   //         '')
                   //     : Formart.timeByDayVi(
                   //         DateTime.tryParse(widget.post?.createdAt)),
-                  style: ptTiny().copyWith(color: Colors.black54),
+                  style: roboto()
+                      .copyWith(fontWeight: FontWeight.w300, fontSize: 12),
                 ),
                 SizedBox(width: 5),
                 if (widget.post.distance != null) ...[
@@ -855,7 +857,8 @@ class _PostWidgetState extends State<PostWidget> {
                   SizedBox(width: 5),
                   Text(
                     widget.post.distance.toStringAsFixed(1) + ' km',
-                    style: ptTiny().copyWith(color: Colors.black54),
+                    style: roboto()
+                        .copyWith(fontWeight: FontWeight.w400, fontSize: 14),
                   ),
                 ],
               ],
@@ -1127,14 +1130,19 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
         ),
       );
     }
-    return Container(
-      color: Colors.white,
-      child: Padding(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
         padding:
             const EdgeInsets.only(top: 10, left: 20, right: 15, bottom: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: ptPrimaryColor(context),
+          border: Border.all(color: Theme.of(context).dividerColor),
+        ),
         child: Container(
             width: deviceWidth(context),
-            color: Colors.white,
+            color: ptPrimaryColor(context),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1171,7 +1179,7 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                           SizedBox(height: 3),
                           Text(
                             '${widget.post.like} thích • ${widget.post.commentIds.length} bình luận',
-                            style: ptBody().copyWith(color: Colors.grey[600]),
+                            style: ptBody(),
                           ),
                           SizedBox(height: 3),
                           Text.rich(
@@ -1180,13 +1188,13 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                               TextSpan(
                                   text: '${widget.post.user.name}',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black54)),
+                                    fontWeight: FontWeight.w600,
+                                  )),
                               TextSpan(
                                   text:
                                       ' • ${Formart.timeByDayVi(DateTime.tryParse(widget.post.updatedAt)).replaceAll(' trước', '')}'),
                             ]),
-                            style: ptTiny().copyWith(color: Colors.grey[600]),
+                            style: ptTiny(),
                           ),
                         ],
                       )),

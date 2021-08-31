@@ -115,7 +115,9 @@ class _ConnectionScreenState extends State<ConnectionScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar: PostPageAppBar(_authBloc.userModel.messNotiCount ?? 0),
+      appBar: MainAppBar(
+        unReadCount: _authBloc.userModel.messNotiCount ?? 0,
+      ),
       body: RefreshIndicator(
         onRefresh: () => _refresh(),
         child: CustomScrollView(

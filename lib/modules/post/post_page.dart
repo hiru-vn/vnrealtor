@@ -79,214 +79,195 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     _postBloc.pageController = PageController();
     _postBloc.feedScrollController = ScrollController();
-    return SafeArea(
-      child: PageView(
-          controller: _postBloc.pageController,
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            Scaffold(
-              backgroundColor: Theme.of(context).backgroundColor,
-              appBar: showAppBar
-                  ? PostPageAppBar(_authBloc.userModel.messNotiCount ?? 0)
-                  : null,
-              body: LoadMoreScrollView(
-                scrollController: _postBloc.feedScrollController,
-                onLoadMore: () {
-                  _postBloc.loadMoreNewFeed();
-                },
-                list: RefreshIndicator(
-                  color: ptPrimaryColor(context),
-                  onRefresh: () async {
-                    audioCache.play('tab3.mp3');
-                    setState(() {
-                      isFilterDistance = false;
-                    });
-                    await Future.wait([
-                      _postBloc.getNewFeed(
-                          filter: GraphqlFilter(
-                              limit: 10, order: "{updatedAt: -1}")),
-                      _postBloc.getStoryFollowing()
-                    ]);
+    return Scaffold(
+      appBar: MainAppBar(
+        unReadCount: _authBloc.userModel.messNotiCount ?? 0,
+      ),
+      body: LoadMoreScrollView(
+        scrollController: _postBloc.feedScrollController,
+        onLoadMore: () {
+          _postBloc.loadMoreNewFeed();
+        },
+        list: RefreshIndicator(
+          color: ptPrimaryColor(context),
+          onRefresh: () async {
+            audioCache.play('tab3.mp3');
+            setState(() {
+              isFilterDistance = false;
+            });
+            await Future.wait([
+              _postBloc.getNewFeed(
+                  filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}")),
+              _postBloc.getStoryFollowing()
+            ]);
 
-                    return;
-                  },
-                  child: InViewNotifierCustomScrollView(
-                      // physics: const BouncingScrollPhysics(
-                      //     parent: AlwaysScrollableScrollPhysics()),
-                      isInViewPortCondition: (double deltaTop,
-                          double deltaBottom, double viewPortDimension) {
-                        return deltaTop < (0.5 * viewPortDimension) + 100.0 &&
-                            deltaBottom > (0.5 * viewPortDimension) - 100.0;
-                      },
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      controller: _postBloc.feedScrollController,
-                      slivers: <Widget>[
-                        SliverList(
-                            delegate: SliverChildListDelegate(
-                          [
-                            SizedBox(
-                              height: (!showAppBar)
-                                  ? MediaQuery.of(context).padding.top +
-                                      kToolbarHeight
-                                  : 0,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                              child: CreatePostCard(
-                                postBloc: _postBloc,
-                                pageController: _postBloc.pageController,
-                              ),
-                            ),
-                            if (_postBloc.isReloadFeed) PostSkeleton(),
-                            // if (_postBloc.hasTags != null &&
-                            //     _postBloc.hasTags.length > 0)
-                            //   Container(
-                            //     width: deviceWidth(context),
-                            //     height: 30,
-                            //     margin: EdgeInsets.only(top: 8),
-                            //     // padding: EdgeInsets.symmetric(horizontal: 20),
-                            //     child: ListView.separated(
-                            //       // shrinkWrap: true,
-                            //       padding: EdgeInsets.only(left: 15),
-                            //       separatorBuilder: (context, index) {
-                            //         return SizedBox(
-                            //           width: 10,
-                            //         );
-                            //       },
-                            //       itemBuilder: (context, index) {
-                            //         if (index == 0) {
-                            //           return PopupMenuButton(
-                            //             itemBuilder: (_) =>
-                            //                 <PopupMenuItem<int>>[
-                            //               PopupMenuItem(
-                            //                 child: Row(
-                            //                   mainAxisSize: MainAxisSize.min,
-                            //                   children: [
-                            //                     Text('Bán kính 10 km'),
-                            //                     if (distance == 10)
-                            //                       Icon(Icons.check, size: 18)
-                            //                   ],
-                            //                 ),
-                            //                 value: 10,
-                            //               ),
-                            //               PopupMenuItem(
-                            //                   child: Row(
-                            //                     mainAxisSize: MainAxisSize.min,
-                            //                     children: [
-                            //                       Text('Bán kính 20 km'),
-                            //                       if (distance == 20)
-                            //                         Icon(Icons.check, size: 18)
-                            //                     ],
-                            //                   ),
-                            //                   value: 20),
-                            //               PopupMenuItem(
-                            //                   child: Row(
-                            //                     mainAxisSize: MainAxisSize.min,
-                            //                     children: [
-                            //                       Text('Bán kính 50 km'),
-                            //                       if (distance == 50)
-                            //                         Icon(Icons.check, size: 18)
-                            //                     ],
-                            //                   ),
-                            //                   value: 50),
-                            //             ],
-                            //             onSelected: (val) async {
-                            //               setState(() {
-                            //                 isFilterDistance = true;
-                            //                 distance = val;
-                            //               });
-                            //               _getPostLocal();
-                            //             },
-                            //             padding: EdgeInsets.zero,
-                            //             child: Center(
-                            //               child: Icon(Icons.my_location,
-                            //                   color: !isFilterDistance
-                            //                       ? Colors.black54
-                            //                       : ptPrimaryColor(context)),
-                            //             ),
-                            //           );
-                            //         }
-                            //         return InkWell(
-                            //           borderRadius: BorderRadius.circular(15),
-                            //           onTap: () {
-                            //             SearchPostPage.navigate(
-                            //                 hashTag: _postBloc
-                            //                     .hasTags[index - 1]['value']);
-                            //           },
-                            //           child: Container(
-                            //             height: 30,
-                            //             padding: EdgeInsets.symmetric(
-                            //                 horizontal: 10),
-                            //             decoration: BoxDecoration(
-                            //                 color: ptSecondaryColor(context),
-                            //                 borderRadius:
-                            //                     BorderRadius.circular(15)),
-                            //             child: Center(
-                            //               child: Text(
-                            //                 _postBloc.hasTags[index - 1]
-                            //                         ['value']
-                            //                     .toString(),
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         );
-                            //       },
-                            //       itemCount: _postBloc.hasTags.length,
-                            //       scrollDirection: Axis.horizontal,
-                            //     ),
-                            //   ),
-                            _postBloc.feed.length == 0
-                                ? EmptyWidget(
-                                    assetImg: 'assets/image/no_post.png',
-                                    title: 'Không tìm thấy bài đăng',
-                                  )
-                                : ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: _postBloc.feed.length,
-                                    itemBuilder: (context, index) {
-                                      final item = _postBloc.feed[index];
-                                      return Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          if (index ==
-                                                  (AuthBloc.firstLogin
-                                                      ? 0
-                                                      : 5) &&
-                                              UserBloc.instance
-                                                      .suggestFollowUsers !=
-                                                  null &&
-                                              UserBloc
-                                                      .instance
-                                                      .suggestFollowUsers
-                                                      .length >
-                                                  0)
-                                            SuggestListUser(
-                                              users: UserBloc
-                                                  .instance.suggestFollowUsers,
-                                            ),
-                                          PostWidget(item),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                            if (_postBloc.isLoadMoreFeed &&
-                                !_postBloc.isEndFeed)
-                              PostSkeleton(
-                                count: 1,
-                              ),
-                            SizedBox(
-                              height: 70,
-                            ),
-                          ],
-                        ))
-                      ]),
-                ),
-              ),
-            ),
-            CreatePostPage(_postBloc.pageController)
-          ]),
+            return;
+          },
+          child: InViewNotifierCustomScrollView(
+              // physics: const BouncingScrollPhysics(
+              //     parent: AlwaysScrollableScrollPhysics()),
+              isInViewPortCondition: (double deltaTop, double deltaBottom,
+                  double viewPortDimension) {
+                return deltaTop < (0.5 * viewPortDimension) + 100.0 &&
+                    deltaBottom > (0.5 * viewPortDimension) - 100.0;
+              },
+              physics: const AlwaysScrollableScrollPhysics(),
+              controller: _postBloc.feedScrollController,
+              slivers: <Widget>[
+                SliverList(
+                    delegate: SliverChildListDelegate(
+                  [
+                    SizedBox(
+                      height: (!showAppBar)
+                          ? MediaQuery.of(context).padding.top + kToolbarHeight
+                          : 0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: CreatePostCard(
+                        postBloc: _postBloc,
+                        pageController: _postBloc.pageController,
+                      ),
+                    ),
+                    if (_postBloc.isReloadFeed) PostSkeleton(),
+                    // if (_postBloc.hasTags != null &&
+                    //     _postBloc.hasTags.length > 0)
+                    //   Container(
+                    //     width: deviceWidth(context),
+                    //     height: 30,
+                    //     margin: EdgeInsets.only(top: 8),
+                    //     // padding: EdgeInsets.symmetric(horizontal: 20),
+                    //     child: ListView.separated(
+                    //       // shrinkWrap: true,
+                    //       padding: EdgeInsets.only(left: 15),
+                    //       separatorBuilder: (context, index) {
+                    //         return SizedBox(
+                    //           width: 10,
+                    //         );
+                    //       },
+                    //       itemBuilder: (context, index) {
+                    //         if (index == 0) {
+                    //           return PopupMenuButton(
+                    //             itemBuilder: (_) =>
+                    //                 <PopupMenuItem<int>>[
+                    //               PopupMenuItem(
+                    //                 child: Row(
+                    //                   mainAxisSize: MainAxisSize.min,
+                    //                   children: [
+                    //                     Text('Bán kính 10 km'),
+                    //                     if (distance == 10)
+                    //                       Icon(Icons.check, size: 18)
+                    //                   ],
+                    //                 ),
+                    //                 value: 10,
+                    //               ),
+                    //               PopupMenuItem(
+                    //                   child: Row(
+                    //                     mainAxisSize: MainAxisSize.min,
+                    //                     children: [
+                    //                       Text('Bán kính 20 km'),
+                    //                       if (distance == 20)
+                    //                         Icon(Icons.check, size: 18)
+                    //                     ],
+                    //                   ),
+                    //                   value: 20),
+                    //               PopupMenuItem(
+                    //                   child: Row(
+                    //                     mainAxisSize: MainAxisSize.min,
+                    //                     children: [
+                    //                       Text('Bán kính 50 km'),
+                    //                       if (distance == 50)
+                    //                         Icon(Icons.check, size: 18)
+                    //                     ],
+                    //                   ),
+                    //                   value: 50),
+                    //             ],
+                    //             onSelected: (val) async {
+                    //               setState(() {
+                    //                 isFilterDistance = true;
+                    //                 distance = val;
+                    //               });
+                    //               _getPostLocal();
+                    //             },
+                    //             padding: EdgeInsets.zero,
+                    //             child: Center(
+                    //               child: Icon(Icons.my_location,
+                    //                   color: !isFilterDistance
+                    //                       ? Colors.black54
+                    //                       : ptPrimaryColor(context)),
+                    //             ),
+                    //           );
+                    //         }
+                    //         return InkWell(
+                    //           borderRadius: BorderRadius.circular(15),
+                    //           onTap: () {
+                    //             SearchPostPage.navigate(
+                    //                 hashTag: _postBloc
+                    //                     .hasTags[index - 1]['value']);
+                    //           },
+                    //           child: Container(
+                    //             height: 30,
+                    //             padding: EdgeInsets.symmetric(
+                    //                 horizontal: 10),
+                    //             decoration: BoxDecoration(
+                    //                 color: ptSecondaryColor(context),
+                    //                 borderRadius:
+                    //                     BorderRadius.circular(15)),
+                    //             child: Center(
+                    //               child: Text(
+                    //                 _postBloc.hasTags[index - 1]
+                    //                         ['value']
+                    //                     .toString(),
+                    //               ),
+                    //             ),
+                    //           ),
+                    //         );
+                    //       },
+                    //       itemCount: _postBloc.hasTags.length,
+                    //       scrollDirection: Axis.horizontal,
+                    //     ),
+                    //   ),
+                    _postBloc.feed.length == 0
+                        ? EmptyWidget(
+                            assetImg: 'assets/image/no_post.png',
+                            title: 'Không tìm thấy bài đăng',
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: _postBloc.feed.length,
+                            itemBuilder: (context, index) {
+                              final item = _postBloc.feed[index];
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (index == (AuthBloc.firstLogin ? 0 : 5) &&
+                                      UserBloc.instance.suggestFollowUsers !=
+                                          null &&
+                                      UserBloc.instance.suggestFollowUsers
+                                              .length >
+                                          0)
+                                    SuggestListUser(
+                                      users:
+                                          UserBloc.instance.suggestFollowUsers,
+                                    ),
+                                  PostWidget(item),
+                                ],
+                              );
+                            },
+                          ),
+                    if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
+                      PostSkeleton(
+                        count: 1,
+                      ),
+                    SizedBox(
+                      height: 70,
+                    ),
+                  ],
+                ))
+              ]),
+        ),
+      ),
     );
   }
 }
@@ -325,77 +306,78 @@ class CreatePostCard extends StatelessWidget {
       child: Container(
         width: deviceWidth(context),
         padding: EdgeInsets.symmetric(vertical: 8),
-        color: Colors.white,
+        color: ptPrimaryColor(context),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  audioCache.play('tab3.mp3');
-                  pageController
-                      .animateToPage(1,
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.decelerate)
-                      .then((value) => null);
-                },
-                child: Material(
-                  borderRadius: BorderRadius.circular(0),
-                  //elevation: 5,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Đăng tin của bạn',
-                          style: ptTitle(),
-                        ),
-                        Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            audioCache.play('tab3.mp3');
-                            pageController.animateToPage(1,
-                                duration: Duration(milliseconds: 300),
-                                curve: Curves.decelerate);
-                          },
-                          child: SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: Icon(
-                              Icons.location_pin,
-                              size: 21,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            audioCache.play('tab3.mp3');
-                            pageController.animateToPage(1,
-                                duration: Duration(milliseconds: 300),
-                                curve: Curves.decelerate);
-                          },
-                          child: SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: Icon(
-                              MdiIcons.image,
-                              size: 21,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(
+            //     horizontal: 15,
+            //   ),
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       audioCache.play('tab3.mp3');
+            //       pageController
+            //           .animateToPage(1,
+            //               duration: Duration(milliseconds: 300),
+            //               curve: Curves.decelerate)
+            //           .then((value) => null);
+            //     },
+            //     child: Material(
+            //       borderRadius: BorderRadius.circular(0),
+            //       //elevation: 5,
+            //       child: Padding(
+            //         padding:
+            //             const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            //         child: Row(
+            //           children: [
+            //             Text(
+            //               'Đăng tin của bạn',
+            //               style: ptTitle(),
+            //             ),
+            //             Spacer(),
+            //             GestureDetector(
+            //               onTap: () {
+            //                 audioCache.play('tab3.mp3');
+            //                 pageController.animateToPage(1,
+            //                     duration: Duration(milliseconds: 300),
+            //                     curve: Curves.decelerate);
+            //               },
+            //               child: SizedBox(
+            //                 width: 30,
+            //                 height: 30,
+            //                 child: Icon(
+            //                   Icons.location_pin,
+            //                   size: 21,
+            //                 ),
+            //               ),
+            //             ),
+            //             SizedBox(
+            //               width: 5,
+            //             ),
+            //             GestureDetector(
+            //               onTap: () {
+            //                 audioCache.play('tab3.mp3');
+            //                 pageController.animateToPage(1,
+            //                     duration: Duration(milliseconds: 300),
+            //                     curve: Curves.decelerate);
+            //               },
+            //               child: SizedBox(
+            //                 width: 30,
+            //                 height: 30,
+            //                 child: Icon(
+            //                   MdiIcons.image,
+            //                   size: 21,
+            //                 ),
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+
             if ((postBloc.stories?.length ?? 0) > 0 || postBloc.isLoadStory)
               // Divider(
               //   height: 10,
@@ -406,7 +388,7 @@ class CreatePostCard extends StatelessWidget {
                       ? SizedBox.shrink()
                       : Container(
                           height: 85,
-                          color: Colors.white,
+                          color: ptPrimaryColor(context),
                           child: ListView.separated(
                               scrollDirection: Axis.horizontal,
                               padding: EdgeInsets.symmetric(horizontal: 15),
@@ -587,114 +569,73 @@ buildStoryWidget(PostModel postModel) {
 //   );
 // }
 
-class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
-  final int unReadCount;
-  PostPageAppBar(this.unReadCount);
-  @override
-  Widget build(BuildContext context) {
-    final count = unReadCount > 9 ? '9+' : unReadCount.toString();
-    return Container(
-      decoration: BoxDecoration(color: Colors.white),
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      child: Row(
-        children: [
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 15, top: 12, bottom: 10, right: 12),
-            child: Icon(
-              Icons.account_circle_outlined,
-              size: 32,
-              color: HexColor.fromHex("#BBBBBB"),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 7,
-                        offset: Offset(0, 4), // changes position of shadow
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(30),
-                    color: Colors.white),
-                child: TextFormField(
-                    decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  border: InputBorder.none,
-                  hintText: 'Tìm kiếm',
-                  suffixIcon: Icon(Icons.qr_code),
-                )),
-              ),
-            ),
-          ),
-          // Spacer(),
-          // Padding(
-          //   padding: const EdgeInsets.only(top: 12, bottom: 10),
-          //   child: GestureDetector(
-          //     onTap: () {
-          //       audioCache.play('tab3.mp3');
-          //       SearchPostPage.navigate().then((value) =>
-          //           FocusScope.of(context).requestFocus(FocusNode()));
-          //     },
-          //     child: SizedBox(
-          //       width: 42,
-          //       height: 42,
-          //       child: Icon(
-          //         Icons.search,
-          //         size: 26,
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          GestureDetector(
-            onTap: () {
-              audioCache.play('tab3.mp3');
-              AuthBloc.instance.userModel.messNotiCount = 0;
-              UserBloc.instance.seenNotiMess();
-              InboxList.navigate();
-            },
-            child: Stack(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 12, bottom: 10, right: 12),
-                  child: Container(
-                      width: 42,
-                      height: 42,
-                      child: Icon(
-                        MdiIcons.chatProcessingOutline,
-                        size: 32,
-                        color: HexColor.fromHex("#BBBBBB"),
-                      )),
-                ),
-                if (unReadCount > 0)
-                  Positioned(
-                    top: 9,
-                    right: 11,
-                    child: Container(
-                      padding: EdgeInsets.all(count.length == 2 ? 3.5 : 5),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(count,
-                          style: ptTiny().copyWith(
-                              fontSize: 10.5,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600)),
-                    ),
-                  ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
+// class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
+//   Size get preferredSize => Size.fromHeight(kToolbarHeight);
+//   final int unReadCount;
+//   PostPageAppBar(this.unReadCount);
+//   @override
+//   Widget build(BuildContext context) {
+//     final count = unReadCount > 9 ? '9+' : unReadCount.toString();
+//     return Container(
+//       decoration: BoxDecoration(color: Colors.white),
+//       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+//       child: Row(
+//         children: [
+//           Padding(
+//             padding:
+//                 const EdgeInsets.only(left: 15, top: 12, bottom: 10, right: 12),
+//             child: Icon(
+//               Icons.account_circle_outlined,
+//               size: 32,
+//               color: HexColor.fromHex("#BBBBBB"),
+//             ),
+//           ),
+//           Expanded(
+//             child: Padding(
+//               padding: const EdgeInsets.symmetric(vertical: 10),
+//               child: Container(
+//                 decoration: BoxDecoration(
+//                     boxShadow: [
+//                       BoxShadow(
+//                         color: Colors.grey.withOpacity(0.2),
+//                         spreadRadius: 2,
+//                         blurRadius: 7,
+//                         offset: Offset(0, 4), // changes position of shadow
+//                       ),
+//                     ],
+//                     borderRadius: BorderRadius.circular(30),
+//                     color: Colors.white),
+//                 child: TextFormField(
+//                     decoration: InputDecoration(
+//                   prefixIcon: Icon(Icons.search),
+//                   border: InputBorder.none,
+//                   hintText: 'Tìm kiếm',
+//                   suffixIcon: Icon(Icons.qr_code),
+//                 )),
+//               ),
+//             ),
+//           ),
+//           // Spacer(),
+//           // Padding(
+//           //   padding: const EdgeInsets.only(top: 12, bottom: 10),
+//           //   child: GestureDetector(
+//           //     onTap: () {
+//           //       audioCache.play('tab3.mp3');
+//           //       SearchPostPage.navigate().then((value) =>
+//           //           FocusScope.of(context).requestFocus(FocusNode()));
+//           //     },
+//           //     child: SizedBox(
+//           //       width: 42,
+//           //       height: 42,
+//           //       child: Icon(
+//           //         Icons.search,
+//           //         size: 26,
+//           //       ),
+//           //     ),
+//           //   ),
+//           // ),
+//         ],
+//       ),
+//     );
+//   }
+// }

@@ -294,7 +294,7 @@ class CustomInputField extends StatelessWidget {
       child: Container(
         height: 45,
         decoration: BoxDecoration(
-            color: HexColor.fromHex("#F5F5F5"),
+            color: ptBackgroundColor(context),
             border: Border.all(color: HexColor.fromHex("#E5E5E5")),
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Row(
@@ -313,7 +313,7 @@ class CustomInputField extends StatelessWidget {
                   hintStyle: roboto_18_700().copyWith(
                       fontSize: 15,
                       fontWeight: FontWeight.w100,
-                      color: HexColor.fromHex("#505050")),
+                      color: ptAccentColor(context)),
                   border: InputBorder.none,
                 ),
               ),

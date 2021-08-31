@@ -1,3 +1,4 @@
+import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/group/detail_group_page.dart';
@@ -42,88 +43,72 @@ class _NotificationPageState extends State<NotificationPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(
-        icon: Icon(
-          Icons.notifications,
-        ),
-        title: 'Thông báo',
-        actions: [
-          Center(
-              child: AnimatedSearchBar(
-            onSearch: (val) {},
-            controller: _searchC,
-          )),
-          Center(
-              child: IconButton(
-            splashColor: Colors.white,
-            onPressed: () {
-              SettingNotifyPage.navigate();
-            },
-            icon: Icon(Icons.settings_outlined),
-          )),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: NotificationTab(
-              search: _searchC.text,
+      appBar: MainAppBar(
+          unReadCount: AuthBloc.instance.userModel.messNotiCount ?? 0),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: NotificationTab(
+                search: _searchC.text,
+              ),
             ),
-          ),
-          // Align(
-          //   alignment: Alignment.center,
-          //   child: TabBar(
-          //     indicatorSize: TabBarIndicatorSize.label,
-          //     indicatorWeight: 3,
-          //     indicatorColor: ptPrimaryColor(context),
-          //     indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
-          //     controller: _tabController,
-          //     isScrollable: true,
-          //     labelColor: Colors.black87,
-          //     unselectedLabelStyle:
-          //         TextStyle(fontSize: 14, color: Colors.black54),
-          //     labelStyle: TextStyle(
-          //         fontSize: 14,
-          //         color: Colors.black87,
-          //         fontWeight: FontWeight.bold),
-          //     tabs: [
-          //       SizedBox(
-          //         height: 40,
-          //         width: deviceWidth(context) / 2 - 45,
-          //         child: Tab(
-          //           text: 'Thông báo mới',
-          //         ),
-          //       ),
-          //       SizedBox(
-          //           height: 40,
-          //           width: deviceWidth(context) / 2 - 45,
-          //           child: Tab(text: 'Người theo dõi')
-          //           //'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
-          //           ),
-          //     ],
-          //   ),
-          // ),
-          // Expanded(
-          //   child: TabBarView(controller: _tabController, children: [
-          //     NotificationTab(
-          //       list: _notificationBloc.notifications
-          //           .where((element) =>
-          //               element.body.contains(_searchC.text) ||
-          //               element.title.contains(_searchC.text))
-          //           .toList(),
-          //       notificationBloc: _notificationBloc,
-          //       search: _searchC.text,
-          //     ),
-          //     //FriendRequestTab()
-          //     // FollowTab(
-          //     //   list: _userBloc.followersIn7Days
-          //     //       .where((element) => element.name.contains(_searchC.text))
-          //     //       .toList(),
-          //     //   search: _searchC.text,
-          //     // )
-          //   ]),
-          // )
-        ],
+            // Align(
+            //   alignment: Alignment.center,
+            //   child: TabBar(
+            //     indicatorSize: TabBarIndicatorSize.label,
+            //     indicatorWeight: 3,
+            //     indicatorColor: ptPrimaryColor(context),
+            //     indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
+            //     controller: _tabController,
+            //     isScrollable: true,
+            //     labelColor: Colors.black87,
+            //     unselectedLabelStyle:
+            //         TextStyle(fontSize: 14, color: Colors.black54),
+            //     labelStyle: TextStyle(
+            //         fontSize: 14,
+            //         color: Colors.black87,
+            //         fontWeight: FontWeight.bold),
+            //     tabs: [
+            //       SizedBox(
+            //         height: 40,
+            //         width: deviceWidth(context) / 2 - 45,
+            //         child: Tab(
+            //           text: 'Thông báo mới',
+            //         ),
+            //       ),
+            //       SizedBox(
+            //           height: 40,
+            //           width: deviceWidth(context) / 2 - 45,
+            //           child: Tab(text: 'Người theo dõi')
+            //           //'Lời mời kết bạn (${_userBloc.friendRequestFromOtherUsers.length})'),
+            //           ),
+            //     ],
+            //   ),
+            // ),
+            // Expanded(
+            //   child: TabBarView(controller: _tabController, children: [
+            //     NotificationTab(
+            //       list: _notificationBloc.notifications
+            //           .where((element) =>
+            //               element.body.contains(_searchC.text) ||
+            //               element.title.contains(_searchC.text))
+            //           .toList(),
+            //       notificationBloc: _notificationBloc,
+            //       search: _searchC.text,
+            //     ),
+            //     //FriendRequestTab()
+            //     // FollowTab(
+            //     //   list: _userBloc.followersIn7Days
+            //     //       .where((element) => element.name.contains(_searchC.text))
+            //     //       .toList(),
+            //     //   search: _searchC.text,
+            //     // )
+            //   ]),
+            // )
+          ],
+        ),
       ),
     );
   }
@@ -171,7 +156,8 @@ class _NotificationTabState extends State<NotificationTab> {
     return list.length > 0
         ? RefreshIndicator(
             color: ptPrimaryColor(context),
-            onRefresh: () async {audioCache.play('tab3.mp3');
+            onRefresh: () async {
+              audioCache.play('tab3.mp3');
               await Future.wait([
                 _notificationBloc.getListNotification(
                   filter: GraphqlFilter(order: '{createdAt: -1}'),
@@ -235,8 +221,8 @@ class _NotificationTabState extends State<NotificationTab> {
                         }
                       },
                       tileColor: list[index].seen
-                          ? Colors.white
-                          : ptBackgroundColor(context),
+                          ? ptPrimaryColor(context)
+                          : ptPrimaryColorLight(context),
                       leading: CircleAvatar(
                         radius: 22,
                         backgroundColor: Colors.white,
@@ -295,7 +281,8 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
     return _userBloc.friendRequestFromOtherUsers.length != 0
         ? RefreshIndicator(
             color: ptPrimaryColor(context),
-            onRefresh: () async {audioCache.play('tab3.mp3');
+            onRefresh: () async {
+              audioCache.play('tab3.mp3');
               await _userBloc.getFriendRequestFromOtherUsers();
               return;
             },
@@ -412,7 +399,8 @@ class FollowTab extends StatelessWidget {
     return list.length > 0
         ? RefreshIndicator(
             color: ptPrimaryColor(context),
-            onRefresh: () async {audioCache.play('tab3.mp3');
+            onRefresh: () async {
+              audioCache.play('tab3.mp3');
               await NotificationBloc.instance.getListNotification(
                   filter: GraphqlFilter(order: '{createdAt: -1}'));
               return;

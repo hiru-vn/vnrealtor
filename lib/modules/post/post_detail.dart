@@ -212,10 +212,11 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
+    return Container(
+      color: ptPrimaryColor(context),
+      child: SafeArea(
         child: Scaffold(
-          appBar: CustomAppBar(
+          appBar: SecondAppBar(
             leading: GestureDetector(
               onTap: () {
                 audioCache.play('tab3.mp3');
@@ -223,7 +224,7 @@ class _PostDetailState extends State<PostDetail> {
               },
               child: Image.asset(
                 "assets/image/back_icon.png",
-                width: 30,
+                width: 20,
                 color: Colors.grey,
               ),
             ),
@@ -247,6 +248,7 @@ class _PostDetailState extends State<PostDetail> {
                   onPressed: null)
             ],
           ),
+
           // AppBar1(
           //   centerTitle: true,
           //   title: _post != null
@@ -274,58 +276,65 @@ class _PostDetailState extends State<PostDetail> {
                             )
                           : PostWidget(_post,
                               commentCallBack: () {}, isInDetailPage: true),
-                      _post != null
-                          ? ListUsersLikedPost(
-                              postModel: _post,
-                            )
-                          : StorySkeleton(),
-                      comments != null
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "Bình luận",
-                                    style: roboto_18_700().copyWith(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 13,
+                      Container(
+                        color: ptPrimaryColor(context),
+                        child: _post != null
+                            ? ListUsersLikedPost(
+                                postModel: _post,
+                              )
+                            : StorySkeleton(),
+                      ),
+                      Container(
+                        color: ptPrimaryColor(context),
+                        child: comments != null
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Bình luận",
+                                      style: roboto_18_700().copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 13,
+                                      ),
+                                      textAlign: TextAlign.left,
                                     ),
-                                    textAlign: TextAlign.left,
                                   ),
-                                ),
-                                ListView.separated(
-                                  padding: EdgeInsets.zero,
-                                  itemCount: comments.length,
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    final comment = comments[index];
-                                    return CommentWidget(
-                                        comment: comment,
-                                        userReplyCache: localReplies,
-                                        shouldExpand: comments[index].id ==
-                                            replyComment?.id,
-                                        deleteCallBack: comments[index]
-                                                    .userId ==
-                                                AuthBloc.instance.userModel?.id
-                                            ? () => _deleteComment(
-                                                comments[index].id)
-                                            : () {},
-                                        tapCallBack: () {
-                                          setState(() {
-                                            isReply = true;
-                                            replyComment = comments[index];
+                                  ListView.separated(
+                                    padding: EdgeInsets.zero,
+                                    itemCount: comments.length,
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      final comment = comments[index];
+                                      return CommentWidget(
+                                          comment: comment,
+                                          userReplyCache: localReplies,
+                                          shouldExpand: comments[index].id ==
+                                              replyComment?.id,
+                                          deleteCallBack:
+                                              comments[index].userId ==
+                                                      AuthBloc.instance
+                                                          .userModel?.id
+                                                  ? () => _deleteComment(
+                                                      comments[index].id)
+                                                  : () {},
+                                          tapCallBack: () {
+                                            setState(() {
+                                              isReply = true;
+                                              replyComment = comments[index];
+                                            });
+                                            _focusNodeComment.requestFocus();
                                           });
-                                          _focusNodeComment.requestFocus();
-                                        });
-                                  },
-                                  separatorBuilder: (context, index) =>
-                                      SizedBox.shrink(),
-                                ),
-                              ],
-                            )
-                          : ListSkeleton(),
+                                    },
+                                    separatorBuilder: (context, index) =>
+                                        SizedBox.shrink(),
+                                  ),
+                                ],
+                              )
+                            : ListSkeleton(),
+                      ),
                     ],
                   ),
                 ),
@@ -336,7 +345,7 @@ class _PostDetailState extends State<PostDetail> {
                   child: Container(
                     width: deviceWidth(context),
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                    color: Colors.white70,
+                    color: ptPrimaryColor(context),
                     child: Row(
                       children: [
                         CircleAvatar(
@@ -382,7 +391,11 @@ class _PostDetailState extends State<PostDetail> {
                                   child: Container(
                                       height: 35,
                                       width: 35,
-                                      child: Center(child: Icon(Icons.send)))),
+                                      child: Center(
+                                          child: Icon(
+                                        Icons.send,
+                                        color: ptMainColor(),
+                                      )))),
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 6),
                               isDense: true,
@@ -391,23 +404,23 @@ class _PostDetailState extends State<PostDetail> {
                                   : 'Viết bình luận.',
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.transparent,
+                                  color: Theme.of(context).dividerColor,
                                 ),
                                 borderRadius: BorderRadius.circular(25),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.transparent,
+                                  color: Theme.of(context).dividerColor,
                                 ),
                                 borderRadius: BorderRadius.circular(25),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.transparent,
+                                  color: Theme.of(context).dividerColor,
                                 ),
                                 borderRadius: BorderRadius.circular(25),
                               ),
-                              fillColor: ptSecondaryColor(context),
+                              fillColor: ptPrimaryColor(context),
                               filled: true,
                             ),
                           ),

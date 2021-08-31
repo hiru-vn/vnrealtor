@@ -32,7 +32,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
       padding: const EdgeInsets.only(top: 8),
       child: Container(
           width: deviceWidth(context),
-          color: Colors.white,
+          color: ptPrimaryColor(context),
           padding: const EdgeInsets.only(top: 15, bottom: 18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +44,8 @@ class _SuggestListUserState extends State<SuggestListUser> {
                   AuthBloc.firstLogin
                       ? 'Chào mừng, ${authBloc.userModel.name}'
                       : 'Gợi ý cho bạn',
-                  style: ptBigTitle().copyWith(color: Colors.black),
+                  style: ptBigTitle()
+                      .copyWith(color: Theme.of(context).accentColor),
                 ),
               ),
               if (AuthBloc.firstLogin) ...[
@@ -72,6 +73,15 @@ class _SuggestListUserState extends State<SuggestListUser> {
                         width: 128,
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                spreadRadius: 1,
+                                blurRadius: 7,
+                                offset:
+                                    Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
                             borderRadius: BorderRadius.circular(7),
                             border: Border.all(
                               color: Colors.black12,
@@ -84,7 +94,8 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                 height: 12,
                               ),
                               GestureDetector(
-                                onTap: () {audioCache.play('tab3.mp3');
+                                onTap: () {
+                                  audioCache.play('tab3.mp3');
                                   ProfileOtherPage.navigate(
                                       widget.users[index]);
                                 },
@@ -104,7 +115,8 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   GestureDetector(
-                                    onTap: () {audioCache.play('tab3.mp3');
+                                    onTap: () {
+                                      audioCache.play('tab3.mp3');
                                       ProfileOtherPage.navigate(
                                           widget.users[index]);
                                     },
@@ -116,7 +128,8 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap: () {audioCache.play('tab3.mp3');
+                                    onTap: () {
+                                      audioCache.play('tab3.mp3');
                                       ProfileOtherPage.navigate(
                                           widget.users[index]);
                                     },
@@ -138,7 +151,8 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                 ],
                               )),
                               GestureDetector(
-                                onTap: () async {audioCache.play('tab3.mp3');
+                                onTap: () async {
+                                  audioCache.play('tab3.mp3');
                                   if (AuthBloc.instance.userModel == null) {
                                     LoginPage.navigatePush();
                                     return;

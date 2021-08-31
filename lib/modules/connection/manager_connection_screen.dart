@@ -22,13 +22,13 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: ptPrimaryColor(context),
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: HexColor.fromHex("#E5E5E5"),
+          backgroundColor: ptBackgroundColor(context),
           appBar: AppBar(
             elevation: 0,
-            backgroundColor: Colors.white,
+            brightness: ptBrightness(context),
             leading: IconButton(
                 icon: Image.asset(
                   "assets/image/back_icon.png",
@@ -49,82 +49,79 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
           body: Container(
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0, top: 1.0),
-                  child: ConnectionItem(
-                    onTap: () => ConnectScreen.navigate(),
-                    preIcon: Image.asset(
-                      "assets/image/icon_connect.png",
-                      width: 30,
-                      height: 30,
-                    ),
-                    text: "Kết nối",
-                    subIcon: Text(
-                        "${AuthBloc.instance.userModel.followerIds.length}"),
+                ConnectionItem(
+                  onTap: () => ConnectScreen.navigate(),
+                  preIcon: Image.asset(
+                    "assets/image/icon_connect.png",
+                    width: 30,
+                    height: 30,
                   ),
+                  text: "Kết nối",
+                  subIcon:
+                      Text("${AuthBloc.instance.userModel.followerIds.length}"),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ConnectionItem(
-                    onTap: () => showUndoneFeature(context, ["Danh bạ"]),
-                    preIcon: Image.asset(
-                      "assets/image/phonebook_icon.png",
-                      width: 30,
-                      height: 30,
-                    ),
-                    text: "Danh bạ",
-                    subIcon: Text("0"),
-                  ),
+                Divider(
+                  height: 1,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ConnectionItem(
-                    onTap: () => ListFollowingScreen.navigate(),
-                    preIcon: Image.asset(
-                      "assets/image/group_icon.png",
-                      width: 30,
-                      height: 30,
-                    ),
-                    text: "Theo dõi",
-                    subIcon: Text(
-                        "${AuthBloc.instance.userModel.followingIds.length}"),
+                ConnectionItem(
+                  onTap: () => showUndoneFeature(context, ["Danh bạ"]),
+                  preIcon: Image.asset(
+                    "assets/image/phonebook_icon.png",
+                    width: 30,
+                    height: 30,
                   ),
+                  text: "Danh bạ",
+                  subIcon: Text("0"),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ConnectionItem(
-                    preIcon: Image.asset(
-                      "assets/image/group_icon.png",
-                      width: 30,
-                      height: 30,
-                    ),
-                    text: "Nhóm",
-                    subIcon: Text("212"),
-                  ),
+                Divider(
+                  height: 1,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ConnectionItem(
-                    preIcon: Image.asset(
-                      "assets/image/flag_icon.png",
-                      width: 30,
-                      height: 30,
-                    ),
-                    text: "Trang",
-                    subIcon: Text("212"),
+                ConnectionItem(
+                  onTap: () => ListFollowingScreen.navigate(),
+                  preIcon: Image.asset(
+                    "assets/image/group_icon.png",
+                    width: 30,
+                    height: 30,
                   ),
+                  text: "Theo dõi",
+                  subIcon: Text(
+                      "${AuthBloc.instance.userModel.followingIds.length}"),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ConnectionItem(
-                    preIcon: Image.asset(
-                      "assets/image/hastag_icon.png",
-                      width: 30,
-                      height: 30,
-                    ),
-                    text: "Hastag",
-                    subIcon: Text("212"),
+                Divider(
+                  height: 1,
+                ),
+                ConnectionItem(
+                  preIcon: Image.asset(
+                    "assets/image/group_icon.png",
+                    width: 30,
+                    height: 30,
                   ),
+                  text: "Nhóm",
+                  subIcon: Text("212"),
+                ),
+                Divider(
+                  height: 1,
+                ),
+                ConnectionItem(
+                  preIcon: Image.asset(
+                    "assets/image/flag_icon.png",
+                    width: 30,
+                    height: 30,
+                  ),
+                  text: "Trang",
+                  subIcon: Text("212"),
+                ),
+                Divider(
+                  height: 1,
+                ),
+                ConnectionItem(
+                  preIcon: Image.asset(
+                    "assets/image/hastag_icon.png",
+                    width: 30,
+                    height: 30,
+                  ),
+                  text: "Hastag",
+                  subIcon: Text("212"),
                 ),
               ],
             ),

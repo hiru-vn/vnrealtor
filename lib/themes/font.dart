@@ -7,11 +7,9 @@ TextStyle roboto_18_700() => TextStyle(
       fontSize: 18,
       fontWeight: FontWeight.w700,
       fontFamily: "Roboto",
-      color: HexColor('#05515e'),
     );
 TextStyle roboto() => TextStyle(
       fontFamily: "Roboto",
-      color: HexColor('#05515e'),
     );
 TextStyle ptHeadLine() => TextStyle(
     fontSize: 39,
@@ -26,13 +24,15 @@ TextStyle ptHeadLineSmall() => TextStyle(
     letterSpacing: 1.3);
 
 TextStyle ptBigTitle() => TextStyle(
-    fontWeight: FontWeight.w600,
-    fontSize: 17,
-    letterSpacing: 0.2,
-    color: HexColor('#05515e'));
+      fontWeight: FontWeight.w600,
+      fontSize: 17,
+      letterSpacing: 0.2,
+    );
 
 TextStyle ptTitle() => TextStyle(
-    fontSize: 14.3, fontWeight: FontWeight.w600, color: HexColor('#05515e'));
+      fontSize: 14.3,
+      fontWeight: FontWeight.w600,
+    );
 
 TextStyle ptButton() => GoogleFonts.roboto(
     letterSpacing: 0.2,
@@ -41,16 +41,24 @@ TextStyle ptButton() => GoogleFonts.roboto(
     color: Colors.white);
 
 TextStyle ptBigBody() => GoogleFonts.roboto(
-    fontSize: 15.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
+      fontSize: 15.3,
+      fontWeight: FontWeight.w400,
+    );
 
 TextStyle ptBody() => GoogleFonts.roboto(
-    fontSize: 13.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
+      fontSize: 13.3,
+      fontWeight: FontWeight.w400,
+    );
 
 TextStyle ptSmall() => GoogleFonts.roboto(
-    fontSize: 12.3, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
+      fontSize: 12.3,
+      fontWeight: FontWeight.w400,
+    );
 
 TextStyle ptTiny() => GoogleFonts.roboto(
-    fontSize: 11.5, fontWeight: FontWeight.w400, color: HexColor('#05515e'));
+      fontSize: 11.5,
+      fontWeight: FontWeight.w400,
+    );
 
 TextStyle typeError() {
   return TextStyle(fontSize: 10.5, color: Colors.red);
