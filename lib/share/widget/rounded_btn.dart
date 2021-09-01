@@ -27,7 +27,9 @@ class RoundedBtn extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
-        border: hasBorder ? Border.all(color: Colors.white, width: 1.5) : null,
+        border: hasBorder
+            ? Border.all(color: Theme.of(context).dividerColor, width: 1.5)
+            : null,
       ),
       child: Material(
         // elevation: 4,

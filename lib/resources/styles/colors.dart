@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static var mainColor = HexColor('#05515e');
+  static var mainColor = HexColor('#293079');
   static var backgroundColor = HexColor('#E5E5E5');
   static var backgroundLightColor = HexColor('#E4F4F7');
   static var notifyColor = HexColor('#19CBEF');

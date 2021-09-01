@@ -5,13 +5,25 @@ final lightTheme = ThemeData(
   hintColor: HexColor.fromHex("#BBBBBB"),
   primaryColor: Colors.white,
   cursorColor: HexColor('#293079'),
-  brightness: Brightness.light,
+  colorScheme: ColorScheme.dark(
+    brightness: Brightness.light,
+    onPrimary: Colors.red,
+  ),
+  primaryIconTheme: IconThemeData(
+    color: HexColor('#444444'),
+  ),
   backgroundColor: HexColor.fromHex("#E5E5E5"),
   accentColor: Colors.black,
+  inputDecorationTheme: InputDecorationTheme(
+    hintStyle: TextStyle(color: HexColor.fromHex("#BBBBBB")),
+    fillColor: Colors.black,
+  ),
   appBarTheme: AppBarTheme(
     brightness: Brightness.dark,
   ),
-  accentIconTheme: IconThemeData(color: Colors.black),
+  iconTheme: IconThemeData(
+    color: HexColor.fromHex("#293079"),
+  ),
   dividerColor: Colors.black12,
 );
 
@@ -19,12 +31,24 @@ final dartTheme = ThemeData(
   cursorColor: Colors.white,
   hintColor: Colors.white,
   primaryColor: Colors.black,
-  brightness: Brightness.dark,
+  colorScheme: ColorScheme.dark(
+    brightness: Brightness.dark,
+    onPrimary: Colors.red,
+  ),
   backgroundColor: Colors.black,
   accentColor: Colors.white,
   appBarTheme: AppBarTheme(
     brightness: Brightness.light,
   ),
-  accentIconTheme: IconThemeData(color: Colors.black),
+  inputDecorationTheme: InputDecorationTheme(
+    hintStyle: TextStyle(
+      color: Colors.white,
+    ),
+    fillColor: Colors.white,
+  ),
   dividerColor: Colors.grey,
+  iconTheme: IconThemeData(color: Colors.white),
+  accentIconTheme: IconThemeData(
+    color: Colors.red,
+  ),
 );

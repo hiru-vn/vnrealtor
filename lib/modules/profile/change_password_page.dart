@@ -51,7 +51,13 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
     return Stack(
       children: [
         Scaffold(
-          appBar: AppBar2('Đổi mật khẩu'),
+          backgroundColor: ptPrimaryColor(context),
+          appBar: const SecondAppBar(
+            title: Center(
+              child: Text('Đổi mật khẩu'),
+            ),
+            actions: [SizedBox(width: 30)],
+          ),
           body: SingleChildScrollView(
             child: Form(
               key: _formKey,
@@ -60,12 +66,12 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
                   SpacingBox(h: 3),
                   SizedBox(
                     width: 90,
-                    child: Image.asset('assets/image/logo.png'),
+                    child: Image.asset('assets/image/logo_datcao.png'),
                   ),
                   SpacingBox(h: 3),
                   Container(
                     width: deviceWidth(context),
-                    color: Colors.white,
+                    color: ptPrimaryColor(context),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                     child: Column(
                       children: [
@@ -90,7 +96,7 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
                               text: 'Cập nhật',
                               onPressed: _submit,
                               width: 150,
-                              color: ptPrimaryColor(context),
+                              hasBorder: true,
                               padding: EdgeInsets.symmetric(
                                 horizontal: 15,
                                 vertical: 8,
@@ -119,7 +125,10 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
         child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(3),
-                color: ptBackgroundColor(context)),
+                color: ptPrimaryColor(context),
+                border: Border.all(
+                  color: Theme.of(context).dividerColor,
+                )),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 25),
               child: TextFormField(

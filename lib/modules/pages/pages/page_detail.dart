@@ -588,7 +588,7 @@ class _PageDetailState extends State<PageDetail> {
               ),
               child: _pagesBloc.isReciveNotiPageLoading
                   ? CircularProgressIndicator(
-                      backgroundColor: Color(0xff05515e),
+                      backgroundColor: Color(0xff293079),
                     )
                   : SvgPicture.asset(
                       _pagesBloc.isReceiveNotified

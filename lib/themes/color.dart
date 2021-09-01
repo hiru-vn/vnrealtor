@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 Color ptPrimaryColor(BuildContext context) => Theme.of(context).primaryColor;
 Color ptSecondaryColor(BuildContext context) => Theme.of(context).accentColor;
 Color ptPrimaryColorLight(BuildContext context) =>
-    Theme.of(context).primaryColorLight;
+    Theme.of(context).primaryColorLight.withOpacity(0.2);
 Color ptPrimaryColorDark(BuildContext context) =>
     Theme.of(context).primaryColorDark;
 Color ptBackgroundColor(BuildContext context) =>

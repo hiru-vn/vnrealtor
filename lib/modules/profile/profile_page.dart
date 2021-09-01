@@ -58,7 +58,16 @@ class _ProfilePageState extends State<ProfilePage>
       color: ptPrimaryColor(context),
       child: Scaffold(
         backgroundColor: ptBackgroundColor(context),
-        appBar: ProfilePageAppBar(canPop: canPop),
+        appBar: SecondAppBar(
+          title: Center(
+            child: Text("Trang cá nhân của bạn"),
+          ),
+          actions: [
+            SizedBox(
+              width: 30,
+            )
+          ],
+        ),
         body: NestedScrollView(
           controller: _userBloc.profileScrollController,
           headerSliverBuilder: (context, value) {
@@ -126,46 +135,6 @@ class _ProfilePageState extends State<ProfilePage>
           ),
         ),
       ),
-    );
-  }
-}
-
-class ProfilePageAppBar extends StatelessWidget implements PreferredSizeWidget {
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
-  final bool canPop;
-  ProfilePageAppBar({this.canPop = true});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 5, top: 12, bottom: 10, right: 12),
-        child: Row(
-          children: [
-            canPop
-                ? BackButton()
-                : SizedBox(
-                    width: 15,
-                  ),
-            Image.asset('assets/image/logo_full.png'),
-            Spacer(),
-            // GestureDetector(
-            //   onTap: () {
-            //     showAlertDialog(context, 'Đang phát triển',
-            //         navigatorKey: navigatorKey);
-            //   },
-            //   child: SizedBox(
-            //       width: 42,
-            //       height: 42,
-            //       child: Icon(
-            //         MdiIcons.menu,
-            //         size: 26,
-            //       )),
-            // )
-          ],
-        ),
-      ),
-      color: ptPrimaryColor(context),
     );
   }
 }

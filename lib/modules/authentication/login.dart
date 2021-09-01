@@ -149,10 +149,9 @@ class _LoginPageState extends State<LoginPage> {
         automaticallyImplyLeading: false,
       ),
       extendBodyBehindAppBar: true,
-      backgroundColor: ptSecondaryColor(context),
+      backgroundColor: ptPrimaryColor(context),
       body: Container(
         height: deviceHeight(context),
-        color: ptBackgroundColor(context),
         child: Stack(
           children: [
             Positioned(
@@ -181,19 +180,23 @@ class _LoginPageState extends State<LoginPage> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 23),
                               child: Container(
-                                  decoration: BoxDecoration(
-                                    color: ptPrimaryColor(context),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: TextFormField(
-                                    validator:
-                                        TextFieldValidator.notEmptyValidator,
-                                    controller: _nameC,
-                                    decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.phone),
-                                        border: InputBorder.none,
-                                        hintText: 'Số điện thoại'),
-                                  )),
+                                decoration: BoxDecoration(
+                                  color: ptPrimaryColor(context),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: Theme.of(context).dividerColor,
+                                      width: 1),
+                                ),
+                                child: TextFormField(
+                                  validator:
+                                      TextFieldValidator.notEmptyValidator,
+                                  controller: _nameC,
+                                  decoration: const InputDecoration(
+                                      prefixIcon: Icon(Icons.phone),
+                                      border: InputBorder.none,
+                                      hintText: 'Số điện thoại'),
+                                ),
+                              ),
                             ),
                             SizedBox(
                               height: 12,
@@ -205,6 +208,9 @@ class _LoginPageState extends State<LoginPage> {
                                 decoration: BoxDecoration(
                                   color: ptPrimaryColor(context),
                                   borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: Theme.of(context).dividerColor,
+                                      width: 1),
                                 ),
                                 child: TextFormField(
                                     obscureText: obscurePassword,
@@ -279,8 +285,7 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                                 child: Text(
                                   'Quên mật khẩu?',
-                                  style:
-                                      ptTitle().copyWith(color: Colors.black54),
+                                  style: ptTitle(),
                                 ),
                               ),
                             ),

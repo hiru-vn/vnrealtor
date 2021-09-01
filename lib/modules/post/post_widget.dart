@@ -818,7 +818,10 @@ class _PostWidgetState extends State<PostWidget> {
                     child: SizedBox(
                       height: 13,
                       width: 13,
-                      child: Image.asset('assets/image/ip.png'),
+                      child: Image.asset(
+                        'assets/image/ip.png',
+                        color: ptMainColor(),
+                      ),
                     ),
                   ),
                 if (widget.post.isPage)

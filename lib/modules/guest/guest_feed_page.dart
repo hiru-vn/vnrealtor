@@ -387,8 +387,8 @@ class GuestFeedPageAppBar extends StatelessWidget
       title: Row(
         children: [
           Image.asset(
-            'assets/image/logo_full.png',
-            width: 100,
+            'assets/image/logo_datcao.png',
+            width: 40,
           ),
           Spacer(),
           ExpandBtn(

@@ -94,12 +94,14 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     return Stack(
       children: [
         Scaffold(
-          backgroundColor: ptSecondaryColor(context),
-          appBar: AppBar2(
-            'Cập nhật thông tin',
+          backgroundColor: ptPrimaryColor(context),
+          appBar: SecondAppBar(
+            title: Center(
+              child: Text('Cập nhật thông tin'),
+            ),
             actions: [
               SizedBox(
-                width: 40,
+                width: 30,
                 child: IconButton(
                     icon: Icon(
                       Icons.save,
@@ -191,7 +193,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                             height: 65,
                             margin: EdgeInsets.symmetric(vertical: 1),
                             padding: EdgeInsets.symmetric(horizontal: 20),
-                            color: Colors.white,
+                            color: ptPrimaryColor(context),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
@@ -271,7 +273,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         height: 65,
         margin: EdgeInsets.symmetric(vertical: 0.8),
         padding: EdgeInsets.symmetric(horizontal: 20),
-        color: Colors.white,
+        color: ptPrimaryColor(context),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[

@@ -97,8 +97,8 @@ void imagePicker(BuildContext context,
                                 cupertinoOptions:
                                     CupertinoOptions(takePhotoIcon: "chat"),
                                 materialOptions: MaterialOptions(
-                                  actionBarColor: '#05515e',
-                                  statusBarColor: '#05515e',
+                                  actionBarColor: '#293079',
+                                  statusBarColor: '#293079',
                                   textOnNothingSelected: 'Huỷ chọn',
                                   actionBarTitle: "Chọn 1 hoặc nhiều ảnh",
                                   allViewTitle: "Tất cả hình ảnh",

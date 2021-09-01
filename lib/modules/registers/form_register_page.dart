@@ -310,10 +310,6 @@ class CustomInputField extends StatelessWidget {
                 validator: validator,
                 decoration: InputDecoration(
                   hintText: hintText,
-                  hintStyle: roboto_18_700().copyWith(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w100,
-                      color: ptAccentColor(context)),
                   border: InputBorder.none,
                 ),
               ),

@@ -17,7 +17,7 @@ class ActivityIndicator extends StatelessWidget {
               width: 20,
               height: 20,
               child: CircularProgressIndicator(
-                  backgroundColor: Color(0xff05515e),
+                backgroundColor: Color(0xff293079),
               ),
             ),
           ),

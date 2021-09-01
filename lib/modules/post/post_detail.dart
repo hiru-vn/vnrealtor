@@ -217,17 +217,6 @@ class _PostDetailState extends State<PostDetail> {
       child: SafeArea(
         child: Scaffold(
           appBar: SecondAppBar(
-            leading: GestureDetector(
-              onTap: () {
-                audioCache.play('tab3.mp3');
-                Navigator.pop(context);
-              },
-              child: Image.asset(
-                "assets/image/back_icon.png",
-                width: 20,
-                color: Colors.grey,
-              ),
-            ),
             title: Expanded(
               child: Center(
                 child: AutoSizeText(

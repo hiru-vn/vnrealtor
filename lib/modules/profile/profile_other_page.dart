@@ -91,9 +91,10 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
-      appBar: AppBar1(
-        title: _user?.name ?? '',
-        automaticallyImplyLeading: true,
+      appBar: SecondAppBar(
+        title: Center(
+          child: Text(_user?.name ?? ''),
+        ),
         actions: [
           if ([
             UserRole.admin,
@@ -262,6 +263,7 @@ class _ProfileCardState extends State<ProfileCard> {
           borderRadius: BorderRadius.circular(5),
           // elevation: 3,
           child: Container(
+            color: ptPrimaryColor(context),
             width: deviceWidth(context),
             padding: EdgeInsets.symmetric(horizontal: 25, vertical: 14)
                 .copyWith(bottom: 0, right: 20),
@@ -448,7 +450,10 @@ class _ProfileCardState extends State<ProfileCard> {
                               SizedBox(
                                   height: 13,
                                   width: 13,
-                                  child: Image.asset('assets/image/ip.png')),
+                                  child: Image.asset(
+                                    'assets/image/ip.png',
+                                    color: ptMainColor(),
+                                  )),
                             ],
                           ),
                           // if (_authBloc.userModel.followingIds
@@ -553,7 +558,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(6),
                                   border: Border.all(
-                                    color: ptPrimaryColor(context),
+                                    color: Theme.of(context).dividerColor,
                                   ),
                                 ),
                                 child: Center(

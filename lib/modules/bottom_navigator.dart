@@ -79,7 +79,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                   alignment: Alignment.center,
                   child: Icon(
                     e.iconActive,
-                    color: ptMainColor(),
+                    // color: ptMainColor(),
                   ),
                 ),
                 // if (e.counter > 0)
@@ -104,8 +104,9 @@ class _BottomNavigatorState extends State<BottomNavigator> {
       elevation: 0,
       backgroundColor: Theme.of(context).primaryColor,
       iconSize: 24,
+      selectedIconTheme: Theme.of(context).iconTheme,
       selectedFontSize: 25,
-      selectedItemColor: ptMainColor(),
+      selectedItemColor: Theme.of(context).iconTheme.color,
       unselectedItemColor: HexColor.fromHex("#BBBBBB"),
       type: cbn.BottomNavigationBarType.fixed,
       items: bottomNavBarItems,

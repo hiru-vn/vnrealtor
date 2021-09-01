@@ -1,3 +1,6 @@
 {
-  "dart.flutterSdkPath": "C:/SDK/flutter-1.22.6"
+  "dart.flutterSdkPaths": [
+    ".fvm/flutter_sdk"
+  ],
+  "dart.flutterSdkPath": "/Users/ilw/fvm/versions/1.22.6"
 }

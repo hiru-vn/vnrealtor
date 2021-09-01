@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_list.dart';
+import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -155,18 +156,21 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       backgroundColor: Theme.of(context).primaryColor,
       brightness: Theme.of(context).brightness,
-      leading: IconButton(
-        icon: Icon(
+      leading: GestureDetector(
+        child: Icon(
           Icons.account_circle_outlined,
           size: 32,
         ),
-        onPressed: null,
+        onTap: () {
+          audioCache.play('tab3.mp3');
+          ProfilePage.navigate();
+        },
       ),
       title: Container(
         decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
+                color: Colors.grey.withOpacity(0.2),
                 spreadRadius: 2,
                 blurRadius: 7,
                 offset: Offset(0, 4), // changes position of shadow
@@ -180,7 +184,12 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
           border: InputBorder.none,
           hintText: 'Tìm kiếm',
           hintStyle: roboto(),
-          suffixIcon: Icon(Icons.qr_code),
+          suffixIcon: GestureDetector(
+            child: Icon(
+              Icons.qr_code,
+            ),
+            onTap: () => print("QR code"),
+          ),
         )),
       ),
       actions: [
@@ -201,7 +210,6 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                     child: Icon(
                       MdiIcons.chatProcessingOutline,
                       size: 32,
-                      color: HexColor.fromHex("#BBBBBB"),
                     )),
               ),
               if (unReadCount > 0)

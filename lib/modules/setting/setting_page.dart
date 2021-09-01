@@ -141,8 +141,11 @@ class _SettingPageState extends State<SettingPage> {
         automaticallyImplyLeading: false,
         elevation: 1,
         brightness: Brightness.light,
-        title: SizedBox(
-            height: 30, child: Image.asset('assets/image/logo_full.png')),
+        title: Center(
+          child: Text(
+            "Tài khoản",
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -211,12 +214,10 @@ class _SettingPageState extends State<SettingPage> {
                                       .then((value) => setState(() {}));
                                 },
                                 child: Text(
-                                  AuthBloc.instance.userModel.role == 'AGENT'
-                                      ? 'Cập nhật thông tin'
-                                      : 'Cập nhật thông tin',
-                                  style: ptSmall()
-                                      .copyWith(color: ptPrimaryColor(context)),
-                                ),
+                                    AuthBloc.instance.userModel.role == 'AGENT'
+                                        ? 'Cập nhật thông tin'
+                                        : 'Cập nhật thông tin',
+                                    style: ptSmall()),
                               ),
                             ],
                           )
