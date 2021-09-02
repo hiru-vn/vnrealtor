@@ -135,17 +135,8 @@ class _SettingPageState extends State<SettingPage> {
     ];
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
-      appBar: AppBar(
-        backgroundColor: ptPrimaryColor(context),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        elevation: 1,
-        brightness: Brightness.light,
-        title: Center(
-          child: Text(
-            "Tài khoản",
-          ),
-        ),
+      appBar: SecondAppBar(
+        title: "Tài khoản",
       ),
       body: SingleChildScrollView(
         child: Padding(

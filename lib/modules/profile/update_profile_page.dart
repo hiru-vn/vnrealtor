@@ -96,9 +96,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         Scaffold(
           backgroundColor: ptPrimaryColor(context),
           appBar: SecondAppBar(
-            title: Center(
-              child: Text('Cập nhật thông tin'),
-            ),
+            title: 'Cập nhật thông tin',
             actions: [
               SizedBox(
                 width: 30,

@@ -92,9 +92,7 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
       appBar: SecondAppBar(
-        title: Center(
-          child: Text(_user?.name ?? ''),
-        ),
+        title: _user?.name ?? '',
         actions: [
           if ([
             UserRole.admin,

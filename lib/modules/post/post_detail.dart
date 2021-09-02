@@ -217,16 +217,9 @@ class _PostDetailState extends State<PostDetail> {
       child: SafeArea(
         child: Scaffold(
           appBar: SecondAppBar(
-            title: Expanded(
-              child: Center(
-                child: AutoSizeText(
-                  _post != null
-                      ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
-                      : '',
-                  style: roboto_18_700().copyWith(fontSize: 15),
-                ),
-              ),
-            ),
+            title: _post != null
+                ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
+                : '',
             actions: [
               IconButton(
                   icon: Icon(

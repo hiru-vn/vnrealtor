@@ -132,13 +132,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             leading: SizedBox(
               width: 100,
             ),
-            title: Center(
-              child: Text(
-                "Đăng bài",
-                style: roboto()
-                    .copyWith(fontSize: 20, fontWeight: FontWeight.w500),
-              ),
-            ),
+            title: "Đăng bài",
             actions: [
               Padding(
                 padding:

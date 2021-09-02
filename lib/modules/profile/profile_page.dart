@@ -59,9 +59,7 @@ class _ProfilePageState extends State<ProfilePage>
       child: Scaffold(
         backgroundColor: ptBackgroundColor(context),
         appBar: SecondAppBar(
-          title: Center(
-            child: Text("Trang cá nhân của bạn"),
-          ),
+          title: "Trang cá nhân của bạn",
           actions: [
             SizedBox(
               width: 30,

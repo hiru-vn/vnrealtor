@@ -24,23 +24,13 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
   UserBloc _userBloc;
 
   @override
-  void initState() {
-    // TODO: implement initState
-
-    AuthBloc.instance.userModel.followingIds.forEach((element) {
-      if (!AuthBloc.instance.userModel.followerIds.contains(element)) {
-        _usersFollowing.add(element);
-      }
-    });
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
 
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
+      _userBloc.getUserConnected();
+      _userBloc.getUserFollowed();
     }
     super.didChangeDependencies();
   }
@@ -52,9 +42,7 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
       child: SafeArea(
         child: Scaffold(
           backgroundColor: ptBackgroundColor(context),
-          appBar: AppBar(
-            elevation: 0,
-            brightness: ptBrightness(context),
+          appBar: SecondAppBar(
             leading: IconButton(
                 icon: Image.asset(
                   "assets/image/back_icon.png",
@@ -63,14 +51,7 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                 ),
                 onPressed: () => Navigator.pop(context)),
             actions: [IconButton(icon: Icon(Icons.more_vert), onPressed: null)],
-            title: Center(
-                child: AutoSizeText("Quản lý các mối liên kết",
-                    maxLines: 1,
-                    style: roboto().copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18,
-                      color: Colors.grey,
-                    ))),
+            title: "Quản lý các mối liên kết",
           ),
           body: Container(
             child: Column(
@@ -102,15 +83,14 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                   height: 1,
                 ),
                 ConnectionItem(
-                  onTap: () => ListFollowingScreen.navigate(
-                      userFollowing: _usersFollowing),
+                  onTap: () => ListFollowingScreen.navigate(),
                   preIcon: Image.asset(
                     "assets/image/group_icon.png",
                     width: 30,
                     height: 30,
                   ),
                   text: "Theo dõi",
-                  subIcon: Text("${_usersFollowing.length}"),
+                  subIcon: Text("${_userBloc.usersFollowed.length}"),
                 ),
                 Divider(
                   height: 1,

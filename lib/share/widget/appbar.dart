@@ -118,7 +118,7 @@ innerAppBar(BuildContext context, String title,
 
 class SecondAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget leading;
-  final Widget title;
+  final String title;
   final List<Widget> actions;
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
   const SecondAppBar({
@@ -136,7 +136,11 @@ class SecondAppBar extends StatelessWidget implements PreferredSizeWidget {
       brightness: Theme.of(context).brightness,
       leading: leading,
       actions: actions,
-      title: title,
+      title: Center(
+          child: AutoSizeText(
+        title,
+        style: ptBigTitle(),
+      )),
     );
   }
 }

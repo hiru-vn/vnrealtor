@@ -53,9 +53,7 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
         Scaffold(
           backgroundColor: ptPrimaryColor(context),
           appBar: const SecondAppBar(
-            title: Center(
-              child: Text('Đổi mật khẩu'),
-            ),
+            title: 'Đổi mật khẩu',
             actions: [SizedBox(width: 30)],
           ),
           body: SingleChildScrollView(

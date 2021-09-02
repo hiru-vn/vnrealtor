@@ -68,6 +68,7 @@ class UserBloc extends ChangeNotifier {
   List<UserModel> followersIn7Days = [];
   List<UserModel> suggestFollowUsers = [];
   List<UserModel> usersConnected = [];
+  List<UserModel> usersFollowed = [];
   bool isLoadingUserSuggest = true;
   bool isLoadingUsersIn = true;
 
@@ -170,6 +171,28 @@ class UserBloc extends ChangeNotifier {
       final List listRaw = res['data'];
       usersConnected = listRaw.map((e) => UserModel.fromJson(e)).toList();
       return BaseResponse.success(usersConnected);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      isLoadingUsersIn = false;
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getUserFollowed() async {
+    try {
+      isLoadingUsersIn = true;
+      List<String> ids = [];
+      UserModel user = AuthBloc.instance.userModel;
+      user.followingIds.forEach((element) {
+        if (!user.followerIds.contains(element)) {
+          ids.add(element);
+        }
+      });
+      final res = await UserRepo().getListUserIn(ids);
+      final List listRaw = res['data'];
+      usersFollowed = listRaw.map((e) => UserModel.fromJson(e)).toList();
+      return BaseResponse.success(usersFollowed);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
@@ -326,7 +349,6 @@ class UserBloc extends ChangeNotifier {
       final res = await UserRepo().followUser(userId);
       final val = FriendshipModel.fromJson(res);
       await AuthBloc.instance.getUser();
-      await getUserConnected();
       return BaseResponse.success(val);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());

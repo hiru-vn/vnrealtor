@@ -78,7 +78,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
   }
 
   void onFolowUser(String uID) async {
-    await _userBloc.followUser(uID);
+    _userBloc.followUser(uID);
     await _userBloc.deleteSuggestFollow(uID);
   }
 

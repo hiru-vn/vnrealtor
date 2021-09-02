@@ -62,16 +62,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
               ),
               onPressed: () => Navigator.pop(context),
             ),
-            title: Center(
-              child: AutoSizeText(
-                "Kết nối",
-                maxLines: 1,
-                style: roboto().copyWith(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
-                ),
-              ),
-            ),
+            title: "Kết nối",
             actions: [IconButton(icon: Icon(Icons.more_vert), onPressed: null)],
           ),
           body: Container(
@@ -333,7 +324,9 @@ class _UserConnectItemState extends State<UserConnectItem> {
                 padding: const EdgeInsets.all(15.0),
                 child: GestureDetector(
                   onTap: () async {
+                    showSimpleLoadingDialog(context);
                     await widget.userBloc.unfollowUser(widget.user.id);
+                    navigatorKey.currentState.pop();
                     navigatorKey.currentState.pop();
                   },
                   child: Row(children: [

@@ -20,33 +20,14 @@ class ListFollowingScreen extends StatefulWidget {
 
 class _ListFollowingScreenState extends State<ListFollowingScreen> {
   UserBloc _userBloc;
-  List<UserModel> _users;
 
   @override
   void didChangeDependencies() {
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
-      _userBloc.getListUserIn(widget.userFollowing).then((value) {
-        setState(() {
-          _users = value.data;
-        });
-      });
+      _userBloc.getUserFollowed();
     }
     super.didChangeDependencies();
-  }
-
-  _filterUser(int value) {
-    switch (value) {
-      case 1:
-        setState(() {});
-        break;
-      case 2:
-        setState(() {
-          _users.sort((a, b) => a.totalPoint.compareTo(b.totalPoint));
-        });
-        break;
-      default:
-    }
   }
 
   @override
@@ -67,14 +48,7 @@ class _ListFollowingScreenState extends State<ListFollowingScreen> {
             actions: [
               IconButton(icon: Icon(Icons.more_vert), onPressed: null),
             ],
-            title: Center(
-                child: AutoSizeText("Theo dõi",
-                    maxLines: 1,
-                    style: roboto().copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18,
-                      color: Colors.grey,
-                    ))),
+            title: "Theo dõi",
           ),
           body: Container(
             height: deviceHeight(context),
@@ -82,11 +56,13 @@ class _ListFollowingScreenState extends State<ListFollowingScreen> {
               separatorBuilder: (context, index) => Divider(
                 height: 1,
               ),
-              itemCount: _userBloc.isLoadingUsersIn ? 10 : _users.length,
+              itemCount: _userBloc.isLoadingUsersIn
+                  ? 10
+                  : _userBloc.usersFollowed.length,
               itemBuilder: (context, index) => _userBloc.isLoadingUsersIn
                   ? UserConnectItemLoading()
                   : UserConnectItem(
-                      user: _users[index],
+                      user: _userBloc.usersFollowed[index],
                     ),
             ),
           ),

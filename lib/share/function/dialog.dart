@@ -42,15 +42,17 @@ Future<bool> showConfirmDialog(BuildContext context, String errorMessage,
           content: new Text(errorMessage, style: TextStyle(fontSize: 15.0)),
           actions: <Widget>[
             FlatButton(
-                child: Text('Huỷ',
-                    style: TextStyle(color: Theme.of(context).primaryColor)),
+                child: Text(
+                  'Huỷ',
+                ),
                 onPressed: () {
                   navigatorKey.currentState.pop(false);
                   return false;
                 }),
             FlatButton(
-              child: Text('Ok',
-                  style: TextStyle(color: Theme.of(context).primaryColor)),
+              child: Text(
+                'Ok',
+              ),
               onPressed: () {
                 confirmTap();
                 navigatorKey.currentState.pop(true);
@@ -81,11 +83,14 @@ Future<bool> showAlertDialog(BuildContext context, String errorMessage,
           actions: <Widget>[
             if (showClose)
               FlatButton(
-                  child: Text('Close', style: TextStyle(color: primaryColor)),
+                  child: Text(
+                    'Close',
+                  ),
                   onPressed: () => navigatorKey.currentState.pop()),
             FlatButton(
-                child: Text(confirmLabel != null ? confirmLabel : 'Ok',
-                    style: TextStyle(color: primaryColor)),
+                child: Text(
+                  confirmLabel != null ? confirmLabel : 'Ok',
+                ),
                 onPressed: confirmTap != null
                     ? confirmTap
                     : () => navigatorKey.currentState.pop(true)),
@@ -121,12 +126,14 @@ Future<bool> showPasswordDialog(BuildContext context,
           ),
           actions: <Widget>[
             FlatButton(
-                child: Text('Close',
-                    style: TextStyle(color: Theme.of(context).primaryColor)),
+                child: Text(
+                  'Close',
+                ),
                 onPressed: () => navigatorKey.currentState.pop(false)),
             FlatButton(
-              child: Text('Ok',
-                  style: TextStyle(color: Theme.of(context).primaryColor)),
+              child: Text(
+                'Ok',
+              ),
               onPressed: () {
                 navigatorKey.currentState.pop(true);
                 if (confirmTap != null) confirmTap();
@@ -159,14 +166,18 @@ Future showAlertWithTitleDialog(
 
   if (secondAction != null && secondAction.isNotEmpty) {
     actions.add(new FlatButton(
-      child: Text(secondAction, style: TextStyle(color: primaryColor)),
+      child: Text(
+        secondAction,
+      ),
       onPressed:
           secondTap != null ? secondTap : () => navigatorKey.currentState.pop(),
     ));
   }
 
   actions.add(new FlatButton(
-    child: Text(firstAction ?? 'Ok', style: TextStyle(color: primaryColor)),
+    child: Text(
+      firstAction ?? 'Ok',
+    ),
     onPressed:
         firstTap != null ? firstTap : () => navigatorKey.currentState.pop(),
   ));
