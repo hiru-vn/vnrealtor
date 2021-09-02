@@ -465,6 +465,19 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getUser() async {
+    try {
+      final id = await SPref.instance.get('id');
+      final res = await _userRepo.getOneUserForClient(id: id);
+      userModel = UserModel.fromJson(res);
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e?.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> setOnline() async {
     try {
       final deviceId = await DeviceInfo.instance.getDeviceId();

@@ -3,12 +3,15 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/loading_widgets/shimmer_widget.dart';
 import 'package:datcao/utils/role_user.dart';
 
 class ConnectScreen extends StatefulWidget {
-  const ConnectScreen({Key key}) : super(key: key);
+  const ConnectScreen({
+    Key key,
+  }) : super(key: key);
   static Future navigate() {
     return navigatorKey.currentState.push(pageBuilder(ConnectScreen()));
   }
@@ -19,36 +22,29 @@ class ConnectScreen extends StatefulWidget {
 
 class _ConnectScreenState extends State<ConnectScreen> {
   UserBloc _userBloc;
-  List<UserModel> _users;
 
   @override
   void didChangeDependencies() {
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
-      _userBloc
-          .getListUserIn(AuthBloc.instance.userModel.followerIds)
-          .then((value) {
-        setState(() {
-          _users = value.data;
-        });
-      });
+      _userBloc.getUserConnected();
     }
     super.didChangeDependencies();
   }
 
-  _filterUser(int value) {
-    switch (value) {
-      case 1:
-        setState(() {});
-        break;
-      case 2:
-        setState(() {
-          _users.sort((a, b) => a.totalPoint.compareTo(b.totalPoint));
-        });
-        break;
-      default:
-    }
-  }
+  // _filterUser(int value) {
+  //   switch (value) {
+  //     case 1:
+  //       setState(() {});
+  //       break;
+  //     case 2:
+  //       setState(() {
+  //         _users.sort((a, b) => a.totalPoint.compareTo(b.totalPoint));
+  //       });
+  //       break;
+  //     default:
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -88,11 +84,11 @@ class _ConnectScreenState extends State<ConnectScreen> {
                     color: ptPrimaryColor(context),
                     child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: _users != null
+                        child: _userBloc.usersConnected != null
                             ? Row(
                                 children: [
                                   Text(
-                                    "${_users.length} Kết nối",
+                                    "${_userBloc.usersConnected.length} Kết nối",
                                     style: roboto().copyWith(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w500),
@@ -138,7 +134,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                                       backgroundColor: Colors.transparent,
                                       context: context,
                                       builder: (context) => FilterConnectUser(
-                                        onFilter: (value) => _filterUser(value),
+                                        onFilter: (value) => {},
                                       ),
                                     ),
                                   )
@@ -152,11 +148,14 @@ class _ConnectScreenState extends State<ConnectScreen> {
                     separatorBuilder: (context, index) => Divider(
                       height: 1,
                     ),
-                    itemCount: _userBloc.isLoadingUsersIn ? 10 : _users.length,
+                    itemCount: _userBloc.isLoadingUsersIn
+                        ? 10
+                        : _userBloc.usersConnected.length,
                     itemBuilder: (context, index) => _userBloc.isLoadingUsersIn
                         ? UserConnectItemLoading()
                         : UserConnectItem(
-                            user: _users[index],
+                            user: _userBloc.usersConnected[index],
+                            userBloc: _userBloc,
                           ),
                   ),
                 )
@@ -305,89 +304,131 @@ class _FilterConnectUserState extends State<FilterConnectUser> {
   }
 }
 
-class UserConnectItem extends StatelessWidget {
+class UserConnectItem extends StatefulWidget {
+  final UserBloc userBloc;
   final UserModel user;
   const UserConnectItem({
     Key key,
     this.user,
+    this.userBloc,
   }) : super(key: key);
 
   @override
+  _UserConnectItemState createState() => _UserConnectItemState();
+}
+
+class _UserConnectItemState extends State<UserConnectItem> {
+  _onButtonDetailClick() {
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) => Container(
+              decoration: BoxDecoration(
+                color: ptPrimaryColor(context),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(15),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    await widget.userBloc.unfollowUser(widget.user.id);
+                    navigatorKey.currentState.pop();
+                  },
+                  child: Row(children: [
+                    Image.asset(
+                      "assets/image/icon_delete_user.png",
+                      width: 30,
+                    ),
+                    Text("Xoá người dùng này"),
+                  ]),
+                ),
+              ),
+            ));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      color: ptPrimaryColor(context),
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () => ProfileOtherPage.navigate(widget.user),
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        color: ptPrimaryColor(context),
+        child: Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              child: CircleAvatar(
+                radius: 25,
+                backgroundColor: Colors.white,
+                backgroundImage: widget.user.avatar != null
+                    ? CachedNetworkImageProvider(widget.user.avatar)
+                    : AssetImage('assets/image/default_avatar.png'),
+              ),
             ),
-            child: CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.white,
-              backgroundImage: user.avatar != null
-                  ? CachedNetworkImageProvider(user.avatar)
-                  : AssetImage('assets/image/default_avatar.png'),
+            SizedBox(
+              width: 10,
             ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "${user.name}",
-                    style: roboto()
-                        .copyWith(fontSize: 16, fontWeight: FontWeight.w700),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "${user.totalPoint}",
-                      ),
-                      Image.asset(
-                        "assets/image/guarantee.png",
-                        width: 18,
-                      )
-                    ],
-                  )
-                ],
-              ),
-              Text(
-                "${convertRoleUser(user.role)}",
-                style: roboto()
-                    .copyWith(fontSize: 16, fontWeight: FontWeight.w300),
-              ),
-            ],
-          ),
-          Spacer(),
-          IconButton(icon: Icon(Icons.more_vert), onPressed: null),
-          IconButton(
-              icon: Image.asset(
-                "assets/image/icon_send.png",
-                width: 20,
-              ),
-              onPressed: () async {
-                audioCache.play('tab3.mp3');
-                showWaitingDialog(context);
-                await InboxBloc.instance.navigateToChatWith(
-                    user.name, user.avatar, DateTime.now(), user.avatar, [
-                  AuthBloc.instance.userModel.id,
-                  user.id,
-                ], [
-                  AuthBloc.instance.userModel.avatar,
-                  user.avatar,
-                ]);
-                closeLoading();
-              }),
-        ],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "${widget.user.name}",
+                      style: roboto()
+                          .copyWith(fontSize: 16, fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "${widget.user.totalPoint}",
+                        ),
+                        Image.asset(
+                          "assets/image/guarantee.png",
+                          width: 18,
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                Text(
+                  "${convertRoleUser(widget.user.role)}",
+                  style: roboto()
+                      .copyWith(fontSize: 16, fontWeight: FontWeight.w300),
+                ),
+              ],
+            ),
+            Spacer(),
+            IconButton(
+                icon: Icon(Icons.more_vert),
+                onPressed: () => _onButtonDetailClick()),
+            IconButton(
+                icon: Image.asset(
+                  "assets/image/icon_send.png",
+                  width: 20,
+                ),
+                onPressed: () async {
+                  audioCache.play('tab3.mp3');
+                  showWaitingDialog(context);
+                  await InboxBloc.instance.navigateToChatWith(widget.user.name,
+                      widget.user.avatar, DateTime.now(), widget.user.avatar, [
+                    AuthBloc.instance.userModel.id,
+                    widget.user.id,
+                  ], [
+                    AuthBloc.instance.userModel.avatar,
+                    widget.user.avatar,
+                  ]);
+                  closeLoading();
+                }),
+          ],
+        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/connection/connect_screen.dart';
 import 'package:datcao/modules/connection/list_following_screen.dart';
 import 'package:datcao/modules/connection/widgets/connection_item.dart';
@@ -19,6 +20,31 @@ class ManagerConnectionScreen extends StatefulWidget {
 }
 
 class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
+  List<String> _usersFollowing = [];
+  UserBloc _userBloc;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    AuthBloc.instance.userModel.followingIds.forEach((element) {
+      if (!AuthBloc.instance.userModel.followerIds.contains(element)) {
+        _usersFollowing.add(element);
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+
+    if (_userBloc == null) {
+      _userBloc = Provider.of<UserBloc>(context);
+    }
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -57,8 +83,7 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                     height: 30,
                   ),
                   text: "Kết nối",
-                  subIcon:
-                      Text("${AuthBloc.instance.userModel.followerIds.length}"),
+                  subIcon: Text("${_userBloc.usersConnected.length}"),
                 ),
                 Divider(
                   height: 1,
@@ -77,15 +102,15 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                   height: 1,
                 ),
                 ConnectionItem(
-                  onTap: () => ListFollowingScreen.navigate(),
+                  onTap: () => ListFollowingScreen.navigate(
+                      userFollowing: _usersFollowing),
                   preIcon: Image.asset(
                     "assets/image/group_icon.png",
                     width: 30,
                     height: 30,
                   ),
                   text: "Theo dõi",
-                  subIcon: Text(
-                      "${AuthBloc.instance.userModel.followingIds.length}"),
+                  subIcon: Text("${_usersFollowing.length}"),
                 ),
                 Divider(
                   height: 1,

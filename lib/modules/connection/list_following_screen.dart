@@ -6,9 +6,12 @@ import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/share/import.dart';
 
 class ListFollowingScreen extends StatefulWidget {
-  const ListFollowingScreen({Key key}) : super(key: key);
-  static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(ListFollowingScreen()));
+  final List<String> userFollowing;
+  const ListFollowingScreen({Key key, this.userFollowing}) : super(key: key);
+  static Future navigate({List<String> userFollowing}) {
+    return navigatorKey.currentState.push(pageBuilder(ListFollowingScreen(
+      userFollowing: userFollowing,
+    )));
   }
 
   @override
@@ -23,9 +26,7 @@ class _ListFollowingScreenState extends State<ListFollowingScreen> {
   void didChangeDependencies() {
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
-      _userBloc
-          .getListUserIn(AuthBloc.instance.userModel.followingIds)
-          .then((value) {
+      _userBloc.getListUserIn(widget.userFollowing).then((value) {
         setState(() {
           _users = value.data;
         });
@@ -50,13 +51,12 @@ class _ListFollowingScreenState extends State<ListFollowingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
+    return Container(
+      color: ptPrimaryColor(context),
+      child: SafeArea(
         child: Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: ptBackgroundColor(context),
+          appBar: SecondAppBar(
             leading: IconButton(
                 icon: Image.asset(
                   "assets/image/back_icon.png",
@@ -78,90 +78,16 @@ class _ListFollowingScreenState extends State<ListFollowingScreen> {
           ),
           body: Container(
             height: deviceHeight(context),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Container(
-                    color: Colors.white,
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: _users != null
-                            ? Row(
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    child: Text(
-                                      "${_users.length} đang theo dõi",
-                                      style: roboto().copyWith(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  // IconButton(
-                                  //     icon: Container(
-                                  //       width: 32,
-                                  //       height: 32,
-                                  //       decoration: BoxDecoration(
-                                  //         shape: BoxShape.circle,
-                                  //         color: HexColor.fromHex("#F5F9FF"),
-                                  //       ),
-                                  //       child: Padding(
-                                  //         padding: const EdgeInsets.all(8.0),
-                                  //         child: Image.asset(
-                                  //           "assets/image/icon_search.png",
-                                  //           width: 15,
-                                  //           height: 15,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //     onPressed: () => showUndoneFeature(
-                                  //         context, ["Tìm kiếm"])),
-                                  // IconButton(
-                                  //   icon: Container(
-                                  //     width: 32,
-                                  //     height: 32,
-                                  //     decoration: BoxDecoration(
-                                  //       shape: BoxShape.circle,
-                                  //       color: HexColor.fromHex("#F5F9FF"),
-                                  //     ),
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(8.0),
-                                  //       child: Image.asset(
-                                  //         "assets/image/icon_filter.png",
-                                  //         width: 15,
-                                  //         height: 15,
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  //   onPressed: () => showModalBottomSheet(
-                                  //     backgroundColor: Colors.transparent,
-                                  //     context: context,
-                                  //     builder: (context) => FilterConnectUser(
-                                  //       onFilter: (value) => _filterUser(value),
-                                  //     ),
-                                  //   ),
-                                  // )
-                                ],
-                              )
-                            : SizedBox.shrink()),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) => Divider(
-                      height: 1,
+            child: ListView.separated(
+              separatorBuilder: (context, index) => Divider(
+                height: 1,
+              ),
+              itemCount: _userBloc.isLoadingUsersIn ? 10 : _users.length,
+              itemBuilder: (context, index) => _userBloc.isLoadingUsersIn
+                  ? UserConnectItemLoading()
+                  : UserConnectItem(
+                      user: _users[index],
                     ),
-                    itemCount: _userBloc.isLoadingUsersIn ? 10 : _users.length,
-                    itemBuilder: (context, index) => _userBloc.isLoadingUsersIn
-                        ? UserConnectItemLoading()
-                        : UserConnectItem(
-                            user: _users[index],
-                          ),
-                  ),
-                )
-              ],
             ),
           ),
         ),

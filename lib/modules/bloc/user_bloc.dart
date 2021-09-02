@@ -67,6 +67,7 @@ class UserBloc extends ChangeNotifier {
   List<FriendshipModel> friendRequestFromOtherUsers = [];
   List<UserModel> followersIn7Days = [];
   List<UserModel> suggestFollowUsers = [];
+  List<UserModel> usersConnected = [];
   bool isLoadingUserSuggest = true;
   bool isLoadingUsersIn = true;
 
@@ -147,6 +148,28 @@ class UserBloc extends ChangeNotifier {
       final List listRaw = res['data'];
       final list = listRaw.map((e) => UserModel.fromJson(e)).toList();
       return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      isLoadingUsersIn = false;
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getUserConnected() async {
+    try {
+      isLoadingUsersIn = true;
+      List<String> ids = [];
+      UserModel user = AuthBloc.instance.userModel;
+      user.followerIds.forEach((element) {
+        if (user.followingIds.contains(element)) {
+          ids.add(element);
+        }
+      });
+      final res = await UserRepo().getListUserIn(ids);
+      final List listRaw = res['data'];
+      usersConnected = listRaw.map((e) => UserModel.fromJson(e)).toList();
+      return BaseResponse.success(usersConnected);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
@@ -287,6 +310,8 @@ class UserBloc extends ChangeNotifier {
     try {
       final res = await UserRepo().unfollowUser(userId);
       final val = FriendshipModel.fromJson(res);
+      await AuthBloc.instance.getUser();
+      await getUserConnected();
       return BaseResponse.success(val);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
@@ -300,6 +325,8 @@ class UserBloc extends ChangeNotifier {
       notifyListeners();
       final res = await UserRepo().followUser(userId);
       final val = FriendshipModel.fromJson(res);
+      await AuthBloc.instance.getUser();
+      await getUserConnected();
       return BaseResponse.success(val);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());

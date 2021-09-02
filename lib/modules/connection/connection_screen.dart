@@ -25,12 +25,8 @@ class _ConnectionScreenState extends State<ConnectionScreen>
   PagesBloc _pagesBloc;
   TabController _tabController;
   int currentTab = 0;
-
-  List<UserModel> _usersSuggest = [];
-  List<GroupModel> _groupsSuggest = [];
   @override
   void initState() {
-    // TODO: implement initState
     _tabController = TabController(length: 2, vsync: this);
 
     super.initState();
@@ -81,9 +77,9 @@ class _ConnectionScreenState extends State<ConnectionScreen>
     _userBloc.deleteSuggestFollow(uID);
   }
 
-  void onFolowUser(String uID) {
-    _userBloc.followUser(uID);
-    _userBloc.deleteSuggestFollow(uID);
+  void onFolowUser(String uID) async {
+    await _userBloc.followUser(uID);
+    await _userBloc.deleteSuggestFollow(uID);
   }
 
   void onDeleteGroup(String id) {
