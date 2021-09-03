@@ -7,6 +7,7 @@ import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_app_bar.dart';
 import 'package:datcao/modules/post/post_detail.dart';
+import 'package:datcao/utils/role_user.dart';
 
 class UsersLikePostPage extends StatefulWidget {
   final String postID;
@@ -74,26 +75,11 @@ class _UsersLikePostPageState extends State<UsersLikePostPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: ptPrimaryColor(context),
       child: SafeArea(
         child: Scaffold(
-          appBar: CustomAppBar(
-            leading: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Image.asset(
-                "assets/image/back_icon.png",
-                color: Colors.grey,
-                width: 30,
-              ),
-            ),
-            title: Expanded(
-              child: Center(
-                child: AutoSizeText(
-                  "Xem tương tác",
-                  style: roboto_18_700().copyWith(fontSize: 15),
-                ),
-              ),
-            ),
+          appBar: SecondAppBar(
+            title: "Xem tương tác",
             actions: [
               IconButton(
                   icon: Icon(
@@ -124,13 +110,13 @@ class _UsersLikePostPageState extends State<UsersLikePostPage> {
                               children: [
                                 Text(
                                   _users[index].name,
-                                  style: roboto().copyWith(
+                                  style: roboto(context).copyWith(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700),
                                 ),
                                 Text(
-                                  "${_users[index].role}",
-                                  style: roboto().copyWith(
+                                  "${convertRoleUser(_users[index].role)}",
+                                  style: roboto(context).copyWith(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w100),
                                 ),

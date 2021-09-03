@@ -167,7 +167,7 @@ class FunkyOverlayState extends State<FunkyOverlay>
                         width: deviceWidth(context) / 1.5,
                         child: Text(
                           'Hãy xác minh nhà môi giới để được đăng bài nhiều hơn.',
-                          style: ptTitle().copyWith(color: Colors.green),
+                          style: ptTitle().copyWith(color: ptSecondColor()),
                         ),
                       ),
                       SizedBox(height: 20),
@@ -176,7 +176,9 @@ class FunkyOverlayState extends State<FunkyOverlay>
                         child: Center(
                           child: SizedBox(
                             width: 90,
-                            child: Image.asset('assets/image/verify.png'),
+                            child: Image.asset(
+                              'assets/image/verify.png',
+                            ),
                           ),
                         ),
                       ),
@@ -243,8 +245,7 @@ class FunkyOverlayState extends State<FunkyOverlay>
                                                       vertical: 4,
                                                       horizontal: 10),
                                               child: Text('Đóng',
-                                                  style: ptBigBody().copyWith(
-                                                      color: Colors.black54)),
+                                                  style: ptBigBody()),
                                             ),
                                           ))),
                                   Container(
@@ -255,33 +256,32 @@ class FunkyOverlayState extends State<FunkyOverlay>
                                     color: Colors.black12,
                                   ),
                                   Expanded(
-                                      child: InkWell(
-                                    onTap: () async {
-                                      if (notShowAgain == true)
-                                        SPref.instance.setBool(
-                                            'notShowRecomendAgain', true);
-                                      if (AuthBloc.instance.userModel.role ==
-                                          'COMPANY') {
-                                        VerifyCompany.navigate().then((value) =>
-                                            navigatorKey.currentState
+                                    child: InkWell(
+                                      onTap: () async {
+                                        if (notShowAgain == true)
+                                          SPref.instance.setBool(
+                                              'notShowRecomendAgain', true);
+                                        if (AuthBloc.instance.userModel.role ==
+                                            'COMPANY') {
+                                          VerifyCompany.navigate().then(
+                                              (value) => navigatorKey
+                                                  .currentState
+                                                  .maybePop());
+                                          return;
+                                        }
+                                        VertifyAccountPage1.navigate().then(
+                                            (value) => navigatorKey.currentState
                                                 .maybePop());
-                                        return;
-                                      }
-                                      VertifyAccountPage1.navigate().then(
-                                          (value) => navigatorKey.currentState
-                                              .maybePop());
-                                    },
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 4, horizontal: 10),
-                                        child: Text('Xác minh',
-                                            style: ptBigBody().copyWith(
-                                                color:
-                                                    ptPrimaryColor(context))),
+                                      },
+                                      child: Center(
+                                        child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 4, horizontal: 10),
+                                            child: Text('Xác minh',
+                                                style: ptBigBody())),
                                       ),
                                     ),
-                                  )),
+                                  )
                                 ],
                               ),
                       ),

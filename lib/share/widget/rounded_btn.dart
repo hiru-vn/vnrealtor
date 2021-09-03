@@ -33,7 +33,7 @@ class RoundedBtn extends StatelessWidget {
       ),
       child: Material(
         // elevation: 4,
-        color: color ?? Colors.white24,
+        color: color ?? ptPrimaryColor(context),
         borderRadius: BorderRadius.circular(30),
         child: InkWell(
           splashColor: Colors.transparent,

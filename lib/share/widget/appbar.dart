@@ -135,7 +135,7 @@ class SecondAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: ptPrimaryColor(context),
       brightness: Theme.of(context).brightness,
       leading: leading,
-      actions: actions,
+      actions: actions ?? [SizedBox(width: 30)],
       title: Center(
           child: AutoSizeText(
         title,
@@ -187,7 +187,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
           prefixIcon: Icon(Icons.search),
           border: InputBorder.none,
           hintText: 'Tìm kiếm',
-          hintStyle: roboto(),
+          hintStyle: roboto(context),
           suffixIcon: GestureDetector(
             child: Icon(
               Icons.qr_code,

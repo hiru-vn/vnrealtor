@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                             children: <TextSpan>[
                               TextSpan(
                                 text: 'Bật thông báo ',
-                                style: roboto().copyWith(
+                                style: roboto(context).copyWith(
                                     fontWeight: FontWeight.w400, fontSize: 15),
                               ),
                               TextSpan(
@@ -104,14 +104,14 @@ class _LoginPageState extends State<LoginPage> {
                                   ..onTap = () {
                                     print('Tap');
                                   },
-                                style: roboto().copyWith(
+                                style: roboto(context).copyWith(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 15,
                                     color: Colors.blue),
                               ),
                               TextSpan(
                                 text: ' để nhận được thông tin mới nhất ',
-                                style: roboto().copyWith(
+                                style: roboto(context).copyWith(
                                     fontWeight: FontWeight.w400, fontSize: 15),
                               ),
                             ],

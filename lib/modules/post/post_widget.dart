@@ -138,7 +138,7 @@ class _PostWidgetState extends State<PostWidget> {
                       text: (widget.post?.content?.trim() ?? ''),
                       // trimLines: 5,
                       // trimLength: 1000,
-                      style: roboto()
+                      style: roboto(context)
                           .copyWith(fontWeight: FontWeight.w400, fontSize: 15),
                       textAlign: TextAlign.start,
                       // colorClickableText: Colors.pink,
@@ -847,7 +847,7 @@ class _PostWidgetState extends State<PostWidget> {
                   //         '')
                   //     : Formart.timeByDayVi(
                   //         DateTime.tryParse(widget.post?.createdAt)),
-                  style: roboto()
+                  style: roboto(context)
                       .copyWith(fontWeight: FontWeight.w300, fontSize: 12),
                 ),
                 SizedBox(width: 5),
@@ -860,7 +860,7 @@ class _PostWidgetState extends State<PostWidget> {
                   SizedBox(width: 5),
                   Text(
                     widget.post.distance.toStringAsFixed(1) + ' km',
-                    style: roboto()
+                    style: roboto(context)
                         .copyWith(fontWeight: FontWeight.w400, fontSize: 14),
                   ),
                 ],

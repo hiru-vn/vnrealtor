@@ -90,7 +90,8 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                     height: 30,
                   ),
                   text: "Theo dõi",
-                  subIcon: Text("${_userBloc.usersFollowed.length}"),
+                  subIcon: Text(
+                      "${AuthBloc.instance.userModel.followingIds.length}"),
                 ),
                 Divider(
                   height: 1,
@@ -102,7 +103,8 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                     height: 30,
                   ),
                   text: "Nhóm",
-                  subIcon: Text("212"),
+                  subIcon:
+                      Text("${AuthBloc.instance.userModel.groupIds.length}"),
                 ),
                 Divider(
                   height: 1,
@@ -114,7 +116,8 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                     height: 30,
                   ),
                   text: "Trang",
-                  subIcon: Text("212"),
+                  subIcon:
+                      Text("${AuthBloc.instance.userModel.groupIds.length}"),
                 ),
                 Divider(
                   height: 1,

@@ -40,7 +40,7 @@ class _RegisterSuccessPageState extends State<RegisterSuccessPage> {
       backgroundColor: ptSecondaryColor(context),
       body: Container(
         height: deviceHeight(context),
-        color: Colors.white,
+        color: ptPrimaryColor(context),
         child: Stack(
           children: [
             Positioned(
@@ -77,7 +77,6 @@ class _RegisterSuccessPageState extends State<RegisterSuccessPage> {
                           fontWeight: FontWeight.w400,
                           fontStyle: FontStyle.normal,
                           fontSize: 14,
-                          color: Colors.black,
                         ),
                         textAlign: TextAlign.center,
                       ),

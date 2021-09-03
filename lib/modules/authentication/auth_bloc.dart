@@ -131,9 +131,9 @@ class AuthBloc extends ChangeNotifier {
       String phone,
       String username}) async {
     try {
-      final auth = await FirebaseAuth.instance.signInWithCredential(phoneAuth);
-      if (auth == null) return BaseResponse.fail('Không tìm thấy tài khoản');
-      final fbToken = await auth.user.getIdToken();
+      final fbToken = await FirebaseAuth.instance.currentUser.getIdToken();
+      if (fbToken == null) return BaseResponse.fail('Không tìm thấy tài khoản');
+      // final fbToken = await auth.user.getIdToken();
       final loginRes = await _userRepo.registerWithPhone(
           username: username,
           name: name,

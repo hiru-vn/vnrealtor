@@ -29,7 +29,7 @@ class ConnectionItem extends StatelessWidget {
               ),
               Text(
                 text,
-                style: roboto().copyWith(
+                style: roboto(context).copyWith(
                   fontSize: 15,
                   color: Theme.of(context).accentColor,
                   fontWeight: FontWeight.w500,

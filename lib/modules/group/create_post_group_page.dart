@@ -187,32 +187,34 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                           children: [
                             Text(
                               Formart.formatToWeekTime(DateTime.now()),
-                              style: ptTiny().copyWith(color: Colors.black54),
+                              style: ptTiny(),
                             ),
                             SizedBox(width: 12),
                             if (group.privacy) ...[
                               SizedBox(
                                 height: 13,
                                 width: 13,
-                                child: Image.asset('assets/icon/private.png',
-                                    color: Colors.black54),
+                                child: Image.asset(
+                                  'assets/icon/private.png',
+                                ),
                               ),
                               SizedBox(width: 5),
                               Text(
                                 'Nhóm kín',
-                                style: ptTiny().copyWith(color: Colors.black54),
+                                style: ptTiny(),
                               )
                             ] else ...[
                               SizedBox(
                                 height: 13,
                                 width: 13,
-                                child: Image.asset('assets/icon/public.png',
-                                    color: Colors.black54),
+                                child: Image.asset(
+                                  'assets/icon/public.png',
+                                ),
                               ),
                               SizedBox(width: 5),
                               Text(
                                 'Công khai',
-                                style: ptTiny().copyWith(color: Colors.black54),
+                                style: ptTiny(),
                               )
                             ],
                           ],
@@ -308,7 +310,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
               child: Material(
                 borderRadius: BorderRadius.circular(10),
                 // elevation: 5,
-                color: Colors.white,
+                color: ptPrimaryColor(context),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: 170),
                   child: Stack(
@@ -330,7 +332,6 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                                 border: InputBorder.none,
                                 hintText: 'Nội dung bài viết...',
                                 hintStyle: ptBigTitle().copyWith(
-                                    color: Colors.black38,
                                     letterSpacing: 1,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -470,7 +471,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                       height: 30,
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                          color: ptSecondaryColor(context),
+                          color: ptPrimaryColor(context),
                           borderRadius: BorderRadius.circular(15)),
                       child: Center(
                         child: Text(

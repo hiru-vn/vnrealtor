@@ -538,7 +538,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                       .contains(element['value']))
                                   .toList()[index]['value']
                                   .toString(),
-                              style: roboto().copyWith(color: ptMainColor()),
+                              style: roboto(context)
+                                  .copyWith(color: ptMainColor()),
                             ),
                           ),
                         ),

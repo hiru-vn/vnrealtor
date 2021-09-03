@@ -62,9 +62,8 @@ class _FollowPageState extends State<FollowPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar1(
+      appBar: SecondAppBar(
         title: widget.user.name,
-        automaticallyImplyLeading: true,
       ),
       body: Column(
         children: [
@@ -73,17 +72,12 @@ class _FollowPageState extends State<FollowPage>
             child: TabBar(
               indicatorSize: TabBarIndicatorSize.label,
               indicatorWeight: 3,
-              indicatorColor: ptPrimaryColor(context),
+              indicatorColor: ptMainColor(),
               indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
               controller: _tabController,
               isScrollable: true,
-              labelColor: Colors.black87,
-              unselectedLabelStyle:
-                  TextStyle(fontSize: 14, color: Colors.black54),
-              labelStyle: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold),
+              unselectedLabelStyle: ptTitle(),
+              labelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               tabs: [
                 SizedBox(
                   height: 40,

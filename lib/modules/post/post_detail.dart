@@ -465,7 +465,7 @@ class _ListUsersLikedPostState extends State<ListUsersLikedPost> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   "Lượt tương tác",
-                  style: roboto().copyWith(fontSize: 13),
+                  style: roboto(context).copyWith(fontSize: 13),
                 ),
               )
             : SizedBox(),

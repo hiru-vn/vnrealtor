@@ -78,36 +78,17 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
+    return Container(
+      color: ptPrimaryColor(context),
+      child: SafeArea(
         child: Scaffold(
-          appBar: CustomAppBar(
-            leading: IconButton(
-              icon: Icon(
-                Icons.navigate_before,
-                color: Colors.white,
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-            title: Center(
-                child: Text(
-              "Đăng ký tài khoản",
-              style: roboto_18_700().copyWith(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.normal),
-              textAlign: TextAlign.center,
-            )),
-            actions: [
-              SizedBox(
-                width: 30,
-              )
-            ],
+          appBar: SecondAppBar(
+            title: "Đăng ký tài khoản",
           ),
           body: SafeArea(
             child: Container(
               height: deviceHeight(context),
-              color: Colors.white,
+              color: ptPrimaryColor(context),
               child: SingleChildScrollView(
                 child: Container(
                   width: deviceWidth(context),

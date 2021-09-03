@@ -40,7 +40,7 @@ class ListGroupConnection extends StatelessWidget {
                   ),
                   Text(
                     "Nhóm mà bạn có thể quan tâm",
-                    style: roboto().copyWith(
+                    style: roboto(context).copyWith(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
                     ),
@@ -74,7 +74,7 @@ class ListGroupConnection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("Xem tất cả",
-                  style: roboto().copyWith(
+                  style: roboto(context).copyWith(
                       color: HexColor.fromHex("#009FFD"),
                       fontSize: 15,
                       fontWeight: FontWeight.w400)),
@@ -136,7 +136,7 @@ class ListPageConnection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("Xem tất cả",
-                  style: roboto().copyWith(
+                  style: roboto(context).copyWith(
                       color: HexColor.fromHex("#009FFD"),
                       fontSize: 15,
                       fontWeight: FontWeight.w400)),
@@ -183,7 +183,7 @@ class ListUserConnection extends StatelessWidget {
                   ),
                   Text(
                     "Gợi ý bạn có thể kết nối",
-                    style: roboto().copyWith(
+                    style: roboto(context).copyWith(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
                     ),
@@ -214,7 +214,7 @@ class ListUserConnection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("Xem tất cả",
-                  style: roboto().copyWith(
+                  style: roboto(context).copyWith(
                       color: HexColor.fromHex("#009FFD"),
                       fontSize: 15,
                       fontWeight: FontWeight.w400)),

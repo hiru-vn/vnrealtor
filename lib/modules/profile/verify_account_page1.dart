@@ -31,7 +31,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ptBackgroundColor(context),
-      appBar: AppBar2('Xác minh nhà môi giới'),
+      appBar: SecondAppBar(title: 'Xác minh nhà môi giới'),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -50,14 +50,14 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               width: deviceWidth(context) / 1.3,
               child: Text(
                 'Chúng tôi cần ảnh để đối chiếu với thông tin cá nhân mà bạn cung cấp',
-                style: ptBigBody().copyWith(color: Colors.black54),
+                style: ptBigBody(),
                 textAlign: TextAlign.center,
               ),
             ),
             SpacingBox(h: 3),
             Container(
               width: deviceWidth(context),
-              color: Colors.white,
+              color: ptPrimaryColor(context),
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               child: Form(
                 key: _formKey,
@@ -121,8 +121,8 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Material(
             // elevation: 4,
-            // borderRadius: BorderRadius.circular(10),
-            color: ptSecondaryColor(context),
+            borderRadius: BorderRadius.circular(10),
+            color: ptPrimaryColor(context),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
               child: TextFormField(
@@ -147,7 +147,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
       child: Material(
           // elevation: 4,
           // borderRadius: BorderRadius.circular(10),
-          color: ptSecondaryColor(context),
+          color: ptPrimaryColor(context),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25)
                 .copyWith(right: 10),
@@ -177,6 +177,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
 
   _buildPictureCollect(String text, bool isFront) => Container(
         height: 180,
+        color: ptPrimaryColor(context),
         width: deviceWidth(context),
         child: Stack(children: [
           if (_verificationBloc.imageFront != null && isFront)
@@ -204,14 +205,15 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
             left: 25,
             right: 25,
             child: DottedBorder(
-              color: Colors.black54,
+              color: Theme.of(context).dividerColor,
               radius: Radius.circular(20),
               strokeWidth: 1,
               dashPattern: [8, 6],
               child: GestureDetector(
                 onTap: () => onCustomPersionRequest(
                     permission: Permission.camera,
-                    onGranted: () {audioCache.play('tab3.mp3');
+                    onGranted: () {
+                      audioCache.play('tab3.mp3');
                       ImagePicker.pickImage(source: ImageSource.camera)
                           .then((value) async {
                         try {

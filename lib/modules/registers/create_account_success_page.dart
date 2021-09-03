@@ -42,7 +42,7 @@ class _CreateAccountSuccessPageState extends State<CreateAccountSuccessPage> {
       backgroundColor: ptSecondaryColor(context),
       body: Container(
         height: deviceHeight(context),
-        color: Colors.white,
+        color: ptPrimaryColor(context),
         child: Stack(
           children: [
             Positioned(

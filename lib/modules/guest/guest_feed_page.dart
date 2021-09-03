@@ -148,45 +148,45 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                     pageController: _postBloc.pageController,
                     stories: stories,
                   ),
-                  if (_postBloc.hasTags != null && _postBloc.hasTags.length > 0)
-                    Container(
-                      width: deviceWidth(context),
-                      height: 30,
-                      margin: EdgeInsets.only(top: 8),
-                      // padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: ListView.separated(
-                        // shrinkWrap: true,
-                        padding: EdgeInsets.only(left: 15),
-                        separatorBuilder: (context, index) {
-                          return SizedBox(
-                            width: 10,
-                          );
-                        },
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            borderRadius: BorderRadius.circular(15),
-                            onTap: () {
-                              SearchPostPage.navigate(
-                                  hashTag: _postBloc.hasTags[index]['value']);
-                            },
-                            child: Container(
-                              height: 30,
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                  color: ptSecondaryColor(context),
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Center(
-                                child: Text(
-                                  _postBloc.hasTags[index]['value'].toString(),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        itemCount: _postBloc.hasTags.length,
-                        scrollDirection: Axis.horizontal,
-                      ),
-                    ),
+                  // if (_postBloc.hasTags != null && _postBloc.hasTags.length > 0)
+                  //   Container(
+                  //     width: deviceWidth(context),
+                  //     height: 30,
+                  //     margin: EdgeInsets.only(top: 8),
+                  //     // padding: EdgeInsets.symmetric(horizontal: 20),
+                  //     child: ListView.separated(
+                  //       // shrinkWrap: true,
+                  //       padding: EdgeInsets.only(left: 15),
+                  //       separatorBuilder: (context, index) {
+                  //         return SizedBox(
+                  //           width: 10,
+                  //         );
+                  //       },
+                  //       itemBuilder: (context, index) {
+                  //         return InkWell(
+                  //           borderRadius: BorderRadius.circular(15),
+                  //           onTap: () {
+                  //             SearchPostPage.navigate(
+                  //                 hashTag: _postBloc.hasTags[index]['value']);
+                  //           },
+                  //           child: Container(
+                  //             height: 30,
+                  //             padding: EdgeInsets.symmetric(horizontal: 10),
+                  //             decoration: BoxDecoration(
+                  //                 color: ptSecondaryColor(context),
+                  //                 borderRadius: BorderRadius.circular(15)),
+                  //             child: Center(
+                  //               child: Text(
+                  //                 _postBloc.hasTags[index]['value'].toString(),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         );
+                  //       },
+                  //       itemCount: _postBloc.hasTags.length,
+                  //       scrollDirection: Axis.horizontal,
+                  //     ),
+                  //   ),
                   if (posts == null)
                     PostSkeleton()
                   else
@@ -239,7 +239,7 @@ class CreatePostCardGuest extends StatelessWidget {
       child: Container(
         width: deviceWidth(context),
         padding: EdgeInsets.symmetric(vertical: 8),
-        color: Colors.white,
+        color: ptPrimaryColor(context),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

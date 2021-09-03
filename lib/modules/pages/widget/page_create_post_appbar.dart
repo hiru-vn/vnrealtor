@@ -19,7 +19,7 @@ class PageCreatePostAppBar extends StatelessWidget
         child: Row(
           children: [
             BackButton(
-              color: Colors.black,
+              color: ptSecondaryColor(context),
               onPressed: () {
                 popScreen();
                 FocusScope.of(context).requestFocus(FocusNode());
@@ -28,22 +28,22 @@ class PageCreatePostAppBar extends StatelessWidget
             SizedBox(
               width: 5,
             ),
+            Spacer(),
             Text(
               'Bài viết mới',
-              style: ptBigTitle().copyWith(color: Colors.black),
+              style: ptBigTitle(),
             ),
             Spacer(),
-            FlatButton(
-                color: ptPrimaryColor(context),
-                onPressed: enableBtn ? createPost : null,
-                child: Text(
-                  'Đăng',
-                  style: ptTitle().copyWith(color: Colors.white),
-                )),
+            ExpandBtn(
+              onPress: enableBtn ? createPost : null,
+              text: 'ĐĂNG',
+              textColor: Colors.white,
+              width: 100,
+            ),
           ],
         ),
       ),
-      color: ptSecondaryColor(context),
+      color: ptPrimaryColor(context),
     );
   }
 }

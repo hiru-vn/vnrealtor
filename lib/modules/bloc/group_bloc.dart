@@ -8,7 +8,7 @@ import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/share/import.dart';
 
 class GroupBloc extends ChangeNotifier {
-  GroupBloc._privateConstructor() {}
+  GroupBloc._privateConstructor();
   static final GroupBloc instance = GroupBloc._privateConstructor();
 
   ScrollController groupScrollController = ScrollController();

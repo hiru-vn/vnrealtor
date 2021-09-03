@@ -8,7 +8,8 @@ TextStyle roboto_18_700() => TextStyle(
       fontWeight: FontWeight.w700,
       fontFamily: "Roboto",
     );
-TextStyle roboto() => GoogleFonts.roboto();
+TextStyle roboto(BuildContext context) =>
+    GoogleFonts.roboto(color: ptSecondaryColor(context));
 TextStyle ptHeadLine() =>
     TextStyle(fontSize: 39, fontWeight: FontWeight.w600, letterSpacing: 1.5);
 

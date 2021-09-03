@@ -76,7 +76,7 @@ class UserSuggestItem extends StatelessWidget {
                   },
                   child: Text(
                     user.name,
-                    style: roboto().copyWith(
+                    style: roboto(context).copyWith(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                         color: HexColor.fromHex("#505050")),
@@ -231,7 +231,7 @@ class GroupSuggestItem extends StatelessWidget {
                       group.name,
                       maxLines: 2,
                       textAlign: TextAlign.center,
-                      style: roboto().copyWith(
+                      style: roboto(context).copyWith(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
                           color: HexColor.fromHex("#505050")),
@@ -460,7 +460,7 @@ class PageSuggestItem extends StatelessWidget {
                   ),
                   Text(
                     page.name,
-                    style: roboto().copyWith(
+                    style: roboto(context).copyWith(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                         color: HexColor.fromHex("#505050")),

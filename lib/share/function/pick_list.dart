@@ -22,61 +22,68 @@ void pickList(BuildContext context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ConstrainedBox(
-              constraints:
-                  BoxConstraints(maxHeight: deviceHeight(context) * 0.75),
-              child: SingleChildScrollView(
-                child: SafeArea(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: ptPrimaryColorLight(context),
-                        borderRadius: BorderRadius.circular(4)),
-                    width: deviceWidth(context) - 30,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(20).copyWith(bottom: 10),
-                          child: Text(title ?? 'Chọn', style: ptTitle()),
-                        ),
-                        ...options?.map(
-                          (e) => InkWell(
-                            onTap: () {
-                              navigatorKey.currentState.maybePop(e.value);
-                              onPicked(e.value);
-                            },
-                            child: OptionItem(
-                              text: e.display,
-                              color: ptPrimaryColorLight(context),
+        return Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+              color: ptPrimaryColor(context)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ConstrainedBox(
+                constraints:
+                    BoxConstraints(maxHeight: deviceHeight(context) * 0.75),
+                child: SingleChildScrollView(
+                  child: SafeArea(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: ptPrimaryColor(context),
+                          borderRadius: BorderRadius.circular(4)),
+                      width: deviceWidth(context) - 30,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(20).copyWith(bottom: 10),
+                            child: Text(title ?? 'Chọn', style: ptTitle()),
+                          ),
+                          ...options?.map(
+                            (e) => InkWell(
+                              onTap: () {
+                                navigatorKey.currentState.maybePop(e.value);
+                                onPicked(e.value);
+                              },
+                              child: OptionItem(
+                                text: e.display,
+                                color: ptPrimaryColor(context),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 15),
-                      ],
+                          SizedBox(height: 15),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: ExpandBtn(
-                color: ptPrimaryColorLight(context),
-                text: 'Hủy',
-                height: 50,
-                borderRadius: 4,
-                onPress: () => navigatorKey.currentState.maybePop(),
+              SizedBox(
+                height: 12,
               ),
-            ),
-            SpacingBox(h: 4),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: ExpandBtn(
+                  color: ptPrimaryColorLight(context),
+                  text: 'Hủy',
+                  height: 50,
+                  borderRadius: 4,
+                  onPress: () => navigatorKey.currentState.maybePop(),
+                ),
+              ),
+              SpacingBox(h: 4),
+            ],
+          ),
         );
       }).then((value) => FocusScope.of(context).requestFocus(FocusNode()));
 }

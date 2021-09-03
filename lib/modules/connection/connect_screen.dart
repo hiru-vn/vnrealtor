@@ -80,7 +80,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                                 children: [
                                   Text(
                                     "${_userBloc.usersConnected.length} Kết nối",
-                                    style: roboto().copyWith(
+                                    style: roboto(context).copyWith(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w500),
                                   ),
@@ -194,7 +194,7 @@ class _FilterConnectUserState extends State<FilterConnectUser> {
                 Spacer(),
                 Text(
                   "Sắp xếp theo",
-                  style: roboto()
+                  style: roboto(context)
                       .copyWith(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 Spacer(),
@@ -208,7 +208,7 @@ class _FilterConnectUserState extends State<FilterConnectUser> {
                     width: 50,
                     child: Text(
                       "Reset",
-                      style: roboto()
+                      style: roboto(context)
                           .copyWith(fontSize: 16, fontWeight: FontWeight.w400),
                     ),
                   ),
@@ -240,7 +240,7 @@ class _FilterConnectUserState extends State<FilterConnectUser> {
                   ),
                   child: Text(
                     "Liên hệ nhiều nhất",
-                    style: roboto().copyWith(
+                    style: roboto(context).copyWith(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                         color: _filter == 1 ? Colors.white : Colors.grey),
@@ -266,7 +266,7 @@ class _FilterConnectUserState extends State<FilterConnectUser> {
                     child: Center(
                       child: Text(
                         "Điểm uy tín",
-                        style: roboto().copyWith(
+                        style: roboto(context).copyWith(
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
                             color: _filter == 2 ? Colors.white : Colors.grey),
@@ -372,7 +372,7 @@ class _UserConnectItemState extends State<UserConnectItem> {
                   children: [
                     Text(
                       "${widget.user.name}",
-                      style: roboto()
+                      style: roboto(context)
                           .copyWith(fontSize: 16, fontWeight: FontWeight.w700),
                     ),
                     SizedBox(
@@ -393,7 +393,7 @@ class _UserConnectItemState extends State<UserConnectItem> {
                 ),
                 Text(
                   "${convertRoleUser(widget.user.role)}",
-                  style: roboto()
+                  style: roboto(context)
                       .copyWith(fontSize: 16, fontWeight: FontWeight.w300),
                 ),
               ],

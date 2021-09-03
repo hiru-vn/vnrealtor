@@ -119,13 +119,9 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ptSecondaryColor(context),
-      appBar: AppBar1(
-        bgColor: ptSecondaryColor(context),
+      backgroundColor: ptBackgroundColor(context),
+      appBar: SecondAppBar(
         title: group?.name ?? '',
-        textColor: ptPrimaryColor(context),
-        centerTitle: true,
-        automaticallyImplyLeading: true,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -158,405 +154,418 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
   }
 
   Widget _buildGroupInfo() {
-    return Column(children: [
-      Stack(
-        children: [
-          SizedBox(
-            width: deviceWidth(context),
-            height: 160,
-            child: Image.network(
-              group.coverImage ?? '',
-              fit: BoxFit.cover,
-              loadingBuilder: kLoadingBuilder,
-            ),
-          ),
-          if (!group.isOwner && group.isMember)
-            Positioned(
-                bottom: 5,
-                right: 5,
-                child: GestureDetector(
-                  onTap: () async {
-                    audioCache.play('tab3.mp3');
-                    final confirm = await showConfirmDialog(
-                        context, 'Xác nhận rời nhóm này?',
-                        confirmTap: () {}, navigatorKey: navigatorKey);
-                    if (!confirm) return;
-                    final res = await _groupBloc.leaveGroup(group.id);
-                    if (res.isSuccess) {
-                      await navigatorKey.currentState.maybePop();
-                    } else {
-                      showToast(res.errMessage, context);
-                    }
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-                    decoration: BoxDecoration(
-                        color: Colors.white30,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Thoát',
-                            style: ptSmall().copyWith(color: Colors.black54)),
-                        SizedBox(width: 3),
-                        Icon(Icons.exit_to_app_rounded,
-                            size: 16, color: Colors.black54)
-                      ],
-                    ),
-                  ),
-                )),
-          if (group.isOwner || group.isAdmin)
-            Positioned(
-                top: 5,
-                right: 5,
-                child: GestureDetector(
-                  onTap: () async {
-                    audioCache.play('tab3.mp3');
-                    showSettingGroup(context, group).then((value) {
-                      if (value is GroupModel) {
-                        setState(() {
-                          group = value;
-                        });
-                      }
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-                    decoration: BoxDecoration(
-                        color: Colors.white30,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Cài đặt',
-                            style: ptSmall().copyWith(color: Colors.black54)),
-                        SizedBox(width: 3),
-                        Icon(Icons.settings, size: 16, color: Colors.black54)
-                      ],
-                    ),
-                  ),
-                ))
-        ],
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      color: ptPrimaryColor(context),
+      child: Column(children: [
+        Stack(
           children: [
-            GestureDetector(
-              onTap: () {
-                audioCache.play('tab3.mp3');
-                InfoGroupPage.navigate(group);
-              },
-              child: Row(
-                children: [
-                  Text(
-                    group.name ?? 'null',
-                    style: ptBigTitle(),
-                  ),
-                  SizedBox(width: 5),
-                  Icon(Icons.chevron_right)
-                ],
+            SizedBox(
+              width: deviceWidth(context),
+              height: 160,
+              child: Image.network(
+                group.coverImage ?? '',
+                fit: BoxFit.cover,
+                loadingBuilder: kLoadingBuilder,
               ),
             ),
-            SizedBox(height: 8),
-            Row(
-              children: [
-                SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: Image.asset('assets/icon/public.png'),
-                ),
-                SizedBox(width: 5),
-                Text(!group.privacy ? 'Công khai' : 'Nhóm kín',
-                    style: ptBigBody().copyWith(fontSize: 14.6)),
-                SizedBox(width: 20),
-                Container(
-                  height: 8,
-                  width: 8,
-                  decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: Colors.cyan),
-                ),
-                SizedBox(width: 5),
-                Text('${group.countMember} thành viên',
-                    style: ptBigBody().copyWith(fontSize: 14.6)),
-                Spacer(),
-                GestureDetector(
-                  onTap: () async {
-                    audioCache.play('tab3.mp3');
-                    showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
-                        return TagUserListPage('Mời bạn bè vào nhóm');
-                      },
-                      backgroundColor: Colors.transparent,
-                    ).then((user) {
-                      if (user != null)
-                        _inviteUsers((user as List<UserModel>)
-                            .map<String>((e) => e.id)
-                            .toList());
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                    decoration: BoxDecoration(
-                        color: ptPrimaryColor(context),
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Mời',
-                            style: ptSmall().copyWith(color: Colors.white)),
-                        Icon(Icons.add, size: 16, color: Colors.white)
-                      ],
+            if (!group.isOwner && group.isMember)
+              Positioned(
+                  bottom: 5,
+                  right: 5,
+                  child: GestureDetector(
+                    onTap: () async {
+                      audioCache.play('tab3.mp3');
+                      final confirm = await showConfirmDialog(
+                          context, 'Xác nhận rời nhóm này?',
+                          confirmTap: () {}, navigatorKey: navigatorKey);
+                      if (!confirm) return;
+                      final res = await _groupBloc.leaveGroup(group.id);
+                      if (res.isSuccess) {
+                        await navigatorKey.currentState.maybePop();
+                      } else {
+                        showToast(res.errMessage, context);
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                      decoration: BoxDecoration(
+                          color: ptPrimaryColor(context),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Thoát', style: ptSmall()),
+                          SizedBox(width: 3),
+                          Icon(
+                            Icons.exit_to_app_rounded,
+                            size: 16,
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: 12),
-            if (group.pendingMemberIds.contains(AuthBloc.instance.userModel.id))
-              ExpandBtn(
-                  color: Colors.white,
-                  textColor: Colors.white,
-                  text: 'Đang chờ duyệt yêu cầu',
-                  onPress: () {},
-                  borderRadius: 5)
-            else if (!group.isMember && !group.isOwner)
-              ExpandBtn(
-                  text: 'Tham gia',
-                  isLoading: isLoadingBtn,
-                  onPress: () async {
-                    setState(() {
-                      isLoadingBtn = true;
-                    });
-                    final res = await _groupBloc.joinGroup(group.id);
-                    setState(() {
-                      isLoadingBtn = false;
-                    });
-                    if (res.isSuccess) {
-                      setState(() {
-                        group = res.data;
+                  )),
+            if (group.isOwner || group.isAdmin)
+              Positioned(
+                  top: 5,
+                  right: 5,
+                  child: GestureDetector(
+                    onTap: () async {
+                      audioCache.play('tab3.mp3');
+                      showSettingGroup(context, group).then((value) {
+                        if (value is GroupModel) {
+                          setState(() {
+                            group = value;
+                          });
+                        }
                       });
-                    } else {
-                      showToast(res.errMessage, context);
-                    }
-                  },
-                  borderRadius: 5)
-            else
-              ExpandBtn(
-                  text: 'Đăng bài',
-                  onPress: () {
-                    GroupCreatePostPage.navigate(group);
-                  },
-                  borderRadius: 5)
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                      decoration: BoxDecoration(
+                          color: ptPrimaryColor(context),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Cài đặt',
+                              style: ptSmall().copyWith(color: Colors.black54)),
+                          SizedBox(width: 3),
+                          Icon(Icons.settings, size: 16, color: Colors.black54)
+                        ],
+                      ),
+                    ),
+                  ))
           ],
         ),
-      ),
-      Container(
-        color: Colors.white,
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Quản trị viên', style: ptBigBody().copyWith(fontSize: 14.6)),
-            SizedBox(height: 2),
-            Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(11),
-                  child: SizedBox(
-                    height: 22,
-                    width: 22,
-                    child: group.owner.avatar != null
-                        ? Image.network(
-                            group.owner.avatar,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Image.asset('assets/image/default_avatar.png'),
-                          )
-                        : Image.asset('assets/image/default_avatar.png'),
-                  ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  audioCache.play('tab3.mp3');
+                  InfoGroupPage.navigate(group);
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      group.name ?? 'null',
+                      style: ptBigTitle(),
+                    ),
+                    SizedBox(width: 5),
+                    Icon(Icons.chevron_right)
+                  ],
                 ),
-                SizedBox(width: 5),
-                Text(group.owner.name),
-                Spacer(),
-                GestureDetector(
-                    onTap: () {
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: Image.asset('assets/icon/public.png'),
+                  ),
+                  SizedBox(width: 5),
+                  Text(!group.privacy ? 'Công khai' : 'Nhóm kín',
+                      style: ptBigBody().copyWith(fontSize: 14.6)),
+                  SizedBox(width: 20),
+                  Container(
+                    height: 8,
+                    width: 8,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.cyan),
+                  ),
+                  SizedBox(width: 5),
+                  Text('${group.countMember} thành viên',
+                      style: ptBigBody().copyWith(fontSize: 14.6)),
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () async {
                       audioCache.play('tab3.mp3');
-                      GroupMemberPage.navigate(widget.groupModel ?? group);
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) {
+                          return TagUserListPage('Mời bạn bè vào nhóm');
+                        },
+                        backgroundColor: Colors.transparent,
+                      ).then((user) {
+                        if (user != null)
+                          _inviteUsers((user as List<UserModel>)
+                              .map<String>((e) => e.id)
+                              .toList());
+                      });
                     },
                     child: Container(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                       decoration: BoxDecoration(
-                        color: ptSecondaryColor(context),
-                        borderRadius: BorderRadius.circular(18),
+                          color: ptPrimaryColor(context),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Mời',
+                              style: ptSmall()
+                                  .copyWith(color: ptPrimaryColor(context))),
+                          Icon(Icons.add,
+                              size: 16, color: ptPrimaryColor(context))
+                        ],
                       ),
-                      child: Text('Xem thêm', style: ptTitle()),
-                    ))
-              ],
-            )
-          ],
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 12),
+              if (group.pendingMemberIds
+                  .contains(AuthBloc.instance.userModel.id))
+                ExpandBtn(
+                    color: ptPrimaryColor(context),
+                    textColor: ptPrimaryColor(context),
+                    text: 'Đang chờ duyệt yêu cầu',
+                    onPress: () {},
+                    borderRadius: 5)
+              else if (!group.isMember && !group.isOwner)
+                ExpandBtn(
+                    text: 'Tham gia',
+                    isLoading: isLoadingBtn,
+                    onPress: () async {
+                      setState(() {
+                        isLoadingBtn = true;
+                      });
+                      final res = await _groupBloc.joinGroup(group.id);
+                      setState(() {
+                        isLoadingBtn = false;
+                      });
+                      if (res.isSuccess) {
+                        setState(() {
+                          group = res.data;
+                        });
+                      } else {
+                        showToast(res.errMessage, context);
+                      }
+                    },
+                    borderRadius: 5)
+              else
+                ExpandBtn(
+                    text: 'Đăng bài',
+                    onPress: () {
+                      GroupCreatePostPage.navigate(group);
+                    },
+                    borderRadius: 5)
+            ],
+          ),
         ),
-      ),
-      SizedBox(height: 14),
-      if (group.censor && (group.isAdmin || group.isOwner)) ...[
         Container(
-          color: Colors.white,
+          color: ptPrimaryColor(context),
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Yêu cầu tham gia nhóm',
+              Text('Quản trị viên',
                   style: ptBigBody().copyWith(fontSize: 14.6)),
               SizedBox(height: 2),
-              SizedBox(
-                height: 25,
-                child: Row(
-                  children: [
-                    group.pendingMemberIds != null &&
-                            group.pendingMemberIds.length > 0
-                        ? Text(
-                            'Có ${group.pendingMemberIds.length} yêu cầu tham gia')
-                        : Text('Không có yêu cầu tham gia mới'),
-                    SizedBox(width: 10),
-                    pendingUsers != null
-                        ? Expanded(
-                            child: Stack(
-                            fit: StackFit.expand,
-                            children: pendingUsers
-                                .map<Widget>((e) => Positioned(
-                                    height: 25,
-                                    left:
-                                        5 * pendingUsers.indexOf(e).toDouble(),
-                                    child: Center(
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.white,
-                                        radius: 9,
-                                        backgroundImage: e.avatar != null
-                                            ? CachedNetworkImageProvider(
-                                                e.avatar)
-                                            : AssetImage(
-                                                'assets/image/default_avatar.png'),
-                                      ),
-                                    )))
-                                .toList(),
-                          ))
-                        : Spacer(),
-                    GestureDetector(
-                      onTap: () async {
+              Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(11),
+                    child: SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: group.owner.avatar != null
+                          ? Image.network(
+                              group.owner.avatar,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.asset(
+                                      'assets/image/default_avatar.png'),
+                            )
+                          : Image.asset('assets/image/default_avatar.png'),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  Text(group.owner.name),
+                  Spacer(),
+                  GestureDetector(
+                      onTap: () {
                         audioCache.play('tab3.mp3');
-                        final users = await showChooseUsersPopup(
-                            context, group.pendingMemberIds, 'Yêu cầu tham gia',
-                            submitText: 'Duyệt');
-
-                        if (users.length > 0) {
-                          showWaitingDialog(context);
-                          final res = await _groupBloc.adminAcceptMem(
-                              group.id, users.map((e) => e.id).toList());
-                          closeLoading();
-                          if (res.isSuccess) {
-                            showToast(
-                                'Thêm ${users.length} thành viên mới', context,
-                                isSuccess: true);
-                            setState(() {
-                              if (res.data is GroupModel) group = res.data;
-                            });
-                          } else
-                            showToast(res.errMessage, context);
-                        }
+                        GroupMemberPage.navigate(widget.groupModel ?? group);
                       },
-                      child: Row(
-                        children: [
-                          SizedBox(width: 10),
-                          Text('Chi tiết', style: ptSmall()),
-                          Icon(Icons.chevron_right_rounded)
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: ptPrimaryColor(context),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                              width: 1, color: Theme.of(context).dividerColor),
+                        ),
+                        child: Text('Xem thêm', style: ptTitle()),
+                      ))
+                ],
               )
             ],
           ),
         ),
         SizedBox(height: 14),
-      ],
-      Container(
-        color: Colors.white,
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Mô tả', style: ptTitle()),
-            SizedBox(height: 8),
-            Text(group.description, style: ptTitle()),
-            SizedBox(height: 8),
-            SizedBox(height: 8),
-            Row(
+        if (group.censor && (group.isAdmin || group.isOwner)) ...[
+          Container(
+            color: ptPrimaryColor(context),
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text('Yêu cầu tham gia nhóm',
+                    style: ptBigBody().copyWith(fontSize: 14.6)),
+                SizedBox(height: 2),
                 SizedBox(
-                    width: 30,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: SizedBox(
-                          height: 20,
-                          child: Image.asset(!group.privacy
-                              ? 'assets/icon/public.png'
-                              : 'assets/icon/lock.png')),
-                    )),
-                Text(group.privacy ? 'Nhóm kín' : 'Công khai'),
-              ],
-            ),
-            SizedBox(height: 8),
-            Row(
-              children: [
-                SizedBox(
-                    width: 30,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: SizedBox(
-                          height: 20,
-                          child: Image.asset('assets/icon/location.png')),
-                    )),
-                Expanded(child: Text('Địa chỉ: ' + group.address)),
-              ],
-            ),
-            SizedBox(height: 12),
-            if (group.locationLat != null && group.locationLong != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: deviceWidth(context),
-                    maxHeight: deviceWidth(context) / 2,
+                  height: 25,
+                  child: Row(
+                    children: [
+                      group.pendingMemberIds != null &&
+                              group.pendingMemberIds.length > 0
+                          ? Text(
+                              'Có ${group.pendingMemberIds.length} yêu cầu tham gia')
+                          : Text('Không có yêu cầu tham gia mới'),
+                      SizedBox(width: 10),
+                      pendingUsers != null
+                          ? Expanded(
+                              child: Stack(
+                              fit: StackFit.expand,
+                              children: pendingUsers
+                                  .map<Widget>((e) => Positioned(
+                                      height: 25,
+                                      left: 5 *
+                                          pendingUsers.indexOf(e).toDouble(),
+                                      child: Center(
+                                        child: CircleAvatar(
+                                          backgroundColor:
+                                              ptPrimaryColor(context),
+                                          radius: 9,
+                                          backgroundImage: e.avatar != null
+                                              ? CachedNetworkImageProvider(
+                                                  e.avatar)
+                                              : AssetImage(
+                                                  'assets/image/default_avatar.png'),
+                                        ),
+                                      )))
+                                  .toList(),
+                            ))
+                          : Spacer(),
+                      GestureDetector(
+                        onTap: () async {
+                          audioCache.play('tab3.mp3');
+                          final users = await showChooseUsersPopup(context,
+                              group.pendingMemberIds, 'Yêu cầu tham gia',
+                              submitText: 'Duyệt');
+
+                          if (users.length > 0) {
+                            showWaitingDialog(context);
+                            final res = await _groupBloc.adminAcceptMem(
+                                group.id, users.map((e) => e.id).toList());
+                            closeLoading();
+                            if (res.isSuccess) {
+                              showToast('Thêm ${users.length} thành viên mới',
+                                  context,
+                                  isSuccess: true);
+                              setState(() {
+                                if (res.data is GroupModel) group = res.data;
+                              });
+                            } else
+                              showToast(res.errMessage, context);
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            SizedBox(width: 10),
+                            Text('Chi tiết', style: ptSmall()),
+                            Icon(Icons.chevron_right_rounded)
+                          ],
+                        ),
+                      )
+                    ],
                   ),
-                  child: GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(group.locationLat, group.locationLong),
-                      zoom: 16,
+                )
+              ],
+            ),
+          ),
+          SizedBox(height: 14),
+        ],
+        Container(
+          color: ptPrimaryColor(context),
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Mô tả', style: ptTitle()),
+              SizedBox(height: 8),
+              Text(group.description, style: ptTitle()),
+              SizedBox(height: 8),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  SizedBox(
+                      width: 30,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: SizedBox(
+                            height: 20,
+                            child: Image.asset(!group.privacy
+                                ? 'assets/icon/public.png'
+                                : 'assets/icon/lock.png')),
+                      )),
+                  Text(group.privacy ? 'Nhóm kín' : 'Công khai'),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  SizedBox(
+                      width: 30,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: SizedBox(
+                            height: 20,
+                            child: Image.asset('assets/icon/location.png')),
+                      )),
+                  Expanded(child: Text('Địa chỉ: ' + group.address)),
+                ],
+              ),
+              SizedBox(height: 12),
+              if (group.locationLat != null && group.locationLong != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: deviceWidth(context),
+                      maxHeight: deviceWidth(context) / 2,
                     ),
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    markers: {
-                      Marker(
-                          markerId: MarkerId('1'),
-                          position:
-                              LatLng(group.locationLat, group.locationLong))
-                    },
-                    onTap: (location) {},
+                    child: GoogleMap(
+                      mapType: MapType.normal,
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(group.locationLat, group.locationLong),
+                        zoom: 16,
+                      ),
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller.complete(controller);
+                      },
+                      markers: {
+                        Marker(
+                            markerId: MarkerId('1'),
+                            position:
+                                LatLng(group.locationLat, group.locationLong))
+                      },
+                      onTap: (location) {},
+                    ),
                   ),
                 ),
-              ),
-          ],
-        ),
-      )
-    ]);
+            ],
+          ),
+        )
+      ]),
+    );
   }
 
   Widget _buildGroupSkeleton() {

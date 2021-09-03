@@ -16,9 +16,8 @@ class _PolicyPageState extends State<PolicyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar1(
+      appBar: SecondAppBar(
         title: 'Về ứng dụng Datcao',
-        automaticallyImplyLeading: true,
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -36,7 +35,7 @@ class _PolicyPageState extends State<PolicyPage> {
           ),
           if (isLoading)
             Container(
-              color: Colors.white,
+              color: ptPrimaryColor(context),
               child: Center(
                 child: kLoadingSpinner,
               ),

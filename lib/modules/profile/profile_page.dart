@@ -360,7 +360,10 @@ class _ProfileCardState extends State<ProfileCard> {
                     SizedBox(
                         height: 13,
                         width: 13,
-                        child: Image.asset('assets/image/ip.png')),
+                        child: Image.asset(
+                          'assets/image/ip.png',
+                          color: ptMainColor(),
+                        )),
                     Spacer(),
                     if (widget.user.facebookUrl != null)
                       FutureBuilder(
@@ -408,7 +411,7 @@ class _ProfileCardState extends State<ProfileCard> {
                         child: SizedBox(
                             width: 23,
                             height: 23,
-                            child: Image.asset('assets/image/logo.png')),
+                            child: Image.asset('assets/image/logo_datcao.png')),
                       ),
                   ],
                 ),

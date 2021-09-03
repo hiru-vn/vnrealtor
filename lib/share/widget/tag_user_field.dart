@@ -78,7 +78,8 @@ class _TagUserFieldState extends State<TagUserField> {
                 .where((s) => ('@' + s.name).toLowerCase().contains(str))
                 .map((e) => KeepKeyboardPopupMenuItem(
                     child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         setState(() {
                           widget.controller
                               .text = widget.controller.text.substring(0,
@@ -128,10 +129,11 @@ class _TagUserFieldState extends State<TagUserField> {
             focusNode: widget.focusNode,
             controller: widget.controller,
             onSubmitted: widget.onSubmitted,
+            cursorColor: ptMainColor(),
             maxLines: null,
             decoration: widget.decoration,
             style: TextStyle(
-              color: Colors.black,
+              color: ptSecondaryColor(context),
             ),
             onChanged: (val) {
               setState(() {

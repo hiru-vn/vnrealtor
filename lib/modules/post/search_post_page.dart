@@ -152,12 +152,12 @@ class _SearchPostPageState extends State<SearchPostPage>
           resizeToAvoidBottomPadding: false,
           appBar: AppBar(
             elevation: 0,
-            backgroundColor: ptPrimaryColorLight(context),
+            backgroundColor: ptPrimaryColor(context),
             titleSpacing: 3,
             title: Container(
               height: 44,
               decoration: BoxDecoration(
-                  color: HexColor('#f2f9fc'),
+                  color: ptPrimaryColorLight(context),
                   borderRadius: BorderRadius.circular(25)),
               child: Row(children: [
                 SizedBox(
@@ -205,7 +205,6 @@ class _SearchPostPageState extends State<SearchPostPage>
                 indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
                 controller: _tabController,
                 isScrollable: true,
-                labelColor: Colors.black87,
                 unselectedLabelStyle:
                     TextStyle(fontSize: 14.5, color: Colors.black54),
                 labelStyle: TextStyle(

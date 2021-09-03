@@ -20,23 +20,23 @@ class PagesCreate {
 
   PagesCreate(
       {this.id,
-        this.name,
-        this.description,
-        this.avartar,
-        this.coverImage,
-        this.followerIds,
-        this.categoryIds,
-        this.ownerId,
-        this.phone,
-        this.address,
-        this.website,
-        this.followers,
-        this.owner,
-        this.category,
-        this.createdAt,
-        this.isOwner,
-        this.isNoty,
-        this.updatedAt});
+      this.name,
+      this.description,
+      this.avartar,
+      this.coverImage,
+      this.followerIds,
+      this.categoryIds,
+      this.ownerId,
+      this.phone,
+      this.address,
+      this.website,
+      this.followers,
+      this.owner,
+      this.category,
+      this.createdAt,
+      this.isOwner,
+      this.isNoty,
+      this.updatedAt});
 
   PagesCreate.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -55,7 +55,9 @@ class PagesCreate {
     if (json['followers'] != null) {
       followers = new List<Followers>();
       json['followers'].forEach((v) {
-        followers.add(new Followers.fromJson(v));
+        if (v != null) {
+          followers.add(new Followers.fromJson(v));
+        }
       });
     }
     owner = json['owner'] != null ? new Owner.fromJson(json['owner']) : null;
