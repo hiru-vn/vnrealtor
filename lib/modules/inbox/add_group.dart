@@ -135,7 +135,7 @@ class _AddGroupState extends State<AddGroup> {
                   decoration: InputDecoration(
                       hintText: hint.isEmpty ? 'Tên nhóm chat' : hint,
                       border: InputBorder.none,
-                      hintStyle: ptBody().copyWith(color: Colors.black38)),
+                      hintStyle: ptBody()),
                 ),
               )
             ],
@@ -153,7 +153,7 @@ class _AddGroupState extends State<AddGroup> {
                   decoration: InputDecoration(
                       hintText: 'Tìm kiếm tên',
                       border: InputBorder.none,
-                      hintStyle: ptBody().copyWith(color: Colors.black38)),
+                      hintStyle: ptBody()),
                 ),
               )
             ],

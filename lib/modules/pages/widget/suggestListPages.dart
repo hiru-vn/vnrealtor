@@ -1,5 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/connection/widgets/suggest_items.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/pages/page_detail.dart';
@@ -35,7 +36,7 @@ class _SuggestListPagesState extends State<SuggestListPages> {
     return widget.suggest.length > 0
         ? Container(
             width: deviceWidth(context),
-            color: Colors.white,
+            color: ptPrimaryColor(context),
             padding: const EdgeInsets.only(top: 15, bottom: 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +46,7 @@ class _SuggestListPagesState extends State<SuggestListPages> {
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: Text(
                     'Gợi ý trang cho bạn',
-                    style: ptBigTitle().copyWith(color: Colors.black),
+                    style: ptBigTitle(),
                   ),
                 ),
                 if (AuthBloc.firstLogin) ...[
@@ -64,12 +65,13 @@ class _SuggestListPagesState extends State<SuggestListPages> {
                   height: 12,
                 ),
                 Container(
-                  height: 175,
+                  height: 230,
                   child: ListView.separated(
                       padding: EdgeInsets.only(right: 20, left: 15),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return PageItem(widget.suggest[index], pagesBloc);
+                        return PageSuggestItem(
+                            page: widget.suggest[index], pagesBloc: pagesBloc);
                       },
                       separatorBuilder: (context, index) => SizedBox(
                             width: 10,

@@ -107,9 +107,10 @@ class _ChooseUsersPageState extends State<ChooseUsersPage> {
                       search = val;
                     }),
                     decoration: InputDecoration(
-                        hintText: 'Tìm kiếm tên',
-                        border: InputBorder.none,
-                        hintStyle: ptBody().copyWith(color: Colors.black38)),
+                      hintText: 'Tìm kiếm tên',
+                      border: InputBorder.none,
+                      hintStyle: ptBody(),
+                    ),
                   ),
                 )
               ],

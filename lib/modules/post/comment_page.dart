@@ -768,7 +768,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
                               color: _isLike
-                                  ? ptMainColor()
+                                  ? ptMainColor(context)
                                   : ptSecondaryColor(context),
                             ),
                           ),

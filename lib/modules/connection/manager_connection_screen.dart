@@ -2,8 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/connection/connect_screen.dart';
+import 'package:datcao/modules/connection/group_connect_screen.dart';
 import 'package:datcao/modules/connection/list_following_screen.dart';
 import 'package:datcao/modules/connection/widgets/connection_item.dart';
+import 'package:datcao/modules/pages/pages/pages_page.dart';
 import 'package:datcao/share/import.dart';
 
 class ManagerConnectionScreen extends StatefulWidget {
@@ -97,6 +99,7 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                   height: 1,
                 ),
                 ConnectionItem(
+                  onTap: () => GroupConnectScreen.navigate(),
                   preIcon: Image.asset(
                     "assets/image/group_icon.png",
                     width: 30,
@@ -110,6 +113,7 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                   height: 1,
                 ),
                 ConnectionItem(
+                  onTap: () => PagesPage.navigate(),
                   preIcon: Image.asset(
                     "assets/image/flag_icon.png",
                     width: 30,
@@ -123,13 +127,14 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                   height: 1,
                 ),
                 ConnectionItem(
+                  onTap: () => showUndoneFeature(context, ["HashTag"]),
                   preIcon: Image.asset(
                     "assets/image/hastag_icon.png",
                     width: 30,
                     height: 30,
                   ),
-                  text: "Hastag",
-                  subIcon: Text("212"),
+                  text: "Hashtag",
+                  subIcon: Text("0"),
                 ),
               ],
             ),

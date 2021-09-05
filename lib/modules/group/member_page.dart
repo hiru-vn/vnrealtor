@@ -115,7 +115,8 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
       ),
       body: RefreshIndicator(
           color: ptPrimaryColor(context),
-          onRefresh: () async {audioCache.play('tab3.mp3');
+          onRefresh: () async {
+            audioCache.play('tab3.mp3');
             return;
           },
           child: SingleChildScrollView(
@@ -136,8 +137,7 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                           decoration: InputDecoration(
                               hintText: 'Tìm kiếm tên',
                               border: InputBorder.none,
-                              hintStyle:
-                                  ptBody().copyWith(color: Colors.black38)),
+                              hintStyle: ptBody()),
                         ),
                       ),
                     ],
@@ -440,7 +440,8 @@ class MemberWidget extends StatelessWidget {
                 !_authBloc.userModel.followingIds.contains(user.id) &&
                 user.id != AuthBloc.instance.userModel.id)
               GestureDetector(
-                onTap: () {audioCache.play('tab3.mp3');
+                onTap: () {
+                  audioCache.play('tab3.mp3');
                   _authBloc.userModel.followingIds.add(user.id);
                   user.followerIds.add(_authBloc.userModel.id);
                   _userBloc.followUser(user.id);

@@ -134,8 +134,7 @@ class _InfoPostPageState extends State<InfoPostPage> {
                             suffixStyle:
                                 ptBody().copyWith(color: Colors.black87),
                             border: InputBorder.none,
-                            hintStyle:
-                                ptBody().copyWith(color: Colors.black38)),
+                            hintStyle: ptBody()),
                       ),
                     ),
                     SizedBox(width: 20)
@@ -168,8 +167,7 @@ class _InfoPostPageState extends State<InfoPostPage> {
                             suffixStyle:
                                 ptBody().copyWith(color: Colors.black87),
                             border: InputBorder.none,
-                            hintStyle:
-                                ptBody().copyWith(color: Colors.black38)),
+                            hintStyle: ptBody()),
                       ),
                     ),
                     SizedBox(width: 15)
@@ -200,7 +198,7 @@ class _InfoPostPageState extends State<InfoPostPage> {
       behavior: HitTestBehavior.translucent,
       onTap: () {
         onTap(value);
-      audioCache.play('tab3.mp3');
+        audioCache.play('tab3.mp3');
       },
       child: Container(
         height: 44,

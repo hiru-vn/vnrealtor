@@ -39,7 +39,7 @@ class ExpandBtn extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [ptMainColor(), ptSecondColor()],
+                colors: [ptMainColor(context), ptSecondColor()],
               ),
               borderRadius: BorderRadius.circular(10)),
           child: isLoading
@@ -47,8 +47,8 @@ class ExpandBtn extends StatelessWidget {
               : Center(
                   child: Text(
                     text,
-                    style:
-                        ptButton().copyWith(color: textColor ?? Colors.white),
+                    style: ptButton()
+                        .copyWith(color: textColor ?? ptPrimaryColor(context)),
                   ),
                 ),
         ),

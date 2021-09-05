@@ -41,7 +41,7 @@ class _RegisterPageState extends State<RegisterPage>
         title: Center(
             child: Text(
           "ĐĂNG KÝ",
-          style: roboto_18_700().copyWith(color: ptMainColor()),
+          style: roboto_18_700().copyWith(color: ptMainColor(context)),
         )),
         brightness: ptBrightness(context),
         backgroundColor: ptPrimaryColor(context),

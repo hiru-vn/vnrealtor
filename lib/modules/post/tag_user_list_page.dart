@@ -107,7 +107,7 @@ class _TagUserListPageState extends State<TagUserListPage> {
                     decoration: InputDecoration(
                         hintText: 'Tìm kiếm tên',
                         border: InputBorder.none,
-                        hintStyle: ptBody().copyWith(color: Colors.black38)),
+                        hintStyle: ptBody()),
                   ),
                 )
               ],

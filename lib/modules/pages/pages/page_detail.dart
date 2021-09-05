@@ -172,24 +172,10 @@ class _PageDetailState extends State<PageDetail> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar1(
-        bgColor: ptSecondaryColor(context),
+      appBar: SecondAppBar(
         title: _pagesBloc.pageDetail != null
             ? _pagesBloc.pageDetail.name
             : "Trang",
-        textColor: AppColors.mainColor,
-        centerTitle: true,
-        automaticallyImplyLeading: true,
-        leading: new IconButton(
-          icon: new Icon(Icons.arrow_back),
-          onPressed: () async {
-            if (_isParamPageCreate) {
-              await popUntilStep(2);
-            } else {
-              await popScreen();
-            }
-          },
-        ),
       ),
       body: Container(
         height: deviceHeight(context),
@@ -238,7 +224,7 @@ class _PageDetailState extends State<PageDetail> {
               ? _buildBanner()
               : Container(
                   height: deviceWidth(context) / 2,
-                  color: ptSecondaryColor(context),
+                  color: ptPrimaryColor(context),
                   child: Center(
                     child: ActivityIndicator(),
                   ),
@@ -269,14 +255,14 @@ class _PageDetailState extends State<PageDetail> {
           ),
           placeholder: (context, url) => Container(
             height: deviceWidth(context) / 2,
-            color: ptSecondaryColor(context),
+            color: ptPrimaryColor(context),
             child: Center(
               child: ActivityIndicator(),
             ),
           ),
           errorWidget: (context, url, error) => Container(
             height: deviceWidth(context) / 2,
-            color: ptSecondaryColor(context),
+            color: ptPrimaryColor(context),
             child: Center(
               child: Icon(
                 Icons.error,
@@ -289,7 +275,7 @@ class _PageDetailState extends State<PageDetail> {
 
   Widget _buildHeader() => Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ptPrimaryColor(context),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         child: Column(
@@ -325,7 +311,7 @@ class _PageDetailState extends State<PageDetail> {
                   height: 50.0,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
-                    color: ptSecondaryColor(context),
+                    color: ptPrimaryColor(context),
                   ),
                   child: Center(
                     child: ActivityIndicator(),
@@ -358,7 +344,7 @@ class _PageDetailState extends State<PageDetail> {
                       height: 50.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(100),
-                        color: ptSecondaryColor(context),
+                        color: ptPrimaryColor(context),
                       ),
                       child: Center(
                         child: ActivityIndicator(),
@@ -369,7 +355,7 @@ class _PageDetailState extends State<PageDetail> {
                       height: 50.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(100),
-                        color: ptSecondaryColor(context),
+                        color: ptPrimaryColor(context),
                       ),
                       child: Center(
                         child: Icon(
@@ -389,7 +375,7 @@ class _PageDetailState extends State<PageDetail> {
                 children: [
                   Text(
                     _pagesBloc.pageDetail.name,
-                    style: ptTitle().copyWith(fontWeight: FontWeight.w900),
+                    style: ptTitle(),
                   ),
                   SizedBox(width: 8),
                 ],
@@ -397,15 +383,15 @@ class _PageDetailState extends State<PageDetail> {
               SizedBox(height: 3),
               Text(
                 _pagesBloc.pageDetail.category[0].name,
-                style: ptSmall().copyWith(color: ptPrimaryColor(context)),
+                style: ptSmall(),
               )
             ],
           )
         ],
       );
 
-  Widget _itemButtonFollow() => GestureDetector(
-        onTap: () async {
+  Widget _itemButtonFollow() => ExpandBtn(
+        onPress: () async {
           audioCache.play('tab3.mp3');
           if (_pagesBloc.isFollowed) {
             _pagesBloc.isFollowPageLoading = true;
@@ -434,23 +420,7 @@ class _PageDetailState extends State<PageDetail> {
           }
           await _pagesBloc.suggestFollow();
         },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
-          decoration: BoxDecoration(
-            color: AppColors.buttonPrimaryColor,
-            borderRadius: BorderRadius.circular(7),
-          ),
-          child: _pagesBloc.isFollowPageLoading
-              ? SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: ActivityIndicator(),
-                )
-              : Text(
-                  _pagesBloc.isFollowed ? "Bỏ theo dõi" : "Theo dõi",
-                  style: ptButton(),
-                ),
-        ),
+        text: _pagesBloc.isFollowed ? "Bỏ theo dõi" : "Theo dõi",
       );
 
   Widget _buildContainerButtonsToolCreatePost(PagesCreate page) => Container(
@@ -576,7 +546,7 @@ class _PageDetailState extends State<PageDetail> {
               height: 45,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(7),
-                color: AppColors.backgroundLightColor,
+                color: ptPrimaryColorLight(context),
               ),
             ),
             Container(
@@ -584,7 +554,7 @@ class _PageDetailState extends State<PageDetail> {
               height: 25,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(7),
-                color: AppColors.backgroundLightColor,
+                color: ptPrimaryColorLight(context),
               ),
               child: _pagesBloc.isReciveNotiPageLoading
                   ? CircularProgressIndicator(
@@ -594,7 +564,7 @@ class _PageDetailState extends State<PageDetail> {
                       _pagesBloc.isReceiveNotified
                           ? AppImages.icBellActivePage
                           : AppImages.icBellPage,
-                      color: AppColors.mainColor,
+                      color: Theme.of(context).cursorColor,
                       semanticsLabel: 'Notify',
                       fit: BoxFit.contain,
                     ),
@@ -607,7 +577,7 @@ class _PageDetailState extends State<PageDetail> {
         margin: const EdgeInsets.only(top: 10),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ptPrimaryColor(context),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

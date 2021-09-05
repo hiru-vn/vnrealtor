@@ -1,4 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/connection/widgets/list_suggest_item.dart';
+import 'package:datcao/modules/connection/widgets/suggest_items.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/pages/page_detail.dart';
 import 'package:datcao/modules/pages/widget/own_page_loading.dart';
@@ -74,16 +76,19 @@ class _PagesPageState extends State<PagesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar1(
-          bgColor: ptSecondaryColor(context),
+        appBar: SecondAppBar(
           title: 'Trang',
-          textColor: AppColors.mainColor,
-          centerTitle: true,
-          automaticallyImplyLeading: true,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add_circle_outline),
+              onPressed: () => CreatePagePage.navigate(),
+            )
+          ],
         ),
         body: RefreshIndicator(
           color: ptPrimaryColor(context),
-          onRefresh: () async {audioCache.play('tab3.mp3');
+          onRefresh: () async {
+            audioCache.play('tab3.mp3');
             if (AuthBloc.instance.userModel.role == 'COMPANY') {
               _fetchDataCompany();
             } else {
@@ -108,10 +113,7 @@ class _PagesPageState extends State<PagesPage> {
                             ? SuggestListPages(
                                 suggest: _pagesBloc.suggestFollowPage)
                             : const SizedBox(),
-                        if (AuthBloc.instance.userModel.role == 'COMPANY')
-                          _buildHeader(),
-                        if (AuthBloc.instance.userModel.role == 'COMPANY')
-                          _buildSectionOwnPage(),
+                        _buildSectionOwnPage(),
                         _buildPageBodySection(
                             'Trang đã theo dõi', AppImages.icPageFollow),
                         _buildSectionPageFollow(),
@@ -140,7 +142,7 @@ class _PagesPageState extends State<PagesPage> {
         margin: const EdgeInsets.symmetric(horizontal: 17),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
+          color: ptPrimaryColor(context),
           boxShadow: [
             BoxShadow(
               spreadRadius: 40,
@@ -172,7 +174,7 @@ class _PagesPageState extends State<PagesPage> {
             margin: const EdgeInsets.symmetric(horizontal: 17),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
+              color: ptPrimaryColor(context),
               boxShadow: [
                 BoxShadow(
                   spreadRadius: 40,
@@ -190,39 +192,13 @@ class _PagesPageState extends State<PagesPage> {
   }
 
   Widget _buildListPageFollow() {
-    List<Widget> _listWidget = [];
-    _pagesBloc.listPageFollow.forEach(
-      (page) => _listWidget.add(
-        _itemBodySectionPageFollow(
-          page.avartar,
-          page.name,
-          2,
-          _pagesBloc.listPageFollow.last == page ? true : false,
-          () => PageDetail.navigate(page),
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListPageConnection(
+        pages: _pagesBloc.listPageFollow,
+        pagesBloc: _pagesBloc,
       ),
     );
-    return _listWidget.length > 0
-        ? Container(
-            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-            margin: const EdgeInsets.symmetric(horizontal: 17),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  spreadRadius: 40,
-                  blurRadius: 40.0,
-                  offset: Offset(0, 10),
-                  color: Color.fromRGBO(0, 0, 0, 0.03),
-                )
-              ],
-            ),
-            child: Column(
-              children: _listWidget.isNotEmpty ? _listWidget : Container(),
-            ),
-          )
-        : const SizedBox();
   }
 
   Widget _buildSectionPageFollow() => Column(
@@ -230,16 +206,16 @@ class _PagesPageState extends State<PagesPage> {
         children: [_buildListPageFollow()],
       );
 
-  Widget _buildHeader() => Container(
-        color: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 31, vertical: 18),
-        child: _itemIconButtonTitle(
-          AppImages.icCreatePage,
-          'Tạo trang mới',
-          41,
-          action: () => CreatePagePage.navigate(),
-        ),
-      );
+  // Widget _buildHeader() => Container(
+  //       color: ptPrimaryColor(context),
+  //       padding: const EdgeInsets.symmetric(horizontal: 31, vertical: 18),
+  //       child: _itemIconButtonTitle(
+  //         AppImages.icCreatePage,
+  //         'Tạo trang mới',
+  //         41,
+  //         action: () => CreatePagePage.navigate(),
+  //       ),
+  //     );
 
   Widget _itemIconButtonTitle(String image, String title, double iconSize,
           {VoidCallback action}) =>

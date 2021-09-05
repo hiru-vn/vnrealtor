@@ -1,4 +1,5 @@
 import 'package:datcao/modules/bloc/group_bloc.dart';
+import 'package:datcao/modules/connection/widgets/suggest_items.dart';
 import 'package:datcao/modules/group/detail_group_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:flutter/material.dart';
@@ -36,15 +37,10 @@ class _SuggestGroupState extends State<SuggestGroup> {
             .contains(_searchC.text.trim().toLowerCase()))
         ?.toList();
     return Scaffold(
-      backgroundColor: ptSecondaryColor(context),
-      appBar: AppBar1(
-        bgColor: ptSecondaryColor(context),
+      appBar: SecondAppBar(
         title: 'Danh sách được gợi ý',
-        textColor: ptPrimaryColor(context),
-        centerTitle: true,
-        automaticallyImplyLeading: true,
       ),
-      body: Column(
+      body: ListView(
         children: [
           Padding(
             padding: const EdgeInsets.all(15),
@@ -60,8 +56,8 @@ class _SuggestGroupState extends State<SuggestGroup> {
                     isDense: true,
                     contentPadding: EdgeInsets.all(11),
                     filled: true,
-                    fillColor: Colors.white,
-                    hintStyle: ptBody().copyWith(color: Colors.black38),
+                    fillColor: ptPrimaryColorLight(context),
+                    hintStyle: ptBody(),
                     hintText: 'Tìm kiếm tên nhóm',
                     prefixIconConstraints:
                         BoxConstraints(minWidth: 40, minHeight: 25),
@@ -75,13 +71,23 @@ class _SuggestGroupState extends State<SuggestGroup> {
                 ? ListSkeleton()
                 : (_groupBloc.suggestGroup.length == 0
                     ? Text('Bạn không có danh sách gợi ý nào')
-                    : ListView.separated(
-                        itemBuilder: (context, index) {
-                          return _buildGroupItem(searchGroups[index]);
-                        },
-                        itemCount: searchGroups.length,
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: 0),
+                    : GridView.count(
+                        crossAxisCount:
+                            (MediaQuery.of(context).size.width / 200).round(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        physics: NeverScrollableScrollPhysics(),
+                        childAspectRatio: .8,
+                        children: List.generate(
+                            _groupBloc.suggestGroup == null
+                                ? 4
+                                : searchGroups.length,
+                            (index) => _groupBloc.suggestGroup == null
+                                ? SuggestItemLoading()
+                                : GroupSuggestItem(
+                                    group: searchGroups[index],
+                                    groupBloc: _groupBloc,
+                                  )),
                       )),
           )
         ],
@@ -91,7 +97,8 @@ class _SuggestGroupState extends State<SuggestGroup> {
 
   _buildGroupItem(GroupModel group) {
     return GestureDetector(
-      onTap: () {audioCache.play('tab3.mp3');
+      onTap: () {
+        audioCache.play('tab3.mp3');
         DetailGroupPage.navigate(group);
       },
       child: Container(

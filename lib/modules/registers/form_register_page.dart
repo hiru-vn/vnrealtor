@@ -285,7 +285,7 @@ class CustomInputField extends StatelessWidget {
                 child: icon),
             Expanded(
               child: TextFormField(
-                cursorColor: ptMainColor(),
+                cursorColor: ptMainColor(context),
                 obscureText: obscureText,
                 controller: controller,
                 validator: validator,

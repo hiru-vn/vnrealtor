@@ -73,32 +73,6 @@ class _ConnectionScreenState extends State<ConnectionScreen>
   //   }
   // }
 
-  void onDeleteUser(String uID) {
-    _userBloc.deleteSuggestFollow(uID);
-  }
-
-  void onFolowUser(String uID) async {
-    _userBloc.followUser(uID);
-    await _userBloc.deleteSuggestFollow(uID);
-  }
-
-  void onDeleteGroup(String id) {
-    _groupBloc.deleteSuggestGroup(id);
-  }
-
-  void onJoinGroup(String id) {
-    _groupBloc.joinGroup(id);
-  }
-
-  void onDeletePage(String id) {
-    _pagesBloc.deleteSuggestPage(id);
-  }
-
-  void onFollowPage(String id) {
-    _pagesBloc.followPage(id);
-    _pagesBloc.suggestFollow();
-  }
-
   _refresh() async {
     setState(() {
       _userBloc.suggestFollow();
@@ -208,12 +182,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                                 _userBloc.suggestFollowUsers.length > 0
                                     ? ListUserConnection(
                                         users: _userBloc.suggestFollowUsers,
-                                        onDeleteUser: (uID) {
-                                          onDeleteUser(uID);
-                                        },
-                                        onConnectUser: (id) {
-                                          onFolowUser(id);
-                                        },
+                                        userBloc: _userBloc,
                                       )
                                     : SizedBox(),
                                 SizedBox(
@@ -223,12 +192,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                                         _groupBloc.suggestGroup.length > 0
                                     ? ListGroupConnection(
                                         groups: _groupBloc.suggestGroup,
-                                        onDeleteGroup: (id) {
-                                          onDeleteGroup(id);
-                                        },
-                                        onConnectGroup: (id) {
-                                          onJoinGroup(id);
-                                        },
+                                        groupBloc: _groupBloc,
                                       )
                                     : SizedBox(),
                               ],
@@ -238,12 +202,6 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                               _pagesBloc.suggestFollowPage.length > 0)
                           ? ListPageConnection(
                               pages: _pagesBloc.suggestFollowPage,
-                              onConnectPage: (id) {
-                                onFollowPage(id);
-                              },
-                              onDeletePage: (id) {
-                                onDeletePage(id);
-                              },
                               pagesBloc: _pagesBloc,
                             )
                           : Container(

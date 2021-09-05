@@ -72,7 +72,7 @@ class _FollowPageState extends State<FollowPage>
             child: TabBar(
               indicatorSize: TabBarIndicatorSize.label,
               indicatorWeight: 3,
-              indicatorColor: ptMainColor(),
+              indicatorColor: ptMainColor(context),
               indicatorPadding: EdgeInsets.symmetric(horizontal: 10),
               controller: _tabController,
               isScrollable: true,

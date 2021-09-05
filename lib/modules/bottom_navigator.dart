@@ -79,7 +79,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                   alignment: Alignment.center,
                   child: Icon(
                     e.iconActive,
-                    // color: ptMainColor(),
+                    // color: ptMainColor(context),
                   ),
                 ),
                 // if (e.counter > 0)

@@ -426,7 +426,8 @@ buildStoryWidget(PostModel postModel) {
               height: 60,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(width: 1.5, color: ptMainColor()),
+                border:
+                    Border.all(width: 1.5, color: HexColor.fromHex("#293079")),
               ),
               child: Center(
                 child: Padding(

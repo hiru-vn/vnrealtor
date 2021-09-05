@@ -81,23 +81,17 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ptSecondaryColor(context),
-      appBar: AppBar1(
-        bgColor: ptSecondaryColor(context),
+      appBar: SecondAppBar(
         title: 'Tạo nhóm',
-        textColor: ptPrimaryColor(context),
-        automaticallyImplyLeading: true,
         actions: [
-          Center(
-            child: FlatButton(
-                color: ptPrimaryColor(context),
-                onPressed: _createGroup,
-                child: Text(
-                  'Tạo',
-                  style: ptTitle().copyWith(color: Colors.white),
-                )),
-          ),
-          SizedBox(width: 17)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ExpandBtn(
+              width: 100,
+              onPress: _createGroup,
+              text: "Tạo",
+            ),
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -121,7 +115,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       border: InputBorder.none,
                       isDense: true,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: ptPrimaryColorLight(context),
                     ),
                   ),
                 ),
@@ -149,7 +143,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       border: InputBorder.none,
                       isDense: true,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: ptPrimaryColorLight(context),
                     ),
                   ),
                 ),
@@ -167,8 +161,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                         border: InputBorder.none,
                         isDense: true,
                         filled: true,
-                        fillColor: Colors.white,
-                        hintStyle: ptSmall().copyWith(color: Colors.black38),
+                        fillColor: ptPrimaryColorLight(context),
+                        hintStyle: ptSmall(),
                         hintText:
                             'Mô tả nhóm giúp mọi người biết nhiều hơn về nhóm của bạn'),
                   ),
@@ -179,11 +173,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 GestureDetector(
                   onTap: () {
                     _pickImageCover();
-                  audioCache.play('tab3.mp3');
+                    audioCache.play('tab3.mp3');
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: ptPrimaryColorLight(context),
                         borderRadius: BorderRadius.circular(4)),
                     height: 136,
                     width: double.infinity,
@@ -195,7 +189,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                                   height: 40,
                                   width: 40,
                                   decoration: BoxDecoration(
-                                      color: ptSecondaryColor(context),
+                                      color: ptPrimaryColorLight(context),
                                       borderRadius: BorderRadius.circular(8)),
                                   child: Center(
                                     child: Icon(Icons.photo_camera_back),
@@ -220,8 +214,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       border: InputBorder.none,
                       isDense: true,
                       filled: true,
-                      fillColor: Colors.white,
-                      hintStyle: ptSmall().copyWith(color: Colors.black38),
+                      fillColor: ptPrimaryColorLight(context),
+                      hintStyle: ptSmall(),
                       hintText: 'Nhập địa điểm',
                     ),
                   ),

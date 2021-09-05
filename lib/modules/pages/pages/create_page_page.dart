@@ -27,12 +27,8 @@ class _CreatePagePageState extends State<CreatePagePage> {
     );
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      appBar: AppBar1(
-        bgColor: ptSecondaryColor(context),
+      appBar: SecondAppBar(
         title: 'Tạo Trang',
-        textColor: AppColors.mainColor,
-        centerTitle: true,
-        automaticallyImplyLeading: true,
       ),
       body: PageView(
         physics: new NeverScrollableScrollPhysics(),

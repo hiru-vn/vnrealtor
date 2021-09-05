@@ -8,19 +8,16 @@ import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/share/import.dart';
 
 class ListGroupConnection extends StatelessWidget {
-  final Function(String) onConnectGroup;
-  final Function(String) onDeleteGroup;
   final List<GroupModel> groups;
+  final GroupBloc groupBloc;
   const ListGroupConnection({
     Key key,
     this.groups,
-    this.onConnectGroup,
-    this.onDeleteGroup,
+    this.groupBloc,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _groupBloc = GroupBloc.instance;
     return Container(
       color: ptPrimaryColor(context),
       child: Column(
@@ -57,17 +54,12 @@ class ListGroupConnection extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             childAspectRatio: .8,
             children: List.generate(
-                _groupBloc.isLoadGroupSuggest ? 4 : groups.length,
-                (index) => _groupBloc.isLoadGroupSuggest
+                groupBloc.isLoadGroupSuggest ? 4 : groups.length,
+                (index) => groupBloc.isLoadGroupSuggest
                     ? SuggestItemLoading()
                     : GroupSuggestItem(
                         group: groups[index],
-                        onClose: (id) {
-                          onDeleteGroup(id);
-                        },
-                        onConnect: (id) {
-                          onConnectGroup(id);
-                        },
+                        groupBloc: groupBloc,
                       )),
           )),
           Row(
@@ -123,12 +115,6 @@ class ListPageConnection extends StatelessWidget {
                     ? SuggestItemLoading()
                     : PageSuggestItem(
                         page: pages[index],
-                        onClose: (id) {
-                          onDeletePage(id);
-                        },
-                        onConnect: (id) {
-                          onConnectPage(id);
-                        },
                         pagesBloc: pagesBloc,
                       )),
           )),
@@ -154,16 +140,15 @@ class ListPageConnection extends StatelessWidget {
 
 class ListUserConnection extends StatelessWidget {
   final List<UserModel> users;
-  final Function(String) onConnectUser;
-  final Function(String) onDeleteUser;
-  const ListUserConnection(
-      {Key key, this.users, this.onConnectUser, this.onDeleteUser})
-      : super(key: key);
+  final UserBloc userBloc;
+  const ListUserConnection({
+    Key key,
+    this.users,
+    this.userBloc,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _userBloc = UserBloc.instance;
-
     return Container(
       color: ptPrimaryColor(context),
       child: Column(
@@ -195,18 +180,12 @@ class ListUserConnection extends StatelessWidget {
           Container(
             height: 240,
             child: ListView.builder(
-              itemCount: _userBloc.isLoadingUserSuggest ? 3 : users.length,
+              itemCount: userBloc.isLoadingUserSuggest ? 3 : users.length,
               scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) => _userBloc.isLoadingUserSuggest
+              itemBuilder: (context, index) => userBloc.isLoadingUserSuggest
                   ? SuggestItemLoading()
                   : UserSuggestItem(
                       user: users[index],
-                      onClose: (uID) {
-                        onDeleteUser(uID);
-                      },
-                      onConnect: (id) {
-                        onConnectUser(id);
-                      },
                     ),
             ),
           ),

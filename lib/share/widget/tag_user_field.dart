@@ -129,7 +129,7 @@ class _TagUserFieldState extends State<TagUserField> {
             focusNode: widget.focusNode,
             controller: widget.controller,
             onSubmitted: widget.onSubmitted,
-            cursorColor: ptMainColor(),
+            cursorColor: ptMainColor(context),
             maxLines: null,
             decoration: widget.decoration,
             style: TextStyle(

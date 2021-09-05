@@ -539,7 +539,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   .toList()[index]['value']
                                   .toString(),
                               style: roboto(context)
-                                  .copyWith(color: ptMainColor()),
+                                  .copyWith(color: ptMainColor(context)),
                             ),
                           ),
                         ),

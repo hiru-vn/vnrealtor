@@ -135,7 +135,7 @@ class SecondAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: ptPrimaryColor(context),
       brightness: Theme.of(context).brightness,
       leading: leading,
-      actions: actions ?? [SizedBox(width: 30)],
+      actions: actions ?? [SizedBox(width: 60)],
       title: Center(
           child: AutoSizeText(
         title,

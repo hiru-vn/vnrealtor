@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                     height: 80,
                     decoration: BoxDecoration(
-                      color: ptMainColor(),
+                      color: ptMainColor(context),
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(15),
                       ),
@@ -142,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
         title: Center(
             child: Text(
           "ĐĂNG NHẬP",
-          style: roboto_18_700().copyWith(color: ptMainColor()),
+          style: roboto_18_700().copyWith(color: ptMainColor(context)),
         )),
         brightness: Theme.of(context).brightness,
         elevation: 0,

@@ -183,7 +183,7 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
                         isDense: true,
                         filled: true,
                         fillColor: Colors.white,
-                        hintStyle: ptSmall().copyWith(color: Colors.black38),
+                        hintStyle: ptSmall(),
                         hintText:
                             'Mô tả nhóm giúp mọi người biết nhiều hơn về nhóm của bạn'),
                   ),
@@ -236,7 +236,7 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
                       isDense: true,
                       filled: true,
                       fillColor: Colors.white,
-                      hintStyle: ptSmall().copyWith(color: Colors.black38),
+                      hintStyle: ptSmall(),
                       hintText: 'Nhập địa điểm',
                     ),
                   ),

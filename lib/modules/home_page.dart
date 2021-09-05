@@ -5,7 +5,9 @@ import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/connection/connection_screen.dart';
+import 'package:datcao/modules/group/group_page.dart';
 import 'package:datcao/modules/notification/notification_page.dart';
+import 'package:datcao/modules/pages/pages/pages_page.dart';
 import 'package:datcao/modules/post/create_post_screen.dart';
 import 'package:datcao/modules/post/post_page.dart';
 import 'package:datcao/modules/setting/setting_page.dart';
@@ -61,7 +63,7 @@ class _HomePageState extends State<HomePage>
                 CreatePostScreen(),
                 NotificationPage(),
                 SettingPage(),
-                // PagesPage()
+                PagesPage()
               ],
             ),
             extendBody: true,
@@ -77,7 +79,7 @@ class _HomePageState extends State<HomePage>
                 BottomTabModel(_authBloc.userModel?.notiCount ?? 0, 'Thông báo',
                     MdiIcons.bellOutline, MdiIcons.bell),
                 BottomTabModel(0, 'Hồ sơ', Icons.person_outline, Icons.person),
-                // BottomTabModel(0, 'Nhóm', Icons.person_outline, Icons.person),
+                BottomTabModel(0, 'Nhóm', Icons.person_outline, Icons.person),
               ],
               onSelect: (index) {
                 if (Platform.isIOS) audioCache.play('tab3.mp3');

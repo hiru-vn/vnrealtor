@@ -213,7 +213,7 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
                     decoration: InputDecoration(
                         hintText: 'Tìm kiếm tên',
                         border: InputBorder.none,
-                        hintStyle: ptBody().copyWith(color: Colors.black38)),
+                        hintStyle: ptBody()),
                   ),
                 )
               ],
@@ -232,7 +232,7 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
                     decoration: InputDecoration(
                         hintText: 'Lời nhắn',
                         border: InputBorder.none,
-                        hintStyle: ptBody().copyWith(color: Colors.black38)),
+                        hintStyle: ptBody()),
                   ),
                 )
               ],
@@ -665,7 +665,7 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
                     decoration: InputDecoration(
                         hintText: 'Tìm kiếm tên',
                         border: InputBorder.none,
-                        hintStyle: ptBody().copyWith(color: Colors.black38)),
+                        hintStyle: ptBody()),
                   ),
                 )
               ],

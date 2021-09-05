@@ -376,7 +376,7 @@ class _PostDetailState extends State<PostDetail> {
                                       child: Center(
                                           child: Icon(
                                         Icons.send,
-                                        color: ptMainColor(),
+                                        color: ptMainColor(context),
                                       )))),
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 6),

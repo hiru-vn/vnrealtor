@@ -45,8 +45,13 @@ class VerifiedIcon extends StatelessWidget {
                   width: size,
                   height: size,
                   child: isPage
-                      ? Image.asset('assets/image/ic_page.png')
-                      : Image.asset('assets/image/$image.png')),
+                      ? Image.asset(
+                          'assets/image/icon_flag.png',
+                        )
+                      : Image.asset(
+                          'assets/image/$image.png',
+                          color: ptMainColor(context),
+                        )),
             ),
           ),
         ),

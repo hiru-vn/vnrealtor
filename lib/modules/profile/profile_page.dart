@@ -362,7 +362,7 @@ class _ProfileCardState extends State<ProfileCard> {
                         width: 13,
                         child: Image.asset(
                           'assets/image/ip.png',
-                          color: ptMainColor(),
+                          color: ptMainColor(context),
                         )),
                     Spacer(),
                     if (widget.user.facebookUrl != null)

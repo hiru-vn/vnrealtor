@@ -124,7 +124,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
   Widget _itemTextField({TextEditingController controller, String hintText}) =>
       Material(
         elevation: 0,
-        color: ptSecondaryColor(context),
+        color: ptPrimaryColorLight(context),
         borderRadius: BorderRadius.circular(10),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
@@ -154,7 +154,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: ptSecondaryColor(context),
+          color: ptPrimaryColorLight(context),
           boxShadow: [
             BoxShadow(
               spreadRadius: 40,
@@ -248,20 +248,19 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
       );
 
   Widget _itemEmpty() => Container(
-        color: Colors.white,
+        color: ptPrimaryColor(context),
       );
 
   Widget _itemButton() => Padding(
         padding: const EdgeInsets.all(10),
         child: ExpandBtn(
-          elevation: 0,
-          text: 'Tiếp theo',
-          borderRadius: 5,
-          onPress: () => _nextPage(),
-          color: AppColors.buttonPrimaryColor,
-          height: 45,
-          textColor: Colors.white,
-        ),
+            elevation: 0,
+            text: 'Tiếp theo',
+            borderRadius: 5,
+            onPress: () => _nextPage(),
+            color: AppColors.buttonPrimaryColor,
+            height: 45,
+            textColor: ptPrimaryColor(context)),
       );
 
   _buildTextField(String hint, String initialValue, Function(String) onChange,

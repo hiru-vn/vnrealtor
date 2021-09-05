@@ -23,7 +23,7 @@ class ItemInfoPage extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  color: AppColors.backgroundLightColor,
+                  color: ptPrimaryColorLight(context),
                 ),
               ),
               Container(
@@ -31,7 +31,7 @@ class ItemInfoPage extends StatelessWidget {
                 height: 20,
                 child: SvgPicture.asset(
                   image,
-                  color: AppColors.mainColor,
+                  color: Theme.of(context).cursorColor,
                   semanticsLabel: image,
                   fit: BoxFit.contain,
                 ),
@@ -42,7 +42,9 @@ class ItemInfoPage extends StatelessWidget {
           title != null
               ? Text(
                   title,
-                  style: ptButton().copyWith(color: AppColors.mainColor, fontWeight: FontWeight.w400),
+                  style: ptButton().copyWith(
+                      color: Theme.of(context).cursorColor,
+                      fontWeight: FontWeight.w400),
                 )
               : const SizedBox(),
         ],

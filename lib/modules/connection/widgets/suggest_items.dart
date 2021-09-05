@@ -1,4 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/group_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/group/detail_group_page.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/user.dart';
@@ -11,15 +13,21 @@ import 'package:datcao/share/widget/loading_widgets/shimmer_widget.dart';
 import 'package:datcao/utils/role_user.dart';
 
 class UserSuggestItem extends StatelessWidget {
-  final Function(String) onConnect;
-  final Function(String) onClose;
   final UserModel user;
+  final UserBloc userBloc;
   const UserSuggestItem({
     Key key,
     this.user,
-    this.onConnect,
-    this.onClose,
+    this.userBloc,
   }) : super(key: key);
+  void onDeleteUser(String uID) {
+    userBloc.deleteSuggestFollow(uID);
+  }
+
+  void onFolowUser(String uID) async {
+    userBloc.followUser(uID);
+    await userBloc.deleteSuggestFollow(uID);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +138,7 @@ class UserSuggestItem extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    onConnect(user.id);
+                    onFolowUser(user.id);
                   },
                   child: Container(
                     width: 110,
@@ -151,7 +159,7 @@ class UserSuggestItem extends StatelessWidget {
               right: 10,
               child: GestureDetector(
                 onTap: () {
-                  onClose(user.id);
+                  onDeleteUser(user.id);
                 },
                 child: Image.asset(
                   "assets/image/close_icon.png",
@@ -167,15 +175,21 @@ class UserSuggestItem extends StatelessWidget {
 }
 
 class GroupSuggestItem extends StatelessWidget {
-  final Function(String) onConnect;
-  final Function(String) onClose;
   final GroupModel group;
+  final GroupBloc groupBloc;
   const GroupSuggestItem({
     Key key,
     this.group,
-    this.onConnect,
-    this.onClose,
+    this.groupBloc,
   }) : super(key: key);
+
+  void onDeleteGroup(String id) {
+    groupBloc.deleteSuggestGroup(id);
+  }
+
+  void onJoinGroup(String id) {
+    groupBloc.joinGroup(id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -289,7 +303,7 @@ class GroupSuggestItem extends StatelessWidget {
                             )
                           : GestureDetector(
                               onTap: () {
-                                onConnect(group.id);
+                                onJoinGroup(group.id);
                               },
                               child: Container(
                                 width: 110,
@@ -311,7 +325,7 @@ class GroupSuggestItem extends StatelessWidget {
                 right: 10,
                 child: GestureDetector(
                   onTap: () {
-                    onClose(group.id);
+                    onDeleteGroup(group.id);
                   },
                   child: Image.asset(
                     "assets/image/close_icon.png",
@@ -400,21 +414,25 @@ class SuggestItemLoading extends StatelessWidget {
 
 class PageSuggestItem extends StatelessWidget {
   final PagesBloc pagesBloc;
-  final Function(String) onConnect;
-  final Function(String) onClose;
+
   final PagesCreate page;
   const PageSuggestItem({
     Key key,
     this.page,
-    this.onConnect,
-    this.onClose,
     this.pagesBloc,
   }) : super(key: key);
+  void onDeletePage(String id) {
+    pagesBloc.deleteSuggestPage(id);
+  }
+
+  void onFollowPage(String id) {
+    pagesBloc.followPage(id);
+    pagesBloc.suggestFollow();
+  }
 
   @override
   Widget build(BuildContext context) {
     final userId = AuthBloc.instance.userModel.id;
-
     return GestureDetector(
       onTap: () => PageDetail.navigate(page),
       child: Padding(
@@ -497,7 +515,7 @@ class PageSuggestItem extends StatelessWidget {
                   page.followerIds.contains(userId)
                       ? GestureDetector(
                           onTap: () {
-                            onConnect(page.id);
+                            onFollowPage(page.id);
                           },
                           child: Container(
                             width: 110,
@@ -514,7 +532,7 @@ class PageSuggestItem extends StatelessWidget {
                         )
                       : GestureDetector(
                           onTap: () {
-                            onConnect(page.id);
+                            onFollowPage(page.id);
                           },
                           child: Container(
                             width: 110,
@@ -538,7 +556,7 @@ class PageSuggestItem extends StatelessWidget {
                 right: 10,
                 child: GestureDetector(
                   onTap: () {
-                    onClose(page.id);
+                    onDeletePage(page.id);
                   },
                   child: Image.asset(
                     "assets/image/close_icon.png",

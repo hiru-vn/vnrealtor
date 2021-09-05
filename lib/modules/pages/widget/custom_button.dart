@@ -35,7 +35,7 @@ class CustomButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(7),
           ),
-          color: color ?? AppColors.backgroundLightColor,
+          color: color ?? ptPrimaryColorLight(context),
           onPressed: callback,
           child: isLoading
               ? SizedBox(
@@ -53,11 +53,11 @@ class CustomButton extends StatelessWidget {
                         : const SizedBox(),
                     imageSvg != null
                         ? Container(
-                            width: sizeSvg??25,
-                            height: sizeSvg??25,
+                            width: sizeSvg ?? 25,
+                            height: sizeSvg ?? 25,
                             child: SvgPicture.asset(
                               imageSvg,
-                              color: AppColors.mainColor,
+                              color: Theme.of(context).cursorColor,
                               semanticsLabel: imageSvg,
                               fit: BoxFit.contain,
                             ),
@@ -67,7 +67,8 @@ class CustomButton extends StatelessWidget {
                     Text(
                       title,
                       style: style ??
-                          ptButton().copyWith(color: AppColors.mainColor),
+                          ptButton()
+                              .copyWith(color: Theme.of(context).cursorColor),
                     )
                   ],
                 )),
