@@ -38,7 +38,7 @@ class _PostDetailState extends State<PostDetail> {
   TextEditingController _commentC = TextEditingController();
   PostBloc _postBloc;
   PostModel _post;
-  StreamSubscription<FetchResult> _streamSubcription;
+  StreamSubscription<QueryResult> _streamSubcription;
   bool isReply = false;
   FocusNode _focusNodeComment = FocusNode();
   CommentModel replyComment;

@@ -18,6 +18,7 @@ class VertifyAccountPage1 extends StatefulWidget {
 class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
   VerificationBloc _verificationBloc;
   final _formKey = GlobalKey<FormState>();
+ImagePicker _picker = ImagePicker();
 
   @override
   void didChangeDependencies() {
@@ -214,7 +215,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                     permission: Permission.camera,
                     onGranted: () {
                       audioCache.play('tab3.mp3');
-                      ImagePicker.pickImage(source: ImageSource.camera)
+                      _picker.pickImage(source: ImageSource.camera)
                           .then((value) async {
                         try {
                           if (value == null) return;

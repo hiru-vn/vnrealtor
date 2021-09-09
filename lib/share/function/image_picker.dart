@@ -15,6 +15,8 @@ void imagePicker(BuildContext context,
     Function(String path) onVideoPick,
     Function(List<String>) onMultiImagePick,
     String title}) {
+        final ImagePicker _picker = ImagePicker();
+
   showModalBottomSheet(
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -52,7 +54,7 @@ void imagePicker(BuildContext context,
                           onGranted: () {
                             // close showModalBottomSheet
                             Navigator.of(context).pop();
-                            ImagePicker.pickImage(source: ImageSource.camera)
+                            _picker.pickImage(source: ImageSource.camera)
                                 .then((value) {
                               if (value == null) return;
                               onCameraPick(value.path);
@@ -148,7 +150,7 @@ void imagePicker(BuildContext context,
                             // close showModalBottomSheet
                             Navigator.of(context).pop();
 
-                            ImagePicker.pickImage(source: ImageSource.gallery)
+                            _picker.pickImage(source: ImageSource.gallery)
                                 .then((value) {
                               if (value == null) return;
                               onImagePick(value.path);
@@ -186,7 +188,7 @@ void imagePicker(BuildContext context,
                             // close showModalBottomSheet
                             Navigator.of(context).pop();
 
-                            ImagePicker.pickVideo(source: ImageSource.gallery)
+                            _picker.pickVideo(source: ImageSource.gallery)
                                 .then((value) {
                               if (value == null) return;
                               onVideoPick(value.path);

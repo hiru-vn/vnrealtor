@@ -1,67 +1,66 @@
-import 'package:datcao/modules/services/src/overlay.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/widgets.dart';
 
-/// a notification show in front of screen and shown at the top
-class TopSlideNotification extends StatelessWidget {
-  ///build notification content
-  final WidgetBuilder builder;
+// /// a notification show in front of screen and shown at the top
+// class TopSlideNotification extends StatelessWidget {
+//   ///build notification content
+//   final WidgetBuilder builder;
 
-  final double progress;
+//   final double progress;
 
-  const TopSlideNotification({Key key, @required this.builder, this.progress}) : super(key: key);
+//   const TopSlideNotification({Key key, @required this.builder, this.progress}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return FractionalTranslation(
-      translation: Offset.lerp(const Offset(0, -1), const Offset(0, 0), progress),
-      child: builder(context),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return FractionalTranslation(
+//       translation: Offset.lerp(const Offset(0, -1), const Offset(0, 0), progress),
+//       child: builder(context),
+//     );
+//   }
+// }
 
-/// a notification show in front of screen and shown at the bottom
-class BottomSlideNotification extends StatelessWidget {
-  ///build notification content
-  final WidgetBuilder builder;
+// /// a notification show in front of screen and shown at the bottom
+// class BottomSlideNotification extends StatelessWidget {
+//   ///build notification content
+//   final WidgetBuilder builder;
 
-  final double progress;
+//   final double progress;
 
-  const BottomSlideNotification({Key key, @required this.builder, this.progress}) : super(key: key);
+//   const BottomSlideNotification({Key key, @required this.builder, this.progress}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return FractionalTranslation(
-      translation: Offset.lerp(const Offset(0, 1), const Offset(0, 0), progress),
-      child: builder(context),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return FractionalTranslation(
+//       translation: Offset.lerp(const Offset(0, 1), const Offset(0, 0), progress),
+//       child: builder(context),
+//     );
+//   }
+// }
 
-///can be dismiss by left or right slide
-class SlideDismissible extends StatelessWidget {
-  final Widget child;
+// ///can be dismiss by left or right slide
+// class SlideDismissible extends StatelessWidget {
+//   final Widget child;
 
-  final bool enable;
+//   final bool enable;
 
-  const SlideDismissible({
-    @required Key key,
-    @required this.child,
-    @required this.enable,
-  }) : super(key: key);
+//   const SlideDismissible({
+//     @required Key key,
+//     @required this.child,
+//     @required this.enable,
+//   }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    if (!enable) return child;
-    return Dismissible(
-      child: child,
-      key: key,
-      onDismissed: (direction) {
-        OverlaySupportEntry.of(context, requireForDebug: this).dismiss(animate: false);
-      },
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     if (!enable) return child;
+//     return Dismissible(
+//       child: child,
+//       key: key,
+//       onDismissed: (direction) {
+//         OverlaySupportEntry.of(context, requireForDebug: this).dismiss(animate: false);
+//       },
+//     );
+//   }
+// }
 
-/// Indicates if notification is going to show at the [top] or at the [bottom].
-enum NotificationPosition { top, bottom }
+// /// Indicates if notification is going to show at the [top] or at the [bottom].
+// enum NotificationPosition { top, bottom }

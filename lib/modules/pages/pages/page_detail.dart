@@ -170,7 +170,6 @@ class _PageDetailState extends State<PageDetail> {
   Widget build(BuildContext context) {
     _pagesBloc.pagePostsScrollController = ScrollController();
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
       appBar: SecondAppBar(
         title: _pagesBloc.pageDetail != null

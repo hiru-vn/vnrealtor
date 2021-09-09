@@ -57,7 +57,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
   String _type;
   String _need;
   List<UrlPreviewData> links = [];
-
+  ImagePicker _picker = ImagePicker();
   String get pageId => widget.page.id;
   PagesCreate get page => widget.page;
 
@@ -88,28 +88,28 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
       }
 
       final res = await _pagesBloc.createPagePost(
-        pageId,
-        _contentC.text.trim(),
-        _expirationDate?.toIso8601String(),
-        _shareWith == 'public',
-        _pos?.latitude,
-        _pos?.longitude,
-        _urlMedias
-            .where((path) =>
-                FileUtil.getFbUrlFileType(path) == FileType.image ||
-                FileUtil.getFbUrlFileType(path) == FileType.gif)
-            .toList(),
-        _urlMedias
-            .where((path) => FileUtil.getFbUrlFileType(path) == FileType.video)
-            .toList(),
-        _polygonPoints,
-        _tagUsers.map((e) => e.id).toList(),
-        _type,
-        _need,
-        _area,
-        _price,
-        _shareWith == 'onlyme'
-      );
+          pageId,
+          _contentC.text.trim(),
+          _expirationDate?.toIso8601String(),
+          _shareWith == 'public',
+          _pos?.latitude,
+          _pos?.longitude,
+          _urlMedias
+              .where((path) =>
+                  FileUtil.getFbUrlFileType(path) == FileType.image ||
+                  FileUtil.getFbUrlFileType(path) == FileType.gif)
+              .toList(),
+          _urlMedias
+              .where(
+                  (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
+              .toList(),
+          _polygonPoints,
+          _tagUsers.map((e) => e.id).toList(),
+          _type,
+          _need,
+          _area,
+          _price,
+          _shareWith == 'onlyme');
       closeLoading();
       if (res.isSuccess) {
         navigatorKey.currentState.pop();
@@ -175,7 +175,8 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                           ),
                           SizedBox(width: 12),
                           GestureDetector(
-                            onTap: () {audioCache.play('tab3.mp3');
+                            onTap: () {
+                              audioCache.play('tab3.mp3');
                               pickList(context, title: 'Chia sẻ với',
                                   onPicked: (value) {
                                 setState(() {
@@ -392,7 +393,8 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                         height: 30,
                         left: 0,
                         child: GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
                             FocusScope.of(context).requestFocus(FocusNode());
                             showModalBottomSheet(
                               isScrollControlled: true,
@@ -501,7 +503,8 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                 children: [
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -536,11 +539,13 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            ImagePicker.pickImage(source: ImageSource.camera)
+                            _picker
+                                .pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {
@@ -567,7 +572,8 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       PickCoordinates.navigate(
                               polygon: _polygonPoints, position: _pos)
                           .then((value) => setState(() {
@@ -588,7 +594,8 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,

@@ -6,7 +6,7 @@ Future<File> downLoadUrlFile(String url) async {
   //comment out the next two lines to prevent the device from getting
   // the image from the web in order to prove that the picture is
   // coming from the device instead of the web.
-  var response = await get(url); // <--2
+  var response = await get(Uri.parse(url)); // <--2
   var documentDirectory = await getApplicationDocumentsDirectory();
   var firstPath = documentDirectory.path + "/images";
   var filePathAndName = documentDirectory.path + "/images/temp${getFileExtensionFromUrl(url)}";

@@ -530,7 +530,7 @@ id
     return res['getAddress'];
   }
 
-  Stream<FetchResult> subscriptionCommentByPostId(String postId) {
+  Stream<QueryResult> subscriptionCommentByPostId(String postId) {
     List<String> ids = [postId];
     final res = CommentSrv().subscription('newComment',
         'postIds: ${GraphqlHelper.listStringToGraphqlString(ids)}');

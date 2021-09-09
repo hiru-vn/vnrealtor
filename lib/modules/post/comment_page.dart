@@ -46,7 +46,7 @@ class _CommentPageState extends State<CommentPage> {
   PostBloc _postBloc;
   String sort = '{createdAt: 1}';
   ScrollController _controller;
-  StreamSubscription<FetchResult> _streamSubcription;
+  StreamSubscription<QueryResult> _streamSubcription;
   FocusNode _focusNodeComment = FocusNode();
   CommentModel replyComment;
   List<ReplyModel> localReplies = [];

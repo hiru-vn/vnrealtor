@@ -847,7 +847,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
             bottom: 0,
             child: Container(
               child: Center(
-                child: _controller.value.initialized
+                child: _controller.value.isInitialized
                     ? AspectRatio(
                         aspectRatio: _controller.value.aspectRatio,
                         child: VideoPlayer(_controller),

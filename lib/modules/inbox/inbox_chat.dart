@@ -33,7 +33,7 @@ import 'share_friend.dart';
 import 'video_call_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './import/media_group.dart';
-import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
+//import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -84,6 +84,7 @@ class _InboxChatState extends State<InboxChat> {
   bool showMedia = false;
   bool showCamera = false;
 
+ImagePicker _picker =ImagePicker();
   @override
   void didChangeDependencies() {
     if (_inboxBloc == null || _authBloc == null) {
@@ -501,12 +502,12 @@ class _InboxChatState extends State<InboxChat> {
     Widget _footerWidget = PageView(
       controller: _footerC,
       children: [
-        EmojiKeyboard(
-          height: keyboardHeight ?? 260,
-          onEmojiSelected: (Emoji emoji) {
-            _chatC.text += emoji.text;
-          },
-        ),
+        // EmojiKeyboard(
+        //   height: keyboardHeight ?? 260,
+        //   onEmojiSelected: (Emoji emoji) {
+        //     _chatC.text += emoji.text;
+        //   },
+        // ),
         MediaPickerWidget(
           onMediaPick: _onSendMedia,
         ),
@@ -952,7 +953,7 @@ class _InboxChatState extends State<InboxChat> {
                             onCustomPersionRequest(
                                 permission: Permission.camera,
                                 onGranted: () {
-                                  ImagePicker.pickImage(
+                                  _picker.pickImage(
                                           source: ImageSource.camera)
                                       .then((value) {
                                     if (value == null) return;

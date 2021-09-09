@@ -136,7 +136,7 @@ class _DetailVideoScreenState extends State<DetailVideoScreen> {
             bottom: 0,
             child: Container(
               child: Center(
-                child: _controller.value.initialized
+                child: _controller.value.isInitialized
                     ? AspectRatio(
                         aspectRatio: _controller.value.aspectRatio,
                         child: VideoPlayer(_controller),
@@ -247,7 +247,7 @@ class _DetailVideoScreenCacheState extends State<DetailVideoScreenCache> {
             bottom: 0,
             child: Container(
               child: Center(
-                child: _controller.value.initialized
+                child: _controller.value.isInitialized
                     ? AspectRatio(
                         aspectRatio: _controller.value.aspectRatio,
                         child: VideoPlayer(_controller),

@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/services/firebase_service.dart';
-import 'package:datcao/modules/services/src/overlay.dart';
 import 'package:datcao/modules/setting/connectivity.dart';
 import 'package:datcao/themes/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:sentry/sentry.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/splash.dart';
@@ -22,29 +22,31 @@ import 'package:flutter/services.dart';
 import 'share/widget/empty_widget.dart';
 import 'package:bot_toast/bot_toast.dart';
 
-final _sentry = SentryClient(
-    dsn:
-        "https://ab7fbe46a1634b98b918535d535962ea@o396604.ingest.sentry.io/5596357");
+// final _sentry = SentryClient(
+//     dsn:
+//         "https://ab7fbe46a1634b98b918535d535962ea@o396604.ingest.sentry.io/5596357");
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FbdynamicLink.initDynamicLinks();
   // CallKeep.setup();
   ConnectionStatusSingleton.getInstance().initialize();
-
-  runZonedGuarded(
-    () => SystemChrome.setPreferredOrientations(
+  runZonedGuarded(() async {
+    await Sentry.init(
+      (options) {
+        options.dsn = 'https://ab7fbe46a1634b98b918535d535962ea@o396604.ingest.sentry.io/5596357';
+      },
+    );
+     SystemChrome.setPreferredOrientations(
             [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
         .then((_) {
       runApp(MyApp());
-    }),
-    (error, stackTrace) async {
-      await _sentry.captureException(
-        exception: error,
-        stackTrace: stackTrace,
-      );
-    },
-  );
+      });
+  }, (exception, stackTrace) async {
+    await Sentry.captureException(exception, stackTrace: stackTrace);
+  });
+
 }
 
 Image splash1 = Image.asset(

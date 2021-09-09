@@ -145,7 +145,7 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
       _engine
           ?.playEffect(
               1,
-              await RtcEngineExtension.getAssetAbsolutePath(
+              await _engine.getAssetAbsolutePath(
                   "assets/Sound_Horizon.mp3"),
               -1,
               1,

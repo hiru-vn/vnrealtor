@@ -60,6 +60,8 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
   String _type;
   String _need;
   List<UrlPreviewData> links = [];
+  ImagePicker _picker = ImagePicker();
+
 
   String get groupId => widget.group.id;
   GroupModel get group => widget.group;
@@ -543,7 +545,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            ImagePicker.pickImage(source: ImageSource.camera)
+                            _picker.pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {

@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:datcao/config.dart';
+import 'package:datcao/share/function/show_toast.dart';
+import 'package:datcao/utils/spref.dart';
 import 'package:graphql/client.dart';
-import 'package:datcao/modules/authentication/auth_bloc.dart';
-import 'package:datcao/share/import.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class BaseService {
   String _module;
@@ -12,7 +14,7 @@ class BaseService {
 
   get fragmentDefault => _fragmentDefault;
 
-  BaseService({String module, String fragment}) {
+  BaseService({String module,  String fragment}) {
     print(module);
     _module = module;
     _name = capitalizeModule();
@@ -55,7 +57,7 @@ class BaseService {
     print("Query: " + listNode);
 
     final QueryOptions options = QueryOptions(
-      documentNode: gql(listNode),
+      document: gql(listNode),
     );
 
     final QueryResult result = await GraphQL.instance.client.query(options);
@@ -66,12 +68,12 @@ class BaseService {
           result.exception.graphqlErrors[0].message.toString());
       if (result.exception.graphqlErrors[0].message ==
           "Mã truy cập đã hết hạn") {
-        AuthBloc.instance.logout();
+        // AuthBloc.instance.logout();
       }
-      GraphQL.instance.client.cache.reset();
+      // //GraphQL.instance.client.cache.reset();
       throw (Exception(result.exception.graphqlErrors[0].message.toString()));
     }
-    GraphQL.instance.client.cache.reset();
+    // //GraphQL.instance.client.cache.reset();
     print("getAll$_name : ${result.data['getAll$_name']}");
     return result.data['getAll$_name'];
   }
@@ -88,7 +90,7 @@ class BaseService {
 
     print("Query: " + listNode);
     final QueryOptions options = QueryOptions(
-      documentNode: gql(listNode),
+      document: gql(listNode),
     );
 
     final QueryResult result = await GraphQL.instance.client.query(options);
@@ -98,7 +100,7 @@ class BaseService {
       throw result.exception.graphqlErrors[0].message.toString();
     }
     print("getOne$_name : ${result.data['getOne$_name']}");
-    GraphQL.instance.client.cache.reset();
+    // //GraphQL.instance.client.cache.reset();
     return result.data['getOne$_name'];
   }
 
@@ -114,7 +116,7 @@ class BaseService {
 
     print("Query: " + listNode);
     final QueryOptions options = QueryOptions(
-      documentNode: gql(listNode),
+      document: gql(listNode),
     );
 
     final QueryResult result = await GraphQL.instance.client.query(options);
@@ -124,7 +126,7 @@ class BaseService {
       throw (Exception(result.exception.graphqlErrors[0].message.toString()));
     }
     print("get$_name : ${result.data['get${_name}Info']}");
-    GraphQL.instance.client.cache.reset();
+    // //GraphQL.instance.client.cache.reset();
     return result.data['get${_name}Info'];
   }
 
@@ -138,8 +140,7 @@ class BaseService {
     final String addNode =
         'mutation { create$_name(data: {$data}) { $fragmentGetItem } }';
     print('addNode $addNode');
-    final MutationOptions optionsAdd =
-        MutationOptions(documentNode: gql(addNode));
+    final MutationOptions optionsAdd = MutationOptions(document: gql(addNode));
 
     final QueryResult result = await GraphQL.instance.client.mutate(optionsAdd);
     if (result.hasException) {
@@ -147,14 +148,14 @@ class BaseService {
       throw result.exception.graphqlErrors[0].message.toString();
     }
     print(result.data);
-    GraphQL.instance.client.cache.reset();
+    // //GraphQL.instance.client.cache.reset();
     return result.data['create$_name'];
   }
 
   Future delete(String id) async {
     final String deleteNode = 'mutation { deleteOne$_name(id: "$id") { id }}';
     final MutationOptions optionsDelete =
-        MutationOptions(documentNode: gql(deleteNode));
+        MutationOptions(document: gql(deleteNode));
     print(deleteNode);
 
     final QueryResult result =
@@ -164,7 +165,7 @@ class BaseService {
       throw result.exception.graphqlErrors[0].message.toString();
     }
 
-    GraphQL.instance.client.cache.reset();
+    //GraphQL.instance.client.cache.reset();
     print('deleteOne$_name result.data');
     return result.data;
   }
@@ -180,7 +181,7 @@ class BaseService {
         'mutation { update$_name(id: "$id", data: {$data}) {$fragmentGetItem} }';
     print(deleteNode);
     final MutationOptions optionsDelete =
-        MutationOptions(documentNode: gql(deleteNode));
+        MutationOptions(document: gql(deleteNode));
 
     final QueryResult result =
         await GraphQL.instance.client.mutate(optionsDelete);
@@ -191,7 +192,7 @@ class BaseService {
     if (result.data['update$_name'] == null) {
       throw 'Id không tồn tại';
     }
-    GraphQL.instance.client.cache.reset();
+    // //GraphQL.instance.client.cache.reset();
     print('update ${result.data['update$_name']['id']}');
 
     return result.data['update$_name'];
@@ -205,8 +206,7 @@ class BaseService {
       mutateNode = 'mutation { $name($data) { $fragment } }';
     print('MutateNode $mutateNode');
 
-    final MutationOptions options =
-        MutationOptions(documentNode: gql(mutateNode));
+    final MutationOptions options = MutationOptions(document: gql(mutateNode));
 
     final QueryResult result = await GraphQL.instance.client.mutate(options);
     if (result.hasException) {
@@ -214,7 +214,7 @@ class BaseService {
       throw (Exception(result.exception.graphqlErrors[0].message.toString()));
     }
     print(result.data);
-    GraphQL.instance.client.cache.reset();
+    // //GraphQL.instance.client.cache.reset();
     return result.data;
   }
 
@@ -232,8 +232,7 @@ class BaseService {
       queryNode = 'query { $name$dataT { $fragment } }';
     print('$queryNode');
 
-    final MutationOptions options =
-        MutationOptions(documentNode: gql(queryNode));
+    final MutationOptions options = MutationOptions(document: gql(queryNode));
 
     final QueryResult result = await GraphQL.instance.client.mutate(options);
     if (result.hasException) {
@@ -241,7 +240,7 @@ class BaseService {
       throw (Exception(result.exception.graphqlErrors[0].message.toString()));
     }
     print(result.data);
-    GraphQL.instance.client.cache.reset();
+    // //GraphQL.instance.client.cache.reset();
     return result.data;
   }
 
@@ -250,8 +249,7 @@ class BaseService {
     queryNode = 'query { $name }';
     print('$queryNode');
 
-    final MutationOptions options =
-        MutationOptions(documentNode: gql(queryNode));
+    final MutationOptions options = MutationOptions(document: gql(queryNode));
 
     final QueryResult result = await GraphQL.instance.client.mutate(options);
     if (result.hasException) {
@@ -259,11 +257,11 @@ class BaseService {
       throw (Exception(result.exception.graphqlErrors[0].message.toString()));
     }
     print(result.data);
-    GraphQL.instance.client.cache.reset();
+    //GraphQL.instance.client.cache.reset();
     return result.data;
   }
 
-  Stream<FetchResult> subscription(String name, String data,
+  Stream<QueryResult> subscription(String name, String data,
       {String fragment}) {
     String subscriptionNode;
     if (fragment == null)
@@ -272,10 +270,10 @@ class BaseService {
       subscriptionNode = 'subscription { $name($data) { $fragment } }';
     print('subscription $subscriptionNode');
 
-    final Operation operation = Operation(documentNode: gql(subscriptionNode));
+    final SubscriptionOptions operation = SubscriptionOptions(document: gql(subscriptionNode));
 
-    final Stream<FetchResult> result =
-        GraphQL.instance.socketClient.subscribe(operation);
+    final Stream<QueryResult> result =
+        GraphQL.instance.client.subscribe(operation);
     // if (result.) {
     //   print('name ${result.exception.toString()}');
     //   throw (Exception(result.exception.graphqlErrors[0].message.toString()));
@@ -288,74 +286,40 @@ class BaseService {
 }
 
 class GraphQL {
-  static final WebSocketLink _webSocketLink = WebSocketLink(
-    url: Config.wsUri,
-    config: SocketClientConfig(
-      autoReconnect: true,
-      inactivityTimeout: Duration(seconds: 30),
-      initPayload: () async {
-        final token = await SPref.instance.get('token');
-        return {'x-token': token};
-      },
-    ),
-  );
-
   static final HttpLink _httpLink = HttpLink(
-    uri: Config.httpUri,
+    Config.httpUri,
   );
 
-  static final AuthLink _authLink = AuthLink(getToken: () async {
-    final token = await SPref.instance.get('token');
-    return token;
-  });
+  static final AuthLink _authLink = AuthLink(
+      getToken: () async {
+        final token = await SPref.instance.get('token');
+        print(token);
+        return token;
+      },
+      headerKey: 'x-token');
 
   static final Link _link = _authLink.concat(_httpLink);
-  static final Link _socketLink = _authLink.concat(_webSocketLink);
 
   static GraphQLClient _client = GraphQLClient(
-    cache: InMemoryCache(),
-    link: _link,
-  );
-
-  static GraphQLClient _socketClient = GraphQLClient(
-    cache: InMemoryCache(),
-    link: _socketLink,
-  );
+      cache: GraphQLCache(),
+      link: _link,
+      defaultPolicies: DefaultPolicies(
+        watchQuery: Policies(
+          fetch: FetchPolicy.networkOnly,
+        ),
+        query: Policies(
+          fetch: FetchPolicy.networkOnly,
+        ),
+        mutate: Policies(
+          fetch: FetchPolicy.networkOnly,
+        ),
+      ));
   GraphQL._internal();
   static final GraphQL instance = GraphQL._internal();
 
   GraphQLClient get client => _client;
-  GraphQLClient get socketClient => _socketClient;
 }
 
 //Set x-token to header
 
-typedef GetToken = FutureOr<String> Function();
-
-class AuthLink extends Link {
-  AuthLink({
-    this.getToken,
-  }) : super(
-          request: (Operation operation, [NextLink forward]) {
-            StreamController<FetchResult> controller;
-
-            Future<void> onListen() async {
-              try {
-                final String token = await getToken();
-                operation.setContext(<String, Map<String, String>>{
-                  'headers': <String, String>{'x-token': token}
-                });
-              } catch (error) {
-                controller.addError(error);
-              }
-              await controller.addStream(forward(operation));
-              await controller.close();
-            }
-
-            controller = StreamController<FetchResult>(onListen: onListen);
-            return controller.stream;
-          },
-        );
-
-  GetToken getToken;
-}
+typedef GetToken = Future<String> Function();

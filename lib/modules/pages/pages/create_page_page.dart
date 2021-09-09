@@ -26,7 +26,7 @@ class _CreatePagePageState extends State<CreatePagePage> {
       initialPage: pageInit,
     );
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: SecondAppBar(
         title: 'Tạo Trang',
       ),

@@ -226,7 +226,7 @@ class InboxBloc extends ChangeNotifier {
       'long': location?.longitude,
     });
 
-    final userIds = (await getGroup(groupId).get()).data()['userIds'] as List;
+    final userIds = ((await getGroup(groupId).get()).data()as Map)['userIds'] as List;
     final waitings =
         groupInboxList.firstWhere((element) => element.id == groupId).waitingBy;
     NotificationBloc.instance.sendNotiMessage(

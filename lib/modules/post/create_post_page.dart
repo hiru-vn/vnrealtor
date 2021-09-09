@@ -44,7 +44,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   String _type;
   String _need;
   List<UrlPreviewData> links = [];
-
+ImagePicker _picker = ImagePicker();
   @override
   void didChangeDependencies() {
     if (_postBloc == null) {
@@ -544,7 +544,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            ImagePicker.pickImage(source: ImageSource.camera)
+                            _picker.pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {

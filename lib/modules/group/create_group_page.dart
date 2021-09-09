@@ -26,7 +26,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   LatLng _position;
   bool _isUpload = false;
   final _formKey = GlobalKey<FormState>();
-
+ImagePicker _picker = ImagePicker();
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
@@ -63,7 +63,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     onCustomPersionRequest(
         permission: Permission.photos,
         onGranted: () {
-          ImagePicker.pickImage(source: ImageSource.gallery)
+          _picker.pickImage(source: ImageSource.gallery)
               .then((value) async {
             if (value == null) return;
             setState(() {

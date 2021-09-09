@@ -7,8 +7,8 @@ import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/share/import.dart';
-import 'package:graphql/client.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:graphql/client.dart';
 
 class PostBloc extends ChangeNotifier {
   PostBloc._privateConstructor();
@@ -31,7 +31,7 @@ class PostBloc extends ChangeNotifier {
   List<PostModel> savePosts = [];
   List<dynamic> hasTags = [];
 
-  Stream<FetchResult> commentSubcription;
+  Stream<QueryResult> commentSubcription;
 
   Future init() async {
     getNewFeed(filter: GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
@@ -754,7 +754,7 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Stream<FetchResult> subscriptionCommentByPostId(String id) {
+  Stream<QueryResult> subscriptionCommentByPostId(String id) {
     try {
       final res = PostRepo().subscriptionCommentByPostId(id);
       commentSubcription = res;
