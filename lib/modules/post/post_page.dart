@@ -122,12 +122,9 @@ class _PostPageState extends State<PostPage> {
                           ? MediaQuery.of(context).padding.top + kToolbarHeight
                           : 0,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: CreatePostCard(
-                        postBloc: _postBloc,
-                        pageController: _postBloc.pageController,
-                      ),
+                    CreatePostCard(
+                      postBloc: _postBloc,
+                      pageController: _postBloc.pageController,
                     ),
                     if (_postBloc.isReloadFeed) PostSkeleton(),
                     // if (_postBloc.hasTags != null &&

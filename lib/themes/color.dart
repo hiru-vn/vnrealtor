@@ -17,7 +17,7 @@ Color ptLineColor(BuildContext context) => Colors.black.withOpacity(0.2);
 Color ptGreyColor(BuildContext context) => HexColor('#d1d1d1');
 Color ptDarkColor(BuildContext context) => HexColor('#21323A');
 
-Color ptMainColor(BuildContext context) => Theme.of(context).cursorColor;
+Color ptMainColor(BuildContext context) => HexColor('#293079');
 Color ptSecondColor() => HexColor('#009FFD');
 
 class HexColor extends Color {

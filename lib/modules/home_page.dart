@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage>
                 CreatePostScreen(),
                 NotificationPage(),
                 SettingPage(),
-                PagesPage()
+               // PagesPage()
               ],
             ),
             extendBody: true,
@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage>
                 BottomTabModel(_authBloc.userModel?.notiCount ?? 0, 'Thông báo',
                     MdiIcons.bellOutline, MdiIcons.bell),
                 BottomTabModel(0, 'Hồ sơ', Icons.person_outline, Icons.person),
-                BottomTabModel(0, 'Nhóm', Icons.person_outline, Icons.person),
+               // BottomTabModel(0, 'Nhóm', Icons.person_outline, Icons.person),
               ],
               onSelect: (index) {
                 if (Platform.isIOS) audioCache.play('tab3.mp3');

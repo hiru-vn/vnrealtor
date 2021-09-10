@@ -31,7 +31,7 @@ class ItemInfoPage extends StatelessWidget {
                 height: 20,
                 child: SvgPicture.asset(
                   image,
-                  color: Theme.of(context).cursorColor,
+                  color: Theme.of(context).textSelectionTheme.cursorColor,
                   semanticsLabel: image,
                   fit: BoxFit.contain,
                 ),
@@ -43,7 +43,7 @@ class ItemInfoPage extends StatelessWidget {
               ? Text(
                   title,
                   style: ptButton().copyWith(
-                      color: Theme.of(context).cursorColor,
+                      color: Theme.of(context).textSelectionTheme.cursorColor,
                       fontWeight: FontWeight.w400),
                 )
               : const SizedBox(),

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:datcao/main.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
-import 'package:datcao/modules/authentication/reset_password_dialog.dart';
 import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/modules/registers/forgot_password_page.dart';
 import 'package:datcao/modules/registers/register_page.dart';

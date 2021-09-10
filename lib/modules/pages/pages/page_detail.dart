@@ -563,7 +563,7 @@ class _PageDetailState extends State<PageDetail> {
                       _pagesBloc.isReceiveNotified
                           ? AppImages.icBellActivePage
                           : AppImages.icBellPage,
-                      color: Theme.of(context).cursorColor,
+                      color: Theme.of(context).textSelectionTheme.cursorColor,
                       semanticsLabel: 'Notify',
                       fit: BoxFit.contain,
                     ),

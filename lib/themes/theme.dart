@@ -4,7 +4,11 @@ import './color.dart';
 final lightTheme = ThemeData(
   hintColor: HexColor.fromHex("#BBBBBB"),
   primaryColor: Colors.white,
-  cursorColor: HexColor('#293079'),
+  textSelectionTheme: TextSelectionThemeData(
+    // selectionColor: Color(0xffBA379B).withOpacity(.5),
+    cursorColor: HexColor('#293079'),
+    // selectionHandleColor: Color(0xffBA379B).withOpacity(1),
+  ),
   colorScheme: ColorScheme.dark(
     brightness: Brightness.light,
     onPrimary: Colors.red,
@@ -28,9 +32,14 @@ final lightTheme = ThemeData(
 );
 
 final dartTheme = ThemeData(
-  cursorColor: Colors.white,
+  textSelectionTheme: TextSelectionThemeData(
+    // selectionColor: Color(0xffBA379B).withOpacity(.5),
+    cursorColor: Colors.white,
+    // selectionHandleColor: Color(0xffBA379B).withOpacity(1),
+  ),
   hintColor: Colors.white,
-  primaryColor: Colors.black,
+  primaryColor: HexColor.fromHex("#252525"),
+  scaffoldBackgroundColor: Colors.black,
   colorScheme: ColorScheme.dark(
     brightness: Brightness.dark,
     onPrimary: Colors.red,

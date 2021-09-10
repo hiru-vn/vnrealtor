@@ -57,7 +57,7 @@ class CustomButton extends StatelessWidget {
                             height: sizeSvg ?? 25,
                             child: SvgPicture.asset(
                               imageSvg,
-                              color: Theme.of(context).cursorColor,
+                              color: Theme.of(context).textSelectionTheme.cursorColor,
                               semanticsLabel: imageSvg,
                               fit: BoxFit.contain,
                             ),
@@ -68,7 +68,7 @@ class CustomButton extends StatelessWidget {
                       title,
                       style: style ??
                           ptButton()
-                              .copyWith(color: Theme.of(context).cursorColor),
+                              .copyWith(color: Theme.of(context).textSelectionTheme.cursorColor),
                     )
                   ],
                 )),
