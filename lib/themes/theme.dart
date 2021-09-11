@@ -5,9 +5,9 @@ final lightTheme = ThemeData(
   hintColor: HexColor.fromHex("#BBBBBB"),
   primaryColor: Colors.white,
   textSelectionTheme: TextSelectionThemeData(
-    // selectionColor: Color(0xffBA379B).withOpacity(.5),
+    selectionColor: HexColor('#293079').withOpacity(.5),
     cursorColor: HexColor('#293079'),
-    // selectionHandleColor: Color(0xffBA379B).withOpacity(1),
+    selectionHandleColor: HexColor('#293079').withOpacity(1),
   ),
   colorScheme: ColorScheme.dark(
     brightness: Brightness.light,

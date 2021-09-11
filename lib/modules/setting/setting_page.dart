@@ -146,7 +146,7 @@ class _SettingPageState extends State<SettingPage> {
               GestureDetector(
                 onTap: () => ProfilePage.navigate(),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(bottom: 8.0),
                   child: Card(
                     // color: ptPrimaryColorLight(context),
                     child: Padding(
@@ -223,7 +223,7 @@ class _SettingPageState extends State<SettingPage> {
                   ['AGENT', 'COMPANY', 'EDITOR']
                       .contains(AuthBloc.instance.userModel.role))
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(bottom: 8.0),
                   child: GestureDetector(
                     onTap: () {
                       audioCache.play('tab3.mp3');

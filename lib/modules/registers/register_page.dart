@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:datcao/main.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
-import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/modules/registers/create_account_success_page.dart';
 import 'package:datcao/modules/registers/form_register_page.dart';
 import 'package:datcao/modules/registers/input_code_page.dart';
@@ -224,43 +223,46 @@ class _ResisterByPhoneFormState extends State<ResisterByPhoneForm> {
                 color: ptBackgroundColor(context),
                 border: Border.all(color: HexColor.fromHex("#E5E5E5")),
                 borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: InternationalPhoneNumberInput(
-              onInputChanged: (PhoneNumber number) {
-                print(number.phoneNumber);
-                _initPhoneNumber = number;
-              },
-              onInputValidated: (bool value) {
-                print(value);
-                _validPhone = value;
-              },
-              validator: (value) {
-                if (value.length < 10) return "Số điện thoại không hợp lệ";
-                return null;
-              },
-              initialValue: _initPhoneNumber,
-              selectorConfig: SelectorConfig(
-                selectorType: PhoneInputSelectorType.DIALOG,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: InternationalPhoneNumberInput(
+                onInputChanged: (PhoneNumber number) {
+                  print(number.phoneNumber);
+                  _initPhoneNumber = number;
+                },
+                onInputValidated: (bool value) {
+                  print(value);
+                  _validPhone = value;
+                },
+                validator: (value) {
+                  if (value.length < 10) return "Số điện thoại không hợp lệ";
+                  return null;
+                },
+                initialValue: _initPhoneNumber,
+                selectorConfig: SelectorConfig(
+                  selectorType: PhoneInputSelectorType.DIALOG,
+                ),
+                searchBoxDecoration: InputDecoration(
+                  hintText: "Tìm kiếm",
+                ),
+                ignoreBlank: false,
+                maxLength: 11,
+                autoValidateMode: AutovalidateMode.disabled,
+                selectorTextStyle: TextStyle(
+                  color: ptAccentColor(context),
+                ),
+                formatInput: false,
+                hintText: "Số điện thoại",
+                onSubmit: () {
+                  print(_initPhoneNumber.phoneNumber);
+                },
+                keyboardType: TextInputType.numberWithOptions(
+                    signed: true, decimal: true),
+                inputBorder: InputBorder.none,
+                onSaved: (PhoneNumber number) {
+                  print('On Saved: $number');
+                },
               ),
-              searchBoxDecoration: InputDecoration(
-                hintText: "Tìm kiếm",
-              ),
-              ignoreBlank: false,
-              maxLength: 11,
-              autoValidateMode: AutovalidateMode.disabled,
-              selectorTextStyle: TextStyle(
-                color: ptAccentColor(context),
-              ),
-              formatInput: false,
-              hintText: "Số điện thoại",
-              onSubmit: () {
-                print(_initPhoneNumber.phoneNumber);
-              },
-              keyboardType:
-                  TextInputType.numberWithOptions(signed: true, decimal: true),
-              inputBorder: InputBorder.none,
-              onSaved: (PhoneNumber number) {
-                print('On Saved: $number');
-              },
             ),
           ),
           SizedBox(

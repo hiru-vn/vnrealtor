@@ -16,10 +16,12 @@ import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 enum AuthStatus {
   unAuthed,
   otpSent,
+  otpForgotSent,
   authSucces,
   authFail,
   requestOtp,
   successOtp,
+  successForgotOtp,
 }
 
 class AuthResponse {
@@ -39,6 +41,10 @@ class AuthResponse {
   factory AuthResponse.otpSent() {
     return AuthResponse(isSuccess: true, status: AuthStatus.otpSent);
   }
+
+  factory AuthResponse.otpForgotSent() {
+    return AuthResponse(isSuccess: true, status: AuthStatus.otpForgotSent);
+  }
   factory AuthResponse.unAuthed() {
     return AuthResponse(isSuccess: false, status: AuthStatus.unAuthed);
   }
@@ -47,6 +53,9 @@ class AuthResponse {
   }
   factory AuthResponse.successOtp() {
     return AuthResponse(isSuccess: true, status: AuthStatus.successOtp);
+  }
+  factory AuthResponse.successForgotOtp() {
+    return AuthResponse(isSuccess: true, status: AuthStatus.successForgotOtp);
   }
 }
 
@@ -250,7 +259,8 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
-  Future requestOtpRegister(String phone, {bool isResend = false}) async {
+  Future requestOtpRegister(String phone,
+      {bool isResend = false, isForgot = false}) async {
     try {
       final String phoneNumber =
           (phone.startsWith('+') ? "+" : "+84") + phone.toString();
@@ -273,7 +283,11 @@ class AuthBloc extends ChangeNotifier {
         },
         codeSent: (verificationId, [code]) {
           countdownStartSink.add(true);
-          authStatusSink.add(AuthResponse.otpSent());
+          if (isForgot) {
+            authStatusSink.add(AuthResponse.otpForgotSent());
+          } else {
+            authStatusSink.add(AuthResponse.otpSent());
+          }
           smsVerifyCode = verificationId;
         },
         codeAutoRetrievalTimeout: (verificationId) {
@@ -314,13 +328,18 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
-  Future submitOtpRegister(String phone, String otp) async {
+  Future submitOtpRegister(String phone, String otp,
+      {bool isForgot = false}) async {
     try {
       authCredential = PhoneAuthProvider.credential(
           verificationId: smsVerifyCode, smsCode: otp);
       final authCredentia = await _auth.signInWithCredential(authCredential);
       if (authCredentia?.user != null) {
-        authStatusSink.add(AuthResponse.successOtp());
+        if (isForgot) {
+          authStatusSink.add(AuthResponse.successForgotOtp());
+        } else {
+          authStatusSink.add(AuthResponse.successOtp());
+        }
       } else {
         authStatusSink.add(AuthResponse.fail("OTP không hợp lệ"));
       }

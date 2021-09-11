@@ -371,7 +371,7 @@ class PostBloc extends ChangeNotifier {
           price,
           onlyMe);
       feed.insert(0, PostModel.fromJson(res));
-      myPosts.insert(0, PostModel.fromJson(res));
+      // myPosts.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());

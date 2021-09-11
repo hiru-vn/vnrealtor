@@ -55,6 +55,14 @@
           }
         },
         {
+          "client_id": "259055496489-b2ri1hnvgb9bga3beohtfiq0tom4q9em.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datcao.mobile",
+            "certificate_hash": "b05e32dd789fcb323b90f7d92ff6b3c97265bf03"
+          }
+        },
+        {
           "client_id": "259055496489-qc7leopq838len75t6hmudgq41khuqnk.apps.googleusercontent.com",
           "client_type": 3
         }

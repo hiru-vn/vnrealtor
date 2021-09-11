@@ -188,7 +188,8 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                     children: <TextSpan>[
                                       TextSpan(
                                           text: 'Tôi đồng ý với các ',
-                                          style: ptBody()),
+                                          style: ptBody().copyWith(
+                                              color: ptPrimaryColor(context))),
                                       TextSpan(
                                           text: 'điều khoản và chính sách',
                                           recognizer: TapGestureRecognizer()
@@ -199,7 +200,8 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                               .copyWith(color: Colors.blue)),
                                       TextSpan(
                                           text: ' của DATCAO ',
-                                          style: ptBody()),
+                                          style: ptBody().copyWith(
+                                              color: ptPrimaryColor(context))),
                                     ],
                                   ),
                                 ),
@@ -221,7 +223,9 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                       children: <TextSpan>[
                                         TextSpan(
                                             text: 'Đã có tài khoản công ty? ',
-                                            style: ptBody()),
+                                            style: ptBody().copyWith(
+                                                color:
+                                                    ptPrimaryColor(context))),
                                         TextSpan(
                                             text: 'Đăng ký tại đây',
                                             recognizer: TapGestureRecognizer()
@@ -256,6 +260,7 @@ class CustomInputField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
   final TextEditingController controller;
+  final TextInputType keyboardType;
   final Function(String) validator;
   const CustomInputField({
     Key key,
@@ -264,6 +269,7 @@ class CustomInputField extends StatelessWidget {
     this.controller,
     this.obscureText = false,
     this.validator,
+    this.keyboardType,
   }) : super(key: key);
 
   @override
@@ -285,6 +291,7 @@ class CustomInputField extends StatelessWidget {
                 child: icon),
             Expanded(
               child: TextFormField(
+                keyboardType: keyboardType ?? TextInputType.text,
                 cursorColor: ptMainColor(context),
                 obscureText: obscureText,
                 controller: controller,

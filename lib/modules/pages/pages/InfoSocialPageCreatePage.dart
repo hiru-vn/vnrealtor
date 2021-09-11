@@ -82,7 +82,6 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
     );
   }
 
-
   Widget _itemTileTextField(String text) => Container(
         child: Text(
           text,
@@ -132,7 +131,7 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
           Material(
             // elevation: 4,
             // borderRadius: BorderRadius.circular(10),
-            color: ptSecondaryColor(context),
+            color: ptPrimaryColor(context),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
               child: TextFormField(
@@ -143,7 +142,7 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
                 decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: hint,
-                    hintStyle: ptBigBody().copyWith(color: AppColors.greyHint)),
+                    hintStyle: ptBigBody()),
               ),
             ),
           ),

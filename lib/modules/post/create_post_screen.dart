@@ -3,7 +3,6 @@ import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/info_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/preview_url.dart';
-import 'package:datcao/share/widget/custom_app_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:path/path.dart' as Path;
 import 'package:datcao/modules/inbox/import/detail_media.dart';
@@ -44,7 +43,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   String _type;
   String _need;
   List<UrlPreviewData> links = [];
-ImagePicker _picker = ImagePicker();
+  ImagePicker _picker = ImagePicker();
 
   @override
   void didChangeDependencies() {
@@ -328,7 +327,7 @@ ImagePicker _picker = ImagePicker();
                                 child: Center(
                                     child: Icon(
                                   Icons.close,
-                                  color: Colors.white,
+                                  color: ptMainColor(context),
                                   size: 16,
                                 )),
                               ),
@@ -539,8 +538,10 @@ ImagePicker _picker = ImagePicker();
                                       .contains(element['value']))
                                   .toList()[index]['value']
                                   .toString(),
-                              style: roboto(context)
-                                  .copyWith(color: ptMainColor(context)),
+                              style: roboto(context).copyWith(
+                                  color: Theme.of(context)
+                                      .textSelectionTheme
+                                      .cursorColor),
                             ),
                           ),
                         ),
@@ -604,7 +605,8 @@ ImagePicker _picker = ImagePicker();
                         onCustomPersionRequest(
                             permission: Permission.camera,
                             onGranted: () {
-                              _picker.pickImage(source: ImageSource.camera)
+                              _picker
+                                  .pickImage(source: ImageSource.camera)
                                   .then((value) async {
                                 if (value == null) return;
                                 setState(() {

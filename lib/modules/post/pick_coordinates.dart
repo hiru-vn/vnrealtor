@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:ui';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,7 +19,7 @@ class PickCoordinates extends StatefulWidget {
       {bool hasPolygon = true, LatLng position, List<LatLng> polygon}) {
     return navigatorKey.currentState.push(pageBuilder(PickCoordinates(
       hasPolygon: hasPolygon,
-      polygon: polygon.length > 0 ? polygon : null,
+      polygon: (polygon != null && polygon.length > 0) ? polygon : [],
       position: position,
     )));
   }
@@ -268,10 +269,12 @@ class PickCoordinatesState extends State<PickCoordinates>
                               polygonPoints[polygonPoints.length - 1]
                             ])
                       }
-                    : null,
+                    : HashSet<Polyline>(),
             onTap: _mode == 'point' ? _selectMarker : (LatLng _) {},
             markers: _mode == 'point'
-                ? (selectedMarker != null ? <Marker>{selectedMarker} : null)
+                ? (selectedMarker != null
+                    ? <Marker>{selectedMarker}
+                    : HashSet<Marker>())
                 : (polygonPoints
                     .map((e) => Marker(
                           markerId: MarkerId(e.toString()),
@@ -291,7 +294,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                       fillColor: Colors.redAccent.withOpacity(0.5),
                     )
                   }
-                : null,
+                : HashSet<Polygon>(),
           ),
           CustomFloatingSearchBar(
             onSearch: _onSearch,
@@ -369,14 +372,14 @@ class PickCoordinatesState extends State<PickCoordinates>
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: _mode == 'point'
-                                ? ptPrimaryColor(context)
+                                ? ptMainColor(context)
                                 : Colors.white,
                           ),
                           child: Center(
                             child: Icon(MdiIcons.mapMarker,
                                 color: _mode == 'point'
                                     ? Colors.white
-                                    : ptPrimaryColor(context)),
+                                    : ptMainColor(context)),
                           ),
                         ),
                       ),
@@ -400,14 +403,14 @@ class PickCoordinatesState extends State<PickCoordinates>
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: _mode == 'polygon'
-                                ? ptPrimaryColor(context)
+                                ? ptMainColor(context)
                                 : Colors.white,
                           ),
                           child: Center(
                             child: Icon(MdiIcons.vectorPolygon,
                                 color: _mode == 'polygon'
                                     ? Colors.white
-                                    : ptPrimaryColor(context)),
+                                    : ptMainColor(context)),
                           ),
                         ),
                       ),
@@ -432,7 +435,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                 elevation: 4,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: ptPrimaryColor(context),
+                    color: ptMainColor(context),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   height: 40,
@@ -481,7 +484,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                       child: Center(
                         child: Icon(
                           Icons.my_location,
-                          color: ptPrimaryColor(context),
+                          color: ptMainColor(context),
                         ),
                       ),
                     ),
@@ -554,7 +557,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                             child: Center(
                               child: Icon(
                                 Icons.info_outline,
-                                color: ptPrimaryColor(context),
+                                color: ptMainColor(context),
                                 size: 25,
                               ),
                             ),
@@ -584,7 +587,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                       child: Center(
                         child: Icon(
                           Icons.clear,
-                          color: ptPrimaryColor(context),
+                          color: ptMainColor(context),
                         ),
                       ),
                     ),
@@ -675,7 +678,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                       child: Center(
                         child: Icon(
                           Icons.redo,
-                          color: ptPrimaryColor(context),
+                          color: ptMainColor(context),
                         ),
                       ),
                     ),
@@ -693,9 +696,10 @@ class PickCoordinatesState extends State<PickCoordinates>
                   borderRadius: BorderRadius.circular(21),
                   elevation: 4,
                   child: GestureDetector(
-                    onTap: () async {audioCache.play('tab3.mp3');
+                    onTap: () async {
+                      audioCache.play('tab3.mp3');
                       final center = await getCenter();
-                      
+
                       _addMarkerPoligon(center);
                     },
                     child: Container(
@@ -703,7 +707,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                       height: 42,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: ptPrimaryColor(context),
+                        color: ptMainColor(context),
                       ),
                       child: Center(
                         child: Icon(MdiIcons.vectorPolylinePlus,
@@ -813,11 +817,11 @@ class PickCoordinatesState extends State<PickCoordinates>
             Center(
                 child: Padding(
                     padding: const EdgeInsets.only(top: 140.0),
-                    child: FlatButton(
+                    child: TextButton(
                       child: Text(
                         'Đã hiểu',
+                        style: ptBody(),
                       ),
-                      color: Colors.black54,
                       onPressed: () {
                         setState(() {
                           readedInstructionPolygon = true;

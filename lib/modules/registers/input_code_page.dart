@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:datcao/main.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/inbox/import/page_builder.dart';
@@ -19,12 +21,14 @@ class InputPinCodePage extends StatefulWidget {
   const InputPinCodePage({Key key, this.phoneNumber, this.email})
       : super(key: key);
   static Future navigate({String phoneNumber, String email}) {
-    return navigatorKey.currentState.push(pageBuilder(
-        InputPinCodePage(
-          phoneNumber: phoneNumber,
-          email: email,
-        ),
-        transitionBuilder: transitionRightBuilder));
+    return navigatorKey.currentState.pushAndRemoveUntil(
+        pageBuilder(
+            InputPinCodePage(
+              phoneNumber: phoneNumber,
+              email: email,
+            ),
+            transitionBuilder: transitionRightBuilder),
+        (route) => false);
   }
 
   @override
@@ -55,6 +59,15 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
       await _authBloc.submitOtpRegister(widget.phoneNumber, _otpC.text);
     } else {
       await _authBloc.verifyMail(widget.email, _otpC.text);
+    }
+  }
+
+  _resendOtp() async {
+    print("Resend");
+    showWaitingDialog(context);
+    if (_typeRegister == TypeRegister.ByPhone) {
+      var result = await _authBloc.requestOtpRegister(widget.phoneNumber);
+      print(result);
     }
   }
 
@@ -214,10 +227,8 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: GestureDetector(
-                        child: Center(
-                          child: Text("Gửi lại OTP"),
-                        ),
+                      child: ResendOTP(
+                        onResend: _resendOtp,
                       ),
                     )
                   ],
@@ -226,6 +237,65 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ResendOTP extends StatefulWidget {
+  final VoidCallback onResend;
+  const ResendOTP({
+    Key key,
+    this.onResend,
+  }) : super(key: key);
+
+  @override
+  _ResendOTPState createState() => _ResendOTPState();
+}
+
+class _ResendOTPState extends State<ResendOTP> {
+  Timer _timer;
+  int _countdown = 60;
+
+  @override
+  void initState() {
+    if (_timer != null) {
+      _timer.cancel();
+      _timer = null;
+    } else {
+      _timer = new Timer.periodic(
+        const Duration(seconds: 1),
+        (Timer timer) => setState(
+          () {
+            if (_countdown < 1) {
+              timer.cancel();
+            } else {
+              setState(() {
+                _countdown = _countdown - 1;
+              });
+            }
+          },
+        ),
+      );
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _countdown < 1
+          ? () {
+              widget.onResend();
+              setState(() {
+                _countdown = 60;
+              });
+            }
+          : null,
+      child: Center(
+        child: Text(_countdown < 1
+            ? "Gửi lại OTP"
+            : "Gửi lại OTP sau $_countdown giây"),
       ),
     );
   }
