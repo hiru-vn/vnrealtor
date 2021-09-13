@@ -2,11 +2,11 @@ library dash_chat;
 
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:datcao/modules/inbox/import/color.dart';
-import 'package:datcao/modules/inbox/import/font.dart';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/services/audio.dart';
 import 'package:datcao/share/function/preview_url.dart';
+import 'package:datcao/share/import.dart';
+import 'package:datcao/themes/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';

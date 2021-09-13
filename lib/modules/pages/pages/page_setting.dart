@@ -49,8 +49,6 @@ class _PageSettingState extends State<PageSetting> {
     super.initState();
   }
 
-
-
   Future _updateInfo() async {
     if (!_formKey.currentState.validate()) return;
     setState(() {
@@ -58,7 +56,8 @@ class _PageSettingState extends State<PageSetting> {
     });
 
     var res;
-    res = await  _pageBloc.updatePage(id: _pageBloc.pageDetail.id,
+    res = await _pageBloc.updatePage(
+        id: _pageBloc.pageDetail.id,
         avatar: _pageBloc.pageDetail.avartar,
         cover: _pageBloc.pageDetail.coverImage,
         name: _nameC.text,
@@ -90,68 +89,62 @@ class _PageSettingState extends State<PageSetting> {
     Future.delayed(Duration(seconds: 1), () => _pageBloc?.notifyListeners());
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar1(
-        centerTitle: true,
-        title: 'Chỉnh sửa trang',
-        automaticallyImplyLeading: true,
-        bgColor: ptSecondaryColor(context),
-        textColor: ptPrimaryColor(context),
-      ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _itemTileTextField("tên trang"),
-                heightSpace(15),
-                _itemInfoField(
-                  controller: _nameC,
-                  hintText: 'tên trang',
-                ),
-                heightSpace(25),
-                _itemTileTextField("Sửa tên website"),
-                heightSpace(15),
-                _itemInfoField(
-                  controller: _webC,
-                  hintText: 'Sửa tên website',
-                ),
-                heightSpace(25),
-                _itemTileTextField("Số điện thoại"),
-                heightSpace(15),
-                _itemInfoField(
-                  controller: _phoneC,
-                  hintText: 'Số điện thoại',
-                ),
-                heightSpace(25),
-                _itemTileTextField("địa chỉ"),
-                heightSpace(15),
-                _itemInfoField(
-                  controller: _descriptionC,
-                  hintText: 'địa chỉ',
-                ),
-                heightSpace(25),
-                _buildButtonSave(_updateInfo)
-              ],
+        appBar: SecondAppBar(
+          title: 'Chỉnh sửa trang',
+        ),
+        body: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _itemTileTextField("tên trang"),
+                  heightSpace(15),
+                  _itemInfoField(
+                    controller: _nameC,
+                    hintText: 'tên trang',
+                  ),
+                  heightSpace(25),
+                  _itemTileTextField("Sửa tên website"),
+                  heightSpace(15),
+                  _itemInfoField(
+                    controller: _webC,
+                    hintText: 'Sửa tên website',
+                  ),
+                  heightSpace(25),
+                  _itemTileTextField("Số điện thoại"),
+                  heightSpace(15),
+                  _itemInfoField(
+                    controller: _phoneC,
+                    hintText: 'Số điện thoại',
+                  ),
+                  heightSpace(25),
+                  _itemTileTextField("địa chỉ"),
+                  heightSpace(15),
+                  _itemInfoField(
+                    controller: _descriptionC,
+                    hintText: 'địa chỉ',
+                  ),
+                  heightSpace(25),
+                  _buildButtonSave(_updateInfo)
+                ],
+              ),
             ),
           ),
-        ),
-      )
-    );
+        ));
   }
 
   Widget _itemTileTextField(String text) => Container(
-    child: Text(
-      text,
-      style: ptBigTitle().copyWith(fontWeight: FontWeight.w600),
-    ),
-  );
+        child: Text(
+          text,
+          style: ptBigTitle().copyWith(fontWeight: FontWeight.w600),
+        ),
+      );
 
   Widget _itemInfoField({TextEditingController controller, String hintText}) =>
       _itemTextField(controller: controller, hintText: hintText);
@@ -175,20 +168,17 @@ class _PageSettingState extends State<PageSetting> {
       );
 
   Widget _buildButtonSave(VoidCallback action) => Container(
-    width: deviceWidth(context),
-    child: CustomButton(
-      title: "Lưu ",
-      isLoading: isUpdateLoading,
-      color: AppColors.mainColor,
-      style: ptTitle().copyWith(color: Colors.white),
-      callback: action,
-    ),
-  );
-
+        width: deviceWidth(context),
+        child: CustomButton(
+          title: "Lưu ",
+          isLoading: isUpdateLoading,
+          color: AppColors.mainColor,
+          style: ptTitle().copyWith(color: Colors.white),
+          callback: action,
+        ),
+      );
 
   Widget _buildButtonDeletePage() => Container(
-    child: CustomButton(
-
-    ),
-  );
+        child: CustomButton(),
+      );
 }

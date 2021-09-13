@@ -113,13 +113,13 @@ class _MyGroupPageState extends State<MyGroupPage> {
                 ),
                 if (_groupBloc.followingGroups != null) SizedBox(height: 15),
                 Container(
-                    child: GridView.count(
-                  crossAxisCount:
-                      (MediaQuery.of(context).size.width / 200).round(),
+                    child: StaggeredGridView.count(
                   shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
                   physics: NeverScrollableScrollPhysics(),
-                  childAspectRatio: .8,
+                  crossAxisCount: 2,
+                  staggeredTiles: _groupBloc.followingGroups
+                      .map((_) => StaggeredTile.fit(1))
+                      .toList(),
                   children: List.generate(
                       _groupBloc.followingGroups == null
                           ? 4

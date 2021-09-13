@@ -447,13 +447,13 @@ buildStoryWidget(PostModel postModel) {
             ),
           ),
           SizedBox(height: 3),
-          if (postModel.district != null && postModel.district.trim() != "")
+          if (postModel.user.name != null && postModel.user.name.trim() != "")
             Container(
               padding: EdgeInsets.symmetric(horizontal: 3, vertical: 0),
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: 84),
                 child: Text(
-                  postModel.district,
+                  postModel.user.name,
                   style: ptTiny().copyWith(
                     fontSize: 11,
                   ),

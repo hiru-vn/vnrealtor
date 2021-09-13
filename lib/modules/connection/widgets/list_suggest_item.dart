@@ -47,12 +47,11 @@ class ListGroupConnection extends StatelessWidget {
             ),
           ),
           Container(
-              child: GridView.count(
-            crossAxisCount: (MediaQuery.of(context).size.width / 200).round(),
+              child: StaggeredGridView.count(
             shrinkWrap: true,
-            scrollDirection: Axis.vertical,
             physics: NeverScrollableScrollPhysics(),
-            childAspectRatio: .8,
+            crossAxisCount: 2,
+            staggeredTiles: groups.map((_) => StaggeredTile.fit(1)).toList(),
             children: List.generate(
                 groupBloc.isLoadGroupSuggest ? 4 : groups.length,
                 (index) => groupBloc.isLoadGroupSuggest
@@ -103,12 +102,11 @@ class ListPageConnection extends StatelessWidget {
       child: Column(
         children: [
           Container(
-              child: GridView.count(
-            crossAxisCount: (MediaQuery.of(context).size.width / 200).round(),
+              child: StaggeredGridView.count(
             shrinkWrap: true,
-            scrollDirection: Axis.vertical,
             physics: NeverScrollableScrollPhysics(),
-            childAspectRatio: .8,
+            crossAxisCount: 2,
+            staggeredTiles: pages.map((_) => StaggeredTile.fit(1)).toList(),
             children: List.generate(
                 _pageBloc.isLoadingSuggest ? 4 : pages.length,
                 (index) => _pageBloc.isLoadingSuggest
@@ -131,7 +129,7 @@ class ListPageConnection extends StatelessWidget {
                 width: 30,
               )
             ],
-          )
+          ),
         ],
       ),
     );

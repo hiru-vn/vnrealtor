@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:datcao/modules/inbox/import/font.dart';
 import 'package:datcao/modules/inbox/import/spin_loader.dart';
+import 'package:datcao/themes/font.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 

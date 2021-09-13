@@ -321,8 +321,6 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
               if (group.pendingMemberIds
                   .contains(AuthBloc.instance.userModel.id))
                 ExpandBtn(
-                    color: ptPrimaryColor(context),
-                    textColor: ptPrimaryColor(context),
                     text: 'Đang chờ duyệt yêu cầu',
                     onPress: () {},
                     borderRadius: 5)

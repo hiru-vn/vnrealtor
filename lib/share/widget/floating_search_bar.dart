@@ -1,6 +1,6 @@
-import 'package:datcao/modules/inbox/import/color.dart';
-import 'package:datcao/modules/inbox/import/font.dart';
 import 'package:datcao/modules/services/credential_key.dart';
+import 'package:datcao/themes/color.dart';
+import 'package:datcao/themes/font.dart';
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:dio/dio.dart';
@@ -11,7 +11,10 @@ class CustomFloatingSearchBar extends StatefulWidget {
   final List<Widget> actions;
 
   const CustomFloatingSearchBar(
-      {Key key, this.onSearch, this.automaticallyImplyBackButton = false, this.actions})
+      {Key key,
+      this.onSearch,
+      this.automaticallyImplyBackButton = false,
+      this.actions})
       : super(key: key);
 
   @override
@@ -40,7 +43,6 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
       axisAlignment: 0.0,
       openAxisAlignment: 0.0,
       debounceDelay: const Duration(milliseconds: 500),
-      
 
       onQueryChanged: (query) async {
         if (query.trim() == '') {
@@ -79,7 +81,7 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
         FloatingSearchBarAction.searchToClear(
           showIfClosed: false,
         ),
-        if (widget.actions!=null) ...widget.actions
+        if (widget.actions != null) ...widget.actions
       ],
       builder: (context, transition) {
         return _autoCompletePlaces.length == 0 || !_isFocus

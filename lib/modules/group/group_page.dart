@@ -33,12 +33,8 @@ class _GroupPageState extends State<GroupPage> {
   Widget build(BuildContext context) {
     _groupBloc.groupScrollController = ScrollController();
     return Scaffold(
-        appBar: AppBar1(
-          bgColor: ptSecondaryColor(context),
+        appBar: SecondAppBar(
           title: 'Nhóm',
-          textColor: ptPrimaryColor(context),
-          centerTitle: true,
-          automaticallyImplyLeading: true,
         ),
         body: LoadMoreScrollView(
             scrollController: _groupBloc.groupScrollController,

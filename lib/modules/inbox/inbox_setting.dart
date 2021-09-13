@@ -57,10 +57,8 @@ class _InboxSettingPageState extends State<InboxSettingPage> {
       },
       child: Scaffold(
         backgroundColor: ptBackgroundColor(context),
-        appBar: AppBar1(
-          bgColor: Colors.white,
+        appBar: SecondAppBar(
           title: 'Cài đặt tin nhắn',
-          automaticallyImplyLeading: true,
         ),
         body: Column(children: [
           SizedBox(

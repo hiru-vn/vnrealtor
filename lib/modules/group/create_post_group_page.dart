@@ -62,7 +62,6 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
   List<UrlPreviewData> links = [];
   ImagePicker _picker = ImagePicker();
 
-
   String get groupId => widget.group.id;
   GroupModel get group => widget.group;
 
@@ -328,8 +327,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                               minLines: 8,
                               controller: _contentC,
                               onChanged: (value) => setState(() {}),
-                              basicStyle:
-                                  ptBigBody().copyWith(color: Colors.black54),
+                              basicStyle: ptBigBody(),
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: 'Nội dung bài viết...',
@@ -545,7 +543,8 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            _picker.pickImage(source: ImageSource.camera)
+                            _picker
+                                .pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {

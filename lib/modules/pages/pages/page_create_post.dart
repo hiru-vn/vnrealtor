@@ -325,8 +325,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                               minLines: 8,
                               controller: _contentC,
                               onChanged: (value) => setState(() {}),
-                              basicStyle:
-                                  ptBigBody().copyWith(color: Colors.black54),
+                              basicStyle: ptBigBody(),
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: 'Nội dung bài viết...',

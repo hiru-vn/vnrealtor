@@ -28,7 +28,7 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
   LatLng _position;
   bool _isUpload = false;
   final _formKey = GlobalKey<FormState>();
-ImagePicker _picker = ImagePicker();
+  ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -78,8 +78,7 @@ ImagePicker _picker = ImagePicker();
     onCustomPersionRequest(
         permission: Permission.photos,
         onGranted: () {
-          _picker.pickImage(source: ImageSource.gallery)
-              .then((value) async {
+          _picker.pickImage(source: ImageSource.gallery).then((value) async {
             if (value == null) return;
             setState(() {
               _isUpload = true;
@@ -97,11 +96,8 @@ ImagePicker _picker = ImagePicker();
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ptSecondaryColor(context),
-      appBar: AppBar1(
-        bgColor: ptSecondaryColor(context),
+      appBar: SecondAppBar(
         title: 'Cập nhật nhóm',
-        textColor: ptPrimaryColor(context),
-        automaticallyImplyLeading: true,
         actions: [
           Center(
             child: FlatButton(

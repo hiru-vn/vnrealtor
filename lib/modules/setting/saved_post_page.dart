@@ -26,10 +26,8 @@ class _SavedPostPageState extends State<SavedPostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar1(
-        bgColor: Colors.white,
+      appBar: SecondAppBar(
         title: 'Kho lưu trữ',
-        automaticallyImplyLeading: true,
       ),
       body: _postBloc.savePosts == null
           ? kLoadingSpinner

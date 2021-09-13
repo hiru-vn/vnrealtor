@@ -53,7 +53,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
   String _type;
   String _need;
   List<UrlPreviewData> links = [];
-ImagePicker _picker = ImagePicker();
+  ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -149,15 +149,11 @@ ImagePicker _picker = ImagePicker();
       width: deviceWidth(context),
       height: deviceHeight(context),
       child: Scaffold(
-        appBar: AppBar1(
+        appBar: SecondAppBar(
           title: widget.post.user != null ? 'Bài viết của tôi' : '',
-          automaticallyImplyLeading: true,
-          bgColor: ptSecondaryColor(context),
-          textColor: ptPrimaryColor(context),
           actions: [
             Center(
-              child: FlatButton(
-                color: ptPrimaryColor(context),
+              child: TextButton(
                 onPressed: _updatePost,
                 child: Text(
                   'Cập nhật',
@@ -372,8 +368,7 @@ ImagePicker _picker = ImagePicker();
                               minLines: 8,
                               controller: _contentC,
                               onChanged: (value) => setState(() {}),
-                              basicStyle:
-                                  ptBigBody().copyWith(color: Colors.black54),
+                              basicStyle: ptBigBody(),
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: 'Nội dung bài viết...',
@@ -440,7 +435,8 @@ ImagePicker _picker = ImagePicker();
                         height: 30,
                         left: 0,
                         child: GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
                             FocusScope.of(context).requestFocus(FocusNode());
                             showModalBottomSheet(
                               isScrollControlled: true,
@@ -550,7 +546,8 @@ ImagePicker _picker = ImagePicker();
                 children: [
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -585,11 +582,13 @@ ImagePicker _picker = ImagePicker();
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            _picker.pickImage(source: ImageSource.camera)
+                            _picker
+                                .pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {
@@ -616,7 +615,8 @@ ImagePicker _picker = ImagePicker();
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       PickCoordinates.navigate(
                               polygon: widget.post.polygonPoints,
                               position: LatLng(widget.post.locationLat,
@@ -641,7 +641,8 @@ ImagePicker _picker = ImagePicker();
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,

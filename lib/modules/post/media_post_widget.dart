@@ -639,13 +639,15 @@ class _DetailImagePostState extends State<DetailImagePost> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              MdiIcons.thumbUpOutline,
-                              size: 19,
-                              color: _isLike
-                                  ? ptPrimaryColor(context)
-                                  : Colors.white,
-                            ),
+                            !_isLike
+                                ? Image.asset(
+                                    "assets/image/unlike_icon.png",
+                                    width: 20,
+                                  )
+                                : Image.asset(
+                                    "assets/image/like_icon.png",
+                                    width: 20,
+                                  ),
                             SizedBox(
                               width: 5,
                             ),
@@ -653,7 +655,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
                               'Thích',
                               style: TextStyle(
                                   color: _isLike
-                                      ? ptPrimaryColor(context)
+                                      ? ptMainColor(context)
                                       : Colors.white),
                             ),
                           ]),
@@ -728,17 +730,9 @@ class _DetailImagePostState extends State<DetailImagePost> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: ptPrimaryColor(context),
-                    ),
-                    padding: EdgeInsets.all(4),
-                    child: Icon(
-                      MdiIcons.thumbUp,
-                      size: 11,
-                      color: Colors.white,
-                    ),
+                  Image.asset(
+                    "assets/image/like.png",
+                    width: 20,
                   ),
                   SizedBox(
                     width: 5,

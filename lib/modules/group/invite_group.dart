@@ -31,12 +31,8 @@ class _InviteGroupState extends State<InviteGroup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar1(
-        bgColor: ptSecondaryColor(context),
+      appBar: SecondAppBar(
         title: 'Lời mời tham gia nhóm',
-        textColor: ptPrimaryColor(context),
-        centerTitle: true,
-        automaticallyImplyLeading: true,
       ),
       body: (_groupBloc.invites == null)
           ? ListSkeleton()

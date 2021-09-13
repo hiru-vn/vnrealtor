@@ -47,8 +47,8 @@ class ExpandBtn extends StatelessWidget {
               : Center(
                   child: Text(
                     text,
-                    style: ptButton()
-                        .copyWith(color: textColor ?? ptPrimaryColor(context)),
+                    style:
+                        ptButton().copyWith(color: textColor ?? Colors.white),
                   ),
                 ),
         ),

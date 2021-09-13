@@ -76,12 +76,8 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ptSecondaryColor(context),
-      appBar: AppBar1(
-        bgColor: ptSecondaryColor(context),
+      appBar: SecondAppBar(
         title: group?.name ?? '',
-        textColor: ptPrimaryColor(context),
-        centerTitle: true,
-        automaticallyImplyLeading: true,
       ),
       body: SingleChildScrollView(
         child: group != null ? _buildGroupInfo() : _buildGroupSkeleton(),
@@ -193,7 +189,8 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                 Text(group.owner.name),
                 Spacer(),
                 GestureDetector(
-                  onTap: () {audioCache.play('tab3.mp3');
+                  onTap: () {
+                    audioCache.play('tab3.mp3');
                     GroupMemberPage.navigate(widget.groupModel);
                   },
                   child: Container(
@@ -240,7 +237,8 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
       ),
       if (group.isOwner || group.isAdmin)
         GestureDetector(
-          onTap: () async {audioCache.play('tab3.mp3');
+          onTap: () async {
+            audioCache.play('tab3.mp3');
             UpdateGroupPage.navigate(group);
           },
           child: Container(

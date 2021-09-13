@@ -128,7 +128,14 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     if (permission == LocationPermission.deniedForever) {
       showToast('Ứng dụng không thể truy cập vị trí của bạn', context);
       return Position(
-          latitude: 10.738381363037085, longitude: 106.68763584916785);
+          accuracy: 0.0,
+          timestamp: DateTime.now(),
+          speed: 0.0,
+          heading: .0,
+          speedAccuracy: .0,
+          altitude: .0,
+          latitude: 10.738381363037085,
+          longitude: 106.68763584916785);
     }
 
     if (permission == LocationPermission.denied) {
@@ -137,7 +144,14 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
           permission != LocationPermission.always) {
         showToast('Ứng dụng không thể truy cập vị trí của bạn', context);
         return Position(
-            latitude: 10.738381363037085, longitude: 106.68763584916785);
+            accuracy: 0.0,
+            timestamp: DateTime.now(),
+            speed: 0.0,
+            heading: .0,
+            speedAccuracy: .0,
+            altitude: .0,
+            latitude: 10.738381363037085,
+            longitude: 106.68763584916785);
       }
     }
 
@@ -249,7 +263,8 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
             elevation: 4,
             child: GestureDetector(
               onTap: () {
-                _selectMyLocation();audioCache.play('tab3.mp3');
+                _selectMyLocation();
+                audioCache.play('tab3.mp3');
               },
               child: Container(
                 width: 42,

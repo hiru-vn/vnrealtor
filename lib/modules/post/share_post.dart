@@ -46,7 +46,7 @@ class _SharePostState extends State<SharePost> {
         Container(
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: ptPrimaryColor(context),
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(15),
               topRight: Radius.circular(15),

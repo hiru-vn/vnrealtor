@@ -11,7 +11,7 @@ final lightTheme = ThemeData(
   ),
   colorScheme: ColorScheme.dark(
     brightness: Brightness.light,
-    onPrimary: Colors.red,
+    primary: HexColor.fromHex("#293079"),
   ),
   primaryIconTheme: IconThemeData(
     color: HexColor('#444444'),
@@ -42,7 +42,7 @@ final dartTheme = ThemeData(
   scaffoldBackgroundColor: Colors.black,
   colorScheme: ColorScheme.dark(
     brightness: Brightness.dark,
-    onPrimary: Colors.red,
+    primary: HexColor.fromHex("#293079"),
   ),
   backgroundColor: Colors.black,
   accentColor: Colors.white,
@@ -56,8 +56,7 @@ final dartTheme = ThemeData(
     fillColor: Colors.white,
   ),
   dividerColor: Colors.grey,
-  iconTheme: IconThemeData(color: Colors.white),
-  accentIconTheme: IconThemeData(
-    color: Colors.red,
+  iconTheme: IconThemeData(
+    color: Colors.white,
   ),
 );

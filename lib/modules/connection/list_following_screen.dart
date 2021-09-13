@@ -38,13 +38,6 @@ class _ListFollowingScreenState extends State<ListFollowingScreen> {
         child: Scaffold(
           backgroundColor: ptBackgroundColor(context),
           appBar: SecondAppBar(
-            leading: IconButton(
-                icon: Image.asset(
-                  "assets/image/back_icon.png",
-                  color: Colors.grey,
-                  width: 30,
-                ),
-                onPressed: () => Navigator.pop(context)),
             actions: [
               IconButton(icon: Icon(Icons.more_vert), onPressed: null),
             ],

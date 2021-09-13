@@ -71,13 +71,13 @@ class _SuggestGroupState extends State<SuggestGroup> {
                 ? ListSkeleton()
                 : (_groupBloc.suggestGroup.length == 0
                     ? Text('Bạn không có danh sách gợi ý nào')
-                    : GridView.count(
-                        crossAxisCount:
-                            (MediaQuery.of(context).size.width / 200).round(),
+                    : StaggeredGridView.count(
                         shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
                         physics: NeverScrollableScrollPhysics(),
-                        childAspectRatio: .8,
+                        crossAxisCount: 2,
+                        staggeredTiles: _groupBloc.suggestGroup
+                            .map((_) => StaggeredTile.fit(1))
+                            .toList(),
                         children: List.generate(
                             _groupBloc.suggestGroup == null
                                 ? 4

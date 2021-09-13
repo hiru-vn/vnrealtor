@@ -226,14 +226,14 @@ class _CommentPageState extends State<CommentPage> {
         builder: (context, controller) {
           _controller = controller;
           return Scaffold(
-            appBar: AppBar1(
+            appBar: SecondAppBar(
               title: 'Bình luận',
               actions: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: DropdownButton(
                       value: sort,
-                      style: ptBody().copyWith(color: Colors.black87),
+                      style: ptBody(),
                       items: [
                         DropdownMenuItem(
                           child: Text('Mới nhất'),
@@ -293,7 +293,7 @@ class _CommentPageState extends State<CommentPage> {
                   Container(
                     width: deviceWidth(context),
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                    color: Colors.white70,
+                    color: ptPrimaryColor(context),
                     child: Row(
                       children: [
                         CircleAvatar(
@@ -354,7 +354,7 @@ class _CommentPageState extends State<CommentPage> {
                                 ),
                                 borderRadius: BorderRadius.circular(25),
                               ),
-                              fillColor: ptPrimaryColor(context),
+                              fillColor: ptPrimaryColorLight(context),
                               filled: true,
                             ),
                           ),

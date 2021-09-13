@@ -4,10 +4,7 @@ import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/connection/manager_connection_screen.dart';
 import 'package:datcao/modules/connection/widgets/connection_item.dart';
 import 'package:datcao/modules/connection/widgets/list_suggest_item.dart';
-import 'package:datcao/modules/model/group.dart';
-import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
-import 'package:datcao/modules/post/post_page.dart';
 import 'package:datcao/share/import.dart';
 
 class ConnectionScreen extends StatefulWidget {
@@ -195,6 +192,9 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                                         groupBloc: _groupBloc,
                                       )
                                     : SizedBox(),
+                                Container(
+                                  height: 60,
+                                )
                               ],
                             );
                     } else

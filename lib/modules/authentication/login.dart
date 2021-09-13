@@ -100,9 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                               TextSpan(
                                 text: 'tại đây',
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    print('Tap');
-                                  },
+                                  ..onTap = () => HomePage.navigate(),
                                 style: roboto(context).copyWith(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 15,
@@ -218,7 +216,9 @@ class _LoginPageState extends State<LoginPage> {
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       hintText: 'Mật khẩu',
-                                      prefixIcon: Icon(Icons.lock),
+                                      prefixIcon: Icon(
+                                        Icons.lock,
+                                      ),
                                       suffixIcon: GestureDetector(
                                         onTap: () {
                                           audioCache.play('tab3.mp3');
@@ -338,7 +338,7 @@ class _LoginPageState extends State<LoginPage> {
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       appBar: AppBar1(
+//       appBar: SecondAppBar(
 //         centerTitle: true,
 //         title: 'Đăng nhập',
 //       ),

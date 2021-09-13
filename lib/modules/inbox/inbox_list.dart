@@ -7,6 +7,8 @@ import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/widget/animation_search.dart';
+import 'package:datcao/themes/color.dart';
+import 'package:datcao/themes/font.dart';
 import 'package:datcao/utils/formart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,8 +18,6 @@ import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'add_group.dart';
 import 'import/app_bar.dart';
-import 'import/color.dart';
-import 'import/font.dart';
 import 'import/page_builder.dart';
 import 'import/skeleton.dart';
 import 'inbox_bloc.dart';
@@ -130,7 +130,7 @@ class _InboxListState extends State<InboxList>
           title: 'Hộp thư',
           automaticallyImplyLeading: true,
           elevation: 3,
-          bgColor: Colors.white,
+          bgColor: ptPrimaryColor(context),
         ),
         body: ListSkeleton(),
       );
@@ -165,7 +165,7 @@ class _InboxListState extends State<InboxList>
         title: 'Hộp thư',
         automaticallyImplyLeading: true,
         elevation: 3,
-        bgColor: Colors.white,
+        bgColor: ptPrimaryColor(context),
         actions: [
           Center(
             child: IconButton(
@@ -213,7 +213,9 @@ class _InboxListState extends State<InboxList>
                   child: Container(
                     width: MediaQuery.of(context).size.width / 3 - 20,
                     decoration: BoxDecoration(
-                      color: tabIndex == 0 ? Colors.grey[400] : Colors.white,
+                      color: tabIndex == 0
+                          ? ptMainColor(context)
+                          : ptPrimaryColorLight(context),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 5),
@@ -221,8 +223,9 @@ class _InboxListState extends State<InboxList>
                       child: Text(
                         'Tin nhắn',
                         style: ptTitle().copyWith(
-                            color:
-                                tabIndex == 0 ? Colors.white : Colors.black54),
+                            color: tabIndex == 0
+                                ? Colors.white
+                                : ptSecondaryColor(context)),
                       ),
                     ),
                   ),
@@ -240,7 +243,9 @@ class _InboxListState extends State<InboxList>
                   child: Container(
                     width: MediaQuery.of(context).size.width / 3 - 20,
                     decoration: BoxDecoration(
-                      color: tabIndex == 1 ? Colors.grey[400] : Colors.white,
+                      color: tabIndex == 1
+                          ? ptMainColor(context)
+                          : ptPrimaryColorLight(context),
                       borderRadius: BorderRadius.circular(25),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 5),
@@ -248,8 +253,9 @@ class _InboxListState extends State<InboxList>
                       child: Text(
                         'Bạn bè',
                         style: ptTitle().copyWith(
-                            color:
-                                tabIndex == 1 ? Colors.white : Colors.black54),
+                            color: tabIndex == 1
+                                ? Colors.white
+                                : ptSecondaryColor(context)),
                       ),
                     ),
                   ),
@@ -267,7 +273,9 @@ class _InboxListState extends State<InboxList>
                   child: Container(
                     width: MediaQuery.of(context).size.width / 3 - 20,
                     decoration: BoxDecoration(
-                      color: tabIndex == 2 ? Colors.grey[400] : Colors.white,
+                      color: tabIndex == 2
+                          ? ptMainColor(context)
+                          : ptPrimaryColorLight(context),
                       borderRadius: BorderRadius.circular(25),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 5),
@@ -279,7 +287,7 @@ class _InboxListState extends State<InboxList>
                             style: ptTitle().copyWith(
                                 color: tabIndex == 2
                                     ? Colors.white
-                                    : Colors.black54),
+                                    : ptSecondaryColor(context)),
                           ),
                         ),
                         if (waitingGroups.length > 0)
@@ -347,7 +355,7 @@ class _InboxListState extends State<InboxList>
                     : 'Không tìm thấy người dùng',
               )
             : RefreshIndicator(
-                color: ptPrimaryColor(context),
+                color: ptMainColor(context),
                 onRefresh: () async {
                   await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
                   return;
@@ -494,12 +502,12 @@ class _InboxListState extends State<InboxList>
         state.showButtonMenu();
       },
       tileColor: group.readers.contains(_authBloc.userModel.id)
-          ? Colors.white
-          : ptBackgroundColor(context),
+          ? ptPrimaryColor(context)
+          : ptPrimaryColorLight(context),
       leading: _getChatGroupAvatar(group),
       title: Text(
         nameGroup,
-        style: ptTitle().copyWith(color: Colors.black87, fontSize: 14.5),
+        style: ptTitle(),
       ),
       subtitle: Text(
         // (group.lastUser ==  _authBloc.userModel.name? 'Bạn: ':'Tin nhắn mới: ')+
@@ -510,7 +518,6 @@ class _InboxListState extends State<InboxList>
             fontWeight: group.readers.contains(_authBloc.userModel.id)
                 ? FontWeight.w400
                 : FontWeight.w500,
-            color: Colors.black87,
             fontSize:
                 group.readers.contains(_authBloc.userModel.id) ? 12.3 : 12.8),
       ),

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
@@ -202,7 +203,6 @@ class GroupSuggestItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          width: 180,
           decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
@@ -217,10 +217,11 @@ class GroupSuggestItem extends StatelessWidget {
           child: Stack(
             children: [
               Container(
-                width: 200,
                 child: Image.asset(
                   "assets/image/anhbia.png",
                   height: 60,
+                  width: double.infinity,
+                  fit: BoxFit.fill,
                 ),
               ),
               Column(
@@ -239,16 +240,19 @@ class GroupSuggestItem extends StatelessWidget {
                   SizedBox(
                     height: 5,
                   ),
-                  Container(
-                    height: 35,
-                    child: Text(
-                      group.name,
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                      style: roboto(context).copyWith(
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 35,
+                      child: AutoSizeText(
+                        group.name,
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                        style: roboto(context).copyWith(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
-                          color: HexColor.fromHex("#505050")),
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -264,10 +268,7 @@ class GroupSuggestItem extends StatelessWidget {
                     ],
                   ),
                   SizedBox(
-                    height: 10,
-                  ),
-                  SizedBox(
-                    height: 25,
+                    height: 20,
                   ),
                   group.memberIds.contains(userId)
                       ? GestureDetector(
@@ -317,7 +318,10 @@ class GroupSuggestItem extends StatelessWidget {
                                   child: Text("Kết nối"),
                                 ),
                               ),
-                            )
+                            ),
+                  SizedBox(
+                    height: 10,
+                  ),
                 ],
               ),
               Positioned(
@@ -457,6 +461,8 @@ class PageSuggestItem extends StatelessWidget {
                   Image.asset(
                     "assets/image/anhbia.png",
                     height: 60,
+                    width: double.infinity,
+                    fit: BoxFit.fill,
                   ),
                 ],
               ),
@@ -507,10 +513,7 @@ class PageSuggestItem extends StatelessWidget {
                     ],
                   ),
                   SizedBox(
-                    height: 10,
-                  ),
-                  SizedBox(
-                    height: 25,
+                    height: 20,
                   ),
                   page.followerIds.contains(userId)
                       ? GestureDetector(
@@ -548,7 +551,10 @@ class PageSuggestItem extends StatelessWidget {
                               ),
                             ),
                           ),
-                        )
+                        ),
+                  SizedBox(
+                    height: 10,
+                  ),
                 ],
               ),
               Positioned(

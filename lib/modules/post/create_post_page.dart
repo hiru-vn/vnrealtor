@@ -44,7 +44,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   String _type;
   String _need;
   List<UrlPreviewData> links = [];
-ImagePicker _picker = ImagePicker();
+  ImagePicker _picker = ImagePicker();
   @override
   void didChangeDependencies() {
     if (_postBloc == null) {
@@ -324,8 +324,7 @@ ImagePicker _picker = ImagePicker();
                                 }
                                 setState(() {});
                               },
-                              basicStyle:
-                                  ptBigBody().copyWith(color: Colors.black54),
+                              basicStyle: ptBigBody(),
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: 'Nội dung bài viết...',
@@ -544,7 +543,8 @@ ImagePicker _picker = ImagePicker();
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            _picker.pickImage(source: ImageSource.camera)
+                            _picker
+                                .pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {

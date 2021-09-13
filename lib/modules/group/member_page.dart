@@ -68,11 +68,8 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar1(
-        bgColor: ptSecondaryColor(context),
+      appBar: SecondAppBar(
         title: 'Thành viên',
-        textColor: ptPrimaryColor(context),
-        automaticallyImplyLeading: true,
         actions: [
           if (_group.isOwner || _group.isAdmin)
             Center(

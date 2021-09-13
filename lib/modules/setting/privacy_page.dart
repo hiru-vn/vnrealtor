@@ -16,9 +16,8 @@ class _PrivacyPageState extends State<PrivacyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar1(
+      appBar: SecondAppBar(
         title: 'Về ứng dụng Datcao',
-        automaticallyImplyLeading: true,
       ),
       body: Stack(
         fit: StackFit.expand,

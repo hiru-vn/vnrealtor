@@ -57,10 +57,8 @@ class _SettingNotifyPageState extends State<SettingNotifyPage> {
       },
       child: Scaffold(
         backgroundColor: ptBackgroundColor(context),
-        appBar: AppBar1(
-          bgColor: Colors.white,
+        appBar: SecondAppBar(
           title: 'Cài đặt nhận thông báo',
-          automaticallyImplyLeading: true,
         ),
         body: Column(children: [
           SizedBox(

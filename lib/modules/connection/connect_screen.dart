@@ -53,14 +53,6 @@ class _ConnectScreenState extends State<ConnectScreen> {
         child: Scaffold(
           backgroundColor: ptBackgroundColor(context),
           appBar: SecondAppBar(
-            leading: IconButton(
-              icon: Image.asset(
-                "assets/image/back_icon.png",
-                color: Colors.grey,
-                width: 30,
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
             title: "Kết nối",
             actions: [IconButton(icon: Icon(Icons.more_vert), onPressed: null)],
           ),
@@ -90,7 +82,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                                         height: 32,
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: HexColor.fromHex("#F5F9FF"),
+                                          color: ptPrimaryColorLight(context),
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
@@ -109,7 +101,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                                       height: 32,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: HexColor.fromHex("#F5F9FF"),
+                                        color: ptPrimaryColorLight(context),
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),

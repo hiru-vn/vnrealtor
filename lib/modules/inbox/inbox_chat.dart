@@ -10,6 +10,8 @@ import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
+import 'package:datcao/themes/color.dart';
+import 'package:datcao/themes/font.dart';
 import 'package:flutter/material.dart';
 import './import/dash_chat/dash_chat.dart';
 import 'package:path/path.dart' as path;
@@ -20,8 +22,6 @@ import 'package:provider/provider.dart';
 import 'package:datcao/navigator.dart';
 import 'google_map_widget.dart';
 import 'import/app_bar.dart';
-import 'import/color.dart';
-import 'import/font.dart';
 import 'import/image_picker.dart';
 import 'import/image_view.dart';
 import 'import/media_picker.dart';
@@ -59,7 +59,7 @@ class _InboxChatState extends State<InboxChat> {
   final List<FbInboxUserModel> _fbUsers = [];
   List<UserModel> _severUsers = [];
   final TextEditingController _chatC = TextEditingController();
-  final userColor = HexColor('#4D94FF');
+  final userColor = HexColor.fromHex('#4D94FF');
   FbInboxGroupModel group;
   double keyboardHeight;
   PageController _footerC = PageController();
@@ -84,7 +84,7 @@ class _InboxChatState extends State<InboxChat> {
   bool showMedia = false;
   bool showCamera = false;
 
-ImagePicker _picker =ImagePicker();
+  ImagePicker _picker = ImagePicker();
   @override
   void didChangeDependencies() {
     if (_inboxBloc == null || _authBloc == null) {
@@ -520,13 +520,13 @@ ImagePicker _picker =ImagePicker();
         (element) => element.id == widget.group.id,
         orElse: () => null);
     if (group == null)
-      return Container(color: Colors.white, child: kLoadingSpinner);
+      return Container(color: ptPrimaryColor(context), child: kLoadingSpinner);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: MyAppBar(
         title: widget.title,
         automaticallyImplyLeading: true,
-        bgColor: Colors.white,
+        bgColor: ptPrimaryColor(context),
         elevation: 2,
         actions: [
           // Center(
@@ -608,7 +608,6 @@ ImagePicker _picker =ImagePicker();
           ),
         ],
       ),
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -742,9 +741,8 @@ ImagePicker _picker =ImagePicker();
                     isDense: true,
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                    hintStyle:
-                        ptBody().copyWith(color: Colors.black54, fontSize: 14),
-                    fillColor: Colors.blue[50]),
+                    hintStyle: ptBody(),
+                    fillColor: ptPrimaryColorLight(context)),
                 focusNode: _focusNode,
                 dateFormat: DateFormat('d-M-yyyy'),
                 timeFormat: DateFormat('HH:mm'),
@@ -768,7 +766,7 @@ ImagePicker _picker =ImagePicker();
                 alwaysShowSend: _files.length > 0,
                 inputTextStyle: TextStyle(fontSize: 15.5),
                 inputContainerStyle: BoxDecoration(
-                  color: Colors.white,
+                  color: ptPrimaryColor(context),
                 ),
                 messageDecorationBuilder: (message, isUser) {
                   double topLeft = 20,
@@ -953,8 +951,8 @@ ImagePicker _picker =ImagePicker();
                             onCustomPersionRequest(
                                 permission: Permission.camera,
                                 onGranted: () {
-                                  _picker.pickImage(
-                                          source: ImageSource.camera)
+                                  _picker
+                                      .pickImage(source: ImageSource.camera)
                                       .then((value) {
                                     if (value == null) return;
                                     _onCameraPick(value.path);
@@ -1109,7 +1107,7 @@ class LoadEarlierWidget extends StatelessWidget {
                 vertical: 6,
               ),
               decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: ptPrimaryColor(context),
                   borderRadius: BorderRadius.circular(12.0),
                   boxShadow: [
                     BoxShadow(
@@ -1121,7 +1119,7 @@ class LoadEarlierWidget extends StatelessWidget {
                   ]),
               child: Text(
                 "Cũ hơn",
-                style: ptBody().copyWith(color: Colors.black87),
+                style: ptBody(),
               ),
             ),
           );

@@ -1,3 +1,4 @@
+import 'package:datcao/themes/font.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedSearchBar extends StatefulWidget {
@@ -50,9 +51,11 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
       height: _height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(_height / 2),
-        border: _folded ? null : Border.all(color: Colors.black12),
+        border: _folded
+            ? null
+            : Border.all(color: Theme.of(context).primaryColorDark),
         // boxShadow: _folded ? null : kElevationToShadow[1],
-        color: Colors.white,
+        color: Theme.of(context).primaryColor,
       ),
       child: Row(
         children: [
@@ -67,7 +70,7 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
                       focusNode: _focusNode,
                       decoration: InputDecoration(
                           hintText: 'Tìm kiếm',
-                          hintStyle: TextStyle(color: Colors.black45),
+                          hintStyle: ptTitle(),
                           border: InputBorder.none),
                     )
                   : null,
@@ -88,7 +91,7 @@ class _AnimatedSearchBarState extends State<AnimatedSearchBar> {
                       const EdgeInsets.only(right: 12.0, top: 10, bottom: 10),
                   child: Icon(
                     _folded ? Icons.search : Icons.close,
-                    color: _folded ? Colors.black87 : Colors.black45,
+                    color: Theme.of(context).accentColor,
                   ),
                 ),
                 onTap: () {

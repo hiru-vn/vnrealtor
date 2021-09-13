@@ -28,16 +28,19 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
     if (groupBloc.suggestGroup == null || groupBloc.suggestGroup.length == 0)
       return SizedBox.shrink();
     return Container(
-      height: 240,
+      height: 250,
       color: ptPrimaryColor(context),
       width: deviceWidth(context),
       child: ListView.separated(
           padding: EdgeInsets.only(right: 20, left: 15),
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            return GroupSuggestItem(
-              groupBloc: groupBloc,
-              group: groupBloc.suggestGroup[index],
+            return Container(
+              width: 200,
+              child: GroupSuggestItem(
+                groupBloc: groupBloc,
+                group: groupBloc.suggestGroup[index],
+              ),
             );
             // Container(
             //   width: 180,

@@ -375,8 +375,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   }
                                   setState(() {});
                                 },
-                                basicStyle:
-                                    ptBigBody().copyWith(color: Colors.black54),
+                                basicStyle: ptBigBody(),
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: 'Nội dung bài viết...',

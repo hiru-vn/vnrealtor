@@ -113,10 +113,8 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar1(
-        centerTitle: true,
+      appBar: SecondAppBar(
         title: 'Đăng kí${widget.isCompany ? ' doanh nghiệp' : ''}',
-        automaticallyImplyLeading: true,
       ),
       body: SingleChildScrollView(
         child: Form(

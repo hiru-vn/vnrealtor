@@ -1,4 +1,3 @@
-import 'package:datcao/modules/inbox/import/color.dart';
 import 'package:datcao/share/widget/loading_widgets/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:skeleton_loader/skeleton_loader.dart';

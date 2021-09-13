@@ -1,6 +1,5 @@
+import 'package:datcao/themes/font.dart';
 import 'package:flutter/material.dart';
-
-import 'font.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
