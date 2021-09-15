@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:datcao/modules/bloc/group_bloc.dart';
+import 'package:datcao/modules/bloc/invite_bloc.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/services/firebase_service.dart';
 import 'package:datcao/modules/setting/connectivity.dart';
@@ -35,18 +36,18 @@ void main() async {
   runZonedGuarded(() async {
     await Sentry.init(
       (options) {
-        options.dsn = 'https://ab7fbe46a1634b98b918535d535962ea@o396604.ingest.sentry.io/5596357';
+        options.dsn =
+            'https://ab7fbe46a1634b98b918535d535962ea@o396604.ingest.sentry.io/5596357';
       },
     );
-     SystemChrome.setPreferredOrientations(
+    SystemChrome.setPreferredOrientations(
             [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
         .then((_) {
       runApp(MyApp());
-      });
+    });
   }, (exception, stackTrace) async {
     await Sentry.captureException(exception, stackTrace: stackTrace);
   });
-
 }
 
 Image splash1 = Image.asset(
@@ -117,6 +118,9 @@ class _MyAppState extends State<MyApp> {
                   ),
                   ChangeNotifierProvider(
                     create: (context) => InboxBloc.instance,
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => InviteBloc.instance,
                   ),
                   ChangeNotifierProvider(
                     create: (context) => UserBloc.instance,

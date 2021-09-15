@@ -164,6 +164,19 @@ Page: "$page"
     return res['getAllUserForClient'];
   }
 
+  Future getAllInviteFollow({GraphqlFilter filter}) async {
+    final res = await UserSrv().query('getAllInviteFollow',
+        'q:{limit: ${filter.limit}, page: ${filter.page ?? 1}, offset: ${filter.offset}, filter: ${filter.filter}, search: "${filter.search}" , order: ${filter.order} }',
+        fragment: '''
+        data {
+     toUser{
+       $userFragment
+     }
+    }
+    ''');
+    return res['getAllInviteFollow'];
+  }
+
   Future setUserlocation(
     String userId,
     double lat,
@@ -390,6 +403,12 @@ status
 id
         ''');
     return res['followUser'];
+  }
+
+  Future makeFriend(String userId) async {
+    final res = await UserSrv()
+        .mutate('makeFriend', 'userId: "$userId"', fragment: '$userFragment');
+    return res['makeFriend'];
   }
 
   Future unfollowUser(String userId) async {

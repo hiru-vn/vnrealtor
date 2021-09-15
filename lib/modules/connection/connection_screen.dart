@@ -1,6 +1,7 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/connection/invites_list_screen.dart';
 import 'package:datcao/modules/connection/manager_connection_screen.dart';
 import 'package:datcao/modules/connection/widgets/connection_item.dart';
 import 'package:datcao/modules/connection/widgets/list_suggest_item.dart';
@@ -111,7 +112,7 @@ class _ConnectionScreenState extends State<ConnectionScreen>
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: ConnectionItem(
-                      onTap: () => print("bbb"),
+                      onTap: () => InvitesListScreen.navigate(),
                       preIcon: Image.asset(
                         "assets/image/invite_icon.png",
                         width: 24,

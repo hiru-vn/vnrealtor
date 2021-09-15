@@ -1,5 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/connection/widgets/user_connect_item.dart';
 import 'package:datcao/modules/inbox/inbox_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
@@ -44,6 +45,41 @@ class _ConnectScreenState extends State<ConnectScreen> {
   //     default:
   //   }
   // }
+  _onButtonDetailClick(UserModel user) {
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) => Container(
+              decoration: BoxDecoration(
+                color: ptPrimaryColor(context),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(15),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    showSimpleLoadingDialog(context);
+                    await _userBloc.unfollowUser(user.id);
+                    navigatorKey.currentState.pop();
+                    navigatorKey.currentState.pop();
+                  },
+                  child: Container(
+                    width: deviceWidth(context),
+                    color: Colors.transparent,
+                    child: Row(children: [
+                      Image.asset(
+                        "assets/image/icon_delete_user.png",
+                        width: 30,
+                      ),
+                      Text("Xoá người dùng này"),
+                    ]),
+                  ),
+                ),
+              ),
+            ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +174,36 @@ class _ConnectScreenState extends State<ConnectScreen> {
                         : UserConnectItem(
                             user: _userBloc.usersConnected[index],
                             userBloc: _userBloc,
+                            actions: [
+                              IconButton(
+                                  icon: Icon(Icons.more_vert),
+                                  onPressed: () => _onButtonDetailClick(
+                                      _userBloc.usersConnected[index])),
+                              IconButton(
+                                  icon: Image.asset(
+                                    "assets/image/icon_send.png",
+                                    width: 20,
+                                  ),
+                                  onPressed: () async {
+                                    audioCache.play('tab3.mp3');
+                                    showWaitingDialog(context);
+                                    await InboxBloc.instance.navigateToChatWith(
+                                        _userBloc.usersConnected[index].name,
+                                        _userBloc.usersConnected[index].avatar,
+                                        DateTime.now(),
+                                        _userBloc.usersConnected[index].avatar,
+                                        [
+                                          AuthBloc.instance.userModel.id,
+                                          _userBloc.usersConnected[index].id,
+                                        ],
+                                        [
+                                          AuthBloc.instance.userModel.avatar,
+                                          _userBloc
+                                              .usersConnected[index].avatar,
+                                        ]);
+                                    closeLoading();
+                                  }),
+                            ],
                           ),
                   ),
                 )
@@ -280,173 +346,6 @@ class _FilterConnectUserState extends State<FilterConnectUser> {
             ),
           ),
           Spacer(),
-        ],
-      ),
-    );
-  }
-}
-
-class UserConnectItem extends StatefulWidget {
-  final UserBloc userBloc;
-  final UserModel user;
-  const UserConnectItem({
-    Key key,
-    this.user,
-    this.userBloc,
-  }) : super(key: key);
-
-  @override
-  _UserConnectItemState createState() => _UserConnectItemState();
-}
-
-class _UserConnectItemState extends State<UserConnectItem> {
-  _onButtonDetailClick() {
-    showModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        context: context,
-        builder: (context) => Container(
-              decoration: BoxDecoration(
-                color: ptPrimaryColor(context),
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(15),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: GestureDetector(
-                  onTap: () async {
-                    showSimpleLoadingDialog(context);
-                    await widget.userBloc.unfollowUser(widget.user.id);
-                    navigatorKey.currentState.pop();
-                    navigatorKey.currentState.pop();
-                  },
-                  child: Row(children: [
-                    Image.asset(
-                      "assets/image/icon_delete_user.png",
-                      width: 30,
-                    ),
-                    Text("Xoá người dùng này"),
-                  ]),
-                ),
-              ),
-            ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => ProfileOtherPage.navigate(widget.user),
-      child: Container(
-        padding: const EdgeInsets.all(8.0),
-        color: ptPrimaryColor(context),
-        child: Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              child: CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.white,
-                backgroundImage: widget.user.avatar != null
-                    ? CachedNetworkImageProvider(widget.user.avatar)
-                    : AssetImage('assets/image/default_avatar.png'),
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      "${widget.user.name}",
-                      style: roboto(context)
-                          .copyWith(fontSize: 16, fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "${widget.user.totalPoint}",
-                        ),
-                        Image.asset(
-                          "assets/image/guarantee.png",
-                          width: 18,
-                        )
-                      ],
-                    )
-                  ],
-                ),
-                Text(
-                  "${convertRoleUser(widget.user.role)}",
-                  style: roboto(context)
-                      .copyWith(fontSize: 16, fontWeight: FontWeight.w300),
-                ),
-              ],
-            ),
-            Spacer(),
-            IconButton(
-                icon: Icon(Icons.more_vert),
-                onPressed: () => _onButtonDetailClick()),
-            IconButton(
-                icon: Image.asset(
-                  "assets/image/icon_send.png",
-                  width: 20,
-                ),
-                onPressed: () async {
-                  audioCache.play('tab3.mp3');
-                  showWaitingDialog(context);
-                  await InboxBloc.instance.navigateToChatWith(widget.user.name,
-                      widget.user.avatar, DateTime.now(), widget.user.avatar, [
-                    AuthBloc.instance.userModel.id,
-                    widget.user.id,
-                  ], [
-                    AuthBloc.instance.userModel.avatar,
-                    widget.user.avatar,
-                  ]);
-                  closeLoading();
-                }),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class UserConnectItemLoading extends StatelessWidget {
-  const UserConnectItemLoading({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      color: ptPrimaryColor(context),
-      child: Row(
-        children: [
-          ShimmerWidget.cirular(width: 40, height: 40),
-          SizedBox(
-            width: 10,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ShimmerWidget.rectangular(height: 10, width: 250),
-              SizedBox(
-                height: 10,
-              ),
-              ShimmerWidget.rectangular(
-                height: 10,
-                width: deviceWidth(context) / 2,
-              ),
-            ],
-          ),
         ],
       ),
     );

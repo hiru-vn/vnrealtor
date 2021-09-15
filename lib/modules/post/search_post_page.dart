@@ -149,7 +149,7 @@ class _SearchPostPageState extends State<SearchPostPage>
     return Stack(
       children: [
         Scaffold(
-         // resizeToAvoidBottomPadding: false,
+          // resizeToAvoidBottomPadding: false,
           appBar: AppBar(
             elevation: 0,
             backgroundColor: ptPrimaryColor(context),
@@ -157,8 +157,16 @@ class _SearchPostPageState extends State<SearchPostPage>
             title: Container(
               height: 44,
               decoration: BoxDecoration(
-                  color: ptPrimaryColorLight(context),
-                  borderRadius: BorderRadius.circular(25)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 7,
+                      offset: Offset(0, 4), // changes position of shadow
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(30),
+                  color: ptPrimaryColor(context)),
               child: Row(children: [
                 SizedBox(
                   width: 15,
@@ -173,7 +181,7 @@ class _SearchPostPageState extends State<SearchPostPage>
                     basicStyle: ptBody(),
                     onSubmitted: _search,
                     decoration: InputDecoration(
-                      hintText: 'Tìm kiếm dự án, địa điểm',
+                      hintText: 'Tìm kiếm...',
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(bottom: 5),
                     ),

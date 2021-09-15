@@ -357,6 +357,20 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> makeFriend(String userId) async {
+    try {
+      notifyListeners();
+      final res = await UserRepo().makeFriend(userId);
+      final val = UserModel.fromJson(res);
+      await AuthBloc.instance.getUser();
+      return BaseResponse.success(val);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> suggestFollow() async {
     try {
       isLoadingUserSuggest = true;
@@ -412,6 +426,18 @@ class UserBloc extends ChangeNotifier {
     try {
       final res = await UserRepo().declineFriend(friendShipId);
       final val = FriendshipModel.fromJson(res);
+      return BaseResponse.success(val);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      // notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getOneUserForClient(String id) async {
+    try {
+      final res = await UserRepo().getOneUserForClient(id: id);
+      final val = UserModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());

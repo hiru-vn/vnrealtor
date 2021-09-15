@@ -442,9 +442,8 @@ class _PostWidgetState extends State<PostWidget> {
                                               width: 30,
                                             )
                                           : Image.asset(
-                                              "assets/image/bookmark_icon.png",
+                                              "assets/image/bookmark_a_icon.png",
                                               width: 30,
-                                              color: ptMainColor(context),
                                             ),
                                       SizedBox(
                                         height: 3,

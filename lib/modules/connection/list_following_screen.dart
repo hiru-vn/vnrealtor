@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/connection/connect_screen.dart';
+import 'package:datcao/modules/connection/widgets/user_connect_item.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/share/import.dart';
 
@@ -56,6 +57,7 @@ class _ListFollowingScreenState extends State<ListFollowingScreen> {
                   ? UserConnectItemLoading()
                   : UserConnectItem(
                       user: _userBloc.usersFollowed[index],
+                      actions: [],
                     ),
             ),
           ),

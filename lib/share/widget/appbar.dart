@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/connection/qr_code_screen.dart';
 import 'package:datcao/modules/inbox/inbox_list.dart';
+import 'package:datcao/modules/post/search_post_page.dart';
 import 'package:datcao/modules/profile/profile_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -170,31 +172,39 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
           ProfilePage.navigate();
         },
       ),
-      title: Container(
-        decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 7,
-                offset: Offset(0, 4), // changes position of shadow
+      title: GestureDetector(
+        onTap: () {
+          audioCache.play('tab3.mp3');
+          SearchPostPage.navigate().then(
+              (value) => FocusScope.of(context).requestFocus(FocusNode()));
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 2,
+                  blurRadius: 7,
+                  offset: Offset(0, 4), // changes position of shadow
+                ),
+              ],
+              borderRadius: BorderRadius.circular(30),
+              color: ptPrimaryColor(context)),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(Icons.search),
               ),
+              Text("Tìm kiếm...", style: ptBody()),
+              Spacer(),
+              IconButton(
+                onPressed: () => QRCodeScreen.navigate(),
+                icon: Icon(Icons.qr_code),
+              )
             ],
-            borderRadius: BorderRadius.circular(30),
-            color: ptPrimaryColor(context)),
-        child: TextFormField(
-            decoration: InputDecoration(
-          prefixIcon: Icon(Icons.search),
-          border: InputBorder.none,
-          hintText: 'Tìm kiếm',
-          hintStyle: roboto(context),
-          suffixIcon: GestureDetector(
-            child: Icon(
-              Icons.qr_code,
-            ),
-            onTap: () => print("QR code"),
           ),
-        )),
+        ),
       ),
       actions: [
         GestureDetector(
