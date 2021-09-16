@@ -18,17 +18,20 @@ import 'package:provider/provider.dart';
 class InputPinCodePage extends StatefulWidget {
   final String phoneNumber;
   final String email;
-  const InputPinCodePage({Key key, this.phoneNumber, this.email})
+  final bool isForgot;
+  const InputPinCodePage({Key key, this.phoneNumber, this.email, this.isForgot})
       : super(key: key);
-  static Future navigate({String phoneNumber, String email}) {
-    return navigatorKey.currentState.pushAndRemoveUntil(
-        pageBuilder(
-            InputPinCodePage(
-              phoneNumber: phoneNumber,
-              email: email,
-            ),
-            transitionBuilder: transitionRightBuilder),
-        (route) => false);
+  static Future navigate(
+      {String phoneNumber, String email, bool isForgot = false}) {
+    return navigatorKey.currentState.push(
+      pageBuilder(
+          InputPinCodePage(
+            phoneNumber: phoneNumber,
+            email: email,
+            isForgot: isForgot,
+          ),
+          transitionBuilder: transitionRightBuilder),
+    );
   }
 
   @override
@@ -56,7 +59,8 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
     print(_otpC.text);
     showWaitingDialog(context);
     if (_typeRegister == TypeRegister.ByPhone) {
-      await _authBloc.submitOtpRegister(widget.phoneNumber, _otpC.text);
+      await _authBloc.submitOtpRegister(widget.phoneNumber, _otpC.text,
+          isForgot: widget.isForgot ?? false);
     } else {
       await _authBloc.verifyMail(widget.email, _otpC.text);
     }
@@ -66,7 +70,8 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
     print("Resend");
     showWaitingDialog(context);
     if (_typeRegister == TypeRegister.ByPhone) {
-      var result = await _authBloc.requestOtpRegister(widget.phoneNumber);
+      var result = await _authBloc.requestOtpRegister(widget.phoneNumber,
+          isForgot: widget.isForgot ?? false);
       print(result);
     }
   }

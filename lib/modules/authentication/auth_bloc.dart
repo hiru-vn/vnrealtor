@@ -331,9 +331,10 @@ class AuthBloc extends ChangeNotifier {
   Future submitOtpRegister(String phone, String otp,
       {bool isForgot = false}) async {
     try {
-      authCredential = PhoneAuthProvider.credential(
+      PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
           verificationId: smsVerifyCode, smsCode: otp);
-      final authCredentia = await _auth.signInWithCredential(authCredential);
+      final authCredentia =
+          await _auth.signInWithCredential(phoneAuthCredential);
       if (authCredentia?.user != null) {
         if (isForgot) {
           authStatusSink.add(AuthResponse.successForgotOtp());
@@ -343,7 +344,7 @@ class AuthBloc extends ChangeNotifier {
       } else {
         authStatusSink.add(AuthResponse.fail("OTP không hợp lệ"));
       }
-      authCredential = authCredential;
+      authCredential = phoneAuthCredential;
     } catch (e) {
       print(e.code);
       authStatusSink.add(

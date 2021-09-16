@@ -87,6 +87,25 @@ class _InboxChatState extends State<InboxChat> {
   ImagePicker _picker = ImagePicker();
   @override
   void didChangeDependencies() {
+    InboxBloc.inChat = true;
+    group = widget.group;
+    for (final user in group.users) {
+      if (group.pageId != null &&
+          group.pageName != null &&
+          user.id != AuthBloc.instance.userModel.id) {
+        _users.add(ChatUser(
+            uid: group.pageId,
+            name: group.pageName,
+            containerColor: ptPrimaryColorLight(context)));
+      } else {
+        _users.add(ChatUser(
+            uid: user.id,
+            name: user.name,
+            containerColor: user.id == AuthBloc.instance.userModel.id
+                ? userColor
+                : ptPrimaryColorLight(context)));
+      }
+    }
     if (_inboxBloc == null || _authBloc == null) {
       _inboxBloc = Provider.of<InboxBloc>(context);
       _authBloc = Provider.of<AuthBloc>(
@@ -100,25 +119,6 @@ class _InboxChatState extends State<InboxChat> {
 
   @override
   void initState() {
-    InboxBloc.inChat = true;
-    group = widget.group;
-    for (final user in group.users) {
-      if (group.pageId != null &&
-          group.pageName != null &&
-          user.id != AuthBloc.instance.userModel.id) {
-        _users.add(ChatUser(
-            uid: group.pageId,
-            name: group.pageName,
-            containerColor: Colors.blue[50]));
-      } else {
-        _users.add(ChatUser(
-            uid: user.id,
-            name: user.name,
-            containerColor: user.id == AuthBloc.instance.userModel.id
-                ? userColor
-                : Colors.blue[50]));
-      }
-    }
     super.initState();
   }
 
@@ -602,7 +602,6 @@ class _InboxChatState extends State<InboxChat> {
               width: 40,
               child: Icon(
                 Icons.more_vert,
-                color: Colors.black.withOpacity(0.7),
               ),
             ),
           ),
@@ -715,12 +714,12 @@ class _InboxChatState extends State<InboxChat> {
                           fontSize: 13.8,
                           color: messages.user.uid == _authBloc.userModel.id
                               ? Colors.white
-                              : Colors.black),
+                              : ptSecondaryColor(context)),
                       textAlign: TextAlign.start,
                       linkStyle: ptBody().copyWith(
                           color: messages.user.uid == _authBloc.userModel.id
                               ? Colors.white
-                              : Colors.black),
+                              : ptSecondColor()),
                     ),
                   );
                 },
@@ -730,7 +729,8 @@ class _InboxChatState extends State<InboxChat> {
                 dateBuilder: (text) => Text(
                   text,
                   style: ptSmall().copyWith(
-                      fontWeight: FontWeight.w600, color: Colors.black38),
+                      fontWeight: FontWeight.w600,
+                      color: ptSecondaryColor(context).withOpacity(0.5)),
                 ),
                 inputToolbarPadding:
                     EdgeInsets.symmetric(horizontal: 4, vertical: 2),
@@ -835,7 +835,7 @@ class _InboxChatState extends State<InboxChat> {
                                 (message.customProperties['files'] != null &&
                                     message.customProperties['files'].length >
                                         0)))
-                        ? Colors.white
+                        ? ptPrimaryColorLight(context)
                         : (message.user.containerColor ?? Colors.blue[50]),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(topLeft),

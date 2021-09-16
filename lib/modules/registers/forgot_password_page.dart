@@ -46,6 +46,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           closeLoading();
           InputPinCodePage.navigate(
             phoneNumber: "0" + _initPhoneNumber.parseNumber(),
+            isForgot: true,
           );
         }
         if (event.status == AuthStatus.requestOtp) {}
@@ -75,6 +76,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } else {
       showToast("Số điện thoại không hợp lệ", context);
     }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    listener.cancel();
+    super.dispose();
   }
 
   @override

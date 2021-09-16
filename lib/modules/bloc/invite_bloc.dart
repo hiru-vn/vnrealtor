@@ -63,4 +63,17 @@ class InviteBloc extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<BaseResponse> deleteInviteSent({String id, String userID}) async {
+    try {
+      final res = await UserRepo().deleteInvites(id: id);
+      invitesSent =
+          invitesSent.where((element) => element.id == userID).toList();
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
 }

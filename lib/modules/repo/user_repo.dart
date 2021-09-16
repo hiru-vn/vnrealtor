@@ -172,9 +172,21 @@ Page: "$page"
      toUser{
        $userFragment
      }
+      fromUser{
+       $userFragment
+     }
     }
     ''');
     return res['getAllInviteFollow'];
+  }
+
+  Future deleteInvites({String id}) async {
+    final res = await UserSrv().mutate('deleteOneInviteFollow', '''
+    id: "$id"
+    ''', fragment: '''
+        id
+    ''');
+    return res['deleteOneInviteFollow'];
   }
 
   Future setUserlocation(

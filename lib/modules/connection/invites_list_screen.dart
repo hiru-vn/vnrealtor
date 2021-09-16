@@ -36,6 +36,41 @@ class _InvitesListScreenState extends State<InvitesListScreen>
     super.didChangeDependencies();
   }
 
+  void _deleteInvite() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Center(
+          child: Text(
+            "Xoá lời mời",
+          ),
+        ),
+        content: Text(
+            "Nếu bạn thu hồi lời mời, bạn sẽ không được gửi lời mời cho người dùng này trong 1 ngày nữa "),
+        actions: [
+          TextButton(
+            child: Text(
+              "Huỷ",
+              style: ptBody().copyWith(color: ptSecondaryColor(context)),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: Text(
+              "Xoá",
+              style: ptBody().copyWith(color: ptSecondaryColor(context)),
+            ),
+            onPressed: () {
+              showWaitingDialog(context);
+
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -133,8 +168,36 @@ class _InvitesListScreenState extends State<InvitesListScreen>
                                               : UserConnectItem(
                                                   user: _inviteBloc
                                                       .invitesReceived[index],
-                                                  actions: [],
-                                                )),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        print("");
+                                                      },
+                                                      child: Text(
+                                                        "Xoá",
+                                                        style: roboto(context)
+                                                            .copyWith(
+                                                                color:
+                                                                    ptSecondaryColor(
+                                                                        context)),
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        print("");
+                                                      },
+                                                      child: Text(
+                                                        "Chấp nhận",
+                                                        style: roboto(context)
+                                                            .copyWith(
+                                                                color:
+                                                                    ptSecondaryColor(
+                                                                        context)),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                    ),
                             )),
                       );
                     } else
@@ -185,7 +248,19 @@ class _InvitesListScreenState extends State<InvitesListScreen>
                                               : UserConnectItem(
                                                   user: _inviteBloc
                                                       .invitesSent[index],
-                                                  actions: [],
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: _deleteInvite,
+                                                      child: Text(
+                                                        "Thu hồi",
+                                                        style: roboto(context)
+                                                            .copyWith(
+                                                                color:
+                                                                    ptSecondaryColor(
+                                                                        context)),
+                                                      ),
+                                                    )
+                                                  ],
                                                 )),
                             )),
                       );

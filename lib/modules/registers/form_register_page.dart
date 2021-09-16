@@ -189,7 +189,8 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                       TextSpan(
                                           text: 'Tôi đồng ý với các ',
                                           style: ptBody().copyWith(
-                                              color: ptPrimaryColor(context))),
+                                              color:
+                                                  ptSecondaryColor(context))),
                                       TextSpan(
                                           text: 'điều khoản và chính sách',
                                           recognizer: TapGestureRecognizer()
