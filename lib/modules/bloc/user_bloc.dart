@@ -80,20 +80,20 @@ class UserBloc extends ChangeNotifier {
       getFollowerIn7d();
       setUserlocation();
       suggestFollow();
-      getListFriendIds();
+      //getListFriendIds();
       PagesBloc.instance.init();
     }
   }
 
-  void getListFriendIds() {
-    List<String> users = [];
-    AuthBloc.instance.userModel.followerIds.forEach((element) {
-      if (AuthBloc.instance.userModel.followingIds.contains(element)) {
-        users.add(element);
-      }
-    });
-    AuthBloc.instance.userModel.friendIds = users;
-  }
+  // void getListFriendIds() {
+  //   List<String> users = [];
+  //   AuthBloc.instance.userModel.followerIds.forEach((element) {
+  //     if (AuthBloc.instance.userModel.followingIds.contains(element)) {
+  //       users.add(element);
+  //     }
+  //   });
+  //   AuthBloc.instance.userModel.friendIds = users;
+  // }
 
   Future<BaseResponse> getFriendRequestFromOtherUsers() async {
     try {
@@ -160,14 +160,8 @@ class UserBloc extends ChangeNotifier {
   Future<BaseResponse> getUserConnected() async {
     try {
       isLoadingUsersIn = true;
-      List<String> ids = [];
       UserModel user = AuthBloc.instance.userModel;
-      user.followerIds.forEach((element) {
-        if (user.followingIds.contains(element)) {
-          ids.add(element);
-        }
-      });
-      final res = await UserRepo().getListUserIn(ids);
+      final res = await UserRepo().getListUserIn(user.friendIds);
       final List listRaw = res['data'];
       usersConnected = listRaw.map((e) => UserModel.fromJson(e)).toList();
       return BaseResponse.success(usersConnected);

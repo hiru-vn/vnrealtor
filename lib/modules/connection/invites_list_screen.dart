@@ -158,6 +158,8 @@ class _InvitesListScreenState extends State<InvitesListScreen>
                                       ),
                                     )
                                   : ListView.builder(
+                                      controller: _inviteBloc
+                                          .invitesReceivedScrollController,
                                       itemCount: _inviteBloc
                                               .isLoadingInvitesReceived
                                           ? 10
@@ -238,6 +240,8 @@ class _InvitesListScreenState extends State<InvitesListScreen>
                                       ),
                                     )
                                   : ListView.builder(
+                                      controller: _inviteBloc
+                                          .invitesSentScrollController,
                                       itemCount:
                                           _inviteBloc.isLoadingInvitesSent
                                               ? 10
