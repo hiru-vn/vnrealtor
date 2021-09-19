@@ -338,10 +338,6 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - agora_rtc_engine (4.0.6):
-    - AgoraRtcEngine_iOS (= 3.4.6)
-    - Flutter
-  - AgoraRtcEngine_iOS (3.4.6)
   - audioplayers (0.0.1):
     - Flutter
   - BoringSSL-GRPC (0.0.7):
@@ -355,7 +351,7 @@ PODS:
     - BSGridCollectionViewLayout (= 1.2.5)
     - BSImageView (= 1.0.3)
   - BSImageView (1.0.3)
-  - cloud_firestore (2.5.2):
+  - cloud_firestore (2.5.3):
     - Firebase/Firestore (= 8.6.0)
     - firebase_core
     - Flutter
@@ -476,8 +472,6 @@ PODS:
     - Flutter
   - flutter_native_image (0.0.1):
     - Flutter
-  - flutter_statusbar_text_color (0.0.1):
-    - Flutter
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
@@ -575,6 +569,7 @@ PODS:
   - libwebp/mux (1.2.0):
     - libwebp/demux
   - libwebp/webp (1.2.0)
+  - MTBBarcodeScanner (5.0.11)
   - multi_image_picker (4.8.00):
     - BSImagePicker (~> 2.10.3)
     - Flutter
@@ -583,8 +578,6 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - open_appstore (0.0.1):
-    - Flutter
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
@@ -595,6 +588,9 @@ PODS:
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.0.0)
+  - qr_code_scanner (0.2.0):
+    - Flutter
+    - MTBBarcodeScanner
   - Reachability (3.2)
   - share (0.0.1):
     - Flutter
@@ -617,7 +613,6 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - agora_rtc_engine (from `.symlinks/plugins/agora_rtc_engine/ios`)
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
@@ -632,7 +627,6 @@ DEPENDENCIES:
   - flutter_callkeep (from `.symlinks/plugins/flutter_callkeep/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_native_image (from `.symlinks/plugins/flutter_native_image/ios`)
-  - flutter_statusbar_text_color (from `.symlinks/plugins/flutter_statusbar_text_color/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
@@ -640,11 +634,11 @@ DEPENDENCIES:
   - libphonenumber (from `.symlinks/plugins/libphonenumber/ios`)
   - libphonenumber_plugin (from `.symlinks/plugins/libphonenumber_plugin/ios`)
   - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
-  - open_appstore (from `.symlinks/plugins/open_appstore/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
+  - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -657,7 +651,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - abseil
-    - AgoraRtcEngine_iOS
     - BoringSSL-GRPC
     - BSGridCollectionViewLayout
     - BSImagePicker
@@ -683,14 +676,13 @@ SPEC REPOS:
     - leveldb-library
     - libPhoneNumber-iOS
     - libwebp
+    - MTBBarcodeScanner
     - nanopb
     - PromisesObjC
     - Reachability
     - Toast
 
 EXTERNAL SOURCES:
-  agora_rtc_engine:
-    :path: ".symlinks/plugins/agora_rtc_engine/ios"
   audioplayers:
     :path: ".symlinks/plugins/audioplayers/ios"
   cloud_firestore:
@@ -717,8 +709,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_native_image:
     :path: ".symlinks/plugins/flutter_native_image/ios"
-  flutter_statusbar_text_color:
-    :path: ".symlinks/plugins/flutter_statusbar_text_color/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   geolocator_apple:
@@ -733,8 +723,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/libphonenumber_plugin/ios"
   multi_image_picker:
     :path: ".symlinks/plugins/multi_image_picker/ios"
-  open_appstore:
-    :path: ".symlinks/plugins/open_appstore/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
@@ -743,6 +731,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler/ios"
   photo_manager:
     :path: ".symlinks/plugins/photo_manager/ios"
+  qr_code_scanner:
+    :path: ".symlinks/plugins/qr_code_scanner/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences:
@@ -762,14 +752,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
-  agora_rtc_engine: d3178bd63d453a2d0111bd45475f17ce1fcc754d
-  AgoraRtcEngine_iOS: 8aa4a8e46bd81963607857b1d46703b93e4de156
   audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   BSGridCollectionViewLayout: 333dcb457a5a3bdd9212607ab5756553dcfe06cb
   BSImagePicker: 07404254f2fcdaf5a2eb403c0f8c337267ce8738
   BSImageView: a149459433a2687157d034c78e059d30ac7f2544
-  cloud_firestore: 8a2843c34901ea2bc6aafcaa1c452f5b4f1ade37
+  cloud_firestore: bb4fcf1d62a2bf48586fad7a7e9612f20a719cda
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Firebase: 21ac9f28b09a8bdfc005f34c984fca84e7e8786d
@@ -787,15 +775,14 @@ SPEC CHECKSUMS:
   FirebaseInstallations: ede6fb72bb6337914e5888b399271259d0c4910c
   FirebaseMessaging: ce0a5ee974f7bfe83b6cc5acce88c2d969e37c41
   FirebaseStorage: 2765944230981e63f8bd2938d9d5819158b7c34c
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_callkeep: 340717a2440e2a54dda6f61faa34491b6a419c3f
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_native_image: 9c0b7451838484458e5b0fae007b86a4c2d4bdfe
-  flutter_statusbar_text_color: bfeb27e69d90920ed6ebe0cbe83466011c75c4f4
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator_apple: b741765c55dc21950e3e106e8b3584e55cf81ce5
-  google_maps_flutter: 279865bd07e2d8751f43a3bc64bac7f6075d0c93
+  google_maps_flutter: abdb8dee6c52d4be36ad131ee6ebfacd14417c5a
   GoogleAppMeasurement: 2c0c6e2a7ab3fe730ade6379f732bdefb46f50b0
   GoogleDataTransport: 85fd18ff3019bb85d3f2c551d04c481dedf71fc9
   GoogleMaps: 086ae1dab659eaa7339bdb30fc88e2f44e7c597c
@@ -803,31 +790,32 @@ SPEC CHECKSUMS:
   "gRPC-C++": 13d8ccef97d5c3c441b7e3c529ef28ebee86fad2
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
-  image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
+  image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
   libphonenumber_plugin: 7cf755ad1656145935d6c208173a476bd3f12898
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
+  MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   multi_image_picker: 443e776a762d7901641854043b60abf88a85d5ef
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  open_appstore: 4eddfae38848002fdde8d42e1734d16cb34439de
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   photo_manager: 84fa94fbeb82e607333ea9a13c43b58e0903a463
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
+  qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
-  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
-  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
+  url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
+  video_player: ecd305f42e9044793efd34846e1ce64c31ea6fcb
   video_thumbnail: c4e2a3c539e247d4de13cd545344fd2d26ffafd1
-  webview_flutter: 3603125dfd3bcbc9d8d418c3f80aeecf331c068b
+  webview_flutter: 5fb4def2bbd4339889ee14d045b605cefc5bc232
   wifi_info_flutter: 55d4c2469034f5b5c38063ccefa62f708a503a2b
 
-PODFILE CHECKSUM: 1f907b9553bada3cfc8e88242bbf789c2ab4b5c2
+PODFILE CHECKSUM: a9033f327279a8c44e8b21b19a40da454be3916e
 
-COCOAPODS: 1.11.0
+COCOAPODS: 1.11.2

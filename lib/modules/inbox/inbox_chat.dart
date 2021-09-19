@@ -591,12 +591,12 @@ class _InboxChatState extends State<InboxChat> {
                   _inboxBloc.blockGroup(group.id);
                 }, navigatorKey: navigatorKey);
               }
-              if (val == 'Video call') {
-                VideoCallPage.navigate(group.id, _fbUsers);
-              }
-              if (val == 'Đưa vào tin nhắn chờ') {
-                VideoCallPage.navigate(group.id, _fbUsers);
-              }
+              // if (val == 'Video call') {
+              //   VideoCallPage.navigate(group.id, _fbUsers);
+              // }
+              // if (val == 'Đưa vào tin nhắn chờ') {
+              //   VideoCallPage.navigate(group.id, _fbUsers);
+              // }
             },
             child: SizedBox(
               width: 40,
