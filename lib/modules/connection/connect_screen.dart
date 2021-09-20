@@ -112,50 +112,50 @@ class _ConnectScreenState extends State<ConnectScreen> {
                                         fontWeight: FontWeight.w500),
                                   ),
                                   Spacer(),
-                                  IconButton(
-                                      icon: Container(
-                                        width: 32,
-                                        height: 32,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: ptPrimaryColorLight(context),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Image.asset(
-                                            "assets/image/icon_search.png",
-                                            width: 15,
-                                            height: 15,
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () => showUndoneFeature(
-                                          context, ["Tìm kiếm"])),
-                                  IconButton(
-                                    icon: Container(
-                                      width: 32,
-                                      height: 32,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: ptPrimaryColorLight(context),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Image.asset(
-                                          "assets/image/icon_filter.png",
-                                          width: 15,
-                                          height: 15,
-                                        ),
-                                      ),
-                                    ),
-                                    onPressed: () => showModalBottomSheet(
-                                      backgroundColor: Colors.transparent,
-                                      context: context,
-                                      builder: (context) => FilterConnectUser(
-                                        onFilter: (value) => {},
-                                      ),
-                                    ),
-                                  )
+                                  // IconButton(
+                                  //     icon: Container(
+                                  //       width: 32,
+                                  //       height: 32,
+                                  //       decoration: BoxDecoration(
+                                  //         shape: BoxShape.circle,
+                                  //         color: ptPrimaryColorLight(context),
+                                  //       ),
+                                  //       child: Padding(
+                                  //         padding: const EdgeInsets.all(8.0),
+                                  //         child: Image.asset(
+                                  //           "assets/image/icon_search.png",
+                                  //           width: 15,
+                                  //           height: 15,
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //     onPressed: () => showUndoneFeature(
+                                  //         context, ["Tìm kiếm"])),
+                                  // IconButton(
+                                  //   icon: Container(
+                                  //     width: 32,
+                                  //     height: 32,
+                                  //     decoration: BoxDecoration(
+                                  //       shape: BoxShape.circle,
+                                  //       color: ptPrimaryColorLight(context),
+                                  //     ),
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(8.0),
+                                  //       child: Image.asset(
+                                  //         "assets/image/icon_filter.png",
+                                  //         width: 15,
+                                  //         height: 15,
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  //   onPressed: () => showModalBottomSheet(
+                                  //     backgroundColor: Colors.transparent,
+                                  //     context: context,
+                                  //     builder: (context) => FilterConnectUser(
+                                  //       onFilter: (value) => {},
+                                  //     ),
+                                  //   ),
+                                  // )
                                 ],
                               )
                             : SizedBox.shrink()),

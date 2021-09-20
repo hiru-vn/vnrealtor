@@ -2,11 +2,9 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/notification_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/group/detail_group_page.dart';
-import 'package:datcao/modules/inbox/import/app_bar.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
-import 'package:datcao/modules/setting/setting_notify_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 
@@ -181,9 +179,10 @@ class _NotificationTabState extends State<NotificationTab> {
                       },
                       leading: CircleAvatar(
                         radius: 22,
+                        backgroundColor: Colors.white,
                         backgroundImage: (list[index].avatar == null ||
                                 list[index].avatar == '')
-                            ? AssetImage('assets/image/icon_white.png')
+                            ? AssetImage('assets/image/default_avatar.png')
                             : NetworkImage(list[index].avatar),
                       ),
                       title: Text(
@@ -419,7 +418,7 @@ class FollowTab extends StatelessWidget {
                   radius: 22,
                   backgroundImage:
                       (list[index].avatar == null || list[index].avatar == '')
-                          ? AssetImage('assets/image/icon_white.png')
+                          ? AssetImage('assets/image/default_avatar.png')
                           : NetworkImage(list[index].avatar),
                 ),
                 title: Text(

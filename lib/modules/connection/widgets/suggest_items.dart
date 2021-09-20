@@ -86,9 +86,9 @@ class UserSuggestItem extends StatelessWidget {
                   child: Text(
                     user.name,
                     style: roboto(context).copyWith(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: HexColor.fromHex("#505050")),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 SizedBox(

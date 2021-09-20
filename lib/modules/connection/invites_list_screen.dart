@@ -1,5 +1,6 @@
 import 'package:datcao/modules/bloc/invite_bloc.dart';
 import 'package:datcao/modules/connection/widgets/user_connect_item.dart';
+import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/load_more.dart';
 
@@ -36,7 +37,7 @@ class _InvitesListScreenState extends State<InvitesListScreen>
     super.didChangeDependencies();
   }
 
-  void _deleteInvite() {
+  void _deleteInvite({String id, bool isSent = false}) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -46,7 +47,7 @@ class _InvitesListScreenState extends State<InvitesListScreen>
           ),
         ),
         content: Text(
-            "Nếu bạn thu hồi lời mời, bạn sẽ không được gửi lời mời cho người dùng này trong 1 ngày nữa "),
+            "Nếu bạn xoá lời mời, bạn sẽ không được gửi lời mời cho người dùng này trong 1 ngày nữa "),
         actions: [
           TextButton(
             child: Text(
@@ -60,12 +61,36 @@ class _InvitesListScreenState extends State<InvitesListScreen>
               "Xoá",
               style: ptBody().copyWith(color: ptSecondaryColor(context)),
             ),
-            onPressed: () {
+            onPressed: () async {
               showWaitingDialog(context);
-
+              await _inviteBloc.deleteInviteSent(id: id, isSent: isSent);
               Navigator.of(context).pop();
             },
           )
+        ],
+      ),
+    );
+  }
+
+  void _acceptInviteFollow({String id, UserModel user}) async {
+    showWaitingDialog(context);
+    await _inviteBloc.acceptInviteFollow(id: id);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Center(
+            child: Text(
+          "Kết bạn thành công",
+        )),
+        content: Text("Bạn và ${user.name} đã trở thành bạn bè"),
+        actions: [
+          TextButton(
+            child: Text(
+              "Xong",
+              style: ptBody().copyWith(color: ptSecondaryColor(context)),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ],
       ),
     );
@@ -169,12 +194,17 @@ class _InvitesListScreenState extends State<InvitesListScreen>
                                               ? UserConnectItemLoading()
                                               : UserConnectItem(
                                                   user: _inviteBloc
-                                                      .invitesReceived[index],
+                                                      .invitesReceived[index]
+                                                      .fromUser,
                                                   actions: [
                                                     TextButton(
-                                                      onPressed: () {
-                                                        print("");
-                                                      },
+                                                      onPressed: () =>
+                                                          _deleteInvite(
+                                                              id: _inviteBloc
+                                                                  .invitesReceived[
+                                                                      index]
+                                                                  .id,
+                                                              isSent: false),
                                                       child: Text(
                                                         "Xoá",
                                                         style: roboto(context)
@@ -186,7 +216,15 @@ class _InvitesListScreenState extends State<InvitesListScreen>
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
-                                                        print("");
+                                                        _acceptInviteFollow(
+                                                            id: _inviteBloc
+                                                                .invitesReceived[
+                                                                    index]
+                                                                .id,
+                                                            user: _inviteBloc
+                                                                .invitesReceived[
+                                                                    index]
+                                                                .fromUser);
                                                       },
                                                       child: Text(
                                                         "Chấp nhận",
@@ -251,10 +289,17 @@ class _InvitesListScreenState extends State<InvitesListScreen>
                                               ? UserConnectItemLoading()
                                               : UserConnectItem(
                                                   user: _inviteBloc
-                                                      .invitesSent[index],
+                                                      .invitesSent[index]
+                                                      .toUser,
                                                   actions: [
                                                     TextButton(
-                                                      onPressed: _deleteInvite,
+                                                      onPressed: () =>
+                                                          _deleteInvite(
+                                                              id: _inviteBloc
+                                                                  .invitesSent[
+                                                                      index]
+                                                                  .id,
+                                                              isSent: true),
                                                       child: Text(
                                                         "Thu hồi",
                                                         style: roboto(context)

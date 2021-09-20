@@ -184,6 +184,7 @@ class ListUserConnection extends StatelessWidget {
                   ? SuggestItemLoading()
                   : UserSuggestItem(
                       user: users[index],
+                      userBloc: userBloc,
                     ),
             ),
           ),

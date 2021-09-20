@@ -26,11 +26,20 @@ class PagesPage extends StatefulWidget {
   _PagesPageState createState() => _PagesPageState();
 }
 
-class _PagesPageState extends State<PagesPage> {
+class _PagesPageState extends State<PagesPage>
+    with SingleTickerProviderStateMixin {
   PagesBloc _pagesBloc;
   AuthBloc _authBloc;
+  TabController _tabController;
+  int currentTab = 0;
 
   bool isDataPageLoading = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -113,10 +122,57 @@ class _PagesPageState extends State<PagesPage> {
                             ? SuggestListPages(
                                 suggest: _pagesBloc.suggestFollowPage)
                             : const SizedBox(),
-                        _buildSectionOwnPage(),
-                        _buildPageBodySection(
-                            'Trang đã theo dõi', AppImages.icPageFollow),
-                        _buildSectionPageFollow(),
+                        Container(
+                          color: ptPrimaryColor(context),
+                          child: TabBar(
+                            tabs: [
+                              Align(
+                                alignment: Alignment.center,
+                                child: Text("Trang của bạn"),
+                              ),
+                              Align(
+                                  alignment: Alignment.center,
+                                  child: Text("Trang đã theo dõi"))
+                            ],
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            onTap: (value) {
+                              setState(() {
+                                currentTab = value;
+                              });
+                            },
+                            indicatorWeight: 3,
+                            indicatorColor: ptSecondColor(),
+                            labelPadding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            indicatorPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            controller: _tabController,
+                            labelColor: ptSecondColor(),
+                            unselectedLabelColor: Theme.of(context).accentColor,
+                            unselectedLabelStyle:
+                                TextStyle(fontSize: 14, color: Colors.black12),
+                            labelStyle: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        AnimatedBuilder(
+                            animation: _tabController.animation,
+                            builder: (ctx, child) {
+                              if (_tabController.index == 0) {
+                                return Expanded(
+                                  child: _buildListPageCreate(),
+                                );
+                              } else
+                                return Expanded(
+                                  child: _buildListPageFollow(),
+                                );
+                            }),
+
+                        // _buildPageBodySection(
+                        //     'Trang đã theo dõi', AppImages.icPageFollow),
+                        //_buildSectionPageFollow(),
                         // heightSpace(10),
                         // _buildPageBodySection(
                         //     'Lời mời thích trang ', AppImages.icPageLike),
@@ -188,7 +244,9 @@ class _PagesPageState extends State<PagesPage> {
               children: _listWidget,
             ),
           )
-        : const SizedBox();
+        : const Center(
+            child: Text("Bạn chưa có trang nào"),
+          );
   }
 
   Widget _buildListPageFollow() {

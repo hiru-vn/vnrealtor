@@ -72,7 +72,7 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                     height: 30,
                   ),
                   text: "Danh bạ",
-                  subIcon: Text("0"),
+                  // subIcon: Text("0"),
                 ),
                 Divider(
                   height: 1,
@@ -113,8 +113,8 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                     height: 30,
                   ),
                   text: "Trang",
-                  subIcon:
-                      Text("${AuthBloc.instance.userModel.groupIds.length}"),
+                  // subIcon:
+                  //     Text("${AuthBloc.instance.userModel.groupIds.length}"),
                 ),
                 Divider(
                   height: 1,
@@ -127,7 +127,7 @@ class _ManagerConnectionScreenState extends State<ManagerConnectionScreen> {
                     height: 30,
                   ),
                   text: "Hashtag",
-                  subIcon: Text("0"),
+                  // subIcon: Text("0"),
                 ),
               ],
             ),

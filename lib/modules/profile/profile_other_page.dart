@@ -502,7 +502,8 @@ class _ProfileCardState extends State<ProfileCard> {
                           child: SizedBox(
                               width: 23,
                               height: 23,
-                              child: Image.asset('assets/image/logo.png')),
+                              child: Image.asset(
+                                  'assets/image/default_avatar.png')),
                         ),
                     ],
                   ),

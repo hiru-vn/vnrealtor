@@ -64,6 +64,8 @@ class UserBloc extends ChangeNotifier {
   }
 
   ScrollController profileScrollController = ScrollController();
+  ScrollController usersFollowedScrollController = ScrollController();
+
   List<FriendshipModel> friendRequestFromOtherUsers = [];
   List<UserModel> followersIn7Days = [];
   List<UserModel> suggestFollowUsers = [];
@@ -71,6 +73,9 @@ class UserBloc extends ChangeNotifier {
   List<UserModel> usersFollowed = [];
   bool isLoadingUserSuggest = true;
   bool isLoadingUsersIn = true;
+  bool isLoadingUsersFollowed = true;
+  bool isEndUsersFollowed = false;
+  bool isLoadMoreUsersFollowed = true;
 
   Future init() async {
     final token = await SPref.instance.get('token');
@@ -386,7 +391,8 @@ class UserBloc extends ChangeNotifier {
     try {
       suggestFollowUsers =
           suggestFollowUsers.where((element) => element.id != uID).toList();
-    } catch (e) {} finally {
+    } catch (e) {
+    } finally {
       notifyListeners();
     }
   }

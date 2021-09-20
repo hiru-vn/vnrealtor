@@ -46,86 +46,87 @@ class _LoginPageState extends State<LoginPage> {
       final res = await _authBloc.signIn(_nameC.text, _passC.text);
       closeLoading();
       if (res.isSuccess) {
-        showModalBottomSheet(
-          backgroundColor: Colors.transparent,
-          context: context,
-          builder: (context) => Container(
-            decoration: BoxDecoration(
-              color: ptPrimaryColor(context),
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(15),
-              ),
-            ),
-            child: Column(
-              children: [
-                Container(
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: ptMainColor(context),
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(15),
-                      ),
-                    ),
-                    child: Center(
-                      child: Text("ĐĂNG NHẬP THÀNH CÔNG!",
-                          style: roboto_18_700()
-                              .copyWith(fontSize: 20, color: Colors.white)),
-                    )),
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "ĐĂNG KÝ ĐỂ TẠO TRANG VÀ NHÓM CHO CÔNG TY",
-                        textAlign: TextAlign.center,
-                        style: roboto_18_700().copyWith(
-                          fontSize: 20,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 40),
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: 'Bật thông báo ',
-                                style: roboto(context).copyWith(
-                                    fontWeight: FontWeight.w400, fontSize: 15),
-                              ),
-                              TextSpan(
-                                text: 'tại đây',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () => HomePage.navigate(),
-                                style: roboto(context).copyWith(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 15,
-                                    color: Colors.blue),
-                              ),
-                              TextSpan(
-                                text: ' để nhận được thông tin mới nhất ',
-                                style: roboto(context).copyWith(
-                                    fontWeight: FontWeight.w400, fontSize: 15),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      ExpandBtn(
-                          text: "TRANG CHỦ",
-                          width: 100,
-                          onPress: () => HomePage.navigate())
-                    ],
-                  ),
-                ))
-              ],
-            ),
-          ),
-        );
+        HomePage.navigate();
+        // showModalBottomSheet(
+        //   backgroundColor: Colors.transparent,
+        //   context: context,
+        //   builder: (context) => Container(
+        //     decoration: BoxDecoration(
+        //       color: ptPrimaryColor(context),
+        //       borderRadius: BorderRadius.vertical(
+        //         top: Radius.circular(15),
+        //       ),
+        //     ),
+        //     child: Column(
+        //       children: [
+        //         Container(
+        //             height: 80,
+        //             decoration: BoxDecoration(
+        //               color: ptMainColor(context),
+        //               borderRadius: BorderRadius.vertical(
+        //                 top: Radius.circular(15),
+        //               ),
+        //             ),
+        //             child: Center(
+        //               child: Text("ĐĂNG NHẬP THÀNH CÔNG!",
+        //                   style: roboto_18_700()
+        //                       .copyWith(fontSize: 20, color: Colors.white)),
+        //             )),
+        //         Expanded(
+        //             child: Padding(
+        //           padding: const EdgeInsets.all(20),
+        //           child: Column(
+        //             crossAxisAlignment: CrossAxisAlignment.center,
+        //             mainAxisAlignment: MainAxisAlignment.center,
+        //             children: [
+        //               Text(
+        //                 "ĐĂNG KÝ ĐỂ TẠO TRANG VÀ NHÓM CHO CÔNG TY",
+        //                 textAlign: TextAlign.center,
+        //                 style: roboto_18_700().copyWith(
+        //                   fontSize: 20,
+        //                 ),
+        //               ),
+        //               Padding(
+        //                 padding: const EdgeInsets.symmetric(
+        //                     vertical: 10, horizontal: 40),
+        //                 child: RichText(
+        //                   textAlign: TextAlign.center,
+        //                   text: TextSpan(
+        //                     children: <TextSpan>[
+        //                       TextSpan(
+        //                         text: 'Bật thông báo ',
+        //                         style: roboto(context).copyWith(
+        //                             fontWeight: FontWeight.w400, fontSize: 15),
+        //                       ),
+        //                       TextSpan(
+        //                         text: 'tại đây',
+        //                         recognizer: TapGestureRecognizer()
+        //                           ..onTap = () => HomePage.navigate(),
+        //                         style: roboto(context).copyWith(
+        //                             fontWeight: FontWeight.w400,
+        //                             fontSize: 15,
+        //                             color: Colors.blue),
+        //                       ),
+        //                       TextSpan(
+        //                         text: ' để nhận được thông tin mới nhất ',
+        //                         style: roboto(context).copyWith(
+        //                             fontWeight: FontWeight.w400, fontSize: 15),
+        //                       ),
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ),
+        //               ExpandBtn(
+        //                   text: "TRANG CHỦ",
+        //                   width: 100,
+        //                   onPress: () => HomePage.navigate())
+        //             ],
+        //           ),
+        //         ))
+        //       ],
+        //     ),
+        //   ),
+        // );
       } else {
         showToast(res.errMessage, context);
       }

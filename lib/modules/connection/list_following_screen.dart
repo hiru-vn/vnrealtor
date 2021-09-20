@@ -1,6 +1,7 @@
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/connection/widgets/user_connect_item.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/load_more.dart';
 
 class ListFollowingScreen extends StatefulWidget {
   final List<String> userFollowing;
@@ -40,21 +41,32 @@ class _ListFollowingScreenState extends State<ListFollowingScreen> {
             ],
             title: "Theo dõi",
           ),
-          body: Container(
-            height: deviceHeight(context),
-            child: ListView.separated(
-              separatorBuilder: (context, index) => Divider(
-                height: 1,
+          body: LoadMoreScrollView(
+            scrollController: _userBloc.usersFollowedScrollController,
+            onLoadMore: () {
+              // _groupBloc.loadMoreNewFeedGroup();
+            },
+            list: RefreshIndicator(
+              color: ptPrimaryColor(context),
+              onRefresh: () async {
+                audioCache.play('tab3.mp3');
+                _userBloc.getUserFollowed();
+              },
+              child: ListView.separated(
+                controller: _userBloc.usersFollowedScrollController,
+                separatorBuilder: (context, index) => Divider(
+                  height: 1,
+                ),
+                itemCount: _userBloc.isLoadingUsersIn
+                    ? 10
+                    : _userBloc.usersFollowed.length,
+                itemBuilder: (context, index) => _userBloc.isLoadingUsersIn
+                    ? UserConnectItemLoading()
+                    : UserConnectItem(
+                        user: _userBloc.usersFollowed[index],
+                        actions: [],
+                      ),
               ),
-              itemCount: _userBloc.isLoadingUsersIn
-                  ? 10
-                  : _userBloc.usersFollowed.length,
-              itemBuilder: (context, index) => _userBloc.isLoadingUsersIn
-                  ? UserConnectItemLoading()
-                  : UserConnectItem(
-                      user: _userBloc.usersFollowed[index],
-                      actions: [],
-                    ),
             ),
           ),
         ),

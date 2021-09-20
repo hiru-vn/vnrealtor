@@ -36,7 +36,7 @@ class ConnectionItem extends StatelessWidget {
                 ),
               ),
               Spacer(),
-              subIcon
+              subIcon ?? SizedBox()
             ],
           ),
         ),

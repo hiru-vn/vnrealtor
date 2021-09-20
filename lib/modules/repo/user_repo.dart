@@ -166,9 +166,10 @@ Page: "$page"
 
   Future getAllInviteFollow({GraphqlFilter filter}) async {
     final res = await UserSrv().query('getAllInviteFollow',
-        'q:{limit: ${filter.limit}, page: ${filter.page ?? 1}, offset: ${filter.offset}, filter: ${filter.filter}, search: "${filter.search}" , order: ${filter.order} }',
+        'q:{limit: ${filter.limit}, page: ${filter.page ?? 1}, offset: ${filter.offset}, filter: ${filter.filter}, search: "${filter.search}" , order: ${filter.order}}',
         fragment: '''
         data {
+          id
      toUser{
        $userFragment
      }
@@ -187,6 +188,15 @@ Page: "$page"
         id
     ''');
     return res['deleteOneInviteFollow'];
+  }
+
+  Future acceptInviteFollow({String id}) async {
+    final res = await UserSrv().mutate('acceptInviteFollow', '''
+    inviteFollowId: "$id"
+    ''', fragment: '''
+        id
+    ''');
+    return res['acceptInviteFollow'];
   }
 
   Future setUserlocation(

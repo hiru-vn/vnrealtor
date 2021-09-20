@@ -144,8 +144,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
 
                                         return 'Người dùng';
                                       })(),
-                                      style: ptSmall()
-                                          .copyWith(color: Colors.black),
+                                      style: ptSmall(),
                                     ),
                                   ),
                                 ],
@@ -182,9 +181,10 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                                 ?.contains(
                                                     widget.users[index].id) ==
                                             true)
-                                        ? Border.all(color: Colors.black12)
+                                        ? Border.all(
+                                            color: ptSecondaryColor(context))
                                         : Border.all(
-                                            color: ptPrimaryColor(context)
+                                            color: ptSecondaryColor(context)
                                                 .withOpacity(0.2)),
                                     color: (AuthBloc.instance.userModel
                                                 ?.followingIds
@@ -192,7 +192,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                                     widget.users[index].id) ==
                                             true)
                                         ? Colors.transparent
-                                        : ptSecondaryColor(context),
+                                        : ptPrimaryColor(context),
                                     borderRadius: BorderRadius.circular(3),
                                   ),
                                   child: Center(
@@ -217,7 +217,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                                   : 'Theo dõi')),
                                       style: ptSmall().copyWith(
                                         fontWeight: FontWeight.w600,
-                                        color: ptPrimaryColor(context),
+                                        color: ptSecondaryColor(context),
                                       ),
                                     ),
                                   ),

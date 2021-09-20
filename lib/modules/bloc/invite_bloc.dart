@@ -1,5 +1,5 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
-import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/model/invite.dart';
 import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
 
@@ -8,8 +8,8 @@ class InviteBloc extends ChangeNotifier {
     //init();
   }
   static final InviteBloc instance = InviteBloc._privateConstructor();
-  List<UserModel> invitesSent = [];
-  List<UserModel> invitesReceived = [];
+  List<InviteModel> invitesSent = [];
+  List<InviteModel> invitesReceived = [];
   int invitesSentPage = 1;
   int invitesReceivedPage = 1;
 
@@ -25,10 +25,11 @@ class InviteBloc extends ChangeNotifier {
       isLoadingInvitesSent = true;
       GraphqlFilter _filter = GraphqlFilter(
           limit: 10,
-          filter: "{fromUserId: \"${AuthBloc.instance.userModel.id}\"}");
+          filter:
+              "{fromUserId: \"${AuthBloc.instance.userModel.id}\", status:\"PROCESSING\"}");
       final res = await UserRepo().getAllInviteFollow(filter: _filter);
       final List listRaw = res['data'];
-      final list = listRaw.map((e) => UserModel.fromJson(e['toUser'])).toList();
+      final list = listRaw.map((e) => InviteModel.fromJson(e)).toList();
       if (list.length < _filter.limit) isEndInvitesSent = true;
       invitesSent = list;
       invitesSentPage = 1;
@@ -47,11 +48,11 @@ class InviteBloc extends ChangeNotifier {
       isLoadingInvitesReceived = true;
       GraphqlFilter _filter = GraphqlFilter(
           limit: 10,
-          filter: "{toUserId: \"${AuthBloc.instance.userModel.id}\"}");
+          filter:
+              "{toUserId: \"${AuthBloc.instance.userModel.id}\",status:\"PROCESSING\"}");
       final res = await UserRepo().getAllInviteFollow(filter: _filter);
       final List listRaw = res['data'];
-      final list =
-          listRaw.map((e) => UserModel.fromJson(e['fromUser'])).toList();
+      final list = listRaw.map((e) => InviteModel.fromJson(e)).toList();
       if (list.length < _filter.limit) isEndInvitesReceived = true;
       invitesReceived = list;
       invitesReceivedPage = 1;
@@ -64,11 +65,30 @@ class InviteBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> deleteInviteSent({String id, String userID}) async {
+  Future<BaseResponse> deleteInviteSent(
+      {String id, bool isSent = false}) async {
     try {
       final res = await UserRepo().deleteInvites(id: id);
-      invitesSent =
-          invitesSent.where((element) => element.id == userID).toList();
+      if (isSent) {
+        invitesSent = invitesSent.where((element) => element.id != id).toList();
+      } else {
+        invitesReceived =
+            invitesReceived.where((element) => element.id != id).toList();
+      }
+      return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> acceptInviteFollow({String id}) async {
+    try {
+      final res = await UserRepo().acceptInviteFollow(id: id);
+      invitesReceived =
+          invitesReceived.where((element) => element.id != id).toList();
+      await AuthBloc.instance.getUser();
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
