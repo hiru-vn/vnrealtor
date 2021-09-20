@@ -233,7 +233,7 @@ Page: "$page"
 
   Future getListUserIn(List<String> ids) async {
     final res = await UserSrv().query('getAllUserForClient',
-        'q:{order: {createdAt: 1} filter: {_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}}',
+        'q:{order: {createdAt: 1} limit:30 filter: {_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}}',
         fragment: '''
         data {
     ${userFragment.replaceAll('_id', '')}

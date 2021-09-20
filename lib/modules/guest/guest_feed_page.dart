@@ -383,7 +383,7 @@ class GuestFeedPageAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      brightness: Theme.of(context).brightness,
+      backgroundColor: ptPrimaryColor(context),
       title: Row(
         children: [
           Image.asset(

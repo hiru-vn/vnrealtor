@@ -130,7 +130,8 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         showToast(res.errMessage, context);
       }
-    } catch (e) {} finally {}
+    } catch (e) {
+    } finally {}
   }
 
   @override
@@ -142,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
           "ĐĂNG NHẬP",
           style: roboto_18_700().copyWith(color: ptMainColor(context)),
         )),
-        brightness: Theme.of(context).brightness,
+        backgroundColor: ptPrimaryColor(context),
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
