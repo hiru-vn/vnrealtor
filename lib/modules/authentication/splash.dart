@@ -66,6 +66,8 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    final bool isDarkMode = brightness == Brightness.dark;
     return Scaffold(
       body: Stack(
         children: [
@@ -84,14 +86,18 @@ class _SplashPageState extends State<SplashPage> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 200),
-                    child: Image.asset('assets/image/vertical_logo.png'),
+                    padding: const EdgeInsets.only(
+                      top: 200,
+                    ),
+                    child: Image.asset(isDarkMode
+                        ? 'assets/image/vertical_logo_dark.png'
+                        : 'assets/image/vertical_logo.png'),
                   ),
-                  Text(
-                    "Uy tín - Nhanh chóng - An toàn",
-                    style: roboto_18_700()
-                        .copyWith(color: HexColor.fromHex("#2A2A72")),
-                  ),
+                  Text("Uy tín - Nhanh chóng - An toàn",
+                      style: roboto_18_700().copyWith(
+                          color: isDarkMode
+                              ? Colors.white
+                              : ptMainColor(context))),
                   Spacer(),
                 ],
               ),

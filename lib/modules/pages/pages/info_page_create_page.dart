@@ -64,8 +64,10 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 20,
+                ),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -96,7 +98,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
         if (_pagesBloc.isLoading)
           Container(
             height: deviceHeight(context),
-            color: ptSecondaryColor(context),
+            color: ptPrimaryColor(context),
             child: ActivityIndicator(),
           )
       ],

@@ -8,21 +8,41 @@ class InviteBloc extends ChangeNotifier {
     //init();
   }
   static final InviteBloc instance = InviteBloc._privateConstructor();
-  List<InviteModel> invitesSent = [];
-  List<InviteModel> invitesReceived = [];
-  int invitesSentPage = 1;
-  int invitesReceivedPage = 1;
+  List<InviteModel> invitesUserSent = [];
+  List<InviteModel> invitesUserReceived = [];
+  List<InviteModel> invitesPageSent = [];
+  List<InviteModel> invitesPageReceived = [];
+  List<InviteModel> invitesGroupSent = [];
+  List<InviteModel> invitesGroupReceived = [];
+  int invitesUserSentPage = 1;
+  int invitesUserReceivedPage = 1;
+  int invitesPageSentPage = 1;
+  int invitesPageReceivedPage = 1;
+  int invitesGroupSentPage = 1;
+  int invitesGroupReceivedPage = 1;
 
-  bool isEndInvitesSent = false,
-      isEndInvitesReceived = false,
-      isLoadingInvitesSent = false,
-      isLoadingInvitesReceived = false;
-  ScrollController invitesSentScrollController = ScrollController();
-  ScrollController invitesReceivedScrollController = ScrollController();
-  Future<BaseResponse> getInvitesSent() async {
+  bool isEndInvitesUserSent = false,
+      isEndInvitesUserReceived = false,
+      isLoadingInvitesUserSent = false,
+      isLoadingInvitesUserReceived = false,
+      isEndInvitesPageSent = false,
+      isEndInvitesPageReceived = false,
+      isLoadingInvitesPageSent = false,
+      isLoadingInvitesPageReceived = false,
+      isEndInvitesGroupSent = false,
+      isEndInvitesGroupReceived = false,
+      isLoadingInvitesGroupSent = false,
+      isLoadingInvitesGroupReceived = false;
+  ScrollController invitesUserSentScrollController = ScrollController();
+  ScrollController invitesUserReceivedScrollController = ScrollController();
+  ScrollController invitesPageSentScrollController = ScrollController();
+  ScrollController invitesPageReceivedScrollController = ScrollController();
+  ScrollController invitesGroupSentScrollController = ScrollController();
+  ScrollController invitesGroupReceivedScrollController = ScrollController();
+  Future<BaseResponse> getInvitesUserSent() async {
     try {
-      isEndInvitesSent = false;
-      isLoadingInvitesSent = true;
+      isEndInvitesUserSent = false;
+      isLoadingInvitesUserSent = true;
       GraphqlFilter _filter = GraphqlFilter(
           limit: 10,
           filter:
@@ -30,22 +50,22 @@ class InviteBloc extends ChangeNotifier {
       final res = await UserRepo().getAllInviteFollow(filter: _filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => InviteModel.fromJson(e)).toList();
-      if (list.length < _filter.limit) isEndInvitesSent = true;
-      invitesSent = list;
-      invitesSentPage = 1;
+      if (list.length < _filter.limit) isEndInvitesUserSent = true;
+      invitesUserSent = list;
+      invitesUserSentPage = 1;
       return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
-      isLoadingInvitesSent = false;
+      isLoadingInvitesUserSent = false;
       notifyListeners();
     }
   }
 
-  Future<BaseResponse> getInvitesReceived() async {
+  Future<BaseResponse> getInvitesUserReceived() async {
     try {
-      isEndInvitesReceived = false;
-      isLoadingInvitesReceived = true;
+      isEndInvitesUserReceived = false;
+      isLoadingInvitesUserReceived = true;
       GraphqlFilter _filter = GraphqlFilter(
           limit: 10,
           filter:
@@ -53,14 +73,14 @@ class InviteBloc extends ChangeNotifier {
       final res = await UserRepo().getAllInviteFollow(filter: _filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => InviteModel.fromJson(e)).toList();
-      if (list.length < _filter.limit) isEndInvitesReceived = true;
-      invitesReceived = list;
-      invitesReceivedPage = 1;
+      if (list.length < _filter.limit) isEndInvitesUserReceived = true;
+      invitesUserReceived = list;
+      invitesUserReceivedPage = 1;
       return BaseResponse.success(list);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
-      isLoadingInvitesReceived = false;
+      isLoadingInvitesUserReceived = false;
       notifyListeners();
     }
   }
@@ -70,10 +90,11 @@ class InviteBloc extends ChangeNotifier {
     try {
       final res = await UserRepo().deleteInvites(id: id);
       if (isSent) {
-        invitesSent = invitesSent.where((element) => element.id != id).toList();
+        invitesUserSent =
+            invitesUserSent.where((element) => element.id != id).toList();
       } else {
-        invitesReceived =
-            invitesReceived.where((element) => element.id != id).toList();
+        invitesUserReceived =
+            invitesUserReceived.where((element) => element.id != id).toList();
       }
       return BaseResponse.success(res);
     } catch (e) {
@@ -86,8 +107,8 @@ class InviteBloc extends ChangeNotifier {
   Future<BaseResponse> acceptInviteFollow({String id}) async {
     try {
       final res = await UserRepo().acceptInviteFollow(id: id);
-      invitesReceived =
-          invitesReceived.where((element) => element.id != id).toList();
+      invitesUserReceived =
+          invitesUserReceived.where((element) => element.id != id).toList();
       await AuthBloc.instance.getUser();
       return BaseResponse.success(res);
     } catch (e) {

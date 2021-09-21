@@ -5,6 +5,7 @@ import 'package:datcao/modules/group/detail_group_page.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
+import 'package:datcao/share/function/time_ago.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 
@@ -173,7 +174,7 @@ class _NotificationTabState extends State<NotificationTab> {
               itemBuilder: (context, index) => list[index].runtimeType ==
                       UserModel
                   ? ListTile(
-                      tileColor: ptBackgroundColor(context),
+                      tileColor: ptPrimaryColor(context),
                       onTap: () {
                         ProfileOtherPage.navigate(list[index]);
                       },
@@ -190,7 +191,9 @@ class _NotificationTabState extends State<NotificationTab> {
                         style: ptBody(),
                       ),
                       subtitle: Text(
-                        Formart.timeByDayVi(
+                        // Formart.timeByDayVi(
+                        //         DateTime.tryParse(list[index].updatedAt)) ??
+                        TimeAgo.timeAgoSinceDate(
                                 DateTime.tryParse(list[index].updatedAt)) ??
                             '',
                         style: ptTiny(),
@@ -235,8 +238,8 @@ class _NotificationTabState extends State<NotificationTab> {
                         style: ptBody(),
                       ),
                       subtitle: Text(
-                        Formart.timeByDayVi(
-                                DateTime.tryParse(list[index].createdAt)) ??
+                        TimeAgo.timeAgoSinceDate(
+                                DateTime.tryParse(list[index].updatedAt)) ??
                             '',
                         style: ptTiny(),
                       ),

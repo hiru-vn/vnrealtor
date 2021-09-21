@@ -31,69 +31,10 @@ class _InvitesListScreenState extends State<InvitesListScreen>
     // TODO: implement didChangeDependencies
     if (_inviteBloc == null) {
       _inviteBloc = Provider.of<InviteBloc>(context);
-      _inviteBloc.getInvitesReceived();
-      _inviteBloc.getInvitesSent();
+      _inviteBloc.getInvitesUserReceived();
+      _inviteBloc.getInvitesUserSent();
     }
     super.didChangeDependencies();
-  }
-
-  void _deleteInvite({String id, bool isSent = false}) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Center(
-          child: Text(
-            "Xoá lời mời",
-          ),
-        ),
-        content: Text(
-            "Nếu bạn xoá lời mời, bạn sẽ không được gửi lời mời cho người dùng này trong 1 ngày nữa "),
-        actions: [
-          TextButton(
-            child: Text(
-              "Huỷ",
-              style: ptBody().copyWith(color: ptSecondaryColor(context)),
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          TextButton(
-            child: Text(
-              "Xoá",
-              style: ptBody().copyWith(color: ptSecondaryColor(context)),
-            ),
-            onPressed: () async {
-              showWaitingDialog(context);
-              await _inviteBloc.deleteInviteSent(id: id, isSent: isSent);
-              Navigator.of(context).pop();
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  void _acceptInviteFollow({String id, UserModel user}) async {
-    showWaitingDialog(context);
-    await _inviteBloc.acceptInviteFollow(id: id);
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Center(
-            child: Text(
-          "Kết bạn thành công",
-        )),
-        content: Text("Bạn và ${user.name} đã trở thành bạn bè"),
-        actions: [
-          TextButton(
-            child: Text(
-              "Xong",
-              style: ptBody().copyWith(color: ptSecondaryColor(context)),
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -147,177 +88,812 @@ class _InvitesListScreenState extends State<InvitesListScreen>
                   builder: (ctx, child) {
                     if (_tabController.index == 0) {
                       return Expanded(
-                        child: LoadMoreScrollView(
-                            scrollController:
-                                _inviteBloc.invitesReceivedScrollController,
-                            onLoadMore: () {
-                              //  _inviteBloc.loadMoreNewFeedGroup();
-                            },
-                            list: RefreshIndicator(
-                              color: ptPrimaryColor(context),
-                              onRefresh: () async {
-                                audioCache.play('tab3.mp3');
-                                _inviteBloc.getInvitesReceived();
-                                return true;
-                              },
-                              child: (!_inviteBloc.isLoadingInvitesReceived &&
-                                      _inviteBloc.invitesReceived.isEmpty)
-                                  ? Center(
-                                      child: Container(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Image.asset(
-                                              "assets/image/invite_image.png",
-                                              width: 200,
-                                            ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            Text(
-                                              "Không có lời mời nào!",
-                                              style: ptBigBody(),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  : ListView.builder(
-                                      controller: _inviteBloc
-                                          .invitesReceivedScrollController,
-                                      itemCount: _inviteBloc
-                                              .isLoadingInvitesReceived
-                                          ? 10
-                                          : _inviteBloc.invitesReceived.length,
-                                      itemBuilder: (context, index) =>
-                                          _inviteBloc.isLoadingInvitesReceived
-                                              ? UserConnectItemLoading()
-                                              : UserConnectItem(
-                                                  user: _inviteBloc
-                                                      .invitesReceived[index]
-                                                      .fromUser,
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () =>
-                                                          _deleteInvite(
-                                                              id: _inviteBloc
-                                                                  .invitesReceived[
-                                                                      index]
-                                                                  .id,
-                                                              isSent: false),
-                                                      child: Text(
-                                                        "Xoá",
-                                                        style: roboto(context)
-                                                            .copyWith(
-                                                                color:
-                                                                    ptSecondaryColor(
-                                                                        context)),
-                                                      ),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        _acceptInviteFollow(
-                                                            id: _inviteBloc
-                                                                .invitesReceived[
-                                                                    index]
-                                                                .id,
-                                                            user: _inviteBloc
-                                                                .invitesReceived[
-                                                                    index]
-                                                                .fromUser);
-                                                      },
-                                                      child: Text(
-                                                        "Chấp nhận",
-                                                        style: roboto(context)
-                                                            .copyWith(
-                                                                color:
-                                                                    ptSecondaryColor(
-                                                                        context)),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                    ),
-                            )),
-                      );
+                          child: ListInvitesUserReceived(
+                        inviteBloc: _inviteBloc,
+                      ));
                     } else
                       return Expanded(
-                        child: LoadMoreScrollView(
-                            scrollController:
-                                _inviteBloc.invitesSentScrollController,
-                            onLoadMore: () {
-                              //  _inviteBloc.loadMoreNewFeedGroup();
-                            },
-                            list: RefreshIndicator(
-                              color: ptPrimaryColor(context),
-                              onRefresh: () async {
-                                audioCache.play('tab3.mp3');
-                                _inviteBloc.getInvitesSent();
-                                return true;
-                              },
-                              child: (!_inviteBloc.isLoadingInvitesSent &&
-                                      _inviteBloc.invitesSent.isEmpty)
-                                  ? Center(
-                                      child: Container(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Image.asset(
-                                              "assets/image/invite_image.png",
-                                              width: 200,
-                                            ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            Text(
-                                              "Không có lời mời nào!",
-                                              style: ptBigBody(),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  : ListView.builder(
-                                      controller: _inviteBloc
-                                          .invitesSentScrollController,
-                                      itemCount:
-                                          _inviteBloc.isLoadingInvitesSent
-                                              ? 10
-                                              : _inviteBloc.invitesSent.length,
-                                      itemBuilder: (context, index) =>
-                                          _inviteBloc.isLoadingInvitesSent
-                                              ? UserConnectItemLoading()
-                                              : UserConnectItem(
-                                                  user: _inviteBloc
-                                                      .invitesSent[index]
-                                                      .toUser,
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () =>
-                                                          _deleteInvite(
-                                                              id: _inviteBloc
-                                                                  .invitesSent[
-                                                                      index]
-                                                                  .id,
-                                                              isSent: true),
-                                                      child: Text(
-                                                        "Thu hồi",
-                                                        style: roboto(context)
-                                                            .copyWith(
-                                                                color:
-                                                                    ptSecondaryColor(
-                                                                        context)),
-                                                      ),
-                                                    )
-                                                  ],
-                                                )),
-                            )),
-                      );
+                          child: ListInvitesUserSent(
+                        inviteBloc: _inviteBloc,
+                      ));
                   }),
             ],
           ),
         ),
       )),
     );
+  }
+}
+
+class ListInvitesUserReceived extends StatefulWidget {
+  final InviteBloc inviteBloc;
+  const ListInvitesUserReceived({Key key, this.inviteBloc}) : super(key: key);
+
+  @override
+  _ListInvitesUserReceivedState createState() =>
+      _ListInvitesUserReceivedState();
+}
+
+class _ListInvitesUserReceivedState extends State<ListInvitesUserReceived> {
+  int tabIndex = 0;
+  PageController _pageController = PageController();
+
+  void _deleteInvite({String id, bool isSent = false}) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Center(
+          child: Text(
+            "Xoá lời mời",
+          ),
+        ),
+        content: Text(
+            "Nếu bạn xoá lời mời, bạn sẽ không được gửi lời mời cho người dùng này trong 1 ngày nữa "),
+        actions: [
+          TextButton(
+            child: Text(
+              "Huỷ",
+              style: ptBody().copyWith(color: ptSecondaryColor(context)),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: Text(
+              "Xoá",
+              style: ptBody().copyWith(color: ptSecondaryColor(context)),
+            ),
+            onPressed: () async {
+              showWaitingDialog(context);
+              await widget.inviteBloc.deleteInviteSent(id: id, isSent: isSent);
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  void _acceptInviteFollow({String id, UserModel user}) async {
+    showWaitingDialog(context);
+    await widget.inviteBloc.acceptInviteFollow(id: id);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Center(
+            child: Text(
+          "Kết bạn thành công",
+        )),
+        content: Text("Bạn và ${user.name} đã trở thành bạn bè"),
+        actions: [
+          TextButton(
+            child: Text(
+              "Xong",
+              style: ptBody().copyWith(color: ptSecondaryColor(context)),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      tabIndex = 0;
+                      _pageController.animateToPage(0,
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.easeIn);
+                    });
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 3 - 20,
+                    decoration: BoxDecoration(
+                      color: tabIndex == 0
+                          ? ptSecondColor()
+                          : ptPrimaryColorLight(context),
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Center(
+                      child: Text(
+                        'Người dùng',
+                        style: ptTitle().copyWith(
+                            color: tabIndex == 0
+                                ? Colors.white
+                                : ptSecondaryColor(context)),
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      tabIndex = 1;
+                      _pageController.animateToPage(1,
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.easeIn);
+                    });
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 3 - 20,
+                    decoration: BoxDecoration(
+                      color: tabIndex == 1
+                          ? ptSecondColor()
+                          : ptPrimaryColorLight(context),
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Center(
+                      child: Text(
+                        'Trang',
+                        style: ptTitle().copyWith(
+                            color: tabIndex == 1
+                                ? Colors.white
+                                : ptSecondaryColor(context)),
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      tabIndex = 2;
+                      _pageController.animateToPage(2,
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.easeIn);
+                    });
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 3 - 20,
+                    decoration: BoxDecoration(
+                      color: tabIndex == 2
+                          ? ptSecondColor()
+                          : ptPrimaryColorLight(context),
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Center(
+                      child: Text(
+                        'Nhóm',
+                        style: ptTitle().copyWith(
+                            color: tabIndex == 2
+                                ? Colors.white
+                                : ptSecondaryColor(context)),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: PageView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              children: [
+                buildInvitesUserReceived(context),
+                buildInvitesPageReceived(context),
+                buildInvitesGroupReceived(context),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  LoadMoreScrollView buildInvitesUserReceived(BuildContext context) {
+    return LoadMoreScrollView(
+        scrollController: widget.inviteBloc.invitesUserReceivedScrollController,
+        onLoadMore: () {
+          //  widget.inviteBloc.loadMoreNewFeedGroup();
+        },
+        list: RefreshIndicator(
+          color: ptPrimaryColor(context),
+          onRefresh: () async {
+            audioCache.play('tab3.mp3');
+            widget.inviteBloc.getInvitesUserReceived();
+            return true;
+          },
+          child: (!widget.inviteBloc.isLoadingInvitesUserReceived &&
+                  widget.inviteBloc.invitesUserReceived.isEmpty)
+              ? Center(
+                  child: Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/image/invite_image.png",
+                          width: 200,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Không có lời mời nào!",
+                          style: ptBigBody(),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  controller:
+                      widget.inviteBloc.invitesUserReceivedScrollController,
+                  itemCount: widget.inviteBloc.isLoadingInvitesUserReceived
+                      ? 10
+                      : widget.inviteBloc.invitesUserReceived.length,
+                  itemBuilder: (context, index) => widget
+                          .inviteBloc.isLoadingInvitesUserReceived
+                      ? UserConnectItemLoading()
+                      : UserConnectItem(
+                          user: widget
+                              .inviteBloc.invitesUserReceived[index].fromUser,
+                          actions: [
+                            TextButton(
+                              onPressed: () => _deleteInvite(
+                                  id: widget
+                                      .inviteBloc.invitesUserReceived[index].id,
+                                  isSent: false),
+                              child: Text(
+                                "Xoá",
+                                style: roboto(context)
+                                    .copyWith(color: ptSecondaryColor(context)),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                _acceptInviteFollow(
+                                    id: widget.inviteBloc
+                                        .invitesUserReceived[index].id,
+                                    user: widget.inviteBloc
+                                        .invitesUserReceived[index].fromUser);
+                              },
+                              child: Text(
+                                "Chấp nhận",
+                                style: roboto(context)
+                                    .copyWith(color: ptSecondaryColor(context)),
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+        ));
+  }
+
+  LoadMoreScrollView buildInvitesPageReceived(BuildContext context) {
+    return LoadMoreScrollView(
+        scrollController: widget.inviteBloc.invitesPageReceivedScrollController,
+        onLoadMore: () {
+          //  widget.inviteBloc.loadMoreNewFeedGroup();
+        },
+        list: RefreshIndicator(
+          color: ptPrimaryColor(context),
+          onRefresh: () async {
+            audioCache.play('tab3.mp3');
+            widget.inviteBloc.getInvitesUserReceived();
+            return true;
+          },
+          child: (!widget.inviteBloc.isLoadingInvitesPageReceived &&
+                  widget.inviteBloc.invitesPageReceived.isEmpty)
+              ? Center(
+                  child: Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/image/invite_image.png",
+                          width: 200,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Không có lời mời nào!",
+                          style: ptBigBody(),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  controller:
+                      widget.inviteBloc.invitesPageReceivedScrollController,
+                  itemCount: widget.inviteBloc.isLoadingInvitesPageReceived
+                      ? 10
+                      : widget.inviteBloc.invitesPageReceived.length,
+                  itemBuilder: (context, index) => widget
+                          .inviteBloc.isLoadingInvitesPageReceived
+                      ? UserConnectItemLoading()
+                      : UserConnectItem(
+                          user: widget
+                              .inviteBloc.invitesPageReceived[index].fromUser,
+                          actions: [
+                            TextButton(
+                              onPressed: () => _deleteInvite(
+                                  id: widget
+                                      .inviteBloc.invitesPageReceived[index].id,
+                                  isSent: false),
+                              child: Text(
+                                "Xoá",
+                                style: roboto(context)
+                                    .copyWith(color: ptSecondaryColor(context)),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                _acceptInviteFollow(
+                                    id: widget.inviteBloc
+                                        .invitesPageReceived[index].id,
+                                    user: widget.inviteBloc
+                                        .invitesPageReceived[index].fromUser);
+                              },
+                              child: Text(
+                                "Chấp nhận",
+                                style: roboto(context)
+                                    .copyWith(color: ptSecondaryColor(context)),
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+        ));
+  }
+
+  LoadMoreScrollView buildInvitesGroupReceived(BuildContext context) {
+    return LoadMoreScrollView(
+        scrollController:
+            widget.inviteBloc.invitesGroupReceivedScrollController,
+        onLoadMore: () {
+          //  widget.inviteBloc.loadMoreNewFeedGroup();
+        },
+        list: RefreshIndicator(
+          color: ptPrimaryColor(context),
+          onRefresh: () async {
+            audioCache.play('tab3.mp3');
+            widget.inviteBloc.getInvitesUserReceived();
+            return true;
+          },
+          child: (!widget.inviteBloc.isLoadingInvitesGroupReceived &&
+                  widget.inviteBloc.invitesGroupReceived.isEmpty)
+              ? Center(
+                  child: Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/image/invite_image.png",
+                          width: 200,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Không có lời mời nào!",
+                          style: ptBigBody(),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  controller:
+                      widget.inviteBloc.invitesGroupReceivedScrollController,
+                  itemCount: widget.inviteBloc.isLoadingInvitesGroupReceived
+                      ? 10
+                      : widget.inviteBloc.invitesGroupReceived.length,
+                  itemBuilder: (context, index) => widget
+                          .inviteBloc.isLoadingInvitesGroupReceived
+                      ? UserConnectItemLoading()
+                      : UserConnectItem(
+                          user: widget
+                              .inviteBloc.invitesGroupReceived[index].fromUser,
+                          actions: [
+                            TextButton(
+                              onPressed: () => _deleteInvite(
+                                  id: widget.inviteBloc
+                                      .invitesGroupReceived[index].id,
+                                  isSent: false),
+                              child: Text(
+                                "Xoá",
+                                style: roboto(context)
+                                    .copyWith(color: ptSecondaryColor(context)),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                _acceptInviteFollow(
+                                    id: widget.inviteBloc
+                                        .invitesGroupReceived[index].id,
+                                    user: widget.inviteBloc
+                                        .invitesGroupReceived[index].fromUser);
+                              },
+                              child: Text(
+                                "Chấp nhận",
+                                style: roboto(context)
+                                    .copyWith(color: ptSecondaryColor(context)),
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+        ));
+  }
+}
+
+class ListInvitesUserSent extends StatefulWidget {
+  final InviteBloc inviteBloc;
+  const ListInvitesUserSent({Key key, this.inviteBloc}) : super(key: key);
+
+  @override
+  _ListInvitesUserSentState createState() => _ListInvitesUserSentState();
+}
+
+class _ListInvitesUserSentState extends State<ListInvitesUserSent> {
+  int tabIndex = 0;
+  PageController _pageController = PageController();
+  void _deleteInvite({String id, bool isSent = false}) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Center(
+          child: Text(
+            "Xoá lời mời",
+          ),
+        ),
+        content: Text(
+            "Nếu bạn xoá lời mời, bạn sẽ không được gửi lời mời cho người dùng này trong 1 ngày nữa "),
+        actions: [
+          TextButton(
+            child: Text(
+              "Huỷ",
+              style: ptBody().copyWith(color: ptSecondaryColor(context)),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: Text(
+              "Xoá",
+              style: ptBody().copyWith(color: ptSecondaryColor(context)),
+            ),
+            onPressed: () async {
+              showWaitingDialog(context);
+              await widget.inviteBloc.deleteInviteSent(id: id, isSent: isSent);
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    tabIndex = 0;
+                    _pageController.animateToPage(0,
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeIn);
+                  });
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 3 - 20,
+                  decoration: BoxDecoration(
+                    color: tabIndex == 0
+                        ? ptSecondColor()
+                        : ptPrimaryColorLight(context),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: Center(
+                    child: Text(
+                      'Người dùng',
+                      style: ptTitle().copyWith(
+                          color: tabIndex == 0
+                              ? Colors.white
+                              : ptSecondaryColor(context)),
+                    ),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    tabIndex = 1;
+                    _pageController.animateToPage(1,
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeIn);
+                  });
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 3 - 20,
+                  decoration: BoxDecoration(
+                    color: tabIndex == 1
+                        ? ptSecondColor()
+                        : ptPrimaryColorLight(context),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: Center(
+                    child: Text(
+                      'Trang',
+                      style: ptTitle().copyWith(
+                          color: tabIndex == 1
+                              ? Colors.white
+                              : ptSecondaryColor(context)),
+                    ),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    tabIndex = 2;
+                    _pageController.animateToPage(2,
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeIn);
+                  });
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 3 - 20,
+                  decoration: BoxDecoration(
+                    color: tabIndex == 2
+                        ? ptSecondColor()
+                        : ptPrimaryColorLight(context),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: Center(
+                    child: Text(
+                      'Nhóm',
+                      style: ptTitle().copyWith(
+                          color: tabIndex == 2
+                              ? Colors.white
+                              : ptSecondaryColor(context)),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: PageView(
+            controller: _pageController,
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              buildInvitesUserSent(context),
+              buildInvitesPageSent(context),
+              buildInvitesGroupSent(context),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  LoadMoreScrollView buildInvitesUserSent(BuildContext context) {
+    return LoadMoreScrollView(
+        scrollController: widget.inviteBloc.invitesUserSentScrollController,
+        onLoadMore: () {
+          //  widget.inviteBloc.loadMoreNewFeedGroup();
+        },
+        list: RefreshIndicator(
+          color: ptPrimaryColor(context),
+          onRefresh: () async {
+            audioCache.play('tab3.mp3');
+            widget.inviteBloc.getInvitesUserSent();
+            return true;
+          },
+          child: (!widget.inviteBloc.isLoadingInvitesUserSent &&
+                  widget.inviteBloc.invitesUserSent.isEmpty)
+              ? Center(
+                  child: Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/image/invite_image.png",
+                          width: 200,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Không có lời mời nào!",
+                          style: ptBigBody(),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  controller: widget.inviteBloc.invitesUserSentScrollController,
+                  itemCount: widget.inviteBloc.isLoadingInvitesUserSent
+                      ? 10
+                      : widget.inviteBloc.invitesUserSent.length,
+                  itemBuilder: (context, index) => widget
+                          .inviteBloc.isLoadingInvitesUserSent
+                      ? UserConnectItemLoading()
+                      : UserConnectItem(
+                          user: widget.inviteBloc.invitesUserSent[index].toUser,
+                          actions: [
+                            TextButton(
+                              onPressed: () => _deleteInvite(
+                                  id: widget
+                                      .inviteBloc.invitesUserSent[index].id,
+                                  isSent: true),
+                              child: Text(
+                                "Thu hồi",
+                                style: roboto(context)
+                                    .copyWith(color: ptSecondaryColor(context)),
+                              ),
+                            )
+                          ],
+                        )),
+        ));
+  }
+
+  LoadMoreScrollView buildInvitesPageSent(BuildContext context) {
+    return LoadMoreScrollView(
+        scrollController: widget.inviteBloc.invitesPageSentScrollController,
+        onLoadMore: () {
+          //  widget.inviteBloc.loadMoreNewFeedGroup();
+        },
+        list: RefreshIndicator(
+          color: ptPrimaryColor(context),
+          onRefresh: () async {
+            audioCache.play('tab3.mp3');
+            widget.inviteBloc.getInvitesUserSent();
+            return true;
+          },
+          child: (!widget.inviteBloc.isLoadingInvitesPageSent &&
+                  widget.inviteBloc.invitesPageSent.isEmpty)
+              ? Center(
+                  child: Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/image/invite_image.png",
+                          width: 200,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Không có lời mời nào!",
+                          style: ptBigBody(),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  controller: widget.inviteBloc.invitesPageSentScrollController,
+                  itemCount: widget.inviteBloc.isLoadingInvitesPageSent
+                      ? 10
+                      : widget.inviteBloc.invitesPageSent.length,
+                  itemBuilder: (context, index) => widget
+                          .inviteBloc.isLoadingInvitesPageSent
+                      ? UserConnectItemLoading()
+                      : UserConnectItem(
+                          user:
+                              widget.inviteBloc.invitesPageSent[index].fromUser,
+                          actions: [
+                            TextButton(
+                              onPressed: () => _deleteInvite(
+                                  id: widget
+                                      .inviteBloc.invitesPageSent[index].id,
+                                  isSent: false),
+                              child: Text(
+                                "Thu hồi",
+                                style: roboto(context)
+                                    .copyWith(color: ptSecondaryColor(context)),
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+        ));
+  }
+
+  LoadMoreScrollView buildInvitesGroupSent(BuildContext context) {
+    return LoadMoreScrollView(
+        scrollController: widget.inviteBloc.invitesGroupSentScrollController,
+        onLoadMore: () {
+          //  widget.inviteBloc.loadMoreNewFeedGroup();
+        },
+        list: RefreshIndicator(
+          color: ptPrimaryColor(context),
+          onRefresh: () async {
+            audioCache.play('tab3.mp3');
+            widget.inviteBloc.getInvitesUserSent();
+            return true;
+          },
+          child: (!widget.inviteBloc.isLoadingInvitesGroupSent &&
+                  widget.inviteBloc.invitesGroupSent.isEmpty)
+              ? Center(
+                  child: Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/image/invite_image.png",
+                          width: 200,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "Không có lời mời nào!",
+                          style: ptBigBody(),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  controller:
+                      widget.inviteBloc.invitesGroupSentScrollController,
+                  itemCount: widget.inviteBloc.isLoadingInvitesGroupSent
+                      ? 10
+                      : widget.inviteBloc.invitesGroupSent.length,
+                  itemBuilder: (context, index) =>
+                      widget.inviteBloc.isLoadingInvitesGroupSent
+                          ? UserConnectItemLoading()
+                          : UserConnectItem(
+                              user: widget
+                                  .inviteBloc.invitesGroupSent[index].fromUser,
+                              actions: [
+                                TextButton(
+                                  onPressed: () => _deleteInvite(
+                                      id: widget.inviteBloc
+                                          .invitesGroupSent[index].id,
+                                      isSent: false),
+                                  child: Text(
+                                    "Thu hồi",
+                                    style: roboto(context).copyWith(
+                                        color: ptSecondaryColor(context)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                ),
+        ));
   }
 }
