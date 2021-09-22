@@ -173,7 +173,6 @@ class _ConnectScreenState extends State<ConnectScreen> {
                         ? UserConnectItemLoading()
                         : UserConnectItem(
                             user: _userBloc.usersConnected[index],
-                            userBloc: _userBloc,
                             actions: [
                               IconButton(
                                   icon: Icon(Icons.more_vert),

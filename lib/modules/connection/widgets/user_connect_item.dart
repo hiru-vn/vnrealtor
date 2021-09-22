@@ -6,14 +6,12 @@ import 'package:datcao/share/widget/loading_widgets/shimmer_widget.dart';
 import 'package:datcao/utils/role_user.dart';
 
 class UserConnectItem extends StatefulWidget {
-  final UserBloc userBloc;
   final UserModel user;
   final List<Widget> actions;
 
   const UserConnectItem({
     Key key,
     this.user,
-    this.userBloc,
     this.actions,
   }) : super(key: key);
 

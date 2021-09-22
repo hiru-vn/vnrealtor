@@ -1,5 +1,8 @@
 import 'package:datcao/modules/bloc/invite_bloc.dart';
+import 'package:datcao/modules/connection/widgets/invite_items.dart';
+import 'package:datcao/modules/connection/widgets/suggest_items.dart';
 import 'package:datcao/modules/connection/widgets/user_connect_item.dart';
+import 'package:datcao/modules/model/invite.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/load_more.dart';
@@ -33,6 +36,8 @@ class _InvitesListScreenState extends State<InvitesListScreen>
       _inviteBloc = Provider.of<InviteBloc>(context);
       _inviteBloc.getInvitesUserReceived();
       _inviteBloc.getInvitesUserSent();
+      _inviteBloc.getInvitesPageSent();
+      _inviteBloc.getInvitesPageReceived();
     }
     super.didChangeDependencies();
   }
@@ -414,46 +419,29 @@ class _ListInvitesUserReceivedState extends State<ListInvitesUserReceived> {
                     ),
                   ),
                 )
-              : ListView.builder(
+              : StaggeredGridView.count(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
                   controller:
                       widget.inviteBloc.invitesPageReceivedScrollController,
-                  itemCount: widget.inviteBloc.isLoadingInvitesPageReceived
-                      ? 10
-                      : widget.inviteBloc.invitesPageReceived.length,
-                  itemBuilder: (context, index) => widget
-                          .inviteBloc.isLoadingInvitesPageReceived
-                      ? UserConnectItemLoading()
-                      : UserConnectItem(
-                          user: widget
-                              .inviteBloc.invitesPageReceived[index].fromUser,
-                          actions: [
-                            TextButton(
-                              onPressed: () => _deleteInvite(
-                                  id: widget
-                                      .inviteBloc.invitesPageReceived[index].id,
-                                  isSent: false),
-                              child: Text(
-                                "Xoá",
-                                style: roboto(context)
-                                    .copyWith(color: ptSecondaryColor(context)),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                _acceptInviteFollow(
-                                    id: widget.inviteBloc
-                                        .invitesPageReceived[index].id,
-                                    user: widget.inviteBloc
-                                        .invitesPageReceived[index].fromUser);
-                              },
-                              child: Text(
-                                "Chấp nhận",
-                                style: roboto(context)
-                                    .copyWith(color: ptSecondaryColor(context)),
-                              ),
-                            ),
-                          ],
-                        ),
+                  crossAxisCount: 2,
+                  staggeredTiles: widget.inviteBloc.invitesPageReceived
+                      .map((_) => StaggeredTile.fit(1))
+                      .toList(),
+                  children: List.generate(
+                      widget.inviteBloc.isLoadingInvitesPageReceived
+                          ? 6
+                          : widget.inviteBloc.invitesPageReceived.length,
+                      (index) {
+                    final InvitePageModel invite =
+                        widget.inviteBloc.invitesPageReceived[index];
+                    return widget.inviteBloc.isLoadingInvitesPageReceived
+                        ? SuggestItemLoading()
+                        : PageInviteReceivedItem(
+                            page: invite.page,
+                            user: invite.fromUser,
+                          );
+                  }),
                 ),
         ));
   }
@@ -770,66 +758,64 @@ class _ListInvitesUserSentState extends State<ListInvitesUserSent> {
 
   LoadMoreScrollView buildInvitesPageSent(BuildContext context) {
     return LoadMoreScrollView(
-        scrollController: widget.inviteBloc.invitesPageSentScrollController,
-        onLoadMore: () {
-          //  widget.inviteBloc.loadMoreNewFeedGroup();
+      scrollController: widget.inviteBloc.invitesPageSentScrollController,
+      onLoadMore: () {
+        //  widget.inviteBloc.loadMoreNewFeedGroup();
+      },
+      list: RefreshIndicator(
+        color: ptPrimaryColor(context),
+        onRefresh: () async {
+          audioCache.play('tab3.mp3');
+          widget.inviteBloc.getInvitesUserSent();
+          return true;
         },
-        list: RefreshIndicator(
-          color: ptPrimaryColor(context),
-          onRefresh: () async {
-            audioCache.play('tab3.mp3');
-            widget.inviteBloc.getInvitesUserSent();
-            return true;
-          },
-          child: (!widget.inviteBloc.isLoadingInvitesPageSent &&
-                  widget.inviteBloc.invitesPageSent.isEmpty)
-              ? Center(
-                  child: Container(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          "assets/image/invite_image.png",
-                          width: 200,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "Không có lời mời nào!",
-                          style: ptBigBody(),
-                        )
-                      ],
-                    ),
+        child: (!widget.inviteBloc.isLoadingInvitesPageSent &&
+                widget.inviteBloc.invitesPageSent.isEmpty)
+            ? Center(
+                child: Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        "assets/image/invite_image.png",
+                        width: 200,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Không có lời mời nào!",
+                        style: ptBigBody(),
+                      )
+                    ],
                   ),
-                )
-              : ListView.builder(
-                  controller: widget.inviteBloc.invitesPageSentScrollController,
-                  itemCount: widget.inviteBloc.isLoadingInvitesPageSent
-                      ? 10
-                      : widget.inviteBloc.invitesPageSent.length,
-                  itemBuilder: (context, index) => widget
-                          .inviteBloc.isLoadingInvitesPageSent
-                      ? UserConnectItemLoading()
-                      : UserConnectItem(
-                          user:
-                              widget.inviteBloc.invitesPageSent[index].fromUser,
-                          actions: [
-                            TextButton(
-                              onPressed: () => _deleteInvite(
-                                  id: widget
-                                      .inviteBloc.invitesPageSent[index].id,
-                                  isSent: false),
-                              child: Text(
-                                "Thu hồi",
-                                style: roboto(context)
-                                    .copyWith(color: ptSecondaryColor(context)),
-                              ),
-                            ),
-                          ],
-                        ),
                 ),
-        ));
+              )
+            : ListView.builder(
+                controller: widget.inviteBloc.invitesPageSentScrollController,
+                itemCount: widget.inviteBloc.isLoadingInvitesPageSent
+                    ? 10
+                    : widget.inviteBloc.invitesPageSent.length,
+                itemBuilder: (context, index) => widget
+                        .inviteBloc.isLoadingInvitesPageSent
+                    ? UserConnectItemLoading()
+                    : PageInviteSentItem(
+                        actions: [
+                          TextButton(
+                            onPressed: null,
+                            child: Text(
+                              "Thu hồi",
+                              style: roboto(context)
+                                  .copyWith(color: ptSecondaryColor(context)),
+                            ),
+                          )
+                        ],
+                        page: widget.inviteBloc.invitesPageSent[index].page,
+                        user: widget.inviteBloc.invitesPageSent[index].toUser,
+                      ),
+              ),
+      ),
+    );
   }
 
   LoadMoreScrollView buildInvitesGroupSent(BuildContext context) {

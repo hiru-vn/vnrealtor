@@ -9,9 +9,9 @@ class FollowPagesModel {
     id = json['id'];
     followerIds = json['followerIds'].cast<String>();
     if (json['followers'] != null) {
-      followers = new List<Followers>();
+      followers = [];
       json['followers'].forEach((v) {
-        followers.add(new Followers.fromJson(v));
+        if (v != null) followers.add(new Followers.fromJson(v));
       });
     }
   }

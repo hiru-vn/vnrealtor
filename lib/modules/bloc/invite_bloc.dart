@@ -1,5 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/model/invite.dart';
+import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/repo/user_repo.dart';
 import 'package:datcao/share/import.dart';
 
@@ -10,8 +11,8 @@ class InviteBloc extends ChangeNotifier {
   static final InviteBloc instance = InviteBloc._privateConstructor();
   List<InviteModel> invitesUserSent = [];
   List<InviteModel> invitesUserReceived = [];
-  List<InviteModel> invitesPageSent = [];
-  List<InviteModel> invitesPageReceived = [];
+  List<InvitePageModel> invitesPageSent = [];
+  List<InvitePageModel> invitesPageReceived = [];
   List<InviteModel> invitesGroupSent = [];
   List<InviteModel> invitesGroupReceived = [];
   int invitesUserSentPage = 1;
@@ -39,6 +40,7 @@ class InviteBloc extends ChangeNotifier {
   ScrollController invitesPageReceivedScrollController = ScrollController();
   ScrollController invitesGroupSentScrollController = ScrollController();
   ScrollController invitesGroupReceivedScrollController = ScrollController();
+
   Future<BaseResponse> getInvitesUserSent() async {
     try {
       isEndInvitesUserSent = false;
@@ -62,6 +64,28 @@ class InviteBloc extends ChangeNotifier {
     }
   }
 
+  Future<BaseResponse> getInvitesPageSent() async {
+    try {
+      isEndInvitesUserSent = false;
+      isLoadingInvitesUserSent = true;
+      GraphqlFilter _filter = GraphqlFilter(
+          limit: 10,
+          filter: "{fromUserId: \"${AuthBloc.instance.userModel.id}\"}");
+      final res = await UserRepo().getAllInvitePage(filter: _filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => InvitePageModel.fromJson(e)).toList();
+      if (list.length < _filter.limit) isEndInvitesUserSent = true;
+      invitesPageSent = list;
+      invitesPageSentPage = 1;
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      isLoadingInvitesPageSent = false;
+      notifyListeners();
+    }
+  }
+
   Future<BaseResponse> getInvitesUserReceived() async {
     try {
       isEndInvitesUserReceived = false;
@@ -81,6 +105,28 @@ class InviteBloc extends ChangeNotifier {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       isLoadingInvitesUserReceived = false;
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getInvitesPageReceived() async {
+    try {
+      isEndInvitesUserReceived = false;
+      isLoadingInvitesUserReceived = true;
+      GraphqlFilter _filter = GraphqlFilter(
+          limit: 10,
+          filter: "{toUserId: \"${AuthBloc.instance.userModel.id}\"}");
+      final res = await UserRepo().getAllInvitePage(filter: _filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => InvitePageModel.fromJson(e)).toList();
+      if (list.length < _filter.limit) isEndInvitesUserReceived = true;
+      invitesPageReceived = list;
+      invitesPageReceivedPage = 1;
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      isLoadingInvitesPageReceived = false;
       notifyListeners();
     }
   }

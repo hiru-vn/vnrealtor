@@ -1,4 +1,6 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/invite_bloc.dart';
+import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/pages/models/followModel.dart';
 import 'package:datcao/modules/pages/models/pages_category_model.dart';
@@ -432,6 +434,7 @@ class PagesBloc extends ChangeNotifier {
     try {
       addToListFollowPageIds(pageId);
       final res = await PagesRepo().followPage(pageId);
+      InviteBloc.instance.getInvitesPageReceived();
       notifyListeners();
       return BaseResponse.success(FollowPagesModel.fromJson(res));
     } catch (e) {
@@ -446,7 +449,8 @@ class PagesBloc extends ChangeNotifier {
     try {
       _suggestFollowPage =
           _suggestFollowPage.where((element) => element.id != pageId).toList();
-    } catch (e) {} finally {
+    } catch (e) {
+    } finally {
       notifyListeners();
     }
   }
@@ -455,6 +459,7 @@ class PagesBloc extends ChangeNotifier {
     try {
       final res = await PagesRepo().unFollowPage(pageId);
       notifyListeners();
+      InviteBloc.instance.getInvitesPageReceived();
       return BaseResponse.success(FollowPagesModel.fromJson(res));
     } catch (e) {
       return BaseResponse.fail(e?.toString());

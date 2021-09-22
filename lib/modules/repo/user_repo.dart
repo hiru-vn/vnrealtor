@@ -1,3 +1,4 @@
+import 'package:datcao/modules/pages/repos/pages_repo.dart';
 import 'package:datcao/modules/services/friendship_srv.dart';
 import 'package:datcao/modules/services/user_srv.dart';
 import 'package:datcao/share/import.dart';
@@ -179,6 +180,26 @@ Page: "$page"
     }
     ''');
     return res['getAllInviteFollow'];
+  }
+
+  Future getAllInvitePage({GraphqlFilter filter}) async {
+    final res = await UserSrv().query('getAllInvitePage',
+        'q:{limit: ${filter.limit}, page: ${filter.page ?? 1}, offset: ${filter.offset}, filter: ${filter.filter} , order: ${filter.order}}',
+        fragment: '''
+        data {
+          id
+         page{
+       $pageFragment
+     }  
+     toUser{
+       $userFragment
+     }
+      fromUser{
+       $userFragment
+     }
+    }
+    ''');
+    return res['getAllInvitePage'];
   }
 
   Future deleteInvites({String id}) async {

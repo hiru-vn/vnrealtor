@@ -432,6 +432,13 @@ class PageSuggestItem extends StatelessWidget {
   void onFollowPage(String id) {
     pagesBloc.followPage(id);
     pagesBloc.suggestFollow();
+    pagesBloc.deleteSuggestPage(id);
+  }
+
+  void onUnFollowPage(String id) {
+    pagesBloc.unFollowPage(id);
+    pagesBloc.suggestFollow();
+    pagesBloc.deleteSuggestPage(id);
   }
 
   @override
@@ -485,9 +492,9 @@ class PageSuggestItem extends StatelessWidget {
                   Text(
                     page.name,
                     style: roboto(context).copyWith(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: HexColor.fromHex("#505050")),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   SizedBox(
                     height: 10,
