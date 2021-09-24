@@ -791,28 +791,27 @@ class _ListInvitesUserSentState extends State<ListInvitesUserSent> {
                   ),
                 ),
               )
-            : ListView.builder(
+            : StaggeredGridView.count(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 controller: widget.inviteBloc.invitesPageSentScrollController,
-                itemCount: widget.inviteBloc.isLoadingInvitesPageSent
-                    ? 10
-                    : widget.inviteBloc.invitesPageSent.length,
-                itemBuilder: (context, index) => widget
-                        .inviteBloc.isLoadingInvitesPageSent
-                    ? UserConnectItemLoading()
-                    : PageInviteSentItem(
-                        actions: [
-                          TextButton(
-                            onPressed: null,
-                            child: Text(
-                              "Thu hồi",
-                              style: roboto(context)
-                                  .copyWith(color: ptSecondaryColor(context)),
-                            ),
-                          )
-                        ],
-                        page: widget.inviteBloc.invitesPageSent[index].page,
-                        user: widget.inviteBloc.invitesPageSent[index].toUser,
-                      ),
+                crossAxisCount: 2,
+                staggeredTiles: widget.inviteBloc.invitesPageSent
+                    .map((_) => StaggeredTile.fit(1))
+                    .toList(),
+                children: List.generate(
+                    widget.inviteBloc.isLoadingInvitesPageSent
+                        ? 6
+                        : widget.inviteBloc.invitesPageSent.length, (index) {
+                  final InvitePageModel invite =
+                      widget.inviteBloc.invitesPageSent[index];
+                  return widget.inviteBloc.isLoadingInvitesPageSent
+                      ? SuggestItemLoading()
+                      : PageInviteSentItem(
+                          page: invite.page,
+                          user: invite.toUser,
+                        );
+                }),
               ),
       ),
     );

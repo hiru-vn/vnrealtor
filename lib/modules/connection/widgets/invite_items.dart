@@ -198,72 +198,166 @@ class PageInviteSentItem extends StatefulWidget {
 }
 
 class _PageInviteSentItemState extends State<PageInviteSentItem> {
+  void onFollowPage(String id) {
+    PagesBloc.instance.followPage(id);
+    PagesBloc.instance.suggestFollow();
+    PagesBloc.instance.deleteSuggestPage(id);
+  }
+
+  void onUnFollowPage(String id) {
+    PagesBloc.instance.unFollowPage(id);
+    PagesBloc.instance.suggestFollow();
+    PagesBloc.instance.deleteSuggestPage(id);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userId = AuthBloc.instance.userModel.id;
     return GestureDetector(
-      onTap: () => ProfileOtherPage.navigate(widget.user),
-      child: Container(
+      onTap: () => PageDetail.navigate(widget.page),
+      child: Padding(
         padding: const EdgeInsets.all(8.0),
-        color: ptPrimaryColor(context),
-        child: Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              child: CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.white,
-                backgroundImage: widget.user.avatar != null
-                    ? CachedNetworkImageProvider(widget.user.avatar)
-                    : AssetImage('assets/image/default_avatar.png'),
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      "${widget.user.name}",
-                      style: roboto(context)
-                          .copyWith(fontSize: 16, fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "${widget.user.totalPoint}",
-                        ),
-                        Image.asset(
-                          "assets/image/guarantee.png",
-                          width: 18,
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-                Text(
-                  "Tới trang ${widget.page.name}",
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "${convertRoleUser(widget.user.role)}",
-                  style: roboto(context)
-                      .copyWith(fontSize: 16, fontWeight: FontWeight.w300),
+        child: Container(
+          width: 180,
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
                 ),
               ],
-            ),
-            Spacer(),
-            ...widget?.actions,
-          ],
+              color: ptPrimaryColor(context),
+              borderRadius: BorderRadius.circular(10)),
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Image.asset(
+                    "assets/image/anhbia.png",
+                    height: 60,
+                    width: double.infinity,
+                    fit: BoxFit.fill,
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: Image(
+                      image: widget.page.avartar != null
+                          ? CachedNetworkImageProvider(widget.page.avartar)
+                          : AssetImage('assets/image/default_avatar.png'),
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    widget.page.name,
+                    style: roboto(context).copyWith(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Đã gửi tới ${widget.user.name}',
+                    style: roboto(context).copyWith(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("${widget.page.followers.length} follow"),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "7",
+                          ),
+                          Image.asset(
+                            "assets/image/guarantee.png",
+                            width: 18,
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  widget.page.followerIds.contains(userId)
+                      ? GestureDetector(
+                          onTap: () {
+                            onUnFollowPage(widget.page.id);
+                          },
+                          child: Container(
+                            width: 110,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 2, color: Colors.blueAccent),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Center(
+                              child: Text("Bỏ theo dõi"),
+                            ),
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            onFollowPage(widget.page.id);
+                          },
+                          child: Container(
+                            width: 110,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 2, color: Colors.blueAccent),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Theo dõi",
+                              ),
+                            ),
+                          ),
+                        ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: GestureDetector(
+                  onTap: () {
+                    //onDeletePage(page.id);
+                  },
+                  child: Image.asset(
+                    "assets/image/close_icon.png",
+                    width: 16,
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
