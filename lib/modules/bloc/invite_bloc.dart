@@ -131,7 +131,7 @@ class InviteBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> deleteInviteSent(
+  Future<BaseResponse> deleteInviteUser(
       {String id, bool isSent = false}) async {
     try {
       final res = await UserRepo().deleteInvites(id: id);
@@ -143,6 +143,24 @@ class InviteBloc extends ChangeNotifier {
             invitesUserReceived.where((element) => element.id != id).toList();
       }
       return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> deleteInvitePage(
+      {String id, bool isSent = false}) async {
+    try {
+      if (isSent) {
+        invitesPageSent =
+            invitesPageSent.where((element) => element.id != id).toList();
+      } else {
+        invitesPageReceived =
+            invitesPageReceived.where((element) => element.id != id).toList();
+      }
+      return BaseResponse.success({});
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {

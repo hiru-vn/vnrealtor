@@ -168,6 +168,10 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
                                 ),
                                 controller: _rePassC,
                                 hintText: "Nhập lại mật khẩu",
+                                validator: (str) {
+                                  if (str != _passC.text)
+                                    return 'Mật khẩu không trùng khớp';
+                                },
                                 obscureText: true,
                               ),
                               CheckboxListTile(
@@ -256,10 +260,11 @@ class _FormRegisterPageState extends State<FormRegisterPage> {
   }
 }
 
-class CustomInputField extends StatelessWidget {
+class CustomInputField extends StatefulWidget {
   final Widget icon;
   final String hintText;
   final bool obscureText;
+  final bool isPassword;
   final TextEditingController controller;
   final TextInputType keyboardType;
   final Function(String) validator;
@@ -271,7 +276,22 @@ class CustomInputField extends StatelessWidget {
     this.obscureText = false,
     this.validator,
     this.keyboardType,
+    this.isPassword = false,
   }) : super(key: key);
+
+  @override
+  State<CustomInputField> createState() => _CustomInputFieldState();
+}
+
+class _CustomInputFieldState extends State<CustomInputField> {
+  bool obscurePassword;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    obscurePassword = widget.obscureText;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -289,17 +309,30 @@ class CustomInputField extends StatelessWidget {
           children: [
             Padding(
                 padding: const EdgeInsets.only(left: 3, right: 10),
-                child: icon),
+                child: widget.icon),
             Expanded(
               child: TextFormField(
-                keyboardType: keyboardType ?? TextInputType.text,
+                keyboardType: widget.keyboardType ?? TextInputType.text,
                 cursorColor: ptMainColor(context),
-                obscureText: obscureText,
-                controller: controller,
-                validator: validator,
+                obscureText: obscurePassword,
+                controller: widget.controller,
+                validator: widget.validator,
                 decoration: InputDecoration(
-                  hintText: hintText,
+                  hintText: widget.hintText,
                   border: InputBorder.none,
+                  suffixIcon: widget.isPassword
+                      ? GestureDetector(
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
+                            setState(() {
+                              obscurePassword = !obscurePassword;
+                            });
+                          },
+                          child: Icon(
+                            obscurePassword ? MdiIcons.eye : MdiIcons.eyeOff,
+                          ),
+                        )
+                      : null,
                 ),
               ),
             ),

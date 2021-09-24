@@ -48,7 +48,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                 if (e.counter > 0)
                   Positioned(
                     top: 0,
-                    right: 0,
+                    right: 15,
                     child: Container(
                       padding: EdgeInsets.all(2.4),
                       decoration: BoxDecoration(

@@ -5,6 +5,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/home_page.dart';
 import 'package:datcao/modules/registers/forgot_password_page.dart';
 import 'package:datcao/modules/registers/register_page.dart';
+import 'package:datcao/modules/registers/reset_password_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:flutter/gestures.dart';
 

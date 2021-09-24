@@ -149,7 +149,7 @@ class _ListInvitesUserReceivedState extends State<ListInvitesUserReceived> {
             ),
             onPressed: () async {
               showWaitingDialog(context);
-              await widget.inviteBloc.deleteInviteSent(id: id, isSent: isSent);
+              await widget.inviteBloc.deleteInviteUser(id: id, isSent: isSent);
               Navigator.of(context).pop();
             },
           )
@@ -564,7 +564,7 @@ class _ListInvitesUserSentState extends State<ListInvitesUserSent> {
             ),
             onPressed: () async {
               showWaitingDialog(context);
-              await widget.inviteBloc.deleteInviteSent(id: id, isSent: isSent);
+              await widget.inviteBloc.deleteInviteUser(id: id, isSent: isSent);
               Navigator.of(context).pop();
             },
           )
@@ -810,6 +810,10 @@ class _ListInvitesUserSentState extends State<ListInvitesUserSent> {
                       : PageInviteSentItem(
                           page: invite.page,
                           user: invite.toUser,
+                          onDeleteInvite: () {
+                            widget.inviteBloc
+                                .deleteInvitePage(id: invite.id, isSent: true);
+                          },
                         );
                 }),
               ),

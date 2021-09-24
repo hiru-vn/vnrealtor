@@ -146,7 +146,7 @@ class _NotificationTabState extends State<NotificationTab> {
           .toList(),
       ..._userBloc.followersIn7Days
     ];
-    list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     if (_notificationBloc.isLoadNoti)
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -194,7 +194,7 @@ class _NotificationTabState extends State<NotificationTab> {
                         // Formart.timeByDayVi(
                         //         DateTime.tryParse(list[index].updatedAt)) ??
                         TimeAgo.timeAgoSinceDate(
-                                DateTime.tryParse(list[index].updatedAt)) ??
+                                DateTime.tryParse(list[index].createdAt)) ??
                             '',
                         style: ptTiny(),
                       ),
@@ -239,7 +239,7 @@ class _NotificationTabState extends State<NotificationTab> {
                       ),
                       subtitle: Text(
                         TimeAgo.timeAgoSinceDate(
-                                DateTime.tryParse(list[index].updatedAt)) ??
+                                DateTime.tryParse(list[index].createdAt)) ??
                             '',
                         style: ptTiny(),
                       ),

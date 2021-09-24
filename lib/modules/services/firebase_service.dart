@@ -12,7 +12,6 @@ import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/import.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 enum FcmType {
   message,
   like,
@@ -32,7 +31,6 @@ class FcmService {
 
   static FcmService get instance => _instance;
   FirebaseMessaging fb;
-  
 
   static FcmType getType(String type) {
     if (type.toLowerCase() == 'Like'.toLowerCase()) return FcmType.like;
@@ -52,7 +50,7 @@ class FcmService {
   void handleMessageLive(RemoteMessage message) {
     print('Message data: ${message.data}');
     final type = getType(message.data['type']);
-
+    AuthBloc.instance.getUser();
     if (type == FcmType.message) {
       if (InboxBloc.inChat) return;
 

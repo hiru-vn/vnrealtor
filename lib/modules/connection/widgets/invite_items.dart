@@ -189,9 +189,15 @@ class PageInviteSentItem extends StatefulWidget {
   final UserModel user;
   final List<Widget> actions;
   final PagesCreate page;
+  final Function onDeleteInvite;
 
-  const PageInviteSentItem({Key key, this.user, this.actions, this.page})
-      : super(key: key);
+  const PageInviteSentItem({
+    Key key,
+    this.user,
+    this.actions,
+    this.page,
+    this.onDeleteInvite,
+  }) : super(key: key);
 
   @override
   _PageInviteSentItemState createState() => _PageInviteSentItemState();
@@ -341,6 +347,24 @@ class _PageInviteSentItemState extends State<PageInviteSentItem> {
                   SizedBox(
                     height: 10,
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      widget.onDeleteInvite();
+                    },
+                    child: Container(
+                      width: 110,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 2, color: Colors.blueAccent),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Thu hồi lời mời",
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
               Positioned(
@@ -348,7 +372,7 @@ class _PageInviteSentItemState extends State<PageInviteSentItem> {
                 right: 10,
                 child: GestureDetector(
                   onTap: () {
-                    //onDeletePage(page.id);
+                    widget.onDeleteInvite();
                   },
                   child: Image.asset(
                     "assets/image/close_icon.png",

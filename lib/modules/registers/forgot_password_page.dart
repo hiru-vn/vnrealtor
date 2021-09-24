@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:datcao/main.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
-import 'package:datcao/modules/registers/create_account_success_page.dart';
-import 'package:datcao/modules/registers/form_register_page.dart';
 import 'package:datcao/modules/registers/input_code_page.dart';
+import 'package:datcao/modules/registers/reset_password_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
@@ -52,9 +52,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         if (event.status == AuthStatus.requestOtp) {}
         if (event.status == AuthStatus.successForgotOtp) {
           closeLoading();
-          // RegisterSuccessPage.navigate(
-          //     phoneNumber: "0" + _initPhoneNumber.parseNumber());
-          // navigatorKey.currentState.maybePop();
+          ResetPasswordPage.navigate();
+        }
+        if (event.status == AuthStatus.authSuccesForgot) {
+          LoginPage.navigate();
         }
       });
     }

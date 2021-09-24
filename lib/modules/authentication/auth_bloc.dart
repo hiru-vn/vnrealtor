@@ -22,6 +22,7 @@ enum AuthStatus {
   requestOtp,
   successOtp,
   successForgotOtp,
+  authSuccesForgot,
 }
 
 class AuthResponse {
@@ -33,6 +34,9 @@ class AuthResponse {
 
   factory AuthResponse.success() {
     return AuthResponse(isSuccess: true, status: AuthStatus.authSucces);
+  }
+  factory AuthResponse.successForgot() {
+    return AuthResponse(isSuccess: true, status: AuthStatus.authSuccesForgot);
   }
   factory AuthResponse.fail(String err) {
     return AuthResponse(
@@ -446,7 +450,7 @@ class AuthBloc extends ChangeNotifier {
     }
   }
 
-  Future resetPass(AuthCredential auth, String pass) async {
+  Future resetPass(String pass) async {
     try {
       final res = await resetPassWithPhoneAuth(authCredential, pass);
       if (res.isSuccess) {

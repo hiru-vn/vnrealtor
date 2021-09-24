@@ -9,7 +9,7 @@ import 'filter.dart';
 
 class UserRepo {
   String userFragment =
-      ' id uid name tagName email phone groupIds totalPost isVerify description dynamicLink { shortLink previewLink } savedPostIds messNotiCount sharePoint commentPoint likePoint facebookUrl role reputationScore friendIds createdAt updatedAt followerIds followingIds avatar settings { likeNoti shareNoti commentNoti}';
+      ' id uid name tagName email phone groupIds totalPost isVerify description dynamicLink { shortLink previewLink } savedPostIds messNotiCount notiCount sharePoint commentPoint likePoint facebookUrl role reputationScore friendIds createdAt updatedAt followerIds followingIds avatar settings { likeNoti shareNoti commentNoti}';
 
   Future registerWithPhone(
       {String name,
@@ -218,6 +218,24 @@ Page: "$page"
         id
     ''');
     return res['acceptInviteFollow'];
+  }
+
+  Future deletePageInvite({String id}) async {
+    final res = await UserSrv().mutate('deleteOneInvitePage', '''
+    id: "$id"
+    ''', fragment: '''
+         id
+         page{
+       $pageFragment
+     }  
+     toUser{
+       $userFragment
+     }
+      fromUser{
+       $userFragment
+     }
+    ''');
+    return res['deleteOneInviteFollow'];
   }
 
   Future setUserlocation(

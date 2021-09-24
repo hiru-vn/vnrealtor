@@ -45,7 +45,8 @@ class NotificationBloc extends ChangeNotifier {
           ProfileOtherPage.navigate(null, userId: initActions[0].modelId);
         }
       }
-    } catch (e) {} finally {
+    } catch (e) {
+    } finally {
       if (initActions.length > 0) initActions.removeAt(0);
     }
     return;
@@ -60,6 +61,7 @@ class NotificationBloc extends ChangeNotifier {
         isLoadNoti = true;
       }
       final res = await NotificationRepo().getMyNotification(filter: filter);
+      AuthBloc.instance.getUser();
       final List listRaw = res['data'];
       final list = listRaw.map((e) => NotificationModel.fromJson(e)).toList();
       notifications = list;
@@ -87,6 +89,7 @@ class NotificationBloc extends ChangeNotifier {
   Future<BaseResponse> seenNoti(String id) async {
     try {
       final res = await NotificationRepo().seenNoti(id);
+      AuthBloc.instance.getUser();
       return BaseResponse.success(res);
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());

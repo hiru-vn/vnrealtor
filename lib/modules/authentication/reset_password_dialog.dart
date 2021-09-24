@@ -79,7 +79,7 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
     setState(() {
       isLoading = true;
     });
-    _authBloc.resetPass(auth, _passC.text);
+    _authBloc.resetPass(_passC.text);
   }
 
   @override
@@ -270,7 +270,8 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
             top:
                 (deviceHeight(context) - Responsive.heightMultiplier * 10) / 2 -
                     195 / 2 -
-                    48 - 5,
+                    48 -
+                    5,
             child: Material(
               color: Colors.transparent,
               child: GestureDetector(
