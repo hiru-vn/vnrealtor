@@ -55,6 +55,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ResetPasswordPage.navigate();
         }
         if (event.status == AuthStatus.authSuccesForgot) {
+          showToast('Đổi mật khẩu thành công', context, isSuccess: true);
+          navigatorKey.currentState.maybePop();
           LoginPage.navigate();
         }
       });

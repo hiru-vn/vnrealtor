@@ -454,7 +454,7 @@ class AuthBloc extends ChangeNotifier {
     try {
       final res = await resetPassWithPhoneAuth(authCredential, pass);
       if (res.isSuccess) {
-        authStatusSink.add(AuthResponse.success());
+        authStatusSink.add(AuthResponse.successForgot());
       } else {
         authStatusSink.add(AuthResponse.fail(res.errMessage));
       }

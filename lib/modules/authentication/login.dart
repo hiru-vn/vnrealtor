@@ -137,12 +137,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    final bool isDarkMode = brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: Center(
             child: Text(
           "ĐĂNG NHẬP",
-          style: roboto_18_700().copyWith(color: ptMainColor(context)),
+          style: roboto_18_700().copyWith(
+              color: isDarkMode
+                  ? ptSecondaryColor(context)
+                  : ptMainColor(context)),
         )),
         backgroundColor: ptPrimaryColor(context),
         elevation: 0,

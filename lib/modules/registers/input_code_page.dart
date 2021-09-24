@@ -87,14 +87,19 @@ class _InputPinCodePageState extends State<InputPinCodePage> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    final bool isDarkMode = brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: Center(
             child: Text(
-          "ĐĂNG KÝ",
-          style: roboto_18_700().copyWith(color: ptMainColor(context)),
+          widget.isForgot ? "QUÊN MẬT KHẨU" : "ĐĂNG KÝ",
+          style: roboto_18_700().copyWith(
+              color: isDarkMode
+                  ? ptSecondaryColor(context)
+                  : ptMainColor(context)),
         )),
-        brightness: ptBrightness(context),
+        backgroundColor: ptPrimaryColor(context),
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
