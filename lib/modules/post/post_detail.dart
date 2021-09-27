@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
@@ -12,7 +11,6 @@ import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/post/users_liked_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/import.dart';
-import 'package:datcao/share/widget/custom_app_bar.dart';
 import 'package:graphql/client.dart';
 import 'dart:async';
 import 'package:datcao/share/widget/tag_user_field.dart';
@@ -258,14 +256,15 @@ class _PostDetailState extends State<PostDetail> {
                             )
                           : PostWidget(_post,
                               commentCallBack: () {}, isInDetailPage: true),
-                      Container(
-                        color: ptPrimaryColor(context),
-                        child: _post != null
-                            ? ListUsersLikedPost(
-                                postModel: _post,
-                              )
-                            : StorySkeleton(),
-                      ),
+                      if (_post.userLikeIds.isNotEmpty)
+                        Container(
+                          color: ptPrimaryColor(context),
+                          child: _post != null
+                              ? ListUsersLikedPost(
+                                  postModel: _post,
+                                )
+                              : StorySkeleton(),
+                        ),
                       Container(
                         color: ptPrimaryColor(context),
                         child: comments != null

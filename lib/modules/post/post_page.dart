@@ -387,7 +387,7 @@ class CreatePostCard extends StatelessWidget {
                   : postBloc.stories.length == 0
                       ? SizedBox.shrink()
                       : Container(
-                          height: 85,
+                          height: 90,
                           color: ptPrimaryColor(context),
                           child: ListView.separated(
                               scrollDirection: Axis.horizontal,

@@ -1,11 +1,12 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/group/detail_group_page.dart';
+import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/pages/page_detail.dart';
-import 'package:datcao/modules/profile/profile_other_page.dart';
 import 'package:datcao/share/import.dart';
-import 'package:datcao/utils/role_user.dart';
 
 class PageInviteReceivedItem extends StatefulWidget {
   final PagesCreate page;
@@ -173,7 +174,7 @@ class _PageInviteReceivedItemState extends State<PageInviteReceivedItem> {
                   },
                   child: Image.asset(
                     "assets/image/close_icon.png",
-                    width: 16,
+                    width: 22,
                   ),
                 ),
               )
@@ -367,11 +368,6 @@ class _PageInviteSentItemState extends State<PageInviteSentItem> {
                   )
                 ],
               ),
-              // aáđâs
-              // ádasd
-              // ádasdas
-              // đâsd
-              // ádasd
               Positioned(
                 top: 10,
                 right: 10,
@@ -381,7 +377,131 @@ class _PageInviteSentItemState extends State<PageInviteSentItem> {
                   },
                   child: Image.asset(
                     "assets/image/close_icon.png",
-                    width: 16,
+                    width: 22,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class GroupInviteItem extends StatelessWidget {
+  final GroupModel group;
+  final UserModel user;
+  final bool isSent;
+  final Function onDeleteInvite;
+
+  const GroupInviteItem(
+      {Key key,
+      this.group,
+      this.user,
+      this.isSent = false,
+      this.onDeleteInvite})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        audioCache.play('tab3.mp3');
+        DetailGroupPage.navigate(null, groupId: group.id);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+              color: ptPrimaryColor(context),
+              borderRadius: BorderRadius.circular(10)),
+          child: Stack(
+            children: [
+              Container(
+                child: Image.asset(
+                  "assets/image/anhbia.png",
+                  height: 60,
+                  width: double.infinity,
+                  fit: BoxFit.fill,
+                ),
+              ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30.0),
+                    child: Image(
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      image: group.coverImage != null
+                          ? CachedNetworkImageProvider(group.coverImage)
+                          : AssetImage('assets/image/default_avatar.png'),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 35,
+                      child: AutoSizeText(
+                        group.name,
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                        style: roboto(context).copyWith(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("${group.countMember} thành viên"),
+                      SizedBox(
+                        width: 5,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    '${isSent ? 'Đã gửi đến' : 'Được mời bởi'}  ${user.name}',
+                    style: roboto(context).copyWith(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: GestureDetector(
+                  onTap: () {
+                    onDeleteInvite();
+                  },
+                  child: Image.asset(
+                    "assets/image/close_icon.png",
+                    width: 22,
                   ),
                 ),
               )

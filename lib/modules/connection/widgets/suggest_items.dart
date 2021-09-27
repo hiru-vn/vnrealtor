@@ -164,7 +164,7 @@ class UserSuggestItem extends StatelessWidget {
                 },
                 child: Image.asset(
                   "assets/image/close_icon.png",
-                  width: 16,
+                  width: 22,
                 ),
               ),
             )
@@ -233,7 +233,9 @@ class GroupSuggestItem extends StatelessWidget {
                       height: 60,
                       fit: BoxFit.cover,
                       image: group.coverImage != null
-                          ? CachedNetworkImageProvider(group.coverImage)
+                          ? CachedNetworkImageProvider(
+                              group.coverImage,
+                            )
                           : AssetImage('assets/image/default_avatar.png'),
                     ),
                   ),
@@ -333,7 +335,7 @@ class GroupSuggestItem extends StatelessWidget {
                   },
                   child: Image.asset(
                     "assets/image/close_icon.png",
-                    width: 16,
+                    width: 22,
                   ),
                 ),
               )
@@ -573,7 +575,7 @@ class PageSuggestItem extends StatelessWidget {
                   },
                   child: Image.asset(
                     "assets/image/close_icon.png",
-                    width: 16,
+                    width: 22,
                   ),
                 ),
               )

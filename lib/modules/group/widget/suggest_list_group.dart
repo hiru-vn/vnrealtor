@@ -28,7 +28,7 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
     if (groupBloc.suggestGroup == null || groupBloc.suggestGroup.length == 0)
       return SizedBox.shrink();
     return Container(
-      height: 250,
+      height: 260,
       color: ptPrimaryColor(context),
       width: deviceWidth(context),
       child: ListView.separated(

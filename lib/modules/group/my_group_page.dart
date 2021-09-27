@@ -66,30 +66,27 @@ class _MyGroupPageState extends State<MyGroupPage> {
                 (_groupBloc.myGroups == null)
                     ? ListSkeleton()
                     : (_groupBloc.myGroups.length == 0)
-                        ? Text('Bạn quản lý nhóm nào')
+                        ? Text('Bạn không quản lý nhóm nào')
                         : Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 20,
                             ),
-                            child: GridView.count(
-                              crossAxisCount:
-                                  (MediaQuery.of(context).size.width / 200)
-                                      .round(),
+                            child: StaggeredGridView.count(
                               shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              physics: NeverScrollableScrollPhysics(),
-                              childAspectRatio: .8,
+                              crossAxisCount: 2,
+                              staggeredTiles: _groupBloc.myGroups
+                                  .map((_) => StaggeredTile.fit(1))
+                                  .toList(),
                               children: List.generate(
-                                  _groupBloc.myGroups == null
-                                      ? 4
-                                      : _groupBloc.myGroups.length,
+                                  _groupBloc.myGroups.length,
                                   (index) => _groupBloc.myGroups == null
                                       ? SuggestItemLoading()
                                       : GroupSuggestItem(
                                           group: _groupBloc.myGroups[index],
                                           groupBloc: _groupBloc,
                                         )),
-                            )),
+                            ),
+                          ),
                 Container(
                   color: ptPrimaryColorLight(context),
                   padding: const EdgeInsets.all(20),

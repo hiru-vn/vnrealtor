@@ -13,8 +13,8 @@ class InviteBloc extends ChangeNotifier {
   List<InviteModel> invitesUserReceived = [];
   List<InvitePageModel> invitesPageSent = [];
   List<InvitePageModel> invitesPageReceived = [];
-  List<InviteModel> invitesGroupSent = [];
-  List<InviteModel> invitesGroupReceived = [];
+  List<InviteGroupModel> invitesGroupSent = [];
+  List<InviteGroupModel> invitesGroupReceived = [];
   int invitesUserSentPage = 1;
   int invitesUserReceivedPage = 1;
   int invitesPageSentPage = 1;
@@ -111,15 +111,15 @@ class InviteBloc extends ChangeNotifier {
 
   Future<BaseResponse> getInvitesPageReceived() async {
     try {
-      isEndInvitesUserReceived = false;
-      isLoadingInvitesUserReceived = true;
+      isEndInvitesPageReceived = false;
+      isLoadingInvitesPageReceived = true;
       GraphqlFilter _filter = GraphqlFilter(
           limit: 10,
           filter: "{toUserId: \"${AuthBloc.instance.userModel.id}\"}");
       final res = await UserRepo().getAllInvitePage(filter: _filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => InvitePageModel.fromJson(e)).toList();
-      if (list.length < _filter.limit) isEndInvitesUserReceived = true;
+      if (list.length < _filter.limit) isEndInvitesPageReceived = true;
       invitesPageReceived = list;
       invitesPageReceivedPage = 1;
       return BaseResponse.success(list);
@@ -127,6 +127,50 @@ class InviteBloc extends ChangeNotifier {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
       isLoadingInvitesPageReceived = false;
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getInvitesGroupReceived() async {
+    try {
+      isEndInvitesGroupReceived = false;
+      isLoadingInvitesGroupReceived = true;
+      GraphqlFilter _filter = GraphqlFilter(
+          limit: 10,
+          filter: "{toUserId: \"${AuthBloc.instance.userModel.id}\"}");
+      final res = await UserRepo().getAllInviteGroup(filter: _filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => InviteGroupModel.fromJson(e)).toList();
+      if (list.length < _filter.limit) isEndInvitesGroupReceived = true;
+      invitesGroupReceived = list;
+      invitesGroupReceivedPage = 1;
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      isLoadingInvitesGroupReceived = false;
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getInvitesGroupSent() async {
+    try {
+      isEndInvitesGroupSent = false;
+      isLoadingInvitesGroupSent = true;
+      GraphqlFilter _filter = GraphqlFilter(
+          limit: 10,
+          filter: "{fromUserId: \"${AuthBloc.instance.userModel.id}\"}");
+      final res = await UserRepo().getAllInviteGroup(filter: _filter);
+      final List listRaw = res['data'];
+      final list = listRaw.map((e) => InviteGroupModel.fromJson(e)).toList();
+      if (list.length < _filter.limit) isEndInvitesGroupSent = true;
+      invitesGroupSent = list;
+      invitesGroupSentPage = 1;
+      return BaseResponse.success(list);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      isLoadingInvitesGroupSent = false;
       notifyListeners();
     }
   }
@@ -143,6 +187,24 @@ class InviteBloc extends ChangeNotifier {
             invitesUserReceived.where((element) => element.id != id).toList();
       }
       return BaseResponse.success(res);
+    } catch (e) {
+      return BaseResponse.fail(e.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> deleteInviteGroup(
+      {String id, bool isSent = false}) async {
+    try {
+      if (isSent) {
+        invitesGroupSent =
+            invitesGroupSent.where((element) => element.id != id).toList();
+      } else {
+        invitesGroupReceived =
+            invitesGroupReceived.where((element) => element.id != id).toList();
+      }
+      return BaseResponse.success({});
     } catch (e) {
       return BaseResponse.fail(e.message ?? e.toString());
     } finally {
