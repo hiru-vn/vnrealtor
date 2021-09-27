@@ -38,6 +38,8 @@ class _InvitesListScreenState extends State<InvitesListScreen>
       _inviteBloc.getInvitesUserSent();
       _inviteBloc.getInvitesPageSent();
       _inviteBloc.getInvitesPageReceived();
+      _inviteBloc.getInvitesGroupReceived();
+      _inviteBloc.getInvitesGroupSent();
     }
     super.didChangeDependencies();
   }
@@ -93,9 +95,10 @@ class _InvitesListScreenState extends State<InvitesListScreen>
                   builder: (ctx, child) {
                     if (_tabController.index == 0) {
                       return Expanded(
-                          child: ListInvitesUserReceived(
-                        inviteBloc: _inviteBloc,
-                      ));
+                        child: ListInvitesUserReceived(
+                          inviteBloc: _inviteBloc,
+                        ),
+                      );
                     } else
                       return Expanded(
                           child: ListInvitesUserSent(
@@ -121,7 +124,7 @@ class ListInvitesUserReceived extends StatefulWidget {
 
 class _ListInvitesUserReceivedState extends State<ListInvitesUserReceived> {
   int tabIndex = 0;
-  PageController _pageController = PageController();
+  PageController _pageController = PageController(initialPage: 0);
 
   void _deleteInvite({String id, bool isSent = false}) {
     showDialog(
@@ -394,7 +397,7 @@ class _ListInvitesUserReceivedState extends State<ListInvitesUserReceived> {
           color: ptPrimaryColor(context),
           onRefresh: () async {
             audioCache.play('tab3.mp3');
-            widget.inviteBloc.getInvitesUserReceived();
+            widget.inviteBloc.getInvitesPageReceived();
             return true;
           },
           child: (!widget.inviteBloc.isLoadingInvitesPageReceived &&
@@ -421,7 +424,6 @@ class _ListInvitesUserReceivedState extends State<ListInvitesUserReceived> {
                 )
               : StaggeredGridView.count(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
                   controller:
                       widget.inviteBloc.invitesPageReceivedScrollController,
                   crossAxisCount: 2,
@@ -434,7 +436,9 @@ class _ListInvitesUserReceivedState extends State<ListInvitesUserReceived> {
                           : widget.inviteBloc.invitesPageReceived.length,
                       (index) {
                     final InvitePageModel invite =
-                        widget.inviteBloc.invitesPageReceived[index];
+                        widget.inviteBloc.isLoadingInvitesPageReceived
+                            ? InvitePageModel()
+                            : widget.inviteBloc.invitesPageReceived[index];
                     return widget.inviteBloc.isLoadingInvitesPageReceived
                         ? SuggestItemLoading()
                         : PageInviteReceivedItem(
@@ -448,82 +452,70 @@ class _ListInvitesUserReceivedState extends State<ListInvitesUserReceived> {
 
   LoadMoreScrollView buildInvitesGroupReceived(BuildContext context) {
     return LoadMoreScrollView(
-        scrollController:
-            widget.inviteBloc.invitesGroupReceivedScrollController,
-        onLoadMore: () {
-          //  widget.inviteBloc.loadMoreNewFeedGroup();
+      scrollController: widget.inviteBloc.invitesGroupReceivedScrollController,
+      onLoadMore: () {
+        //  widget.inviteBloc.loadMoreNewFeedGroup();
+      },
+      list: RefreshIndicator(
+        color: ptPrimaryColor(context),
+        onRefresh: () async {
+          audioCache.play('tab3.mp3');
+          widget.inviteBloc.getInvitesUserReceived();
+          return true;
         },
-        list: RefreshIndicator(
-          color: ptPrimaryColor(context),
-          onRefresh: () async {
-            audioCache.play('tab3.mp3');
-            widget.inviteBloc.getInvitesUserReceived();
-            return true;
-          },
-          child: (!widget.inviteBloc.isLoadingInvitesGroupReceived &&
-                  widget.inviteBloc.invitesGroupReceived.isEmpty)
-              ? Center(
-                  child: Container(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          "assets/image/invite_image.png",
-                          width: 200,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "Không có lời mời nào!",
-                          style: ptBigBody(),
-                        )
-                      ],
-                    ),
+        child: (!widget.inviteBloc.isLoadingInvitesGroupReceived &&
+                widget.inviteBloc.invitesGroupReceived.isEmpty)
+            ? Center(
+                child: Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        "assets/image/invite_image.png",
+                        width: 200,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Không có lời mời nào!",
+                        style: ptBigBody(),
+                      )
+                    ],
                   ),
-                )
-              : ListView.builder(
-                  controller:
-                      widget.inviteBloc.invitesGroupReceivedScrollController,
-                  itemCount: widget.inviteBloc.isLoadingInvitesGroupReceived
-                      ? 10
-                      : widget.inviteBloc.invitesGroupReceived.length,
-                  itemBuilder: (context, index) => widget
-                          .inviteBloc.isLoadingInvitesGroupReceived
-                      ? UserConnectItemLoading()
-                      : UserConnectItem(
-                          user: widget
-                              .inviteBloc.invitesGroupReceived[index].fromUser,
-                          actions: [
-                            TextButton(
-                              onPressed: () => _deleteInvite(
-                                  id: widget.inviteBloc
-                                      .invitesGroupReceived[index].id,
-                                  isSent: false),
-                              child: Text(
-                                "Xoá",
-                                style: roboto(context)
-                                    .copyWith(color: ptSecondaryColor(context)),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                _acceptInviteFollow(
-                                    id: widget.inviteBloc
-                                        .invitesGroupReceived[index].id,
-                                    user: widget.inviteBloc
-                                        .invitesGroupReceived[index].fromUser);
-                              },
-                              child: Text(
-                                "Chấp nhận",
-                                style: roboto(context)
-                                    .copyWith(color: ptSecondaryColor(context)),
-                              ),
-                            ),
-                          ],
-                        ),
                 ),
-        ));
+              )
+            : StaggeredGridView.count(
+                shrinkWrap: true,
+                controller:
+                    widget.inviteBloc.invitesGroupReceivedScrollController,
+                crossAxisCount: 2,
+                staggeredTiles: widget.inviteBloc.invitesGroupReceived
+                    .map((_) => StaggeredTile.fit(1))
+                    .toList(),
+                children: List.generate(
+                    widget.inviteBloc.isLoadingInvitesGroupReceived
+                        ? 6
+                        : widget.inviteBloc.invitesGroupReceived.length,
+                    (index) {
+                  final InviteGroupModel invite =
+                      widget.inviteBloc.isLoadingInvitesGroupReceived
+                          ? InviteGroupModel()
+                          : widget.inviteBloc.invitesGroupReceived[index];
+                  return widget.inviteBloc.isLoadingInvitesGroupReceived
+                      ? SuggestItemLoading()
+                      : GroupInviteItem(
+                          group: invite.group,
+                          user: invite.toUser,
+                          onDeleteInvite: () {
+                            widget.inviteBloc.deleteInviteGroup(
+                                id: invite.id, isSent: false);
+                          },
+                        );
+                }),
+              ),
+      ),
+    );
   }
 }
 
@@ -537,7 +529,7 @@ class ListInvitesUserSent extends StatefulWidget {
 
 class _ListInvitesUserSentState extends State<ListInvitesUserSent> {
   int tabIndex = 0;
-  PageController _pageController = PageController();
+  PageController _pageController = PageController(initialPage: 0);
   void _deleteInvite({String id, bool isSent = false}) {
     showDialog(
       context: context,
@@ -793,7 +785,6 @@ class _ListInvitesUserSentState extends State<ListInvitesUserSent> {
               )
             : StaggeredGridView.count(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
                 controller: widget.inviteBloc.invitesPageSentScrollController,
                 crossAxisCount: 2,
                 staggeredTiles: widget.inviteBloc.invitesPageSent
@@ -804,7 +795,9 @@ class _ListInvitesUserSentState extends State<ListInvitesUserSent> {
                         ? 6
                         : widget.inviteBloc.invitesPageSent.length, (index) {
                   final InvitePageModel invite =
-                      widget.inviteBloc.invitesPageSent[index];
+                      widget.inviteBloc.isLoadingInvitesPageSent
+                          ? InvitePageModel()
+                          : widget.inviteBloc.invitesPageSent[index];
                   return widget.inviteBloc.isLoadingInvitesPageSent
                       ? SuggestItemLoading()
                       : PageInviteSentItem(
@@ -831,7 +824,7 @@ class _ListInvitesUserSentState extends State<ListInvitesUserSent> {
           color: ptPrimaryColor(context),
           onRefresh: () async {
             audioCache.play('tab3.mp3');
-            widget.inviteBloc.getInvitesUserSent();
+            widget.inviteBloc.getInvitesGroupSent();
             return true;
           },
           child: (!widget.inviteBloc.isLoadingInvitesGroupSent &&
@@ -856,32 +849,34 @@ class _ListInvitesUserSentState extends State<ListInvitesUserSent> {
                     ),
                   ),
                 )
-              : ListView.builder(
+              : StaggeredGridView.count(
+                  shrinkWrap: true,
                   controller:
                       widget.inviteBloc.invitesGroupSentScrollController,
-                  itemCount: widget.inviteBloc.isLoadingInvitesGroupSent
-                      ? 10
-                      : widget.inviteBloc.invitesGroupSent.length,
-                  itemBuilder: (context, index) =>
+                  crossAxisCount: 2,
+                  staggeredTiles: widget.inviteBloc.invitesGroupSent
+                      .map((_) => StaggeredTile.fit(1))
+                      .toList(),
+                  children: List.generate(
                       widget.inviteBloc.isLoadingInvitesGroupSent
-                          ? UserConnectItemLoading()
-                          : UserConnectItem(
-                              user: widget
-                                  .inviteBloc.invitesGroupSent[index].fromUser,
-                              actions: [
-                                TextButton(
-                                  onPressed: () => _deleteInvite(
-                                      id: widget.inviteBloc
-                                          .invitesGroupSent[index].id,
-                                      isSent: false),
-                                  child: Text(
-                                    "Thu hồi",
-                                    style: roboto(context).copyWith(
-                                        color: ptSecondaryColor(context)),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          ? 6
+                          : widget.inviteBloc.invitesGroupSent.length, (index) {
+                    final InviteGroupModel invite =
+                        widget.inviteBloc.isLoadingInvitesGroupSent
+                            ? InviteGroupModel()
+                            : widget.inviteBloc.invitesGroupSent[index];
+                    return widget.inviteBloc.isLoadingInvitesGroupSent
+                        ? SuggestItemLoading()
+                        : GroupInviteItem(
+                            group: invite.group,
+                            user: invite.toUser,
+                            isSent: true,
+                            onDeleteInvite: () {
+                              widget.inviteBloc.deleteInviteGroup(
+                                  id: invite.id, isSent: true);
+                            },
+                          );
+                  }),
                 ),
         ));
   }

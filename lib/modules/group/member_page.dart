@@ -67,6 +67,8 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    final bool isDarkMode = brightness == Brightness.dark;
     return Scaffold(
       appBar: SecondAppBar(
         title: 'Thành viên',
@@ -195,13 +197,18 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                       width: 33,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: ptSecondaryColor(context),
+                        color: ptPrimaryColorLight(context),
                       ),
                       child: Center(
                           child: SizedBox(
                               width: 18,
                               height: 18,
-                              child: Image.asset('assets/icon/admin.png'))),
+                              child: Image.asset(
+                                'assets/icon/admin.png',
+                                color: isDarkMode
+                                    ? Colors.white
+                                    : ptMainColor(context),
+                              ))),
                     ),
                     SizedBox(width: 15),
                     Text('Quản trị viên', style: ptTitle()),
@@ -237,13 +244,20 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                       width: 33,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: ptSecondaryColor(context),
+                        color: ptPrimaryColorLight(context),
                       ),
                       child: Center(
-                          child: SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: Image.asset('assets/icon/group.png'))),
+                        child: SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: Image.asset(
+                            'assets/icon/group.png',
+                            color: isDarkMode
+                                ? Colors.white
+                                : ptMainColor(context),
+                          ),
+                        ),
+                      ),
                     ),
                     SizedBox(width: 15),
                     Text('Thành viên', style: ptTitle()),

@@ -86,7 +86,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
       });
       _loadPendingUsers();
     } else {
-      showToast('Có lỗi khi load dữ liệu', context);
+      showToast('Nhóm này đã bị khoá', context);
     }
   }
 
@@ -154,6 +154,8 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
   }
 
   Widget _buildGroupInfo() {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    final bool isDarkMode = brightness == Brightness.dark;
     return Container(
       color: ptPrimaryColor(context),
       child: Column(children: [
@@ -162,11 +164,20 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
             SizedBox(
               width: deviceWidth(context),
               height: 160,
-              child: Image.network(
-                group.coverImage ?? '',
-                fit: BoxFit.cover,
-                loadingBuilder: kLoadingBuilder,
-              ),
+              child: (group.coverImage != null)
+                  ? Image.network(
+                      group.coverImage,
+                      fit: BoxFit.cover,
+                      loadingBuilder: kLoadingBuilder,
+                      errorBuilder: (context, error, stackTrace) =>
+                          Image.asset('assets/image/anhbia.png'),
+                    )
+                  : Image.asset(
+                      "assets/image/anhbia.png",
+                      height: 60,
+                      width: double.infinity,
+                      fit: BoxFit.fill,
+                    ),
             ),
             if (!group.isOwner && group.isMember)
               Positioned(
@@ -264,7 +275,10 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                   SizedBox(
                     height: 20,
                     width: 20,
-                    child: Image.asset('assets/icon/public.png'),
+                    child: Image.asset(
+                      'assets/icon/public.png',
+                      color: isDarkMode ? Colors.white : ptMainColor(context),
+                    ),
                   ),
                   SizedBox(width: 5),
                   Text(!group.privacy ? 'Công khai' : 'Nhóm kín',
@@ -510,9 +524,14 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                         alignment: Alignment.centerLeft,
                         child: SizedBox(
                             height: 20,
-                            child: Image.asset(!group.privacy
-                                ? 'assets/icon/public.png'
-                                : 'assets/icon/lock.png')),
+                            child: Image.asset(
+                              !group.privacy
+                                  ? 'assets/icon/public.png'
+                                  : 'assets/icon/lock.png',
+                              color: isDarkMode
+                                  ? Colors.white
+                                  : ptMainColor(context),
+                            )),
                       )),
                   Text(group.privacy ? 'Nhóm kín' : 'Công khai'),
                 ],
@@ -526,7 +545,12 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                         alignment: Alignment.centerLeft,
                         child: SizedBox(
                             height: 20,
-                            child: Image.asset('assets/icon/location.png')),
+                            child: Image.asset(
+                              'assets/icon/location.png',
+                              color: isDarkMode
+                                  ? Colors.white
+                                  : ptMainColor(context),
+                            )),
                       )),
                   Expanded(child: Text('Địa chỉ: ' + group.address)),
                 ],

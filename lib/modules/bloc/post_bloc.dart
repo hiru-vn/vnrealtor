@@ -569,26 +569,26 @@ class PostBloc extends ChangeNotifier {
 
   void setLikePostLocal(String postId, int likeCounter, bool isUserLike) {
     PostModel post;
-    post =
-        feed.firstWhere((element) => element.id == postId, orElse: () => null);
+    post = (feed ?? [])
+        .firstWhere((element) => element.id == postId, orElse: () => null);
     if (post != null)
       post
         ..like = likeCounter
         ..isUserLike = isUserLike;
-    post = myPosts.firstWhere((element) => element.id == postId,
-        orElse: () => null);
+    post = (myPosts ?? [])
+        .firstWhere((element) => element.id == postId, orElse: () => null);
     if (post != null)
       post
         ..like = likeCounter
         ..isUserLike = isUserLike;
-    post = stories.firstWhere((element) => element.id == postId,
-        orElse: () => null);
+    post = (stories ?? [])
+        .firstWhere((element) => element.id == postId, orElse: () => null);
     if (post != null)
       post
         ..like = likeCounter
         ..isUserLike = isUserLike;
-    post = savePosts.firstWhere((element) => element.id == postId,
-        orElse: () => null);
+    post = (savePosts ?? [])
+        .firstWhere((element) => element.id == postId, orElse: () => null);
     if (post != null)
       post
         ..like = likeCounter

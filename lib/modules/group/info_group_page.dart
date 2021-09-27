@@ -75,7 +75,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ptSecondaryColor(context),
+      backgroundColor: ptBackgroundColor(context),
       appBar: SecondAppBar(
         title: group?.name ?? '',
       ),
@@ -86,9 +86,11 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
   }
 
   Widget _buildGroupInfo() {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    final bool isDarkMode = brightness == Brightness.dark;
     return Column(children: [
       Container(
-        color: Colors.white,
+        color: ptPrimaryColor(context),
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,9 +109,14 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
                           height: 20,
-                          child: Image.asset(!group.privacy
-                              ? 'assets/icon/public.png'
-                              : 'assets/icon/lock.png')),
+                          child: Image.asset(
+                            !group.privacy
+                                ? 'assets/icon/public.png'
+                                : 'assets/icon/lock.png',
+                            color: isDarkMode
+                                ? Colors.white
+                                : ptMainColor(context),
+                          )),
                     )),
                 Text(group.privacy ? 'Nhóm kín' : 'Công khai'),
               ],
@@ -123,7 +130,12 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
                           height: 20,
-                          child: Image.asset('assets/icon/location.png')),
+                          child: Image.asset(
+                            'assets/icon/location.png',
+                            color: isDarkMode
+                                ? Colors.white
+                                : ptMainColor(context),
+                          )),
                     )),
                 Expanded(child: Text('Địa chỉ: ' + group.address)),
               ],
@@ -161,7 +173,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
       ),
       SizedBox(height: 12),
       Container(
-        color: Colors.white,
+        color: ptPrimaryColor(context),
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +208,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
-                      color: ptSecondaryColor(context),
+                      color: ptPrimaryColorLight(context),
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: Text('Xem thêm', style: ptTitle()),
@@ -209,7 +221,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
       ),
       SizedBox(height: 12),
       Container(
-        color: Colors.white,
+        color: ptPrimaryColor(context),
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,6 +281,8 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
   }
 
   Widget _buildTile(String asset, String title, String content) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    final bool isDarkMode = brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(bottom: 6, top: 6, right: 4, left: 4),
       child: Row(
@@ -276,7 +290,10 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
           SizedBox(
             width: 25,
             height: 25,
-            child: Image.asset('assets/icon/$asset.png'),
+            child: Image.asset(
+              'assets/icon/$asset.png',
+              color: isDarkMode ? Colors.white : ptMainColor(context),
+            ),
           ),
           SizedBox(width: 15),
           Column(
