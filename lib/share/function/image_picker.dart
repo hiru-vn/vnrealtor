@@ -10,11 +10,11 @@ import 'package:path_provider/path_provider.dart';
 // variable to hold image to be displayed
 
 void imagePicker(BuildContext context,
-    {Function(String path) onCameraPick,
-    Function(String path) onImagePick,
-    Function(String path) onVideoPick,
-    Function(List<String>) onMultiImagePick,
-    String title}) {
+    {Function(String path)? onCameraPick,
+    Function(String path)? onImagePick,
+    Function(String path)? onVideoPick,
+    Function(List<String>)? onMultiImagePick,
+    String? title}) {
   showModalBottomSheet(
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
@@ -52,7 +52,8 @@ void imagePicker(BuildContext context,
                           onGranted: () {
                             // close showModalBottomSheet
                             Navigator.of(context).pop();
-                            ImagePicker.pickImage(source: ImageSource.camera)
+                            ImagePicker()
+                                .pickImage(source: ImageSource.camera)
                                 .then((value) {
                               if (value == null) return;
                               onCameraPick(value.path);
@@ -148,7 +149,8 @@ void imagePicker(BuildContext context,
                             // close showModalBottomSheet
                             Navigator.of(context).pop();
 
-                            ImagePicker.pickImage(source: ImageSource.gallery)
+                            ImagePicker()
+                                .pickImage(source: ImageSource.gallery)
                                 .then((value) {
                               if (value == null) return;
                               onImagePick(value.path);
@@ -186,7 +188,8 @@ void imagePicker(BuildContext context,
                             // close showModalBottomSheet
                             Navigator.of(context).pop();
 
-                            ImagePicker.pickVideo(source: ImageSource.gallery)
+                            ImagePicker()
+                                .pickVideo(source: ImageSource.gallery)
                                 .then((value) {
                               if (value == null) return;
                               onVideoPick(value.path);
@@ -224,11 +227,11 @@ void imagePicker(BuildContext context,
 }
 
 onCustomPersionRequest(
-    {@required Permission permission,
-    Function onGranted,
-    Function onAlreadyDenied,
-    Function onJustDeny,
-    Function onAndroidPermanentDenied}) {
+    {required Permission permission,
+    Function? onGranted,
+    Function? onAlreadyDenied,
+    Function? onJustDeny,
+    Function? onAndroidPermanentDenied}) {
   permission.status.then((value) {
     // if (value.isUndetermined) {
     //   Permission.camera.request().then((value) {
@@ -247,9 +250,9 @@ onCustomPersionRequest(
     //   onGranted();
     // }
     if (!value.isGranted) {
-      Permission.camera.request().then((value) => onGranted());
+      Permission.camera.request().then((value) => onGranted!());
     } else {
-      onGranted();
+      onGranted!();
     }
   });
 }

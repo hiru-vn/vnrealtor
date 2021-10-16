@@ -5,9 +5,9 @@ import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/share/import.dart';
 import 'package:skeleton_loader/skeleton_loader.dart';
 
-Future<List<UserModel>> showChooseUsersPopup(
-    BuildContext context, List<String> userIds, String title,
-    {String submitText}) {
+Future<List<UserModel>?> showChooseUsersPopup(
+    BuildContext context, List<String>? userIds, String title,
+    {String? submitText}) {
   return showModalBottomSheet(
     isScrollControlled: true,
     context: context,
@@ -20,8 +20,8 @@ Future<List<UserModel>> showChooseUsersPopup(
 
 class ChooseUsersPage extends StatefulWidget {
   final String title;
-  final String submitText;
-  final List<String> userIds;
+  final String? submitText;
+  final List<String>? userIds;
   ChooseUsersPage(this.title, this.userIds, {this.submitText});
 
   @override
@@ -29,18 +29,18 @@ class ChooseUsersPage extends StatefulWidget {
 }
 
 class _ChooseUsersPageState extends State<ChooseUsersPage> {
-  AuthBloc _authBloc;
-  UserBloc _userBloc;
-  List<UserModel> listUsers;
+  AuthBloc? _authBloc;
+  late UserBloc _userBloc;
+  List<UserModel>? listUsers;
   List<UserModel> chooseUsers = [];
   String search = '';
 
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
-      _authBloc = Provider.of(context);
-      _userBloc = Provider.of(context);
-      _userBloc.getListUserIn(widget.userIds).then((value) {
+      _authBloc = Provider.of<AuthBloc>(context);
+      _userBloc = Provider.of<UserBloc>(context);
+      _userBloc.getListUserIn(widget.userIds!).then((value) {
         if (value.isSuccess) {
           setState(() {
             listUsers = value.data;
@@ -76,7 +76,7 @@ class _ChooseUsersPageState extends State<ChooseUsersPage> {
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
-                navigatorKey.currentState.pop(chooseUsers ?? <UserModel>[]);
+                navigatorKey.currentState!.pop(chooseUsers);
 
                 audioCache.play('tab3.mp3');
               },
@@ -120,13 +120,13 @@ class _ChooseUsersPageState extends State<ChooseUsersPage> {
                     ? ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: listUsers
-                            .where((e) => e.name.contains(search))
+                        itemCount: listUsers!
+                            .where((e) => e.name!.contains(search))
                             .toList()
                             .length,
                         itemBuilder: (context, index) {
-                          final user = listUsers
-                              .where((e) => e.name.contains(search))
+                          final user = listUsers!
+                              .where((e) => e.name!.contains(search))
                               .toList()[index];
                           return _buildUserItem(user,
                               chooseUsers.contains(user), () => _tapUser(user));
@@ -160,7 +160,7 @@ class _ChooseUsersPageState extends State<ChooseUsersPage> {
               margin: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.grey[200], width: 2),
+                border: Border.all(color: Colors.grey[200]!, width: 2),
               ),
             )
           else
@@ -182,12 +182,12 @@ class _ChooseUsersPageState extends State<ChooseUsersPage> {
           CircleAvatar(
             backgroundColor: Colors.white,
             radius: 15,
-            backgroundImage: user.avatar != null
-                ? CachedNetworkImageProvider(user.avatar)
-                : AssetImage('assets/image/default_avatar.png'),
+            backgroundImage: (user.avatar != null
+                ? CachedNetworkImageProvider(user.avatar!)
+                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
           ),
           SizedBox(width: 14),
-          Text(user.name, style: ptBody().copyWith(color: Colors.black)),
+          Text(user.name!, style: ptBody().copyWith(color: Colors.black)),
         ],
       ),
     );
@@ -216,7 +216,7 @@ class _ChooseUsersPageState extends State<ChooseUsersPage> {
       ),
       items: 3,
       period: Duration(seconds: 2),
-      highlightColor: Colors.grey[200],
+      highlightColor: Colors.grey[200]!,
       direction: SkeletonDirection.ltr,
     );
   }

@@ -1,10 +1,10 @@
 class GraphqlFilter {
-  int limit;
-  int page;
-  String filter;
-  String search;
-  String order;
-  int offset;
+  int? limit;
+  int? page;
+  String? filter;
+  String? search;
+  String? order;
+  int? offset;
   GraphqlFilter(
       {this.limit = 20,
       this.filter,
@@ -14,12 +14,12 @@ class GraphqlFilter {
       this.page = 1});
       
   GraphqlFilter copyWith({
-    int limit,
-    String filter,
-    String search,
-    String order,
-    int offset,
-    int page,
+    int? limit,
+    String? filter,
+    String? search,
+    String? order,
+    int? offset,
+    int? page,
   }) {
     return GraphqlFilter(
         limit: limit ?? this.limit,

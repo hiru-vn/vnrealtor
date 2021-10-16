@@ -5,7 +5,7 @@ import 'package:datcao/share/widget/appbar.dart';
 
 class SettingNotifyPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(SettingNotifyPage()));
+    return navigatorKey.currentState!.push(pageBuilder(SettingNotifyPage()));
   }
 
   @override
@@ -17,31 +17,31 @@ class _SettingNotifyPageState extends State<SettingNotifyPage> {
   bool isComment = true;
   bool isShare = true;
   bool isPost = true;
-  AuthBloc _authBloc;
-  UserBloc _userBloc;
+  AuthBloc? _authBloc;
+  late UserBloc _userBloc;
 
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
-      _authBloc = Provider.of(context);
-      _userBloc = Provider.of(context);
-      if (_authBloc.userModel.setting != null) {
-        isLike = _authBloc.userModel.setting.likeNoti ?? false;
-        isComment = _authBloc.userModel.setting.commentNoti ?? true;
-        isShare = _authBloc.userModel.setting.shareNoti ?? true;
-        isPost = _authBloc.userModel.setting.postNoti ?? true;
+      _authBloc = Provider.of<AuthBloc>(context);
+      _userBloc = Provider.of<UserBloc>(context);
+      if (_authBloc!.userModel!.setting != null) {
+        isLike = _authBloc!.userModel!.setting!.likeNoti ?? false;
+        isComment = _authBloc!.userModel!.setting!.commentNoti ?? true;
+        isShare = _authBloc!.userModel!.setting!.shareNoti ?? true;
+        isPost = _authBloc!.userModel!.setting!.postNoti ?? true;
       }
     }
     super.didChangeDependencies();
   }
 
   _updateSetting() async {
-    _authBloc.userModel.setting
+    _authBloc!.userModel!.setting!
       ..likeNoti = isLike
       ..commentNoti = isComment
       ..shareNoti = isShare
       ..postNoti = isPost;
-    final res = await _userBloc.updateSetting(_authBloc.userModel.setting);
+    final res = await _userBloc.updateSetting(_authBloc!.userModel!.setting!);
     if (res.isSuccess) {
     } else {
       showToast('Có lỗi xảy ra, thay đổi của bạn không được lưu', context);

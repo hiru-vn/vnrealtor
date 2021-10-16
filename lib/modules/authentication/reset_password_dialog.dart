@@ -9,7 +9,7 @@ class ResetPasswordDialog extends StatefulWidget {
 }
 
 class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
-  AuthBloc _authBloc;
+  AuthBloc? _authBloc;
   PageController _pageC = PageController();
   TextEditingController _phoneC = TextEditingController(text: '');
   TextEditingController _otpC = TextEditingController(text: '');
@@ -17,14 +17,14 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
 
   bool isLoading = false;
 
-  StreamSubscription listener;
-  AuthCredential auth;
+  late StreamSubscription listener;
+  AuthCredential? auth;
 
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
-      listener = _authBloc.authStatusStream.listen((event) async {
+      listener = _authBloc!.authStatusStream.listen((event) async {
         if (event.status == AuthStatus.authFail) {
           setState(() {
             isLoading = false;
@@ -40,7 +40,7 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
             isLoading = false;
           });
           showToast('Đổi mật khẩu thành công', context, isSuccess: true);
-          navigatorKey.currentState.maybePop();
+          navigatorKey.currentState!.maybePop();
         }
         if (event.status == AuthStatus.otpSent) {
           setState(() {
@@ -64,11 +64,11 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
       showToast('Số điện thoại không đúng', context);
       return;
     }
-    _authBloc.requestOtpResetPassword(_phoneC.text);
+    _authBloc!.requestOtpResetPassword(_phoneC.text);
   }
 
   _submitOtp() {
-    auth = _authBloc.submitOtpResetPass(_otpC.text);
+    auth = _authBloc!.submitOtpResetPass(_otpC.text);
   }
 
   _submitPass() {
@@ -79,13 +79,13 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
     setState(() {
       isLoading = true;
     });
-    _authBloc.resetPass(auth, _passC.text);
+    _authBloc!.resetPass(auth, _passC.text);
   }
 
   @override
   void dispose() {
     listener.cancel();
-    _authBloc.authStatusSink.add(AuthResponse.unAuthed());
+    _authBloc!.authStatusSink.add(AuthResponse.unAuthed());
     super.dispose();
   }
 
@@ -275,7 +275,7 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
               color: Colors.transparent,
               child: GestureDetector(
                 onTap: () {
-                  navigatorKey.currentState.maybePop();
+                  navigatorKey.currentState!.maybePop();
                   audioCache.play('tab3.mp3');
                 },
                 child: Container(

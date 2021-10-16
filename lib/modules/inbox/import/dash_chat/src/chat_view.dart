@@ -13,24 +13,24 @@ class DashChat extends StatefulWidget {
   final bool readOnly;
 
   /// Event when user tap on area that not request keyboard popup
-  final Function onTapNonKeyboard;
+  final Function? onTapNonKeyboard;
 
   /// Height for the Dash chat Widget
-  final double height;
+  final double? height;
 
   // Width for the Dash chat Widget
-  final double width;
+  final double? width;
 
   /// List of messages to display in the chat container
-  /// Takes a [List] of [ChatMessage]
+  /// Takes a [List] of [ChatMessage?]
   final List<ChatMessage> messages;
 
   /// If provided, this text editing controller will be used for
   /// the text input.
-  final TextEditingController textController;
+  final TextEditingController? textController;
 
   /// If provided, this focus node will be used for the text input.
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
 
   /// Use to change the direction of the text ltr is used for
   /// launguages that start from left like English &
@@ -42,11 +42,11 @@ class DashChat extends StatefulWidget {
   /// If provided will stop using the default controller
   /// i.e [TextEditingController] and will use this to update the
   /// text input field.
-  final String text;
+  final String? text;
 
   /// If the text parameter is passed then onTextChange must also
   /// be passed.
-  final Function(String) onTextChange;
+  final Function(String)? onTextChange;
 
   /// If the input TextField is disabled.
   final bool inputDisabled;
@@ -54,7 +54,7 @@ class DashChat extends StatefulWidget {
   /// Used to provide input decoration to the text as default only
   /// to the input placeholder for the chat input
   /// "Add Message here...".
-  final InputDecoration inputDecoration;
+  final InputDecoration? inputDecoration;
 
   ///Configures how the platform keyboard will select an uppercase or lowercase keyboard.
   ///Only supports text keyboards, other keyboard types will ignore this configuration. Capitalization is locale-aware.
@@ -63,14 +63,14 @@ class DashChat extends StatefulWidget {
 
   /// Usually new message added by the user gets [Uuid] String
   /// Can be override by proving this parameter
-  final String Function() messageIdGenerator;
+  final String Function()? messageIdGenerator;
 
   /// The current user object [ChatUser].
   final ChatUser user;
 
   /// To function where you can make api calls and play
-  /// with the [ChatMessage] obeject before make calls.
-  final Function(ChatMessage) onSend;
+  /// with the [ChatMessage?] obeject before make calls.
+  final Function(ChatMessage?) onSend;
 
   /// Should the send button be always active it defaults to false
   /// Usually it will only become active if some text is entered.
@@ -81,15 +81,15 @@ class DashChat extends StatefulWidget {
   final bool sendOnEnter;
 
   /// Input action of the keyboard
-  final TextInputAction textInputAction;
+  final TextInputAction? textInputAction;
 
   /// [DateFormat] object for formatting date to show in [MessageListView]
   /// defaults to `yyyy-MM-dd`.
-  final DateFormat dateFormat;
+  final DateFormat? dateFormat;
 
   /// [DateFormat] object for formatting time to show in [MessageContainer]
   /// defaults to `HH:mm:ss`.
-  final DateFormat timeFormat;
+  final DateFormat? timeFormat;
 
   /// Should the user avatar be shown defaults to false and will not
   /// show the user avatar.
@@ -97,7 +97,7 @@ class DashChat extends StatefulWidget {
 
   /// avatarBuilder will override the the default avatar which uses
   /// [CircleAvatar].
-  final Widget Function(ChatUser) avatarBuilder;
+  final Widget Function(ChatUser?)? avatarBuilder;
 
   /// Should the avatar be shown for every message defaulst to false.
   final bool showAvatarForEveryMessage;
@@ -105,17 +105,17 @@ class DashChat extends StatefulWidget {
   /// [onPressAvatar] function takes a function with this structure
   /// [Function(ChatUser)] will trigger when the avatar
   /// is tapped on
-  final Function(ChatUser) onPressAvatar;
+  final Function(ChatUser?)? onPressAvatar;
 
   /// [onLongPressAvatar] function takea a function with this structure
   /// [Function(ChatUser)] will trigger when the avatar
   /// is long pressed
-  final Function(ChatUser) onLongPressAvatar;
+  final Function(ChatUser?)? onLongPressAvatar;
 
   /// [onLongPressMessage] function takea a function with this structure
   /// [Function(ChatMessage)] will trigger when the message
   /// is long pressed.
-  final Function(ChatMessage) onLongPressMessage;
+  final Function(ChatMessage)? onLongPressMessage;
 
   /// Should the messages be shown in reversed order.
   final bool inverted;
@@ -123,26 +123,26 @@ class DashChat extends StatefulWidget {
   /// messageBuilder will override the the default chat container which uses
   /// and you will need to build complete message Widget it will not accept
   /// and include any other builder functions.
-  final Widget Function(ChatMessage) messageBuilder;
+  final Widget Function(ChatMessage?)? messageBuilder;
 
   /// messageTextBuilder will override the the default message text.
-  final Widget Function(String, [ChatMessage]) messageTextBuilder;
+  final Widget Function(String?, [ChatMessage?])? messageTextBuilder;
 
   /// messageImageBuilder will override the the default Image.
-  final Widget Function(String url, [ChatMessage]) messageImageBuilder;
+  final Widget Function(String? url, [ChatMessage?])? messageImageBuilder;
 
   /// messageTimeBuilder will override the the default text.
-  final Widget Function(String url, [ChatMessage]) messageTimeBuilder;
+  final Widget Function(String? url, [ChatMessage?])? messageTimeBuilder;
 
   /// dateBuilder will override the the default time text.
-  final Widget Function(String) dateBuilder;
+  final Widget Function(String)? dateBuilder;
 
   /// A Widget that will be shown below the [MessageListView] like you can
   /// show a "tying..." at the end.
-  final Widget Function() chatFooterBuilder;
+  final Widget Function()? chatFooterBuilder;
 
   /// Main input length of the input text box defaulst to no limit.
-  final int maxInputLength;
+  final int? maxInputLength;
 
   /// Used to parse text to make it linkified text uses
   /// [flutter_parsed_text](https://pub.dev/packages/flutter_parsed_text)
@@ -152,7 +152,7 @@ class DashChat extends StatefulWidget {
 
   /// Provides a custom style to the message container
   /// takes [BoxDecoration]
-  final BoxDecoration messageContainerDecoration;
+  final BoxDecoration? messageContainerDecoration;
 
   /// [List] of [Widget] to show before the [TextField].
   final List<Widget> leading;
@@ -162,13 +162,13 @@ class DashChat extends StatefulWidget {
   final List<Widget> trailing;
 
   /// sendButtonBuilder will override the the default [IconButton].
-  final Widget Function(Function) sendButtonBuilder;
+  final Widget Function(Function)? sendButtonBuilder;
 
   /// Style for the [TextField].
-  final TextStyle inputTextStyle;
+  final TextStyle? inputTextStyle;
 
   /// [TextField] container style.
-  final BoxDecoration inputContainerStyle;
+  final BoxDecoration? inputContainerStyle;
 
   /// Max length of the input lines default to 1.
   final int inputMaxLines;
@@ -180,35 +180,35 @@ class DashChat extends StatefulWidget {
   final double inputCursorWidth;
 
   /// Color of the input cursor defaults to theme.
-  final Color inputCursorColor;
+  final Color? inputCursorColor;
 
   /// ScrollController for the [MessageListView] will use the default
   /// scrollcontroller in the Widget.
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
 
   /// A Widget that will be shown below the [ChatInputToolbar] like you can
   /// show a list of buttons like file image just like in Slack app.
-  final Widget Function() inputFooterBuilder;
+  final Widget Function()? inputFooterBuilder;
 
   /// Padding for the [MessageListView].
   final EdgeInsetsGeometry messageContainerPadding;
 
   /// Callback method when the quickReply was tapped on
   /// will pass [Reply] as a paramter to function.
-  final Function(Reply) onQuickReply;
+  final Function(Reply?)? onQuickReply;
 
   /// Padding for the quick reply area
   /// by default it padding is set 0.0
   final EdgeInsetsGeometry quickReplyPadding;
 
   /// Container style for the QuickReply Container [BoxDecoration].
-  final BoxDecoration quickReplyStyle;
+  final BoxDecoration? quickReplyStyle;
 
   /// [TextStyle] for QuickReply textstyle.
-  final TextStyle quickReplyTextStyle;
+  final TextStyle? quickReplyTextStyle;
 
   /// quickReplyBuilder will override the the default QuickReply Widget.
-  final Widget Function(Reply) quickReplyBuilder;
+  final Widget Function(Reply?)? quickReplyBuilder;
 
   /// Should quick reply be horizontally scrollable
   final bool quickReplyScroll;
@@ -224,10 +224,10 @@ class DashChat extends StatefulWidget {
   final bool shouldStartMessagesFromTop;
 
   /// Overrides the default [scrollToBottomWidget] with a custom widget
-  final Widget Function() scrollToBottomWidget;
+  final Widget Function()? scrollToBottomWidget;
 
   /// Override the default behaviour of the onScrollToBottom Widget
-  final Function onScrollToBottomPress;
+  final Function? onScrollToBottomPress;
 
   /// Should the LoadEarlier Floating widget be shown or use
   /// load as you scroll scheme whcih will call the [onLoadEarlier]
@@ -237,11 +237,11 @@ class DashChat extends StatefulWidget {
   final bool shouldShowLoadEarlier;
 
   /// Override the default behaviour of the onScrollToBottom Widget
-  final Widget Function() showLoadEarlierWidget;
+  final Widget Function()? showLoadEarlierWidget;
 
   /// Override the default behaviour of the onLoadEarleir Widget
   /// or used as a callback when the listView reaches the top
-  final Function onLoadEarlier;
+  final Function? onLoadEarlier;
 
   /// Padding for the default input toolbar
   /// by default it padding is set 0.0
@@ -254,11 +254,11 @@ class DashChat extends StatefulWidget {
   /// [messageButtonsBuilder] function takes a function with this
   /// structure [List<Widget> Function()] to render the buttons inside
   /// a row.
-  final List<Widget> Function(ChatMessage) messageButtonsBuilder;
+  final List<Widget> Function(ChatMessage?)? messageButtonsBuilder;
 
   /// Padding of the message
   /// Default to EdgeInsets.all(8.0)
-  final EdgeInsets Function(ChatMessage) messagePaddingBuilder;
+  final EdgeInsets Function(ChatMessage?)? messagePaddingBuilder;
 
   /// Should show the text before the image in the [MessageContainer]
   /// or the opposite
@@ -270,21 +270,21 @@ class DashChat extends StatefulWidget {
   /// Defaults to `30.0`
   final double avatarMaxSize;
 
-  final Color iconSendColor;
+  final Color? iconSendColor;
 
-  final double Function(ChatMessage) messageContainerWidthRadio;
+  final double Function(ChatMessage?)? messageContainerWidthRadio;
 
   /// overrides the boxdecoration of the message
   /// can be used to override color, or customise the message container
-  /// params [ChatMessage] and [isUser]: boolean
+  /// params [ChatMessage?] and [isUser]: boolean
   /// return BoxDecoration
-  final BoxDecoration Function(ChatMessage, bool) messageDecorationBuilder;
+  final BoxDecoration Function(ChatMessage?, bool?)? messageDecorationBuilder;
 
-  ScrollToBottomStyle scrollToBottomStyle;
+  ScrollToBottomStyle? scrollToBottomStyle;
 
   DashChat({
-    Key key,
-    ScrollToBottomStyle scrollToBottomStyle,
+    Key? key,
+    ScrollToBottomStyle? scrollToBottomStyle,
     this.avatarMaxSize = 30.0,
     this.onTapNonKeyboard,
     this.inputTextDirection = TextDirection.ltr,
@@ -323,7 +323,7 @@ class DashChat extends StatefulWidget {
     this.height,
     this.width,
     this.readOnly = false,
-    @required this.messages,
+    required this.messages,
     this.onTextChange,
     this.text,
     this.inputDisabled = false,
@@ -335,8 +335,8 @@ class DashChat extends StatefulWidget {
     this.messageIdGenerator,
     this.dateFormat,
     this.timeFormat,
-    @required this.user,
-    @required this.onSend,
+    required this.user,
+    required this.onSend,
     this.onLongPressAvatar,
     this.onLongPressMessage,
     this.onPressAvatar,
@@ -365,7 +365,7 @@ class DashChat extends StatefulWidget {
     this.scrollToBottomStyle = scrollToBottomStyle ?? new ScrollToBottomStyle();
   }
 
-  String getVal() {
+  String? getVal() {
     return text;
   }
 
@@ -374,9 +374,9 @@ class DashChat extends StatefulWidget {
 }
 
 class DashChatState extends State<DashChat> {
-  FocusNode inputFocusNode;
-  TextEditingController textController;
-  ScrollController scrollController;
+  FocusNode? inputFocusNode;
+  TextEditingController? textController;
+  ScrollController? scrollController;
   String _text = "";
   bool visible = false;
   GlobalKey inputKey = GlobalKey();
@@ -384,7 +384,7 @@ class DashChatState extends State<DashChat> {
   bool showLoadMore = false;
   String get messageInput => _text;
   bool _initialLoad = true;
-  Timer _timer;
+  Timer? _timer;
 
   void onTextChange(String text) {
     if (visible) {
@@ -414,7 +414,7 @@ class DashChatState extends State<DashChat> {
     scrollController = widget.scrollController ?? ScrollController();
     textController = widget.textController ?? TextEditingController();
     inputFocusNode = widget.focusNode ?? FocusNode();
-    WidgetsBinding.instance.addPostFrameCallback(widgetBuilt);
+    WidgetsBinding.instance!.addPostFrameCallback(widgetBuilt);
     super.initState();
   }
 
@@ -427,9 +427,9 @@ class DashChatState extends State<DashChat> {
   void widgetBuilt(Duration d) {
     double initPos = widget.inverted
         ? 0.0
-        : scrollController.position.maxScrollExtent + 25.0;
+        : scrollController!.position.maxScrollExtent + 25.0;
 
-    scrollController
+    scrollController!
         .animateTo(
       initPos,
       duration: const Duration(milliseconds: 150),
@@ -445,14 +445,14 @@ class DashChatState extends State<DashChat> {
       });
     });
 
-    scrollController.addListener(() {
+    scrollController!.addListener(() {
       bool topReached = widget.inverted
-          ? scrollController.offset >=
-                  scrollController.position.maxScrollExtent &&
-              !scrollController.position.outOfRange
-          : scrollController.offset <=
-                  scrollController.position.minScrollExtent &&
-              !scrollController.position.outOfRange;
+          ? scrollController!.offset >=
+                  scrollController!.position.maxScrollExtent &&
+              !scrollController!.position.outOfRange
+          : scrollController!.offset <=
+                  scrollController!.position.minScrollExtent &&
+              !scrollController!.position.outOfRange;
 
       if (widget.shouldShowLoadEarlier) {
         if (topReached) {
@@ -467,7 +467,7 @@ class DashChatState extends State<DashChat> {
             });
         }
       } else if (topReached) {
-        widget.onLoadEarlier();
+        widget.onLoadEarlier!();
       }
     });
   }
@@ -486,142 +486,150 @@ class DashChatState extends State<DashChat> {
           behavior: HitTestBehavior.translucent,
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
-            if (widget.onTapNonKeyboard != null) widget.onTapNonKeyboard();
+            if (widget.onTapNonKeyboard != null) widget.onTapNonKeyboard!();
           },
           child: Container(
             height: widget.height != null ? widget.height : maxHeight,
             width: widget.width != null ? widget.width : maxWidth,
-            child: Stack(
+            child: Column(
               children: <Widget>[
-                Column(
-                  mainAxisAlignment: widget.shouldStartMessagesFromTop
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.end,
-                  children: <Widget>[
-                    MessageListView(
-                        onTapNonKeyboard: widget.onTapNonKeyboard,
-                        avatarMaxSize: widget.avatarMaxSize,
-                        messagePaddingBuilder: widget.messagePaddingBuilder,
-                        constraints: constraints,
-                        shouldShowLoadEarlier: widget.shouldShowLoadEarlier,
-                        showLoadEarlierWidget: widget.showLoadEarlierWidget,
-                        onLoadEarlier: widget.onLoadEarlier,
-                        defaultLoadCallback: changeDefaultLoadMore,
-                        messageContainerPadding: widget.messageContainerPadding,
-                        scrollController: widget.scrollController != null
-                            ? widget.scrollController
-                            : scrollController,
-                        user: widget.user,
-                        messages: widget.messages,
-                        showuserAvatar: widget.showUserAvatar,
-                        dateFormat: widget.dateFormat,
-                        timeFormat: widget.timeFormat,
-                        inverted: widget.inverted,
-                        showAvatarForEverMessage:
-                            widget.showAvatarForEveryMessage,
-                        onLongPressAvatar: widget.onLongPressAvatar,
-                        onPressAvatar: widget.onPressAvatar,
-                        onLongPressMessage: widget.onLongPressMessage,
-                        avatarBuilder: widget.avatarBuilder,
-                        messageBuilder: widget.messageBuilder,
-                        messageTextBuilder: widget.messageTextBuilder,
-                        messageImageBuilder: widget.messageImageBuilder,
-                        messageTimeBuilder: widget.messageTimeBuilder,
-                        dateBuilder: widget.dateBuilder,
-                        messageContainerWidthRadio:
-                            widget.messageContainerWidthRadio,
-                        messageContainerDecoration:
-                            widget.messageContainerDecoration,
-                        parsePatterns: widget.parsePatterns,
-                        changeVisible: changeVisible,
-                        visible: visible,
-                        showLoadMore: showLoadMore,
-                        messageButtonsBuilder: widget.messageButtonsBuilder,
-                        messageDecorationBuilder:
-                            widget.messageDecorationBuilder),
-                    if (widget.messages.length != 0 &&
-                        widget.messages.last.user.uid != widget.user.uid &&
-                        widget.messages.last.quickReplies != null)
-                      Container(
-                        padding: widget.quickReplyPadding,
-                        constraints: BoxConstraints(
-                            maxHeight: widget.quickReplyScroll ? 50.0 : 100.0),
-                        width: widget.quickReplyScroll ? null : maxWidth,
-                        child: widget.quickReplyScroll
-                            ? ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: widget
-                                    .messages.last.quickReplies.values
-                                    .map(_mapReply)
-                                    .toList(),
-                              )
-                            : Wrap(
-                                children: <Widget>[
-                                  ...widget.messages.last.quickReplies.values
-                                      .sublist(
-                                          0,
-                                          widget.messages.last.quickReplies
-                                                      .values.length <=
-                                                  3
-                                              ? widget.messages.last
-                                                  .quickReplies.values.length
-                                              : 3)
-                                      .map(_mapReply)
-                                      .toList(),
-                                ],
-                              ),
-                      ),
-                    if (widget.chatFooterBuilder != null)
-                      widget.chatFooterBuilder(),
-                    if (!widget.readOnly)
-                      ChatInputToolbar(
-                          key: inputKey,
-                          iconSendColor: widget.iconSendColor,
-                          sendOnEnter: widget.sendOnEnter,
-                          textInputAction: widget.textInputAction,
-                          inputToolbarPadding: widget.inputToolbarPadding,
-                          textDirection: widget.inputTextDirection,
-                          inputToolbarMargin: widget.inputToolbarMargin,
-                          showTraillingBeforeSend:
-                              widget.showTraillingBeforeSend,
-                          inputMaxLines: widget.inputMaxLines,
-                          controller: textController,
-                          inputDecoration: widget.inputDecoration,
-                          textCapitalization: widget.textCapitalization,
-                          onSend: widget.onSend,
-                          user: widget.user,
-                          messageIdGenerator: widget.messageIdGenerator,
-                          maxInputLength: widget.maxInputLength,
-                          sendButtonBuilder: widget.sendButtonBuilder,
-                          text: widget.text != null ? widget.text : _text,
-                          onTextChange: widget.onTextChange != null
-                              ? widget.onTextChange
-                              : onTextChange,
-                          inputDisabled: widget.inputDisabled,
-                          leading: widget.leading,
-                          trailling: widget.trailing,
-                          inputContainerStyle: widget.inputContainerStyle,
-                          inputTextStyle: widget.inputTextStyle,
-                          inputFooterBuilder: widget.inputFooterBuilder,
-                          inputCursorColor: widget.inputCursorColor,
-                          inputCursorWidth: widget.inputCursorWidth,
-                          showInputCursor: widget.showInputCursor,
-                          alwaysShowSend: widget.alwaysShowSend,
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: widget.shouldStartMessagesFromTop
+                        ? MainAxisAlignment.start
+                        : MainAxisAlignment.end,
+                    children: <Widget>[
+                      MessageListView(
+                          onTapNonKeyboard: widget.onTapNonKeyboard,
+                          avatarMaxSize: widget.avatarMaxSize,
+                          messagePaddingBuilder: widget.messagePaddingBuilder,
+                          constraints: constraints,
+                          shouldShowLoadEarlier: widget.shouldShowLoadEarlier,
+                          showLoadEarlierWidget: widget.showLoadEarlierWidget,
+                          onLoadEarlier: widget.onLoadEarlier,
+                          defaultLoadCallback: changeDefaultLoadMore,
+                          messageContainerPadding:
+                              widget.messageContainerPadding as EdgeInsets,
                           scrollController: widget.scrollController != null
                               ? widget.scrollController
                               : scrollController,
-                          focusNode: inputFocusNode,
-                          reverse: widget.inverted)
-                  ],
+                          user: widget.user,
+                          messages: widget.messages,
+                          showuserAvatar: widget.showUserAvatar,
+                          dateFormat: widget.dateFormat,
+                          timeFormat: widget.timeFormat,
+                          inverted: widget.inverted,
+                          showAvatarForEverMessage:
+                              widget.showAvatarForEveryMessage,
+                          onLongPressAvatar: widget.onLongPressAvatar,
+                          onPressAvatar: widget.onPressAvatar,
+                          onLongPressMessage: widget.onLongPressMessage,
+                          avatarBuilder: widget.avatarBuilder,
+                          messageBuilder: widget.messageBuilder,
+                          messageTextBuilder: widget.messageTextBuilder,
+                          messageImageBuilder: widget.messageImageBuilder,
+                          messageTimeBuilder: widget.messageTimeBuilder,
+                          dateBuilder: widget.dateBuilder,
+                          messageContainerWidthRadio:
+                              widget.messageContainerWidthRadio,
+                          messageContainerDecoration:
+                              widget.messageContainerDecoration,
+                          parsePatterns: widget.parsePatterns,
+                          changeVisible: changeVisible,
+                          visible: visible,
+                          showLoadMore: showLoadMore,
+                          messageButtonsBuilder: widget.messageButtonsBuilder,
+                          messageDecorationBuilder:
+                              widget.messageDecorationBuilder),
+                      if (widget.messages.length != 0 &&
+                          widget.messages.last.user!.uid != widget.user.uid &&
+                          widget.messages.last.quickReplies != null)
+                        Container(
+                          padding: widget.quickReplyPadding,
+                          constraints: BoxConstraints(
+                              maxHeight:
+                                  widget.quickReplyScroll ? 50.0 : 100.0),
+                          width: widget.quickReplyScroll ? null : maxWidth,
+                          child: widget.quickReplyScroll
+                              ? ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: widget
+                                      .messages.last.quickReplies!.values!
+                                      .map(_mapReply)
+                                      .toList(),
+                                )
+                              : Wrap(
+                                  children: <Widget>[
+                                    ...widget
+                                        .messages.last.quickReplies!.values!
+                                        .sublist(
+                                            0,
+                                            widget.messages.last.quickReplies!
+                                                        .values!.length <=
+                                                    3
+                                                ? widget
+                                                    .messages
+                                                    .last
+                                                    .quickReplies!
+                                                    .values!
+                                                    .length
+                                                : 3)
+                                        .map(_mapReply)
+                                        .toList(),
+                                  ],
+                                ),
+                        ),
+                      if (widget.chatFooterBuilder != null)
+                        widget.chatFooterBuilder!(),
+                    ],
+                  ),
                 ),
+                if (!widget.readOnly)
+                  ChatInputToolbar(
+                      key: inputKey,
+                      iconSendColor: widget.iconSendColor,
+                      sendOnEnter: widget.sendOnEnter,
+                      textInputAction: widget.textInputAction,
+                      inputToolbarPadding: widget.inputToolbarPadding,
+                      textDirection: widget.inputTextDirection,
+                      inputToolbarMargin: widget.inputToolbarMargin,
+                      showTraillingBeforeSend: widget.showTraillingBeforeSend,
+                      inputMaxLines: widget.inputMaxLines,
+                      controller: textController,
+                      inputDecoration: widget.inputDecoration,
+                      textCapitalization: widget.textCapitalization,
+                      onSend: widget.onSend,
+                      user: widget.user,
+                      messageIdGenerator: widget.messageIdGenerator,
+                      maxInputLength: widget.maxInputLength,
+                      sendButtonBuilder: widget.sendButtonBuilder,
+                      text: widget.text != null ? widget.text : _text,
+                      onTextChange: widget.onTextChange != null
+                          ? widget.onTextChange
+                          : onTextChange,
+                      inputDisabled: widget.inputDisabled,
+                      leading: widget.leading,
+                      trailling: widget.trailing,
+                      inputContainerStyle: widget.inputContainerStyle,
+                      inputTextStyle: widget.inputTextStyle,
+                      inputFooterBuilder: widget.inputFooterBuilder,
+                      inputCursorColor: widget.inputCursorColor,
+                      inputCursorWidth: widget.inputCursorWidth,
+                      showInputCursor: widget.showInputCursor,
+                      alwaysShowSend: widget.alwaysShowSend,
+                      scrollController: widget.scrollController != null
+                          ? widget.scrollController
+                          : scrollController,
+                      focusNode: inputFocusNode,
+                      reverse: widget.inverted),
                 if (visible && !_initialLoad)
                   Positioned(
-                    right: widget.scrollToBottomStyle.right,
-                    left: widget.scrollToBottomStyle.left,
-                    bottom: widget.scrollToBottomStyle.bottom,
-                    top: widget.scrollToBottomStyle.top,
+                    right: widget.scrollToBottomStyle!.right,
+                    left: widget.scrollToBottomStyle!.left,
+                    bottom: widget.scrollToBottomStyle!.bottom,
+                    top: widget.scrollToBottomStyle!.top,
                     child: widget.scrollToBottomWidget != null
-                        ? widget.scrollToBottomWidget()
+                        ? widget.scrollToBottomWidget!()
                         : ScrollToBottom(
                             onScrollToBottomPress: widget.onScrollToBottomPress,
                             scrollToBottomStyle: widget.scrollToBottomStyle,

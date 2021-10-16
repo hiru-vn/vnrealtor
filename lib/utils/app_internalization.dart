@@ -11,8 +11,8 @@ class AppInternalization {
   static final _singleton = AppInternalization._();
   static AppInternalization get instance => _singleton;
 
-  Map<String, dynamic> _internalizationData;
-  int _selectLocale;
+  Map<String, dynamic>? _internalizationData;
+  int? _selectLocale;
 
   String get selectLocale => _selectLocale == 0 ? 'en' : 'vi';
 
@@ -30,7 +30,7 @@ class AppInternalization {
   }
 
   void _conditionLastUserSelectLanguage(Locale lc) async {
-    final String userSelect = await SPref.instance.get('language');
+    final String? userSelect = await SPref.instance.get('language');
     if (userSelect != null) {
       if (userSelect == 'vi') {
         loadVi();
@@ -51,16 +51,16 @@ class AppInternalization {
     return this;
   }
 
-  String _text(String key) {
-    if (_internalizationData == null || _internalizationData[key] == null)
+  String? _text(String key) {
+    if (_internalizationData == null || _internalizationData![key] == null)
       return '';
 
-    return _internalizationData[key][_selectLocale];
+    return _internalizationData![key][_selectLocale];
   }
 }
 
 extension AppInternalizationExtension on String {
-  String intl() => AppInternalization.instance._text(this);
+  String? intl() => AppInternalization.instance._text(this);
 }
 
 class AppInternalizationlegate

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-PageRouteBuilder pageBuilder(
-  Widget page,
-  {Function transitionBuilder}
-) {
+PageRouteBuilder pageBuilder(Widget page,
+    {Function transitionBuilder = transitionUpBuilder}) {
   return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionsBuilder: transitionBuilder??transitionUpBuilder);
+      transitionsBuilder: transitionBuilder as Widget Function(
+          BuildContext, Animation<double>, Animation<double>, Widget));
 }
 
 Widget transitionUpBuilder(BuildContext context, Animation<double> start,

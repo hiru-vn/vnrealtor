@@ -11,8 +11,8 @@ class PeopleWidget extends StatelessWidget {
   const PeopleWidget(this.user);
   @override
   Widget build(BuildContext context) {
-    UserBloc _userBloc = Provider.of(context);
-    AuthBloc _authBloc = Provider.of(context);
+    UserBloc _userBloc = Provider.of<UserBloc>(context);
+    AuthBloc _authBloc = Provider.of<AuthBloc>(context);
     return Padding(
       padding: const EdgeInsets.all(5).copyWith(bottom: 0),
       child: GestureDetector(
@@ -26,9 +26,9 @@ class PeopleWidget extends StatelessWidget {
               CircleAvatar(
                 radius: 24,
                 backgroundColor: Colors.white,
-                backgroundImage: user.avatar != null
-                    ? CachedNetworkImageProvider(user.avatar)
-                    : AssetImage('assets/image/default_avatar.png'),
+                backgroundImage: (user.avatar != null
+                    ? CachedNetworkImageProvider(user.avatar!)
+                    : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
               ),
               SizedBox(width: 13),
               Expanded(
@@ -87,7 +87,7 @@ class PeopleWidget extends StatelessWidget {
                           })(),
                           style: ptSmall().copyWith(color: Colors.grey),
                         ),
-                        if (_authBloc.userModel.followingIds
+                        if (_authBloc.userModel!.followingIds!
                             .contains(user.id)) ...[
                           Text(
                             ' • ',
@@ -115,12 +115,12 @@ class PeopleWidget extends StatelessWidget {
                 ),
               ),
               if (AuthBloc.instance.userModel != null &&
-                  !_authBloc.userModel.followingIds.contains(user.id) &&
-                  user.id != AuthBloc.instance.userModel.id)
+                  !_authBloc.userModel!.followingIds!.contains(user.id) &&
+                  user.id != AuthBloc.instance.userModel!.id)
                 GestureDetector(
                   onTap: () {audioCache.play('tab3.mp3');
-                    _authBloc.userModel.followingIds.add(user.id);
-                    user.followerIds.add(_authBloc.userModel.id);
+                    _authBloc.userModel!.followingIds!.add(user.id);
+                    user.followerIds!.add(_authBloc.userModel!.id);
                     _userBloc.followUser(user.id);
                   },
                   child: Container(

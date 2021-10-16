@@ -6,7 +6,7 @@ import 'package:image/image.dart';
 class FileUtil {
   static Future<File> writeToFile(
       Uint8List data, String name, String type, int size) async {
-    Image image = decodeImage(data);
+    Image image = decodeImage(data)!;
 
     // Resize the image to a 240? thumbnail (maintaining the aspect ratio).
     Image thumbnail = copyResize(image, width: size);

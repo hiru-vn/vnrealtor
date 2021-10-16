@@ -8,7 +8,7 @@ import 'package:datcao/utils/file_util.dart';
 
 class VertifyAccountPage1 extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(VertifyAccountPage1()));
+    return navigatorKey.currentState!.push(pageBuilder(VertifyAccountPage1()));
   }
 
   @override
@@ -16,13 +16,13 @@ class VertifyAccountPage1 extends StatefulWidget {
 }
 
 class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
-  VerificationBloc _verificationBloc;
+  VerificationBloc? _verificationBloc;
   final _formKey = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
     if (_verificationBloc == null) {
-      _verificationBloc = Provider.of(context);
+      _verificationBloc = Provider.of<VerificationBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -65,15 +65,15 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                   children: [
                     _buildTextField(
                         'Nhập đầy đủ họ tên (có dấu)',
-                        _verificationBloc.name,
-                        (val) => _verificationBloc.name = val,
+                        _verificationBloc!.name,
+                        (val) => _verificationBloc!.name = val,
                         validator: TextFieldValidator.notEmptyValidator),
                     SizedBox(height: 15),
                     _buildDatePickField(
                         'Ngày sinh',
-                        _verificationBloc.dateOfBirth,
+                        _verificationBloc!.dateOfBirth,
                         (val) => setState(() {
-                              _verificationBloc.dateOfBirth = val;
+                              _verificationBloc!.dateOfBirth = val;
                             }),
                         validator: TextFieldValidator.notEmptyValidator),
                     SizedBox(height: 15),
@@ -87,10 +87,10 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                       height: 45,
                       text: 'Tiếp theo',
                       onPressed: () {
-                        if (_verificationBloc.imageFront == null) {
+                        if (_verificationBloc!.imageFront == null) {
                           showToast('Cần thêm ảnh CMND', context);
                         }
-                        if (!_formKey.currentState.validate()) {
+                        if (!_formKey.currentState!.validate()) {
                           return;
                         }
                         FocusScope.of(context).requestFocus(FocusNode());
@@ -114,9 +114,9 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
     );
   }
 
-  _buildTextField(String hint, String initialValue, Function(String) onChange,
+  _buildTextField(String hint, String? initialValue, Function(String) onChange,
           {TextInputType type = TextInputType.text,
-          Function(String) validator}) =>
+          Function(String)? validator}) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Material(
@@ -126,7 +126,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
               child: TextFormField(
-                validator: validator,
+                validator: validator as String? Function(String?)?,
                 keyboardType: type,
                 initialValue: initialValue,
                 onChanged: onChange,
@@ -138,8 +138,8 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
             )),
       );
 
-  _buildDatePickField(String hint, String value, Function(String) onChange,
-      {Function(String) validator}) {
+  _buildDatePickField(String hint, String? value, Function(String) onChange,
+      {Function(String)? validator}) {
     TextEditingController controller = TextEditingController(
         text: Formart.formatToDate(DateTime.tryParse(value ?? '')));
     return Padding(
@@ -153,7 +153,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                 .copyWith(right: 10),
             child: TextFormField(
               controller: controller,
-              validator: validator,
+              validator: validator as String? Function(String?)?,
               onTap: () {
                 showDatePicker(
                   context: context,
@@ -161,7 +161,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                   initialDate: DateTime.now().subtract(Duration(days: 10000)),
                   firstDate: DateTime.now().subtract(Duration(days: 29200)),
                   lastDate: DateTime.now().subtract(Duration(days: 6570)),
-                ).then((value) => onChange(value.toIso8601String()));
+                ).then((value) => onChange(value!.toIso8601String()));
               },
               readOnly: true,
               decoration: InputDecoration(
@@ -179,7 +179,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
         height: 180,
         width: deviceWidth(context),
         child: Stack(children: [
-          if (_verificationBloc.imageFront != null && isFront)
+          if (_verificationBloc!.imageFront != null && isFront)
             Positioned(
               top: 0,
               left: 0,
@@ -187,9 +187,9 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               bottom: 0,
               child: Image(
                   image:
-                      CachedNetworkImageProvider(_verificationBloc.imageFront)),
+                      CachedNetworkImageProvider(_verificationBloc!.imageFront!)),
             ),
-          if (_verificationBloc.imageBehind != null && !isFront)
+          if (_verificationBloc!.imageBehind != null && !isFront)
             Positioned(
               top: 0,
               left: 0,
@@ -197,7 +197,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
               bottom: 0,
               child: Image(
                   image: CachedNetworkImageProvider(
-                      _verificationBloc.imageBehind)),
+                      _verificationBloc!.imageBehind!)),
             ),
           Positioned(
             top: 15,
@@ -212,16 +212,16 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                 onTap: () => onCustomPersionRequest(
                     permission: Permission.camera,
                     onGranted: () {audioCache.play('tab3.mp3');
-                      ImagePicker.pickImage(source: ImageSource.camera)
+                      ImagePicker().pickImage(source: ImageSource.camera)
                           .then((value) async {
                         try {
                           if (value == null) return;
                           final url =
                               await FileUtil.uploadFireStorage(value.path);
                           if (isFront)
-                            _verificationBloc.imageFront = url;
+                            _verificationBloc!.imageFront = url;
                           else
-                            _verificationBloc.imageBehind = url;
+                            _verificationBloc!.imageBehind = url;
                           setState(() {});
                         } catch (e) {
                           showToast(e.toString(), context);
@@ -253,7 +253,7 @@ class _VertifyAccountPage1State extends State<VertifyAccountPage1> {
                       Text(
                         'Mở camera',
                         style: ptBody().copyWith(
-                            color: (_verificationBloc.imageFront != null)
+                            color: (_verificationBloc!.imageFront != null)
                                 ? Colors.white
                                 : Colors.black54),
                       )

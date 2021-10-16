@@ -1,30 +1,30 @@
 import 'package:datcao/modules/model/user.dart';
 
 class GroupModel {
-  String id;
-  String name;
-  bool privacy;
-  String description;
-  String coverImage;
-  String address;
-  double locationLat;
-  double locationLong;
-  String addressByLatLon;
-  String ownerId;
-  List<String> memberIds;
-  List<String> adminIds;
-  List<String> pendingMemberIds;
-  bool isMember;
-  bool isAdmin;
-  bool isOwner;
-  UserModel owner;
-  int countMember;
-  String createdAt;
-  String updatedAt;
-  int totalPost;
-  int postIn24h;
-  int memberIn24h;
-  bool censor;
+  String? id;
+  String? name;
+  bool? privacy;
+  String? description;
+  String? coverImage;
+  String? address;
+  double? locationLat;
+  double? locationLong;
+  String? addressByLatLon;
+  String? ownerId;
+  List<String>? memberIds;
+  List<String?>? adminIds;
+  List<String>? pendingMemberIds;
+  bool? isMember;
+  bool? isAdmin;
+  bool? isOwner;
+  UserModel? owner;
+  int? countMember;
+  String? createdAt;
+  String? updatedAt;
+  int? totalPost;
+  int? postIn24h;
+  int? memberIn24h;
+  bool? censor;
 
   GroupModel(
       {this.id,
@@ -64,15 +64,15 @@ class GroupModel {
     addressByLatLon = json['addressByLatLon'];
     ownerId = json['ownerId'];
     if (json['memberIds'] != null) {
-      memberIds = new List<String>();
+      memberIds = <String>[];
       json['memberIds'].forEach((v) {
-        memberIds.add(v);
+        memberIds!.add(v);
       });
     }
     if (json['adminIds'] != null) {
-      adminIds = new List<String>();
+      adminIds = <String?>[];
       json['adminIds'].forEach((v) {
-        adminIds.add(v);
+        adminIds!.add(v);
       });
     }
     isMember = json['isMember'];
@@ -87,10 +87,10 @@ class GroupModel {
     postIn24h = json['postIn24h'];
     totalPost = json['totalPost'];
     censor = json['censor'] ?? false;
-    pendingMemberIds = new List<String>();
+    pendingMemberIds = <String>[];
     if (json['pendingMemberIds'] != null && censor == true) {
       json['pendingMemberIds'].forEach((v) {
-        pendingMemberIds.add(v);
+        pendingMemberIds!.add(v);
       });
     }
   }
@@ -108,12 +108,12 @@ class GroupModel {
     data['addressByLatLon'] = this.addressByLatLon;
     data['ownerId'] = this.ownerId;
     if (this.memberIds != null) {
-      data['memberIds'] = this.memberIds.map((v) => v).toList();
+      data['memberIds'] = this.memberIds!.map((v) => v).toList();
     }
     data['isMember'] = this.isMember;
     data['isOwner'] = this.isOwner;
     if (this.owner != null) {
-      data['owner'] = this.owner.toJson();
+      data['owner'] = this.owner!.toJson();
     }
     data['countMember'] = this.countMember;
     data['createdAt'] = this.createdAt;

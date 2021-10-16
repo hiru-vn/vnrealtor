@@ -13,12 +13,12 @@ import 'dart:async';
 import 'package:datcao/share/widget/tag_user_field.dart';
 
 class PostDetail extends StatefulWidget {
-  final PostModel postModel;
-  final String postId;
+  final PostModel? postModel;
+  final String? postId;
 
-  const PostDetail({Key key, this.postModel, this.postId}) : super(key: key);
-  static Future navigate(PostModel postModel, {String postId}) {
-    return navigatorKey.currentState.push(pageBuilder(PostDetail(
+  const PostDetail({Key? key, this.postModel, this.postId}) : super(key: key);
+  static Future navigate(PostModel? postModel, {String? postId}) {
+    return navigatorKey.currentState!.push(pageBuilder(PostDetail(
       postModel: postModel,
       postId: postId,
     )));
@@ -29,15 +29,15 @@ class PostDetail extends StatefulWidget {
 }
 
 class _PostDetailState extends State<PostDetail> {
-  List<CommentModel> comments;
+  List<CommentModel>? comments;
   TextEditingController _commentC = TextEditingController();
-  PostBloc _postBloc;
-  PostModel _post;
-  StreamSubscription<FetchResult> _streamSubcription;
+  PostBloc? _postBloc;
+  PostModel? _post;
+  // StreamSubscription<FetchResult> _streamSubcription;
   bool isReply = false;
   FocusNode _focusNodeComment = FocusNode();
-  CommentModel replyComment;
-  List<ReplyModel> localReplies = [];
+  CommentModel? replyComment;
+  List<ReplyModel?> localReplies = [];
   List<UserModel> tagUsers = [];
 
   @override
@@ -60,7 +60,7 @@ class _PostDetailState extends State<PostDetail> {
       _postBloc = Provider.of<PostBloc>(context);
       if (widget.postModel != null) {
         _post = widget.postModel;
-        _getComments(_post.id, filter: GraphqlFilter(limit: 20));
+        _getComments(_post!.id, filter: GraphqlFilter(limit: 20));
       } else {
         _getPost();
         _getComments(widget.postId, filter: GraphqlFilter(limit: 20));
@@ -84,10 +84,10 @@ class _PostDetailState extends State<PostDetail> {
     super.didChangeDependencies();
   }
 
-  _deleteComment(String id) async {
-    comments.removeWhere((element) => element.id == id);
+  _deleteComment(String? id) async {
+    comments!.removeWhere((element) => element.id == id);
     setState(() {});
-    final res = await _postBloc.deleteComment(id);
+    final res = await _postBloc!.deleteComment(id);
     if (!res.isSuccess) showToast(res.errMessage, context);
   }
 
@@ -99,8 +99,8 @@ class _PostDetailState extends State<PostDetail> {
     _commentC.clear();
     localReplies.add(ReplyModel(
         content: text,
-        userId: AuthBloc.instance.userModel.uid,
-        commentId: replyComment.id,
+        userId: AuthBloc.instance.userModel!.uid,
+        commentId: replyComment!.id,
         user: AuthBloc.instance.userModel,
         createdAt: DateTime.now().toIso8601String(),
         updatedAt: DateTime.now().toIso8601String(),
@@ -108,20 +108,20 @@ class _PostDetailState extends State<PostDetail> {
             key: (e) => e.id, value: (e) => e.name)));
     setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
-    BaseResponse res = await _postBloc.createReply(text, replyComment.id,
+    BaseResponse res = await _postBloc!.createReply(text, replyComment!.id,
         tagUserIds: tagUsers.map((e) => e.id).toList());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
       final index = localReplies
-          .indexWhere((element) => element.createdAt == res.data.createdAt);
+          .indexWhere((element) => element!.createdAt == res.data.createdAt);
       if (index >= 0) {
         localReplies[index] = res.data;
       }
-      comments
-          .firstWhere((element) => element.id == replyComment.id)
-          .replyIds
-          .add(localReplies[index].id);
+      comments!
+          .firstWhere((element) => element.id == replyComment!.id)
+          .replyIds!
+          .add(localReplies[index]!.id);
 
       if (mounted)
         setState(() {
@@ -134,30 +134,30 @@ class _PostDetailState extends State<PostDetail> {
   @override
   void dispose() {
     super.dispose();
-    _streamSubcription?.cancel();
+    // _streamSubcription?.cancel();
   }
 
   Future _getPost() async {
     var res;
     if (AuthBloc.instance.userModel != null) {
-      res = await _postBloc.getOnePost(widget.postId);
+      res = await _postBloc!.getOnePost(widget.postId);
     } else {
-      res = await _postBloc.getOnePostGuest(widget.postId);
+      res = await _postBloc!.getOnePostGuest(widget.postId);
     }
     if (res.isSuccess) {
       setState(() {
         _post = res.data;
       });
     } else {
-      navigatorKey.currentState.maybePop();
+      navigatorKey.currentState!.maybePop();
       showToast(res.errMessage, context);
     }
   }
 
-  Future _getComments(String postId, {GraphqlFilter filter}) async {
+  Future _getComments(String? postId, {GraphqlFilter? filter}) async {
     BaseResponse res = AuthBloc.instance.userModel != null
-        ? await _postBloc.getAllCommentByPostId(postId, filter: filter)
-        : await _postBloc.getAllCommentByPostIdGuest(postId, filter: filter);
+        ? await _postBloc!.getAllCommentByPostId(postId, filter: filter)
+        : await _postBloc!.getAllCommentByPostIdGuest(postId, filter: filter);
     if (res == null) return;
     if (res.isSuccess) {
       if (mounted)
@@ -174,29 +174,29 @@ class _PostDetailState extends State<PostDetail> {
     text = text.trim();
     if (comments == null) await Future.delayed(Duration(seconds: 1));
     _commentC.clear();
-    comments.add(
+    comments!.add(
       CommentModel(
           content: text,
           like: 0,
-          userId: AuthBloc.instance.userModel.id,
+          userId: AuthBloc.instance.userModel!.id,
           user: AuthBloc.instance.userModel,
           updatedAt: DateTime.now().toIso8601String(),
           userTags: Map.fromIterable(tagUsers,
               key: (e) => e.id, value: (e) => e.name)),
     );
     FocusScope.of(context).requestFocus(FocusNode());
-    BaseResponse res = await _postBloc.createComment(text,
+    BaseResponse res = await _postBloc!.createComment(text,
         postId: _post?.id, tagUserIds: tagUsers.map((e) => e.id).toList());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
       final resComment = (res.data as CommentModel);
-      _post.commentIds.add(resComment.id);
-      final index = comments
+      _post!.commentIds!.add(resComment.id);
+      final index = comments!
           .lastIndexWhere((element) => element.userId == resComment.userId);
       if (index >= 0)
         setState(() {
-          comments[index] = resComment;
+          comments![index] = resComment;
           tagUsers = [];
         });
     }
@@ -208,7 +208,7 @@ class _PostDetailState extends State<PostDetail> {
       appBar: AppBar1(
         centerTitle: true,
         title: _post != null
-            ? 'Bài viết của ${_post.isPage ? _post.page.name : _post.user.name}'
+            ? 'Bài viết của ${_post!.isPage! ? _post!.page!.name : _post!.user!.name}'
             : '',
         automaticallyImplyLeading: true,
         bgColor: ptSecondaryColor(context),
@@ -235,24 +235,24 @@ class _PostDetailState extends State<PostDetail> {
                   comments != null
                       ? ListView.separated(
                           padding: EdgeInsets.zero,
-                          itemCount: comments.length,
+                          itemCount: comments!.length,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            final comment = comments[index];
+                            final comment = comments![index];
                             return CommentWidget(
                                 comment: comment,
                                 userReplyCache: localReplies,
                                 shouldExpand:
-                                    comments[index].id == replyComment?.id,
-                                deleteCallBack: comments[index].userId ==
+                                    comments![index].id == replyComment?.id,
+                                deleteCallBack: comments![index].userId ==
                                         AuthBloc.instance.userModel?.id
-                                    ? () => _deleteComment(comments[index].id)
+                                    ? () => _deleteComment(comments![index].id)
                                     : () {},
                                 tapCallBack: () {
                                   setState(() {
                                     isReply = true;
-                                    replyComment = comments[index];
+                                    replyComment = comments![index];
                                   });
                                   _focusNodeComment.requestFocus();
                                 });
@@ -278,10 +278,10 @@ class _PostDetailState extends State<PostDetail> {
                       radius: 21,
                       backgroundColor: Colors.white,
                       backgroundImage:
-                          AuthBloc.instance.userModel?.avatar != null
+                          (AuthBloc.instance.userModel?.avatar != null
                               ? CachedNetworkImageProvider(
-                                  AuthBloc.instance.userModel?.avatar)
-                              : AssetImage('assets/image/default_avatar.png'),
+                                  AuthBloc.instance.userModel!.avatar!)
+                              : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
                     ),
                     SizedBox(
                       width: 7,

@@ -5,7 +5,7 @@ import './detail_media.dart';
 class MediaGroupWidgetCache extends StatelessWidget {
   final List<String> paths;
 
-  const MediaGroupWidgetCache({Key key, @required this.paths})
+  const MediaGroupWidgetCache({Key? key, required this.paths})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -328,12 +328,12 @@ class MediaGroupWidgetCache extends StatelessWidget {
 
 class MediaGroupWidgetNetwork extends StatelessWidget {
   final List<String> urls;
-  final Function onShare;
+  final Function? onShare;
   final bool shareButtonRightSide;
 
   const MediaGroupWidgetNetwork(
-      {Key key,
-      @required this.urls,
+      {Key? key,
+      required this.urls,
       this.onShare,
       this.shareButtonRightSide = true})
       : super(key: key);
@@ -347,7 +347,7 @@ class MediaGroupWidgetNetwork extends StatelessWidget {
         );
       }));
     };
-    Widget widget;
+    late Widget widget;
     if (urls.length == 1) {
       widget = SizedBox(
         width: double.infinity,
@@ -658,7 +658,7 @@ class MediaGroupWidgetNetwork extends StatelessWidget {
       children: [
         if (!shareButtonRightSide) ...[
           GestureDetector(
-            onTap: onShare,
+            onTap: onShare as void Function()?,
             child: Container(
               width: 32,
               height: 32,
@@ -680,7 +680,7 @@ class MediaGroupWidgetNetwork extends StatelessWidget {
         if (shareButtonRightSide) ...[
           SizedBox(width: 7),
           GestureDetector(
-            onTap: onShare,
+            onTap: onShare as void Function()?,
             child: Container(
               width: 32,
               height: 32,

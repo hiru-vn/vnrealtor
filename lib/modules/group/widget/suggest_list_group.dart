@@ -5,26 +5,26 @@ import 'package:datcao/share/import.dart';
 import '../../bloc/group_bloc.dart';
 
 class SuggestListGroup extends StatefulWidget {
-  const SuggestListGroup({Key key}) : super(key: key);
+  const SuggestListGroup({Key? key}) : super(key: key);
 
   @override
   _SuggestListGroupState createState() => _SuggestListGroupState();
 }
 
 class _SuggestListGroupState extends State<SuggestListGroup> {
-  GroupBloc groupBloc;
+  GroupBloc? groupBloc;
 
   @override
   void didChangeDependencies() {
     if (groupBloc == null) {
-      groupBloc = Provider.of(context);
+      groupBloc = Provider.of<GroupBloc>(context);
     }
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (groupBloc.suggestGroup == null || groupBloc.suggestGroup.length == 0)
+    if (groupBloc!.suggestGroup == null || groupBloc!.suggestGroup!.length == 0)
       return SizedBox.shrink();
     return Container(
       height: 175,
@@ -59,14 +59,14 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                           GestureDetector(
                             onTap: () {audioCache.play('tab3.mp3');
                               DetailGroupPage.navigate(null,
-                                  groupId: groupBloc.suggestGroup[index].id);
+                                  groupId: groupBloc!.suggestGroup![index].id);
                             },
                             child: SizedBox(
                               width: 180,
                               height: 100,
                               child: CachedNetworkImage(
                                 imageUrl:
-                                    groupBloc.suggestGroup[index].coverImage,
+                                    groupBloc!.suggestGroup![index].coverImage!,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -82,7 +82,7 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(maxWidth: 164),
                                 child: Text(
-                                  groupBloc.suggestGroup[index].name,
+                                  groupBloc!.suggestGroup![index].name!,
                                   style: ptBody().copyWith(
                                       fontWeight: FontWeight.w600,
                                       color: Colors.white),
@@ -101,10 +101,10 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
-                          groupBloc.suggestGroup[index].privacy
+                          groupBloc!.suggestGroup![index].privacy!
                               ? 'Nhóm kín'
                               : 'Công khai' +
-                                  ' • ${groupBloc.suggestGroup[index].countMember} thành viên',
+                                  ' • ${groupBloc!.suggestGroup![index].countMember} thành viên',
                           style: ptTiny().copyWith(color: Colors.black),
                         ),
                       ),
@@ -118,8 +118,8 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                       }
 
                       setState(() {});
-                      final res = await groupBloc
-                          .joinGroup(groupBloc.suggestGroup[index].id);
+                      final res = await groupBloc!
+                          .joinGroup(groupBloc!.suggestGroup![index].id);
 
                       if (res.isSuccess) {
                       } else {
@@ -133,14 +133,14 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                       padding: EdgeInsets.symmetric(vertical: 7),
                       decoration: BoxDecoration(
                         border: groupBloc?.followingGroups?.any((e) =>
-                                    e.id == groupBloc.suggestGroup[index].id) ==
+                                    e.id == groupBloc!.suggestGroup![index].id) ==
                                 true
                             ? Border.all(color: Colors.black12)
                             : Border.all(
                                 color:
                                     ptPrimaryColor(context).withOpacity(0.2)),
                         color: groupBloc?.followingGroups?.any((e) =>
-                                    e.id == groupBloc.suggestGroup[index].id) ==
+                                    e.id == groupBloc!.suggestGroup![index].id) ==
                                 true
                             ? Colors.transparent
                             : ptSecondaryColor(context),
@@ -150,7 +150,7 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
                         child: Text(
                           groupBloc?.followingGroups?.any((e) =>
                                       e.id ==
-                                      groupBloc.suggestGroup[index].id) ==
+                                      groupBloc!.suggestGroup![index].id) ==
                                   true
                               ? 'Đã tham gia'
                               : 'Tham gia',
@@ -172,7 +172,7 @@ class _SuggestListGroupState extends State<SuggestListGroup> {
           separatorBuilder: (context, index) => SizedBox(
                 width: 10,
               ),
-          itemCount: groupBloc.suggestGroup.length),
+          itemCount: groupBloc!.suggestGroup!.length),
     );
   }
 }

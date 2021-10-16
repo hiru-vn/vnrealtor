@@ -4,20 +4,20 @@ import 'package:datcao/share/import.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 
 class ListItemTags extends StatefulWidget {
-  final String title;
-  final List<String> list;
-  final OnClickAt onClickAt;
+  final String? title;
+  final List<String?> list;
+  final OnClickAt? onClickAt;
   final bool isEnableRemove;
-  final AppColors textColor;
+  final AppColors? textColor;
   final WrapAlignment alignment;
-  final double marginHorizontal;
-  final EdgeInsets padding;
+  final double? marginHorizontal;
+  final EdgeInsets? padding;
 
   const ListItemTags(
       {this.title,
         this.textColor,
         this.onClickAt,
-        @required this.list,
+        required this.list,
         this.isEnableRemove = false,
         this.alignment = WrapAlignment.start,
         this.marginHorizontal,
@@ -42,7 +42,7 @@ class _ListItemTagsState extends State<ListItemTags> {
           children: [
             if (widget.title != null)
               Text(
-                widget.title,
+                widget.title!,
                 style: ptBody(),
               ),
             Padding(
@@ -56,7 +56,7 @@ class _ListItemTagsState extends State<ListItemTags> {
                 itemBuilder: (int index) {
                   return ItemTags(
                     index: index,
-                    textColor: widget.textColor ?? AppColors.mainColor,
+                    textColor: widget.textColor as Color? ?? AppColors.mainColor,
                     pressEnabled: false,
                     active: false,
                     alignment: MainAxisAlignment.end,
@@ -67,17 +67,17 @@ class _ListItemTagsState extends State<ListItemTags> {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                         width: 1,
-                        color: widget.textColor ?? AppColors.mainColor),
+                        color: widget.textColor as Color? ?? AppColors.mainColor),
                     elevation: 0.5,
-                    title: widget.list[index],
+                    title: widget.list[index]!,
                     removeButton: widget.isEnableRemove
                         ? ItemTagsRemoveButton(
                         size: 14,
                         backgroundColor:
-                        widget.textColor ?? Colors.white,
+                        widget.textColor as Color? ?? Colors.white,
                         color: AppColors.mainColor,
                         onRemoved: () {
-                          widget.onClickAt(index);
+                          widget.onClickAt!(index);
                           setState(() => widget.list.removeAt(index));
                           return true;
                         })

@@ -5,14 +5,14 @@ import 'font.dart';
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
-  final List<Widget> actions;
-  final Color bgColor;
-  final Widget leading;
-  final String title;
+  final List<Widget>? actions;
+  final Color? bgColor;
+  final Widget? leading;
+  final String? title;
   final bool automaticallyImplyLeading;
   final bool centerTitle;
   final int elevation;
-  final Widget icon;
+  final Widget? icon;
 
   MyAppBar(
       {this.actions,
@@ -30,7 +30,6 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: elevation.toDouble(),
       automaticallyImplyLeading: automaticallyImplyLeading,
       leading: leading,
-      brightness: Brightness.light,
       centerTitle: centerTitle,
       title: Row(
         mainAxisSize: centerTitle ? MainAxisSize.min : MainAxisSize.max,
@@ -46,7 +45,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           //   ),
           // ],
           if (icon != null) ...[
-            icon,
+            icon!,
             SizedBox(
               width: 15,
             ),

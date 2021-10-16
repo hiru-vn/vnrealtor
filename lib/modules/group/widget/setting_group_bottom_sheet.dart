@@ -2,7 +2,7 @@ import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/model/group.dart';
 import 'package:datcao/share/import.dart';
 
-Future showSettingGroup(BuildContext context, GroupModel groupModel) {
+Future showSettingGroup(BuildContext context, GroupModel? groupModel) {
   return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -13,8 +13,8 @@ Future showSettingGroup(BuildContext context, GroupModel groupModel) {
 }
 
 class SettingGroup extends StatefulWidget {
-  final GroupModel groupModel;
-  SettingGroup(this.groupModel, {Key key}) : super(key: key);
+  final GroupModel? groupModel;
+  SettingGroup(this.groupModel, {Key? key}) : super(key: key);
 
   @override
   _SettingGroupState createState() => _SettingGroupState();
@@ -22,18 +22,18 @@ class SettingGroup extends StatefulWidget {
 
 class _SettingGroupState extends State<SettingGroup> {
   bool _enableBrowseMember = false;
-  GroupBloc _groupBloc;
+  GroupBloc? _groupBloc;
 
   @override
   void initState() {
-    _enableBrowseMember = widget.groupModel.censor ?? false;
+    _enableBrowseMember = widget.groupModel!.censor ?? false;
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
+      _groupBloc = Provider.of<GroupBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -55,11 +55,11 @@ class _SettingGroupState extends State<SettingGroup> {
                     icon: Icon(Icons.save),
                     onPressed: () async {
                       showWaitingDialog(context);
-                      final res = await _groupBloc.browseMemberSetting(
-                          widget.groupModel.id, _enableBrowseMember);
+                      final res = await _groupBloc!.browseMemberSetting(
+                          widget.groupModel!.id, _enableBrowseMember);
                       closeLoading();
                       if (res.isSuccess) {
-                        navigatorKey.currentState.maybePop(res.data);
+                        navigatorKey.currentState!.maybePop(res.data);
                       } else {
                         showToast(res.errMessage, context);
                       }

@@ -23,16 +23,16 @@ enum AuthStatus {
 }
 
 class AuthResponse {
-  AuthStatus status;
+  AuthStatus? status;
   bool isSuccess;
-  String errMessage;
+  String? errMessage;
 
   AuthResponse({this.errMessage, this.isSuccess = false, this.status});
 
   factory AuthResponse.success() {
     return AuthResponse(isSuccess: true, status: AuthStatus.authSucces);
   }
-  factory AuthResponse.fail(String err) {
+  factory AuthResponse.fail(String? err) {
     return AuthResponse(
         errMessage: err, isSuccess: false, status: AuthStatus.authFail);
   }
@@ -55,23 +55,23 @@ class AuthBloc extends ChangeNotifier {
   static final AuthBloc instance = AuthBloc._privateConstructor();
 
   UserRepo _userRepo = UserRepo();
-  UserModel userModel;
+  UserModel? userModel;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  AuthCredential authCredential;
+  AuthCredential? authCredential;
   static bool firstLogin = false;
 
   final _countdownStart$ = BehaviorSubject<bool>();
   Stream<bool> get countdownStartStream => _countdownStart$.stream;
   Sink<bool> get countdownStartSink => _countdownStart$.sink;
-  bool get countdownStartValue => _countdownStart$.value;
+  bool? get countdownStartValue => _countdownStart$.value;
 
   final _authStatus$ = BehaviorSubject<AuthResponse>();
   Stream<AuthResponse> get authStatusStream => _authStatus$.stream;
   Sink<AuthResponse> get authStatusSink => _authStatus$.sink;
-  AuthResponse get authStatusValue => _authStatus$.value;
+  AuthResponse? get authStatusValue => _authStatus$.value;
 
-  String smsVerifyCode;
+  late String smsVerifyCode;
 
   @mustCallSuper
   void dispose() {
@@ -97,13 +97,13 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('token', res['token']);
       await SPref.instance.set('id', res['user']["id"]);
       userModel = UserModel.fromJson(res['user']);
-      await loginFirebase(userModel);
+      await loginFirebase(userModel!);
       UserBloc.instance.init();
       PostBloc.instance.init();
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     }
   }
 
@@ -118,7 +118,7 @@ class AuthBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     }
   }
 
@@ -128,7 +128,7 @@ class AuthBloc extends ChangeNotifier {
     try {
       final auth = await FirebaseAuth.instance.signInWithCredential(phoneAuth);
       if (auth == null) return BaseResponse.fail('Không tìm thấy tài khoản');
-      final fbToken = await auth.user.getIdToken();
+      final fbToken = await auth.user!.getIdToken();
       final loginRes = await _userRepo.registerWithPhone(
           name: name,
           email: email,
@@ -138,14 +138,14 @@ class AuthBloc extends ChangeNotifier {
       await SPref.instance.set('token', loginRes['token']);
       await SPref.instance.set('id', loginRes['user']["id"]);
       userModel = UserModel.fromJson(loginRes['user']);
-      await loginFirebase(userModel);
+      await loginFirebase(userModel!);
 
       UserBloc.instance.init();
       PostBloc.instance.init();
       firstLogin = true;
       return BaseResponse.success(loginRes);
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     }
   }
 
@@ -159,13 +159,13 @@ class AuthBloc extends ChangeNotifier {
     try {
       final auth = await FirebaseAuth.instance.signInWithCredential(phoneAuth);
       if (auth == null) return BaseResponse.fail('Không tìm thấy tài khoản');
-      final fbToken = await auth.user.getIdToken();
+      final fbToken = await auth.user!.getIdToken();
       final loginRes = await _userRepo.registerCompany(
           name, ownerName, email, password, phone, fbToken);
       await SPref.instance.set('token', loginRes['token']);
       await SPref.instance.set('id', loginRes['user']["id"]);
       userModel = UserModel.fromJson(loginRes['user']);
-      await loginFirebase(userModel);
+      await loginFirebase(userModel!);
 
       UserBloc.instance.init();
       PostBloc.instance.init();
@@ -173,7 +173,7 @@ class AuthBloc extends ChangeNotifier {
       firstLogin = true;
       return BaseResponse.success(loginRes);
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     }
   }
 
@@ -183,12 +183,12 @@ class AuthBloc extends ChangeNotifier {
     try {
       final auth = await FirebaseAuth.instance.signInWithCredential(phoneAuth);
       if (auth == null) return BaseResponse.fail('Không tìm thấy tài khoản');
-      final fbToken = await auth.user.getIdToken();
+      final fbToken = await auth.user!.getIdToken();
       final res = await _userRepo.resetPassWithPhone(
           password: password, idToken: fbToken);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     }
   }
 
@@ -263,7 +263,7 @@ class AuthBloc extends ChangeNotifier {
       authStatusSink.add(AuthResponse.successOtp());
       authCredential = authCredential;
     } catch (e) {
-      authStatusSink.add(AuthResponse.fail(e?.toString()));
+      authStatusSink.add(AuthResponse.fail(e.toString()));
     }
   }
 
@@ -271,7 +271,7 @@ class AuthBloc extends ChangeNotifier {
       String name, String email, String password, String phone) async {
     try {
       final res = await registerWithPhoneAuth(
-          authCredential, name, email, password, phone);
+          authCredential as PhoneAuthCredential, name, email, password, phone);
       if (res.isSuccess) {
         authStatusSink.add(AuthResponse.success());
       } else {
@@ -279,8 +279,8 @@ class AuthBloc extends ChangeNotifier {
       }
       return res;
     } catch (e) {
-      authStatusSink.add(AuthResponse.fail(e?.toString()));
-      return BaseResponse.fail(e?.toString());
+      authStatusSink.add(AuthResponse.fail(e.toString()));
+      return BaseResponse.fail(e.toString());
     }
   }
 
@@ -292,7 +292,7 @@ class AuthBloc extends ChangeNotifier {
       authStatusSink.add(AuthResponse.successOtp());
       authCredential = authCredential;
     } catch (e) {
-      authStatusSink.add(AuthResponse.fail(e?.toString()));
+      authStatusSink.add(AuthResponse.fail(e.toString()));
     }
   }
 
@@ -300,7 +300,12 @@ class AuthBloc extends ChangeNotifier {
       String email, String password, String phone) async {
     try {
       final res = await registerCompanyWithPhoneAuth(
-          authCredential, name, ownerName, email, password, phone);
+          authCredential as PhoneAuthCredential,
+          name,
+          ownerName,
+          email,
+          password,
+          phone);
       if (res.isSuccess) {
         authStatusSink.add(AuthResponse.success());
       } else {
@@ -308,33 +313,34 @@ class AuthBloc extends ChangeNotifier {
       }
       return res;
     } catch (e) {
-      authStatusSink.add(AuthResponse.fail(e?.toString()));
-      return BaseResponse.fail(e?.toString());
+      authStatusSink.add(AuthResponse.fail(e.toString()));
+      return BaseResponse.fail(e.toString());
     }
   }
 
-  AuthCredential submitOtpResetPass(String otp) {
+  AuthCredential? submitOtpResetPass(String otp) {
     try {
       authCredential = PhoneAuthProvider.credential(
           verificationId: smsVerifyCode, smsCode: otp);
       authStatusSink.add(AuthResponse.successOtp());
       return authCredential;
     } catch (e) {
-      authStatusSink.add(AuthResponse.fail(e?.toString()));
+      authStatusSink.add(AuthResponse.fail(e.toString()));
       return null;
     }
   }
 
-  Future resetPass(AuthCredential auth, String pass) async {
+  Future resetPass(AuthCredential? auth, String pass) async {
     try {
-      final res = await resetPassWithPhoneAuth(authCredential, pass);
+      final res = await resetPassWithPhoneAuth(
+          authCredential as PhoneAuthCredential, pass);
       if (res.isSuccess) {
         authStatusSink.add(AuthResponse.success());
       } else {
         authStatusSink.add(AuthResponse.fail(res.errMessage));
       }
     } catch (e) {
-      authStatusSink.add(AuthResponse.fail(e?.toString()));
+      authStatusSink.add(AuthResponse.fail(e.toString()));
     }
   }
 
@@ -354,11 +360,11 @@ class AuthBloc extends ChangeNotifier {
       final id = await SPref.instance.get('id');
       final res = await _userRepo.getOneUserForClient(id: id);
       userModel = UserModel.fromJson(res);
-      await loginFirebase(userModel);
+      await loginFirebase(userModel!);
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       setOnline();
     }
@@ -373,13 +379,13 @@ class AuthBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     }
   }
 
   Future<bool> checkToken() async {
-    final String token = await SPref.instance.get('token');
-    final String id = await SPref.instance.get('id');
+    final String? token = await SPref.instance.get('token');
+    final String? id = await SPref.instance.get('id') ;
     print(id);
     print(token);
     return token != null && id != null;
@@ -393,7 +399,7 @@ class AuthBloc extends ChangeNotifier {
     AuthBloc.instance.userModel = null;
     FirebaseAuth.instance.signOut();
     print('User Sign Out');
-    navigatorKey.currentState
+    navigatorKey.currentState!
         .pushAndRemoveUntil(pageBuilder(GuestFeedPage()), (route) => false);
   }
 }

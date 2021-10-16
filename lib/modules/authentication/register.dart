@@ -10,9 +10,9 @@ import 'package:datcao/share/import.dart';
 class RegisterPage extends StatefulWidget {
   final bool isCompany;
 
-  const RegisterPage({Key key, this.isCompany = false}) : super(key: key);
+  const RegisterPage({Key? key, this.isCompany = false}) : super(key: key);
   static Future navigate({bool isCompany = false}) {
-    return navigatorKey.currentState
+    return navigatorKey.currentState!
         .push(pageBuilder(RegisterPage(isCompany: isCompany)));
   }
 
@@ -29,15 +29,15 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _otpC = TextEditingController(text: '');
   TextEditingController _ownerName = TextEditingController(text: '');
 
-  AuthBloc _authBloc;
-  StreamSubscription listener;
+  AuthBloc? _authBloc;
+  late StreamSubscription listener;
   final _formKey = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
-      listener = _authBloc.authStatusStream.listen((event) async {
+      listener = _authBloc!.authStatusStream.listen((event) async {
         if (event.status == AuthStatus.authFail) {
           closeLoading();
           showToast(event.errMessage, context);
@@ -59,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
         if (event.status == AuthStatus.requestOtp) {}
         if (event.status == AuthStatus.successOtp) {
           closeLoading();
-          navigatorKey.currentState.maybePop();
+          navigatorKey.currentState!.maybePop();
         }
       });
     }
@@ -69,16 +69,16 @@ class _RegisterPageState extends State<RegisterPage> {
   dispose() {
     super.dispose();
     listener.cancel();
-    _authBloc.authStatusSink.add(AuthResponse.unAuthed());
+    _authBloc!.authStatusSink.add(AuthResponse.unAuthed());
   }
 
   _submitPhone() async {
-    if (!_formKey.currentState.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
     showWaitingDialog(context);
     final res = await UserBloc.instance
         .checkValidUser(_emailC.text, _phoneC.text.replaceAll(' ', ''));
     if (res.isSuccess) {
-      _authBloc.requestOtpRegister(_phoneC.text);
+      _authBloc!.requestOtpRegister(_phoneC.text);
     } else {
       showToast(res.errMessage, context);
     }
@@ -87,22 +87,22 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   _submitRegister() async {
-    if (!_formKey.currentState.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
     showWaitingDialog(context);
 
     if (!widget.isCompany)
-      _authBloc.submitRegister(_nameC.text, _emailC.text, _passC.text,
+      _authBloc!.submitRegister(_nameC.text, _emailC.text, _passC.text,
           _phoneC.text.replaceAll(' ', ''));
     else
-      _authBloc.submitRegisterCompany(_nameC.text, _ownerName.text,
+      _authBloc!.submitRegisterCompany(_nameC.text, _ownerName.text,
           _emailC.text, _passC.text, _phoneC.text.replaceAll(' ', ''));
   }
 
   _codeSubmit() async {
     if (!widget.isCompany) {
-      await _authBloc.submitOtpRegister(_phoneC.text, _otpC.text);
+      await _authBloc!.submitOtpRegister(_phoneC.text, _otpC.text);
     } else {
-      await _authBloc.submitOtpRegisterCompany(_nameC.text, _ownerName.text,
+      await _authBloc!.submitOtpRegisterCompany(_nameC.text, _ownerName.text,
           _emailC.text, _passC.text, _phoneC.text, _otpC.text);
     }
     _otpC.clear();
@@ -131,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: Image.asset('assets/image/logo_full.png'))),
             SpacingBox(h: 2),
             StreamBuilder(
-              stream: _authBloc.authStatusStream,
+              stream: _authBloc!.authStatusStream,
               initialData: AuthResponse(status: AuthStatus.unAuthed),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if ((snapshot.data as AuthResponse).status ==
@@ -185,7 +185,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: StreamBuilder<Object>(
-                      stream: _authBloc.authStatusStream,
+                      stream: _authBloc!.authStatusStream,
                       initialData: AuthResponse(status: AuthStatus.unAuthed),
                       builder: (context, snapshot) {
                         if ((snapshot.data as AuthResponse).status ==
@@ -262,9 +262,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
   _buildFormField(
           BuildContext context, String text, TextEditingController controller,
-          {Function(String) validator,
+          {Function(String)? validator,
           bool obscureText = false,
-          IconData icon}) =>
+          IconData? icon}) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Container(
@@ -289,10 +289,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: TextFormField(
                     obscureText: obscureText,
                     controller: controller,
-                    validator: validator ??
+                    validator: validator as String? Function(String?)? ??
                         (str) {
                           return null;
-                        },
+                        } as String? Function(String?)?,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: text,
@@ -307,23 +307,23 @@ class _RegisterPageState extends State<RegisterPage> {
 }
 
 class OtpDialog extends StatefulWidget {
-  final Function codeSubmit;
-  final TextEditingController otpC;
+  final Function? codeSubmit;
+  final TextEditingController? otpC;
 
-  const OtpDialog({Key key, this.codeSubmit, this.otpC}) : super(key: key);
+  const OtpDialog({Key? key, this.codeSubmit, this.otpC}) : super(key: key);
 
   @override
   _OtpDialogState createState() => _OtpDialogState();
 }
 
 class _OtpDialogState extends State<OtpDialog> {
-  AuthBloc _authBloc;
+  AuthBloc? _authBloc;
   bool isLoading = false;
 
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
-      _authBloc = Provider.of(context);
+      _authBloc = Provider.of<AuthBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -369,7 +369,7 @@ class _OtpDialogState extends State<OtpDialog> {
                                 keyboardType: TextInputType.number,
                                 onChanged: (str) async {
                                   if (str.length == 6) {
-                                    widget.codeSubmit();
+                                    widget.codeSubmit!();
                                   }
                                 },
                                 style: ptBigTitle().copyWith(letterSpacing: 10),
@@ -383,7 +383,7 @@ class _OtpDialogState extends State<OtpDialog> {
                           ),
                         ),
                         StreamBuilder(
-                            stream: _authBloc.authStatusStream,
+                            stream: _authBloc!.authStatusStream,
                             builder: (context, snap) {
                               if (snap.hasData &&
                                   (snap.data as AuthResponse).status ==
@@ -410,7 +410,7 @@ class _OtpDialogState extends State<OtpDialog> {
                       color: Colors.transparent,
                       child: GestureDetector(
                         onTap: () {
-                          navigatorKey.currentState.maybePop();
+                          navigatorKey.currentState!.maybePop();
                           audioCache.play('tab3.mp3');
                         },
                         child: Container(

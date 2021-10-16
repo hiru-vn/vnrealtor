@@ -3,18 +3,18 @@ import 'package:datcao/share/import.dart';
 class ExpandBtn extends StatelessWidget {
   final String text;
   final Function onPress;
-  final Color color;
-  final Color borderColor;
-  final Color textColor;
-  final double height;
-  final int elevation;
-  final double borderRadius;
+  final Color? color;
+  final Color? borderColor;
+  final Color? textColor;
+  final double? height;
+  final int? elevation;
+  final double? borderRadius;
   final bool isLoading;
 
   const ExpandBtn(
-      {Key key,
-      @required this.text,
-      @required this.onPress,
+      {Key? key,
+      required this.text,
+      required this.onPress,
       this.color,
       this.textColor,
       this.borderRadius,
@@ -36,7 +36,7 @@ class ExpandBtn extends StatelessWidget {
         ),
         color: color ?? ptPrimaryColor(context),
 
-        onPressed: onPress,
+        onPressed: onPress as void Function()?,
         child: isLoading
             ? kLoadingSpinner
             : SizedBox(
@@ -54,7 +54,7 @@ class ExpandBtn extends StatelessWidget {
 class FacebookBtn extends StatelessWidget {
   final Function onPress;
 
-  const FacebookBtn({Key key, @required this.onPress}) : super(key: key);
+  const FacebookBtn({Key? key, required this.onPress}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -65,7 +65,7 @@ class FacebookBtn extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         color: HexColor('#7583ca'),
-        onPressed: onPress,
+        onPressed: onPress as void Function()?,
         child: Row(
           children: [
             SizedBox(width: 5),
@@ -92,7 +92,7 @@ class FacebookBtn extends StatelessWidget {
 class GoogleBtn extends StatelessWidget {
   final Function onPress;
 
-  const GoogleBtn({Key key, @required this.onPress}) : super(key: key);
+  const GoogleBtn({Key? key, required this.onPress}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -103,7 +103,7 @@ class GoogleBtn extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         color: Colors.white.withOpacity(0.98),
-        onPressed: onPress,
+        onPressed: onPress as void Function()?,
         child: Row(
           children: [
             SizedBox(

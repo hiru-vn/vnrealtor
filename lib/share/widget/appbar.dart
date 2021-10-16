@@ -4,11 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 class AppBar1 extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
-  final List<Widget> actions;
-  final Color textColor;
-  final Color bgColor;
-  final Widget leading;
-  final String title;
+  final List<Widget>? actions;
+  final Color? textColor;
+  final Color? bgColor;
+  final Widget? leading;
+  final String? title;
   final bool automaticallyImplyLeading;
   final bool centerTitle;
 
@@ -47,7 +47,7 @@ class AppBar1 extends StatelessWidget implements PreferredSizeWidget {
 class AppBar2 extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
   final String title;
-  final List<Widget> actions;
+  final List<Widget>? actions;
 
   AppBar2(this.title, {this.actions});
   @override
@@ -68,7 +68,7 @@ class AppBar2 extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
               ),
-              if (actions != null) ...actions else SizedBox(width: 40)
+              if (actions != null) ...actions! else SizedBox(width: 40)
             ],
           )),
       decoration: BoxDecoration(
@@ -83,7 +83,7 @@ class AppBar2 extends StatelessWidget implements PreferredSizeWidget {
 }
 
 innerAppBar(BuildContext context, String title,
-        {List<Widget> actions, final Color bgColor}) =>
+        {List<Widget>? actions, final Color? bgColor}) =>
     AppBar(
       elevation: 0,
       backgroundColor: bgColor ?? ptPrimaryColor(context),
@@ -94,7 +94,7 @@ innerAppBar(BuildContext context, String title,
       ),
       leading: GestureDetector(
         onTap: () {audioCache.play('tab3.mp3');
-          navigatorKey.currentState.maybePop();
+          navigatorKey.currentState!.maybePop();
         },
         child: SizedBox(
           width: 40,

@@ -16,16 +16,16 @@ import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
 
 class CommentPage extends StatefulWidget {
-  final PostModel post;
-  final MediaPost mediaPost;
+  final PostModel? post;
+  final MediaPost? mediaPost;
   final double keyboardPadding;
 
   const CommentPage(
-      {Key key, this.post, this.mediaPost, this.keyboardPadding = 0})
+      {Key? key, this.post, this.mediaPost, this.keyboardPadding = 0})
       : super(key: key);
 
   static Future navigate(PostModel post, MediaPost mediaPost) {
-    return navigatorKey.currentState.push(pageBuilder(CommentPage(
+    return navigatorKey.currentState!.push(pageBuilder(CommentPage(
       post: post,
       mediaPost: mediaPost,
     )));
@@ -39,14 +39,14 @@ class _CommentPageState extends State<CommentPage> {
   bool isPost = true;
   bool isMediaPost = false;
   bool isReply = false;
-  List<CommentModel> comments;
+  List<CommentModel?>? comments;
   TextEditingController _commentC = TextEditingController();
-  PostBloc _postBloc;
-  String sort = '{createdAt: 1}';
-  ScrollController _controller;
-  StreamSubscription<FetchResult> _streamSubcription;
+  PostBloc? _postBloc;
+  String? sort = '{createdAt: 1}';
+  late ScrollController _controller;
+  // StreamSubscription<FetchResult> _streamSubcription;
   FocusNode _focusNodeComment = FocusNode();
-  CommentModel replyComment;
+  CommentModel? replyComment;
   List<ReplyModel> localReplies = [];
   List<UserModel> tagUsers = [];
 
@@ -73,14 +73,14 @@ class _CommentPageState extends State<CommentPage> {
   @override
   dispose() {
     super.dispose();
-    _focusNodeComment?.dispose();
-    _streamSubcription?.cancel();
+    _focusNodeComment.dispose();
+    // _streamSubcription?.cancel();
   }
 
-  _deleteComment(String id) async {
-    comments.removeWhere((element) => element.id == id);
+  _deleteComment(String? id) async {
+    comments!.removeWhere((element) => element!.id == id);
     setState(() {});
-    final res = await _postBloc.deleteComment(id);
+    final res = await _postBloc!.deleteComment(id);
     if (!res.isSuccess) showToast(res.errMessage, context);
   }
 
@@ -89,30 +89,30 @@ class _CommentPageState extends State<CommentPage> {
     text = text.trim();
     if (comments == null) await Future.delayed(Duration(seconds: 1));
     _commentC.clear();
-    comments.add(CommentModel(
+    comments!.add(CommentModel(
         content: text,
         like: 0,
-        userId: AuthBloc.instance.userModel.id,
+        userId: AuthBloc.instance.userModel!.id,
         user: AuthBloc.instance.userModel,
         updatedAt: DateTime.now().toIso8601String(),
         userTags: Map.fromIterable(tagUsers,
             key: (e) => e.id, value: (e) => e.name)));
     FocusScope.of(context).requestFocus(FocusNode());
-    BaseResponse res = await _postBloc.createComment(text,
+    BaseResponse res = await _postBloc!.createComment(text,
         postId: widget.post?.id,
         mediaPostId: widget.mediaPost?.id,
         tagUserIds: tagUsers.map((e) => e.id).toList());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     } else {
-      final resComment = (res.data as CommentModel);
-      if (isPost) widget.post.commentIds.add(resComment.id);
-      if (isMediaPost) widget.mediaPost.commentIds.add(resComment.id);
-      final index = comments
-          .lastIndexWhere((element) => element.userId == resComment.userId);
+      final resComment = (res.data as CommentModel?);
+      if (isPost) widget.post!.commentIds!.add(resComment!.id);
+      if (isMediaPost) widget.mediaPost!.commentIds!.add(resComment!.id);
+      final index = comments!
+          .lastIndexWhere((element) => element!.userId == resComment!.userId);
       if (index >= 0)
         setState(() {
-          comments[index] = resComment;
+          comments![index] = resComment;
           tagUsers = [];
         });
     }
@@ -126,8 +126,8 @@ class _CommentPageState extends State<CommentPage> {
     _commentC.clear();
     localReplies.add(ReplyModel(
         content: text,
-        userId: AuthBloc.instance.userModel.id,
-        commentId: replyComment.id,
+        userId: AuthBloc.instance.userModel!.id,
+        commentId: replyComment!.id,
         user: AuthBloc.instance.userModel,
         createdAt: DateTime.now().toIso8601String(),
         updatedAt: DateTime.now().toIso8601String(),
@@ -135,7 +135,7 @@ class _CommentPageState extends State<CommentPage> {
             key: (e) => e.id, value: (e) => e.name)));
     setState(() {});
     FocusScope.of(context).requestFocus(FocusNode());
-    BaseResponse res = await _postBloc.createReply(text, replyComment.id,
+    BaseResponse res = await _postBloc!.createReply(text, replyComment!.id,
         tagUserIds: tagUsers.map((e) => e.id).toList());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
@@ -146,9 +146,9 @@ class _CommentPageState extends State<CommentPage> {
         setState(() {
           if (index >= 0) {
             localReplies[index].id = res.data.id;
-            comments
-                .firstWhere((element) => element.id == replyComment.id)
-                .replyIds
+            comments!
+                .firstWhere((element) => element!.id == replyComment!.id)!
+                .replyIds!
                 .add(res.data.id);
           }
           isReply = false;
@@ -182,29 +182,29 @@ class _CommentPageState extends State<CommentPage> {
     super.didChangeDependencies();
   }
 
-  Future _getComments({GraphqlFilter filter}) async {
-    BaseResponse res;
+  Future _getComments({GraphqlFilter? filter}) async {
+    BaseResponse? res;
     if (AuthBloc.instance.userModel == null) {
       if (isPost)
-        res = await _postBloc.getAllCommentByPostIdGuest(widget.post.id,
-            filter: filter);
+        res = await _postBloc!
+            .getAllCommentByPostIdGuest(widget.post!.id, filter: filter);
       if (isMediaPost)
-        res = await _postBloc.getAllCommentByMediaPostIdGuest(
-            widget.mediaPost.id,
+        res = await _postBloc!.getAllCommentByMediaPostIdGuest(
+            widget.mediaPost!.id,
             filter: filter);
     } else {
       if (isPost)
-        res = await _postBloc.getAllCommentByPostId(widget.post.id,
-            filter: filter);
+        res = await _postBloc!
+            .getAllCommentByPostId(widget.post!.id, filter: filter);
       if (isMediaPost)
-        res = await _postBloc.getListMediaPostComment(widget.mediaPost.id,
-            filter: filter);
+        res = await _postBloc!
+            .getListMediaPostComment(widget.mediaPost!.id, filter: filter);
     }
     if (res == null) return;
     if (res.isSuccess) {
       if (mounted)
         setState(() {
-          comments = res.data;
+          comments = res!.data;
         });
       Future.delayed(
         Duration(
@@ -243,7 +243,7 @@ class _CommentPageState extends State<CommentPage> {
                         ),
                       ],
                       underline: SizedBox.shrink(),
-                      onChanged: (val) {
+                      onChanged: (dynamic val) {
                         setState(() {
                           sort = val;
                         });
@@ -261,22 +261,22 @@ class _CommentPageState extends State<CommentPage> {
                           physics: AlwaysScrollableScrollPhysics(),
                           controller: controller,
                           padding: EdgeInsets.zero,
-                          itemCount: comments.length,
+                          itemCount: comments!.length,
                           itemBuilder: (context, index) {
-                            final comment = comments[index];
+                            final comment = comments![index];
                             return CommentWidget(
                                 userReplyCache: localReplies,
                                 comment: comment,
-                                deleteCallBack: comments[index].userId ==
+                                deleteCallBack: comments![index]!.userId ==
                                         AuthBloc.instance.userModel?.id
-                                    ? () => _deleteComment(comments[index].id)
+                                    ? () => _deleteComment(comments![index]!.id)
                                     : () {},
                                 shouldExpand:
-                                    comments[index].id == replyComment?.id,
+                                    comments![index]!.id == replyComment?.id,
                                 tapCallBack: () {
                                   setState(() {
                                     isReply = true;
-                                    replyComment = comments[index];
+                                    replyComment = comments![index];
                                   });
                                   _focusNodeComment.requestFocus();
                                 });
@@ -297,11 +297,13 @@ class _CommentPageState extends State<CommentPage> {
                         CircleAvatar(
                           radius: 21,
                           backgroundColor: Colors.white,
-                          backgroundImage: AuthBloc.instance.userModel.avatar !=
-                                  null
-                              ? CachedNetworkImageProvider(
-                                  AuthBloc.instance.userModel.avatar)
-                              : AssetImage('assets/image/default_avatar.png'),
+                          backgroundImage:
+                              (AuthBloc.instance.userModel!.avatar != null
+                                      ? CachedNetworkImageProvider(
+                                          AuthBloc.instance.userModel!.avatar!)
+                                      : AssetImage(
+                                          'assets/image/default_avatar.png'))
+                                  as ImageProvider<Object>?,
                         ),
                         SizedBox(
                           width: 7,
@@ -368,14 +370,14 @@ class _CommentPageState extends State<CommentPage> {
 }
 
 class CommentWidget extends StatefulWidget {
-  final CommentModel comment;
-  final Function tapCallBack;
-  final Function deleteCallBack;
-  final List<ReplyModel> userReplyCache;
+  final CommentModel? comment;
+  final Function? tapCallBack;
+  final Function? deleteCallBack;
+  final List<ReplyModel?>? userReplyCache;
   final bool shouldExpand;
 
   const CommentWidget(
-      {Key key,
+      {Key? key,
       this.comment,
       this.tapCallBack,
       this.userReplyCache,
@@ -388,30 +390,30 @@ class CommentWidget extends StatefulWidget {
 
 class _CommentWidgetState extends State<CommentWidget> {
   bool _isLike = false;
-  PostBloc _postBloc;
-  List<ReplyModel> replies = [];
+  PostBloc? _postBloc;
+  List<ReplyModel>? replies = [];
   bool isLoadReply = false;
   bool isExpandReply = false;
   bool canExpand = false;
-  List<ReplyModel> userReplyCache;
+  List<ReplyModel?>? userReplyCache;
   final GlobalKey _menuKey = new GlobalKey();
-  List<String> contentSplit;
+  List<String>? contentSplit;
 
   @override
   void initState() {
     userReplyCache = widget.userReplyCache;
-    if (widget.comment.userLikeIds != null)
-      _isLike = widget.comment.userLikeIds
+    if (widget.comment!.userLikeIds != null)
+      _isLike = widget.comment!.userLikeIds
               ?.contains(AuthBloc.instance.userModel?.id ?? '') ??
           false;
-    String content = widget.comment.content;
-    if (widget.comment.userTags != null) {
-      widget.comment.userTags.forEach((key, value) {
-        content = content.replaceAll('@' + value.trim(), '<tag>$key<tag>');
+    String? content = widget.comment!.content;
+    if (widget.comment!.userTags != null) {
+      widget.comment!.userTags!.forEach((key, value) {
+        content = content!.replaceAll('@' + value.trim(), '<tag>$key<tag>');
       });
 
-      contentSplit = content.split('<tag>');
-      contentSplit.removeWhere((element) => element.trim() == '');
+      contentSplit = content!.split('<tag>');
+      contentSplit!.removeWhere((element) => element.trim() == '');
     }
 
     super.initState();
@@ -435,13 +437,13 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   Future _get2InitialReply() async {
-    BaseResponse res;
+    BaseResponse? res;
     if (AuthBloc.instance.userModel == null) {
-      res = await _postBloc.getAllReplyByCommentIdGuest(widget.comment.id,
+      res = await _postBloc!.getAllReplyByCommentIdGuest(widget.comment!.id,
           filter: GraphqlFilter(limit: 2, order: "{updatedAt: 1}"));
     } else {
-      if (widget.comment.id != null)
-        res = await _postBloc.getAllReplyByCommentId(widget.comment.id,
+      if (widget.comment!.id != null)
+        res = await _postBloc!.getAllReplyByCommentId(widget.comment!.id,
             filter: GraphqlFilter(limit: 2, order: "{updatedAt: 1}"));
     }
     if (mounted)
@@ -452,27 +454,27 @@ class _CommentWidgetState extends State<CommentWidget> {
     if (res.isSuccess) {
       if (mounted)
         setState(() {
-          replies = res.data;
-          if (replies.length > 0) isExpandReply = true;
-          if (widget.comment.replyIds.length > 2) canExpand = true;
+          replies = res!.data;
+          if (replies!.length > 0) isExpandReply = true;
+          if (widget.comment!.replyIds!.length > 2) canExpand = true;
         });
     } else {
       // showToast('Có lỗi khi lấy dữ liệu', context);
     }
   }
 
-  Future _getReply({GraphqlFilter filter}) async {
+  Future _getReply({GraphqlFilter? filter}) async {
     BaseResponse res;
     setState(() {
       isLoadReply = true;
     });
 
     if (AuthBloc.instance.userModel == null) {
-      res = await _postBloc.getAllReplyByCommentIdGuest(widget.comment.id,
-          filter: filter);
+      res = await _postBloc!
+          .getAllReplyByCommentIdGuest(widget.comment!.id, filter: filter);
     } else {
-      res = await _postBloc.getAllReplyByCommentId(widget.comment.id,
-          filter: filter);
+      res = await _postBloc!
+          .getAllReplyByCommentId(widget.comment!.id, filter: filter);
     }
     if (mounted)
       setState(() {
@@ -490,12 +492,12 @@ class _CommentWidgetState extends State<CommentWidget> {
     }
   }
 
-  _deleteReplyCallBack(String id) async {
-    widget.comment.replyIds.remove(id);
-    replies.removeWhere((element) => element.id == id);
-    userReplyCache.removeWhere((element) => element.id == id);
+  _deleteReplyCallBack(String? id) async {
+    widget.comment!.replyIds!.remove(id);
+    replies!.removeWhere((element) => element.id == id);
+    userReplyCache!.removeWhere((element) => element!.id == id);
     setState(() {});
-    final res = await _postBloc.deleteReply(id);
+    final res = await _postBloc!.deleteReply(id);
     if (!res.isSuccess) showToast(res.errMessage, context);
   }
 
@@ -509,14 +511,14 @@ class _CommentWidgetState extends State<CommentWidget> {
             child: SizedBox.shrink(),
             key: _menuKey,
             itemBuilder: (_) => <PopupMenuItem<String>>[
-                  if (AuthBloc.instance.userModel?.id == widget.comment.userId)
+                  if (AuthBloc.instance.userModel?.id == widget.comment!.userId)
                     PopupMenuItem<String>(
                         child: Text(
                           'Xóa',
                           style: ptBody(),
                         ),
                         value: 'delete'),
-                  if (AuthBloc.instance.userModel?.id != widget.comment.userId)
+                  if (AuthBloc.instance.userModel?.id != widget.comment!.userId)
                     PopupMenuItem<String>(
                         child: Text(
                           'Báo xấu',
@@ -524,24 +526,24 @@ class _CommentWidgetState extends State<CommentWidget> {
                         ),
                         value: 'report'),
                 ],
-            onSelected: (val) {
+            onSelected: (dynamic val) {
               if (val == 'report')
                 showToast('Đã gửi yêu cầu', context, isSuccess: true);
               if (val == 'delete') {
                 showConfirmDialog(context, 'Bạn muốn xóa bình luận này?',
                     confirmTap: () {
-                  widget.deleteCallBack();
+                  widget.deleteCallBack!();
                   FocusScope.of(context).requestFocus(FocusNode());
                 }, navigatorKey: navigatorKey);
               }
             }));
-    final List<ReplyModel> mergeReplies = [
-      ...replies,
+    final List<ReplyModel?> mergeReplies = [
+      ...replies!,
       ...(userReplyCache
-              .where((element) =>
-                  element.commentId == widget.comment.id &&
-                  !replies.any((e) => e.id == element.id))
-              ?.toList() ??
+              ?.where((element) =>
+                  element!.commentId == widget.comment!.id &&
+                  !replies!.any((e) => e.id == element.id))
+              .toList() ??
           [])
     ];
     return Column(
@@ -549,7 +551,7 @@ class _CommentWidgetState extends State<CommentWidget> {
       children: [
         CustomListTile(
           onTap: () {
-            if (widget.tapCallBack != null) widget.tapCallBack();
+            if (widget.tapCallBack != null) widget.tapCallBack!();
           },
           onLongPress: () {
             if (AuthBloc.instance.userModel == null) return;
@@ -563,7 +565,7 @@ class _CommentWidgetState extends State<CommentWidget> {
             alignment: Alignment.topCenter,
             child: GestureDetector(
               onTap: () {
-                ProfileOtherPage.navigate(widget.comment.user);
+                ProfileOtherPage.navigate(widget.comment!.user);
                 audioCache.play('tab3.mp3');
               },
               child: Container(
@@ -573,23 +575,25 @@ class _CommentWidgetState extends State<CommentWidget> {
                 child: CircleAvatar(
                   radius: 18,
                   backgroundColor: Colors.white,
-                  backgroundImage: widget.comment.user.avatar != null
-                      ? CachedNetworkImageProvider(widget.comment.user.avatar)
-                      : AssetImage('assets/image/default_avatar.png'),
+                  backgroundImage: (widget.comment!.user!.avatar != null
+                          ? CachedNetworkImageProvider(
+                              widget.comment!.user!.avatar!)
+                          : AssetImage('assets/image/default_avatar.png'))
+                      as ImageProvider<Object>?,
                 ),
               ),
             ),
           ),
           title: GestureDetector(
             onTap: () {
-              ProfileOtherPage.navigate(widget.comment.user);
+              ProfileOtherPage.navigate(widget.comment!.user);
               audioCache.play('tab3.mp3');
             },
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  widget.comment.user?.name ?? '',
+                  widget.comment!.user?.name ?? '',
                   style: ptBody().copyWith(fontWeight: FontWeight.w500),
                 ),
               ],
@@ -601,19 +605,19 @@ class _CommentWidgetState extends State<CommentWidget> {
               Text.rich(TextSpan(children: [
                 if ((contentSplit?.length ?? 0) < 1)
                   TextSpan(
-                    text: (widget.comment.content ?? ''),
+                    text: (widget.comment!.content ?? ''),
                     style: ptBody().copyWith(
                         fontWeight: FontWeight.w500, color: Colors.black87),
                   )
                 else
-                  ...contentSplit.map((e) {
+                  ...contentSplit!.map((e) {
                     print(contentSplit);
-                    if (widget.comment.userTags?.containsKey(e) ?? false) {
+                    if (widget.comment!.userTags?.containsKey(e) ?? false) {
                       return TextSpan(
-                          text: (contentSplit.indexOf(e) == 0 ? '' : ' ') +
-                              widget.comment.userTags[e] +
-                              (contentSplit.indexOf(e) ==
-                                      contentSplit.length - 1
+                          text: (contentSplit!.indexOf(e) == 0 ? '' : ' ') +
+                              widget.comment!.userTags![e] +
+                              (contentSplit!.indexOf(e) ==
+                                      contentSplit!.length - 1
                                   ? ''
                                   : ' '),
                           style: ptBody().copyWith(
@@ -632,7 +636,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                 TextSpan(
                   text: '  ' +
                       Formart.timeByDayViShort(
-                          DateTime.tryParse(widget.comment.updatedAt)),
+                          DateTime.tryParse(widget.comment!.updatedAt!)!),
                   style: ptTiny().copyWith(color: Colors.black54),
                 ),
                 if (AuthBloc.instance.userModel != null)
@@ -651,7 +655,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                 onTap: () async {
                   audioCache.play('tab3.mp3');
                   if (AuthBloc.instance.userModel == null) {
-                    await navigatorKey.currentState.maybePop();
+                    await navigatorKey.currentState!.maybePop();
                     LoginPage.navigatePush();
                     return;
                   }
@@ -659,13 +663,15 @@ class _CommentWidgetState extends State<CommentWidget> {
                     _isLike = !_isLike;
                   });
                   if (_isLike) {
-                    widget.comment.userLikeIds
-                        .add(AuthBloc.instance.userModel.id);
-                    widget.comment.like++;
-                    _postBloc.likeComment(widget.comment.id);
+                    widget.comment!.userLikeIds!
+                        .add(AuthBloc.instance.userModel!.id);
+                    widget.comment!.like = widget.comment!.like! + 1;
+                    _postBloc!.likeComment(widget.comment!.id);
                   } else {
-                    if (widget.comment.like > 0) widget.comment.like--;
-                    _postBloc.unlikeComment(widget.comment.id);
+                    if (widget.comment!.like! > 0) {
+                      widget.comment!.like = widget.comment!.like! - 1;
+                    }
+                    _postBloc!.unlikeComment(widget.comment!.id);
                   }
                   setState(() {});
                 },
@@ -677,7 +683,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                   ),
                   SizedBox(width: 4),
                   Text(
-                    widget.comment.like.toString(),
+                    widget.comment!.like.toString(),
                     style: ptTiny(),
                   )
                 ]),
@@ -694,7 +700,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                         (e) => ReplyWidget(
                             reply: e,
                             deleteCallBack: () {
-                              _deleteReplyCallBack(e.id);
+                              _deleteReplyCallBack(e!.id);
                             }),
                       )
                       .toList(),
@@ -721,7 +727,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                       isExpandReply = false;
                     });
                 } else {
-                  if (replies.length > 0) {
+                  if (replies!.length > 0) {
                     setState(() {
                       isExpandReply = true;
                     });
@@ -742,9 +748,9 @@ class _CommentWidgetState extends State<CommentWidget> {
                       Text(
                         isExpandReply
                             ? (canExpand
-                                ? 'Xem ${widget.comment.replyIds.length - 2} phản hồi'
+                                ? 'Xem ${widget.comment!.replyIds!.length - 2} phản hồi'
                                 : 'Rút gọn')
-                            : 'Xem ${widget.comment.replyIds.length} phản hồi',
+                            : 'Xem ${widget.comment!.replyIds!.length} phản hồi',
                         style: ptSmall().copyWith(color: Colors.black54),
                       ),
                       Icon(
@@ -776,30 +782,30 @@ class _CommentWidgetState extends State<CommentWidget> {
 }
 
 class ReplyWidget extends StatefulWidget {
-  final ReplyModel reply;
-  final Function deleteCallBack;
+  final ReplyModel? reply;
+  final Function? deleteCallBack;
 
-  const ReplyWidget({Key key, this.reply, this.deleteCallBack})
+  const ReplyWidget({Key? key, this.reply, this.deleteCallBack})
       : super(key: key);
   @override
   _ReplyWidgetState createState() => _ReplyWidgetState();
 }
 
 class _ReplyWidgetState extends State<ReplyWidget> {
-  PostBloc _postBloc;
+  PostBloc? _postBloc;
   final GlobalKey _menuKey = new GlobalKey();
-  List<String> contentSplit;
+  List<String>? contentSplit;
 
   @override
   void initState() {
-    String content = widget.reply.content;
-    if (widget.reply.userTags != null) {
-      widget.reply.userTags.forEach((key, value) {
-        content = content.replaceAll('@' + value.trim(), '<tag>$key<tag>');
+    String? content = widget.reply!.content;
+    if (widget.reply!.userTags != null) {
+      widget.reply!.userTags!.forEach((key, value) {
+        content = content!.replaceAll('@' + value.trim(), '<tag>$key<tag>');
       });
 
-      contentSplit = content.split('<tag>');
-      contentSplit.removeWhere((element) => element.trim() == '');
+      contentSplit = content!.split('<tag>');
+      contentSplit!.removeWhere((element) => element.trim() == '');
     }
 
     super.initState();
@@ -835,14 +841,17 @@ class _ReplyWidgetState extends State<ReplyWidget> {
               child: GestureDetector(
                 onTap: () {
                   audioCache.play('tab3.mp3');
-                  ProfileOtherPage.navigate(widget.reply.user);
+                  ProfileOtherPage.navigate(widget.reply!.user);
                 },
                 child: CircleAvatar(
                   radius: 13,
                   backgroundColor: Colors.white,
-                  backgroundImage: widget.reply.user?.avatar != null
-                      ? CachedNetworkImageProvider(widget.reply.user.avatar)
-                      : AssetImage('assets/image/default_avatar.png'),
+                  backgroundImage:
+                      (widget.reply!.user?.avatar != null
+                              ? CachedNetworkImageProvider(
+                                  widget.reply!.user!.avatar!)
+                              : AssetImage('assets/image/default_avatar.png'))
+                          as ImageProvider<Object>?,
                 ),
               ),
             ),
@@ -856,11 +865,11 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      ProfileOtherPage.navigate(widget.reply.user);
+                      ProfileOtherPage.navigate(widget.reply!.user);
                       audioCache.play('tab3.mp3');
                     },
                     child: Text(
-                      widget.reply.user?.name ?? '',
+                      widget.reply!.user?.name ?? '',
                       style: ptBody().copyWith(fontWeight: FontWeight.w500),
                     ),
                   ),
@@ -868,21 +877,21 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                     TextSpan(children: [
                       if ((contentSplit?.length ?? 0) < 1)
                         TextSpan(
-                          text: (widget.reply.content ?? ''),
+                          text: (widget.reply!.content ?? ''),
                           style: ptBody().copyWith(
                               fontWeight: FontWeight.w500,
                               color: Colors.black87),
                         )
                       else
-                        ...contentSplit.map((e) {
+                        ...contentSplit!.map((e) {
                           print(contentSplit);
-                          if (widget.reply.userTags?.containsKey(e) ?? false) {
+                          if (widget.reply!.userTags?.containsKey(e) ?? false) {
                             return TextSpan(
                                 text:
-                                    (contentSplit.indexOf(e) == 0 ? '' : ' ') +
-                                        widget.reply.userTags[e] +
-                                        (contentSplit.indexOf(e) ==
-                                                contentSplit.length - 1
+                                    (contentSplit!.indexOf(e) == 0 ? '' : ' ') +
+                                        widget.reply!.userTags![e] +
+                                        (contentSplit!.indexOf(e) ==
+                                                contentSplit!.length - 1
                                             ? ''
                                             : ' '),
                                 style: ptBody().copyWith(
@@ -903,7 +912,7 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                       TextSpan(
                         text: '  ' +
                             Formart.timeByDayViShort(
-                                DateTime.tryParse(widget.reply.updatedAt)),
+                                DateTime.tryParse(widget.reply!.updatedAt!)!),
                         style: ptTiny().copyWith(color: Colors.black54),
                       ),
                     ]),
@@ -916,7 +925,7 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                 key: _menuKey,
                 itemBuilder: (_) => <PopupMenuItem<String>>[
                       if (AuthBloc.instance.userModel?.id ==
-                          widget.reply.userId)
+                          widget.reply!.userId)
                         PopupMenuItem<String>(
                             child: Text(
                               'Xóa',
@@ -924,7 +933,7 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                             ),
                             value: 'delete'),
                       if (AuthBloc.instance.userModel?.id !=
-                          widget.reply.userId)
+                          widget.reply!.userId)
                         PopupMenuItem<String>(
                             child: Text(
                               'Báo xấu',
@@ -932,13 +941,13 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                             ),
                             value: 'report'),
                     ],
-                onSelected: (val) {
+                onSelected: (dynamic val) {
                   if (val == 'report')
                     showToast('Đã gửi yêu cầu', context, isSuccess: true);
                   if (val == 'delete') {
                     showConfirmDialog(context, 'Bạn muốn xóa bình luận này?',
                         confirmTap: () {
-                      widget.deleteCallBack();
+                      widget.deleteCallBack!();
                       FocusScope.of(context).requestFocus(FocusNode());
                     }, navigatorKey: navigatorKey);
                   }

@@ -8,7 +8,7 @@ import 'package:datcao/utils/file_util.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(
+    return navigatorKey.currentState!.push(
       pageBuilder(UpdateProfilePage()),
     );
   }
@@ -18,8 +18,8 @@ class UpdateProfilePage extends StatefulWidget {
 }
 
 class _UpdateProfilePageState extends State<UpdateProfilePage> {
-  AuthBloc _authBloc;
-  UserBloc _userBloc;
+  AuthBloc? _authBloc;
+  late UserBloc _userBloc;
   bool uploadingAvatar = false;
   bool isLoading = false;
   TextEditingController _nameC = TextEditingController();
@@ -34,13 +34,13 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   void didChangeDependencies() {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
-      _userBloc = Provider.of(context);
-      _nameC.text = _authBloc.userModel.name;
-      _tagNameC.text = _authBloc.userModel.tagName;
-      _emailC.text = _authBloc.userModel.email;
-      _phoneC.text = _authBloc.userModel.phone;
-      _facebookC.text = _authBloc.userModel.facebookUrl;
-      _descriptionC.text = _authBloc.userModel.description;
+      _userBloc = Provider.of<UserBloc>(context);
+      _nameC.text = _authBloc!.userModel!.name!;
+      _tagNameC.text = _authBloc!.userModel!.tagName!;
+      _emailC.text = _authBloc!.userModel!.email!;
+      _phoneC.text = _authBloc!.userModel!.phone!;
+      _facebookC.text = _authBloc!.userModel!.facebookUrl!;
+      _descriptionC.text = _authBloc!.userModel!.description!;
     }
     super.didChangeDependencies();
   }
@@ -52,39 +52,39 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       });
       final uint8 = (await File(filePath).readAsBytes());
       final thumbnail = await FileUtil.resizeImage(uint8, 120);
-      final url = await FileUtil.uploadFireStorage(thumbnail?.path,
+      final url = await FileUtil.uploadFireStorage(thumbnail.path,
           path:
-              '150/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
+              '150/user_${AuthBloc.instance.userModel!.id}/${DateTime.now().millisecondsSinceEpoch}');
       setState(() {
-        _authBloc.userModel.avatar = url;
+        _authBloc!.userModel!.avatar = url;
         uploadingAvatar = false;
       });
-      await _userBloc.updateUser(_authBloc.userModel);
+      await _userBloc.updateUser(_authBloc!.userModel!);
     } catch (e) {
       showToast(e.toString(), context);
     }
   }
 
   Future _updateUserInfo() async {
-    if (!_formKey.currentState.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
 
-    _authBloc.userModel.name = _nameC.text;
-    _authBloc.userModel.tagName = _tagNameC.text;
-    _authBloc.userModel.email = _emailC.text;
-    _authBloc.userModel.phone = _phoneC.text;
-    _authBloc.userModel.facebookUrl = _facebookC.text;
-    _authBloc.userModel.description = _descriptionC.text;
+    _authBloc!.userModel!.name = _nameC.text;
+    _authBloc!.userModel!.tagName = _tagNameC.text;
+    _authBloc!.userModel!.email = _emailC.text;
+    _authBloc!.userModel!.phone = _phoneC.text;
+    _authBloc!.userModel!.facebookUrl = _facebookC.text;
+    _authBloc!.userModel!.description = _descriptionC.text;
     setState(() {
       isLoading = true;
     });
-    final res = await _userBloc.updateUser(_authBloc.userModel);
+    final res = await _userBloc.updateUser(_authBloc!.userModel!);
     if (mounted)
       setState(() {
         isLoading = false;
       });
     if (res.isSuccess) {
       showToast('Cập nhật thành công', context, isSuccess: true);
-      if (mounted) navigatorKey.currentState.maybePop();
+      if (mounted) navigatorKey.currentState!.maybePop();
     } else
       showToast(res.errMessage, context);
   }
@@ -125,7 +125,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     child: CircleAvatar(
                       radius: 60,
                       backgroundImage: CachedNetworkImageProvider(
-                          _authBloc.userModel.avatar ?? ''),
+                          _authBloc!.userModel!.avatar ?? ''),
                       child: uploadingAvatar
                           ? kLoadingSpinner
                           : Align(
@@ -148,7 +148,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 ),
                 SpacingBox(h: 2.5),
                 Text(
-                  AuthBloc.instance.userModel.name.toUpperCase(),
+                  AuthBloc.instance.userModel!.name!.toUpperCase(),
                   style: ptTitle(),
                 ),
                 SpacingBox(h: 2.5),
@@ -247,10 +247,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
 
   _buildFormField(BuildContext context, String text,
           TextEditingController controller, IconData icon,
-          {int maxLine,
+          {int? maxLine,
           bool readOnly = false,
-          Function validator,
-          String hint}) =>
+          Function? validator,
+          String? hint}) =>
       // Padding(
       //   padding: const EdgeInsets.symmetric(horizontal: 10),
       //   child: Container(
@@ -295,7 +295,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 textDirection: TextDirection.rtl,
                 child: TextFormField(
                   maxLines: null,
-                  validator: validator,
+                  validator: validator as String? Function(String?)?,
                   readOnly: readOnly,
                   controller: controller,
                   textAlign: TextAlign.start,

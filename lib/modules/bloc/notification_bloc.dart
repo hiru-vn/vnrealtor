@@ -11,7 +11,7 @@ enum ACTION_TYPE { OPEN_POST, OPEN_PROFILE, OPEN_CHAT }
 
 class InitAction {
   final ACTION_TYPE type;
-  final String modelId;
+  final String? modelId;
   final dynamic data;
 
   InitAction(this.type, this.modelId, {this.data});
@@ -34,10 +34,10 @@ class NotificationBloc extends ChangeNotifier {
           final UserModel user = initActions[0].data as UserModel;
           InboxBloc.instance
               .navigateToChatWith(user.name, user.avatar, DateTime.now(), '', [
-            AuthBloc.instance.userModel.id,
+            AuthBloc.instance.userModel!.id,
             user.id,
           ], [
-            AuthBloc.instance.userModel.avatar,
+            AuthBloc.instance.userModel!.avatar,
             user.avatar,
           ]);
         }
@@ -54,7 +54,7 @@ class NotificationBloc extends ChangeNotifier {
   bool isLoadNoti = true;
   List<NotificationModel> notifications = [];
 
-  Future<BaseResponse> getListNotification({GraphqlFilter filter}) async {
+  Future<BaseResponse> getListNotification({GraphqlFilter? filter}) async {
     try {
       if (notifications.length == 0) {
         isLoadNoti = true;
@@ -65,7 +65,7 @@ class NotificationBloc extends ChangeNotifier {
       notifications = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       isLoadNoti = false;
       notifyListeners();
@@ -73,23 +73,23 @@ class NotificationBloc extends ChangeNotifier {
   }
 
   Future<BaseResponse> sendNotiMessage(
-      List<String> users, String content) async {
+      List<String> users, String? content) async {
     try {
       final res = await NotificationRepo().sendNotiMessage(users, content);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
   }
 
-  Future<BaseResponse> seenNoti(String id) async {
+  Future<BaseResponse> seenNoti(String? id) async {
     try {
       final res = await NotificationRepo().seenNoti(id);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }

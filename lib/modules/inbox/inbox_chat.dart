@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/inbox/import/spin_loader.dart';
@@ -30,10 +31,9 @@ import 'import/skeleton.dart';
 import 'inbox_bloc.dart';
 import 'inbox_model.dart';
 import 'share_friend.dart';
-import 'video_call_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './import/media_group.dart';
-import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
+// import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -41,12 +41,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 class InboxChat extends StatefulWidget {
   final FbInboxGroupModel group;
-  final String title;
+  final String? title;
 
   InboxChat(this.group, this.title);
-  static Future navigate(FbInboxGroupModel group, String title) {
+  static Future navigate(FbInboxGroupModel group, String? title) {
     // navigatorKey in MaterialApp
-    return navigatorKey.currentState.push(pageBuilder(InboxChat(group, title)));
+    return navigatorKey.currentState!
+        .push(pageBuilder(InboxChat(group, title)));
   }
 
   @override
@@ -60,24 +61,24 @@ class _InboxChatState extends State<InboxChat> {
   List<UserModel> _severUsers = [];
   final TextEditingController _chatC = TextEditingController();
   final userColor = HexColor('#4D94FF');
-  FbInboxGroupModel group;
-  double keyboardHeight;
+  FbInboxGroupModel? group;
+  double? keyboardHeight;
   PageController _footerC = PageController();
 
   List<String> _files = [];
-  InboxBloc _inboxBloc;
-  AuthBloc _authBloc;
+  InboxBloc? _inboxBloc;
+  AuthBloc? _authBloc;
   ScrollController scrollController = ScrollController();
   bool shouldShowLoadEarlier = true;
   bool reachEndList = false;
   bool onLoadMore = false;
-  Stream<QuerySnapshot> _incomingMessageStream;
-  StreamSubscription _incomingMessageListener;
+  late Stream<QuerySnapshot> _incomingMessageStream;
+  StreamSubscription? _incomingMessageListener;
   GlobalKey<State<StatefulWidget>> moreBtnKey =
       GlobalKey<State<StatefulWidget>>();
   FocusNode _focusNode = FocusNode();
-  List<ChatMessage> messages = List<ChatMessage>();
-  String chatAbleStringStatus;
+  List<ChatMessage> messages = <ChatMessage>[];
+  String? chatAbleStringStatus;
 
   var i = 0;
   bool showEmoj = false;
@@ -101,19 +102,19 @@ class _InboxChatState extends State<InboxChat> {
   void initState() {
     InboxBloc.inChat = true;
     group = widget.group;
-    for (final user in group.users) {
-      if (group.pageId != null &&
-          group.pageName != null &&
-          user.id != AuthBloc.instance.userModel.id) {
+    for (final user in group!.users) {
+      if (group!.pageId != null &&
+          group!.pageName != null &&
+          user.id != AuthBloc.instance.userModel!.id) {
         _users.add(ChatUser(
-            uid: group.pageId,
-            name: group.pageName,
+            uid: group!.pageId,
+            name: group!.pageName,
             containerColor: Colors.blue[50]));
       } else {
         _users.add(ChatUser(
             uid: user.id,
             name: user.name,
-            containerColor: user.id == AuthBloc.instance.userModel.id
+            containerColor: user.id == AuthBloc.instance.userModel!.id
                 ? userColor
                 : Colors.blue[50]));
       }
@@ -131,20 +132,19 @@ class _InboxChatState extends State<InboxChat> {
 
   Future<void> checkChatable() async {
     chatAbleStringStatus =
-        await _inboxBloc.checkChatable(context, _users[1].uid);
+        await _inboxBloc!.checkChatable(context, _users[1].uid);
   }
 
   Future<void> loadUsers() async {
-    final fbUsers = group.users;
+    final fbUsers = group!.users;
     _fbUsers.addAll(fbUsers);
     for (final fbUser in fbUsers) {
-      final user = _users.firstWhere(
+      final user = _users.firstWhereOrNull(
         (user) => user.uid == fbUser.id,
-        orElse: () => null,
       );
       if (user != null) {
-        user?.avatar = fbUser.image;
-        user?.name = fbUser.name;
+        user.avatar = fbUser.image;
+        user.name = fbUser.name;
       }
     }
     loadUsersFromSever();
@@ -152,10 +152,10 @@ class _InboxChatState extends State<InboxChat> {
 
   Future loadUsersFromSever() async {
     final res = await UserBloc.instance
-        .getListUserIn(group.users.map((e) => e.id).toList());
-    PagesCreate page;
-    if (group.pageId != null && group.pageName != null) {
-      final pageRes = await PagesBloc.instance.getOnePage(group.pageId);
+        .getListUserIn(group!.users.map((e) => e.id).toList());
+    PagesCreate? page;
+    if (group!.pageId != null && group!.pageName != null) {
+      final pageRes = await PagesBloc.instance.getOnePage(group!.pageId);
       page = pageRes.data;
     }
     if (res.isSuccess) {
@@ -175,7 +175,7 @@ class _InboxChatState extends State<InboxChat> {
 
   Future<void> loadFirst20Message() async {
     // get list first 20 message by group id
-    final fbMessages = await _inboxBloc.get20Messages(group.id);
+    final fbMessages = await _inboxBloc!.get20Messages(group!.id);
     if (fbMessages.isEmpty) return;
     messages.addAll(fbMessages.map((element) {
       return ChatMessage(
@@ -184,7 +184,7 @@ class _InboxChatState extends State<InboxChat> {
           id: element.id,
           image:
               'assets/image/loading.gif', // temp image, widget need temp string to build image builder
-          createdAt: DateTime.tryParse(element.date),
+          createdAt: DateTime.tryParse(element.date!),
           customProperties: <String, dynamic>{
             'long': element.location?.longitude,
             'lat': element.location?.latitude,
@@ -194,8 +194,8 @@ class _InboxChatState extends State<InboxChat> {
     setState(() {});
 
     // init stream with last messageId
-    _incomingMessageStream = await _inboxBloc.getStreamIncomingMessages(
-        group.id,
+    _incomingMessageStream = await _inboxBloc!.getStreamIncomingMessages(
+        group!.id,
         fbMessages.length > 0 ? fbMessages[fbMessages.length - 1].id : null);
     // add listener to cancel listener, or else will cause bug setState when dispose state
     _incomingMessageListener = _incomingMessageStream.listen(onIncomingMessage);
@@ -207,10 +207,12 @@ class _InboxChatState extends State<InboxChat> {
     print('new message!!!');
     final newMessages = event as QuerySnapshot;
     final fbMessages = newMessages.docs
-        .map((e) => FbInboxMessageModel.fromJson(e.data(), e.id))
+        .map((e) => FbInboxMessageModel.fromJson(
+            e.data() as Map<String, dynamic>, e.id))
         .toList();
     // do not add message come for this user
-    fbMessages.removeWhere((message) => message.uid == _authBloc.userModel.id);
+    fbMessages
+        .removeWhere((message) => message.uid == _authBloc!.userModel!.id);
     if (fbMessages.isEmpty) return;
     // add incoming message to first
     messages.addAll(fbMessages.map((element) {
@@ -218,7 +220,7 @@ class _InboxChatState extends State<InboxChat> {
           user: _users.firstWhere((user) => user.uid == element.uid),
           text: element.text,
           id: element.id,
-          createdAt: DateTime.tryParse(element.date),
+          createdAt: DateTime.tryParse(element.date!),
           image:
               'assets/image/loading.gif', // temp image, widget need temp string to build image builder
 
@@ -230,8 +232,8 @@ class _InboxChatState extends State<InboxChat> {
     }).toList());
 
     // now update stream with new last message id
-    _incomingMessageStream = await _inboxBloc.getStreamIncomingMessages(
-        group.id, fbMessages[fbMessages.length - 1].id);
+    _incomingMessageStream = await _inboxBloc!.getStreamIncomingMessages(
+        group!.id, fbMessages[fbMessages.length - 1].id);
     // refresh lisener to prevent bug
     _incomingMessageListener?.cancel();
     _incomingMessageListener = _incomingMessageStream.listen(onIncomingMessage);
@@ -250,8 +252,8 @@ class _InboxChatState extends State<InboxChat> {
       setState(() {
         onLoadMore = true;
       });
-    final fbMessages =
-        await _inboxBloc.get20Messages(group.id, lastMessageId: messages[0].id);
+    final fbMessages = await _inboxBloc!
+        .get20Messages(group!.id, lastMessageId: messages[0].id);
     if (mounted)
       setState(() {
         onLoadMore = false;
@@ -278,77 +280,81 @@ class _InboxChatState extends State<InboxChat> {
               'lat': element.location?.latitude,
               'files': element.filePaths ?? [],
             },
-            createdAt: DateTime.tryParse(element.date),
+            createdAt: DateTime.tryParse(element.date!),
           );
         }).toList());
     if (mounted) setState(() {});
   }
 
-  void onSend(ChatMessage message) {
+  void onSend(ChatMessage? message) {
     List<String> _tempFiles = [];
     _tempFiles.addAll(_files);
-    if (_tempFiles.length == 0 && message.text.trim() == '') return;
-    if (message.customProperties == null)
-      message.customProperties = <String, dynamic>{};
+    if (_tempFiles.length == 0 && message?.text!.trim() == '') return;
+    if (message?.customProperties == null)
+      message?.customProperties = <String, dynamic>{};
     if (_files.length > 0) {
       // add a loading gif
-      if (message.text.trim() != '') {
+      if (message?.text!.trim() != '') {
         // send message text first then send image or video ...
         ChatMessage copyMessage = ChatMessage(
             // do this because every message gen unique id
-            text: message.text,
-            user: message.user,
-            createdAt: message.createdAt,
+            text: message?.text,
+            user: message?.user,
+            createdAt: message?.createdAt,
             customProperties: <String, dynamic>{});
         setState(() {
           messages.add(copyMessage);
         });
-        _inboxBloc.addMessage(
-            group.id,
-            message.text,
-            message.createdAt,
-            _authBloc.userModel.id,
-            _authBloc.userModel.name,
-            _authBloc.userModel.avatar);
+        _inboxBloc!.addMessage(
+            group!.id,
+            message?.text,
+            message?.createdAt ?? DateTime.now(),
+            _authBloc!.userModel!.id,
+            _authBloc!.userModel!.name,
+            _authBloc!.userModel!.avatar);
         // message.text = ''; comment this but dont know why
       }
       _files.forEach((path) {
-        if (message.customProperties['cache_file_paths'] == null) {
-          message.customProperties['cache_file_paths'] = <String>[];
+        if (message?.customProperties!['cache_file_paths'] == null) {
+          message?.customProperties!['cache_file_paths'] = <String>[];
         }
         if (FileUtil.getFbUrlFileType(path) == FileType.video) {
-          message.image = 'assets/image/loading.gif'; // temp
-          message.customProperties['cache_file_paths'].add(path);
+          message?.image = 'assets/image/loading.gif'; // temp
+          message?.customProperties!['cache_file_paths'].add(path);
         }
         if (FileUtil.getFbUrlFileType(path) == FileType.image ||
             FileUtil.getFbUrlFileType(path) == FileType.gif) {
-          message.image = 'assets/image/loading.gif'; // temp
-          message.customProperties['cache_file_paths'].add(path);
+          message?.image = 'assets/image/loading.gif'; // temp
+          message?.customProperties!['cache_file_paths'].add(path);
         }
       });
     }
     // setState(() {
     _files.clear();
-    messages.add(message);
+    messages.add(message!);
     // });
-    String text = message.text;
+    String? text = message.text;
 
-    _updateGroupPageText(group.id, _authBloc.userModel.name, text,
-        message.createdAt, [...group.readers, AuthBloc.instance.userModel.id]);
+    _updateGroupPageText(
+        group!.id,
+        _authBloc!.userModel!.name,
+        text,
+        message.createdAt,
+        [...group!.readers, AuthBloc.instance.userModel!.id]);
 
     if (_tempFiles.length == 0) {
-      _inboxBloc.addMessage(
-          group.id,
+      _inboxBloc!.addMessage(
+          group!.id,
           text,
-          message.createdAt,
-          _authBloc.userModel.id,
-          _authBloc.userModel.name,
-          _authBloc.userModel.avatar);
+          message.createdAt!,
+          _authBloc!.userModel!.id,
+          _authBloc!.userModel!.name,
+          _authBloc!.userModel!.avatar);
     } else {
       Future.wait(
         _tempFiles.map((e) => FileUtil.uploadFireStorage(
               e,
-              path: 'chats/group_${group.id}/user_${_authBloc.userModel.id}',
+              path: 'chats/group_${group!.id}/user_${_authBloc!.userModel!.id}',
               resizeWidth: 480,
             )),
       ).then((value) {
@@ -358,17 +364,17 @@ class _InboxChatState extends State<InboxChat> {
         //         .firstWhere((m) => m.id == message.id)
         //         ?.customProperties['files'] = value;
         //   });
-        _inboxBloc.addMessage(
-            group.id,
+        _inboxBloc!.addMessage(
+            group!.id,
             text,
-            message.createdAt,
-            _authBloc.userModel.id,
-            _authBloc.userModel.name,
-            _authBloc.userModel.avatar,
+            message.createdAt!,
+            _authBloc!.userModel!.id,
+            _authBloc!.userModel!.name,
+            _authBloc!.userModel!.avatar,
             filePaths: value,
-            location: message.customProperties['lat'] != null
-                ? LatLng(message.customProperties['lat'],
-                    message.customProperties['long'])
+            location: message.customProperties!['lat'] != null
+                ? LatLng(message.customProperties!['lat'],
+                    message.customProperties!['long'])
                 : null);
       });
     }
@@ -376,23 +382,23 @@ class _InboxChatState extends State<InboxChat> {
     scrollToEnd();
   }
 
-  _updateGroupPageText(String groupid, String lastUser, String lastMessage,
-      DateTime time, List<String> readers) {
+  _updateGroupPageText(String groupid, String? lastUser, String? lastMessage,
+      DateTime? time, List<String?> readers) {
     // if (lastMessage.length > 30) {
     //   lastMessage = lastMessage.substring(0, 30) + "...";
     // }
 
-    _inboxBloc.updateGroupOnMessage(groupid, lastUser, time, lastMessage,
+    _inboxBloc!.updateGroupOnMessage(groupid, lastUser, time, lastMessage,
         _severUsers.map((e) => e.avatar).toList(), readers);
   }
 
   void scrollToEnd() {
-    if ((_chatViewKey.currentState?.scrollController?.position?.pixels ?? 0) <
-            _chatViewKey
-                .currentState?.scrollController?.position?.maxScrollExtent ??
-        1)
+    if ((_chatViewKey.currentState?.scrollController?.position.pixels ?? 0) <
+        (_chatViewKey
+                .currentState?.scrollController?.position.maxScrollExtent ??
+            1))
       _chatViewKey.currentState?.scrollController?.animateTo(
-        _chatViewKey.currentState.scrollController.position.maxScrollExtent +
+        _chatViewKey.currentState!.scrollController!.position.maxScrollExtent +
             30,
         curve: Curves.easeOut,
         duration: const Duration(milliseconds: 250),
@@ -400,16 +406,16 @@ class _InboxChatState extends State<InboxChat> {
   }
 
   void jumpToEnd() {
-    if ((_chatViewKey.currentState?.scrollController?.position?.pixels ?? 0) <
+    if ((_chatViewKey.currentState?.scrollController?.position.pixels ?? 0) <
         (_chatViewKey
-                .currentState?.scrollController?.position?.maxScrollExtent ??
+                .currentState?.scrollController?.position.maxScrollExtent ??
             1))
       _chatViewKey.currentState?.scrollController?.jumpTo(
-        _chatViewKey.currentState.scrollController.position.maxScrollExtent,
+        _chatViewKey.currentState!.scrollController!.position.maxScrollExtent,
       );
   }
 
-  Future _onFilePick(String path) async {
+  Future _onFilePick(String? path) async {
     // if ((await File(path).length()) > 20000000) {
     //   showToast(
     //       'File có kích thước quá lớn, vui lòng upload file có dung lương < 20MB',
@@ -446,7 +452,7 @@ class _InboxChatState extends State<InboxChat> {
       onSend(ChatMessage(
           text: '',
           user: _users.firstWhere(
-              (user) => user.uid == AuthBloc.instance.userModel.id)));
+              (user) => user.uid == AuthBloc.instance.userModel!.id)));
     } else {
       // User canceled the picker
     }
@@ -462,7 +468,7 @@ class _InboxChatState extends State<InboxChat> {
       onSend(ChatMessage(
           text: '',
           user: _users.firstWhere(
-              (user) => user.uid == AuthBloc.instance.userModel.id)));
+              (user) => user.uid == AuthBloc.instance.userModel!.id)));
     } else {
       // User canceled the picker
     }
@@ -478,11 +484,11 @@ class _InboxChatState extends State<InboxChat> {
       Map<String, dynamic> customProperties = {};
       customProperties['long'] = (res[0] as LatLng).longitude;
       customProperties['lat'] = (res[0] as LatLng).latitude;
-      await _onFilePick((res[1] as File)?.path);
+      await _onFilePick((res[1] as File?)?.path);
       onSend(ChatMessage(
-          text: '${AuthBloc.instance.userModel.name} đã chia sẻ 1 địa điểm',
-          user: _users
-              .firstWhere((user) => user.uid == AuthBloc.instance.userModel.id),
+          text: '${AuthBloc.instance.userModel!.name} đã chia sẻ 1 địa điểm',
+          user: _users.firstWhere(
+              (user) => user.uid == AuthBloc.instance.userModel!.id),
           customProperties: customProperties));
     }
   }
@@ -496,17 +502,17 @@ class _InboxChatState extends State<InboxChat> {
 
   @override
   Widget build(BuildContext context) {
-    if (_inboxBloc.groupInboxList == null) return ListSkeleton();
+    if (_inboxBloc!.groupInboxList == null) return ListSkeleton();
     _footerC = PageController(initialPage: _getFooterPageIndex());
     Widget _footerWidget = PageView(
       controller: _footerC,
       children: [
-        EmojiKeyboard(
-          height: keyboardHeight ?? 260,
-          onEmojiSelected: (Emoji emoji) {
-            _chatC.text += emoji.text;
-          },
-        ),
+        // EmojiKeyboard(
+        //   height: keyboardHeight ?? 260,
+        //   onEmojiSelected: (Emoji emoji) {
+        //     _chatC.text += emoji.text;
+        //   },
+        // ),
         MediaPickerWidget(
           onMediaPick: _onSendMedia,
         ),
@@ -515,9 +521,8 @@ class _InboxChatState extends State<InboxChat> {
     );
     if ((keyboardHeight ?? 0) < MediaQuery.of(context).viewInsets.bottom)
       keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-    group = _inboxBloc.groupInboxList.firstWhere(
-        (element) => element.id == widget.group.id,
-        orElse: () => null);
+    group = _inboxBloc!.groupInboxList!
+        .firstWhereOrNull((element) => element.id == widget.group.id);
     if (group == null)
       return Container(color: Colors.white, child: kLoadingSpinner);
     return Scaffold(
@@ -534,7 +539,7 @@ class _InboxChatState extends State<InboxChat> {
           //     height: 40,
           //   ),
           // ),
-          if (group.blockedBy.length > 0)
+          if (group!.blockedBy!.length > 0)
             CustomTooltip(
               message: 'Cuộc hội thoại đã bị chặn',
               child: SizedBox(
@@ -551,7 +556,7 @@ class _InboxChatState extends State<InboxChat> {
                 child: Text('Gọi điện'),
                 value: 'Gọi điện',
               ),
-              if (group.blockedBy.contains(AuthBloc.instance.userModel.id))
+              if (group!.blockedBy!.contains(AuthBloc.instance.userModel!.id))
                 PopupMenuItem(
                   child: Text('Gỡ chặn'),
                   value: 'Gỡ chặn',
@@ -567,7 +572,7 @@ class _InboxChatState extends State<InboxChat> {
               //     value: 'Đưa vào tin nhắn chờ',
               //   )
             ],
-            onSelected: (val) async {
+            onSelected: (dynamic val) async {
               if (val == 'Gọi điện') {
                 // try {
                 //   CallKit.displayIncomingCall(context, _authBloc.userModel.id,
@@ -576,25 +581,25 @@ class _InboxChatState extends State<InboxChat> {
                 // } catch (e) {}
                 launchCaller(_fbUsers
                     .firstWhere(
-                        (element) => element.id != _authBloc.userModel.id)
+                        (element) => element.id != _authBloc!.userModel!.id)
                     .phone);
                 // VoiceCallPage.navigate(group.id, _fbUsers);
               }
               if (val == 'Gỡ chặn') {
-                _inboxBloc.unBlockGroup(group.id);
+                _inboxBloc!.unBlockGroup(group!.id);
               }
               if (val == 'Chặn tin nhắn') {
                 showConfirmDialog(
                     context, '2 người sẽ không thể nhắn tin cho nhau nữa.',
                     confirmTap: () async {
-                  _inboxBloc.blockGroup(group.id);
+                  _inboxBloc!.blockGroup(group!.id);
                 }, navigatorKey: navigatorKey);
               }
               if (val == 'Video call') {
-                VideoCallPage.navigate(group.id, _fbUsers);
+                // VideoCallPage.navigate(group.id, _fbUsers);
               }
               if (val == 'Đưa vào tin nhắn chờ') {
-                VideoCallPage.navigate(group.id, _fbUsers);
+                // VideoCallPage.navigate(group.id, _fbUsers);
               }
             },
             child: SizedBox(
@@ -622,23 +627,23 @@ class _InboxChatState extends State<InboxChat> {
                     });
                 },
                 messageContainerWidthRadio: (message) {
-                  if (message.customProperties['files'] != null &&
-                      message.customProperties['files'].length > 0)
+                  if (message?.customProperties!['files'] != null &&
+                      message?.customProperties!['files'].length > 0)
                     return 0.6 + 38 / MediaQuery.of(context).size.width;
                   return 0.6;
                 },
                 messageImageBuilder: (url, [messages]) {
-                  if (messages.customProperties == null)
+                  if (messages!.customProperties == null)
                     return SizedBox.shrink();
 
-                  if (messages.customProperties['long'] != null) {
-                    final location = LatLng(messages.customProperties['lat'],
-                        messages.customProperties['long']);
-                    if ((messages.customProperties['files'] == null ||
-                            messages.customProperties['files'].length == 0) &&
-                        (messages.customProperties['cache_file_paths'] ==
+                  if (messages.customProperties!['long'] != null) {
+                    final location = LatLng(messages.customProperties!['lat'],
+                        messages.customProperties!['long']);
+                    if ((messages.customProperties!['files'] == null ||
+                            messages.customProperties!['files'].length == 0) &&
+                        (messages.customProperties!['cache_file_paths'] ==
                                 null ||
-                            messages.customProperties['cache_file_paths']
+                            messages.customProperties!['cache_file_paths']
                                     .length ==
                                 0)) return SizedBox.shrink();
                     return GestureDetector(
@@ -647,25 +652,27 @@ class _InboxChatState extends State<InboxChat> {
                       },
                       child: AbsorbPointer(
                         child: ImageViewNetwork(
-                          url: (messages.customProperties['files'] != null &&
-                                  messages.customProperties['files'].length > 0)
-                              ? messages.customProperties['files'][0]
+                          url: (messages.customProperties!['files'] != null &&
+                                  messages.customProperties!['files'].length >
+                                      0)
+                              ? messages.customProperties!['files'][0]
                               : null,
                           borderRadius: 10,
-                          cacheFilePath: (messages.customProperties[
+                          cacheFilePath: (messages.customProperties![
                                           'cache_file_paths'] !=
                                       null &&
-                                  messages.customProperties['cache_file_paths']
+                                  messages.customProperties!['cache_file_paths']
                                           .length >
                                       0)
-                              ? messages.customProperties['cache_file_paths'][0]
+                              ? messages.customProperties!['cache_file_paths']
+                                  [0]
                               : null,
                         ),
                       ),
                     );
                   }
 
-                  final files = messages.customProperties['files'];
+                  final files = messages.customProperties!['files'];
                   if (files != null && files.length > 0) {
                     return MediaGroupWidgetNetwork(
                         urls: files,
@@ -673,11 +680,11 @@ class _InboxChatState extends State<InboxChat> {
                           ShareFriendMedias.navigate(files);
                         },
                         shareButtonRightSide:
-                            messages.user.uid != _authBloc.userModel.id);
+                            messages.user!.uid != _authBloc!.userModel!.id);
                   }
 
                   final cachePaths =
-                      messages.customProperties['cache_file_paths'];
+                      messages.customProperties!['cache_file_paths'];
                   if (cachePaths != null && cachePaths.length > 0) {
                     return MediaGroupWidgetCache(
                       paths: cachePaths,
@@ -685,7 +692,7 @@ class _InboxChatState extends State<InboxChat> {
                   }
                   return SizedBox.shrink();
                 },
-                readOnly: (group.blockedBy?.length ?? 0) > 0,
+                readOnly: (group!.blockedBy?.length ?? 0) > 0,
                 scrollController: scrollController,
                 textController: _chatC,
                 key: _chatViewKey,
@@ -694,10 +701,10 @@ class _InboxChatState extends State<InboxChat> {
                 sendOnEnter: true,
                 textInputAction: TextInputAction.send,
                 user: _users
-                    .firstWhere((user) => user.uid == _authBloc.userModel.id),
+                    .firstWhere((user) => user.uid == _authBloc!.userModel!.id),
                 textCapitalization: TextCapitalization.sentences,
                 messageTextBuilder: (text, [messages]) {
-                  if (text.trim() == '') {
+                  if (text!.trim() == '') {
                     return SizedBox.shrink();
                   }
                   return Padding(
@@ -713,12 +720,12 @@ class _InboxChatState extends State<InboxChat> {
                       text: text,
                       style: ptBody().copyWith(
                           fontSize: 13.8,
-                          color: messages.user.uid == _authBloc.userModel.id
+                          color: messages!.user!.uid == _authBloc!.userModel!.id
                               ? Colors.white
                               : Colors.black),
                       textAlign: TextAlign.start,
                       linkStyle: ptBody().copyWith(
-                          color: messages.user.uid == _authBloc.userModel.id
+                          color: messages.user!.uid == _authBloc!.userModel!.id
                               ? Colors.white
                               : Colors.black),
                     ),
@@ -727,20 +734,23 @@ class _InboxChatState extends State<InboxChat> {
                 messageTimeBuilder: (text, [messages]) {
                   return SizedBox.shrink();
                 },
-                dateBuilder: (text) => Text(
-                  text,
-                  style: ptSmall().copyWith(
-                      fontWeight: FontWeight.w600, color: Colors.black38),
+                dateBuilder: (text) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    text,
+                    style: ptSmall().copyWith(
+                        fontWeight: FontWeight.w600, color: Colors.black38),
+                  ),
                 ),
                 inputToolbarPadding:
-                    EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 inputDecoration: InputDecoration(
                     hintText: "Nhập tin nhắn...",
                     border: InputBorder.none,
                     filled: true,
                     isDense: true,
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                        EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     hintStyle:
                         ptBody().copyWith(color: Colors.black54, fontSize: 14),
                     fillColor: Colors.blue[50]),
@@ -751,15 +761,14 @@ class _InboxChatState extends State<InboxChat> {
                 showUserAvatar: false,
                 showAvatarForEveryMessage: false,
                 scrollToBottom: true,
-                onPressAvatar: (ChatUser user) {
-                  final svUser = _severUsers.firstWhere(
-                    (element) => element.id == user.uid,
-                    orElse: () => null,
+                onPressAvatar: (ChatUser? user) {
+                  final svUser = _severUsers.firstWhereOrNull(
+                    (element) => element.id == user!.uid,
                   );
                   if (svUser != null) ProfileOtherPage.navigate(svUser);
                 },
-                onLongPressAvatar: (ChatUser user) {
-                  print("OnLongPressAvatar: ${user.name}");
+                onLongPressAvatar: (ChatUser? user) {
+                  print("OnLongPressAvatar: ${user!.name}");
                 },
                 inputMaxLines: 5,
 
@@ -774,52 +783,52 @@ class _InboxChatState extends State<InboxChat> {
                       bottomLeft = 20,
                       topRight = 20,
                       bottomRight = 20;
-                  final index = messages.indexOf(message);
+                  final index = messages.indexOf(message!);
                   if (messages.length >= 2) {
-                    if (isUser) {
+                    if (isUser ?? false) {
                       if (index == 0) {
-                        if (messages[1].user.uid ==
-                            AuthBloc.instance.userModel.id) {
+                        if (messages[1].user!.uid ==
+                            AuthBloc.instance.userModel!.id) {
                           bottomRight = 4;
                         }
                       } else if (index == messages.length - 1) {
-                        if (messages[messages.length - 2].user.uid ==
-                            AuthBloc.instance.userModel.id) {
+                        if (messages[messages.length - 2].user!.uid ==
+                            AuthBloc.instance.userModel!.id) {
                           topRight = 4;
                         }
                       } else {
-                        if (messages[index - 1].user.uid ==
-                                AuthBloc.instance.userModel.id &&
-                            messages[index + 1].user.uid ==
-                                AuthBloc.instance.userModel.id) {
+                        if (messages[index - 1].user!.uid ==
+                                AuthBloc.instance.userModel!.id &&
+                            messages[index + 1].user!.uid ==
+                                AuthBloc.instance.userModel!.id) {
                           topRight = 4;
                           bottomRight = 4;
-                        } else if (messages[index - 1].user.uid ==
-                            AuthBloc.instance.userModel.id) {
+                        } else if (messages[index - 1].user!.uid ==
+                            AuthBloc.instance.userModel!.id) {
                           topRight = 4;
-                        } else if (messages[index + 1].user.uid ==
-                            AuthBloc.instance.userModel.id) {
+                        } else if (messages[index + 1].user!.uid ==
+                            AuthBloc.instance.userModel!.id) {
                           bottomRight = 4;
                         }
                       }
                     } else {
-                      String userId = message.user.uid;
+                      String? userId = message.user!.uid;
                       if (index == 0) {
-                        if (messages[1].user.uid == userId) {
+                        if (messages[1].user!.uid == userId) {
                           bottomLeft = 4;
                         }
                       } else if (index == messages.length - 1) {
-                        if (messages[messages.length - 2].user.uid == userId) {
+                        if (messages[messages.length - 2].user!.uid == userId) {
                           topLeft = 4;
                         }
                       } else {
-                        if (messages[index - 1].user.uid == userId &&
-                            messages[index + 1].user.uid == userId) {
+                        if (messages[index - 1].user!.uid == userId &&
+                            messages[index + 1].user!.uid == userId) {
                           topLeft = 4;
                           bottomLeft = 4;
-                        } else if (messages[index - 1].user.uid == userId) {
+                        } else if (messages[index - 1].user!.uid == userId) {
                           topLeft = 4;
-                        } else if (messages[index + 1].user.uid == userId) {
+                        } else if (messages[index + 1].user!.uid == userId) {
                           bottomLeft = 4;
                         }
                       }
@@ -828,16 +837,18 @@ class _InboxChatState extends State<InboxChat> {
 
                   return BoxDecoration(
                     color: (message.customProperties != null &&
-                            ((message.customProperties['cache_file_paths'] !=
+                            ((message.customProperties!['cache_file_paths'] !=
                                         null &&
-                                    message.customProperties['cache_file_paths']
+                                    message
+                                            .customProperties![
+                                                'cache_file_paths']
                                             .length >
                                         0) ||
-                                (message.customProperties['files'] != null &&
-                                    message.customProperties['files'].length >
+                                (message.customProperties!['files'] != null &&
+                                    message.customProperties!['files'].length >
                                         0)))
                         ? Colors.white
-                        : (message.user.containerColor ?? Colors.blue[50]),
+                        : (message.user!.containerColor ?? Colors.blue[50]),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(topLeft),
                       topRight: Radius.circular(topRight),
@@ -848,11 +859,11 @@ class _InboxChatState extends State<InboxChat> {
                 },
                 iconSendColor: userColor,
                 messagePaddingBuilder: (message) {
-                  return message.text.trim() != ''
+                  return message?.text!.trim() != ''
                       ? EdgeInsets.symmetric(vertical: 5, horizontal: 8)
                       : EdgeInsets.zero;
                 },
-                onQuickReply: (Reply reply) {},
+                onQuickReply: (Reply? reply) {},
                 shouldShowLoadEarlier: true,
                 showTraillingBeforeSend: true,
                 showLoadEarlierWidget: () {
@@ -952,8 +963,8 @@ class _InboxChatState extends State<InboxChat> {
                             onCustomPersionRequest(
                                 permission: Permission.camera,
                                 onGranted: () {
-                                  ImagePicker.pickImage(
-                                          source: ImageSource.camera)
+                                  ImagePicker()
+                                      .pickImage(source: ImageSource.camera)
                                       .then((value) {
                                     if (value == null) return;
                                     _onCameraPick(value.path);
@@ -1000,7 +1011,7 @@ class _InboxChatState extends State<InboxChat> {
                 ],
               ),
             ),
-            if (group.blockedBy.length > 0)
+            if (group!.blockedBy!.length > 0)
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 35,
@@ -1012,14 +1023,14 @@ class _InboxChatState extends State<InboxChat> {
                   ),
                 ),
               ),
-            if (group.blockedBy.length == 0 && chatAbleStringStatus != null)
+            if (group!.blockedBy!.length == 0 && chatAbleStringStatus != null)
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 35,
                 color: Colors.black87,
                 child: Center(
                   child: Text(
-                    chatAbleStringStatus,
+                    chatAbleStringStatus!,
                     style: ptBody().copyWith(color: Colors.white),
                   ),
                 ),
@@ -1082,7 +1093,7 @@ class _InboxChatState extends State<InboxChat> {
 
 class LoadEarlierWidget extends StatelessWidget {
   const LoadEarlierWidget(
-      {Key key, @required this.onLoadEarlier, @required this.onLoad})
+      {Key? key, required this.onLoadEarlier, required this.onLoad})
       : super(key: key);
 
   final Function onLoadEarlier;
@@ -1128,26 +1139,26 @@ class LoadEarlierWidget extends StatelessWidget {
 }
 
 class ActionItem extends StatelessWidget {
-  final String img;
-  final String name;
-  final Function onTap;
+  final String? img;
+  final String? name;
+  final Function? onTap;
 
-  const ActionItem({Key key, this.img, this.name, this.onTap})
+  const ActionItem({Key? key, this.img, this.name, this.onTap})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap as void Function()?,
       child: Column(
         children: [
           SizedBox(
             height: 50,
             width: 50,
-            child: Image.asset(img),
+            child: Image.asset(img!),
           ),
           SizedBox(height: 6),
           Text(
-            name,
+            name!,
             style: ptTiny().copyWith(fontWeight: FontWeight.w500),
           ),
         ],

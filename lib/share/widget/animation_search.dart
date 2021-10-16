@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AnimatedSearchBar extends StatefulWidget {
-  final double width;
-  final double height;
-  final String value;
-  final Function(String) onSearch;
-  final Function(String) onSubmit;
-  final TextEditingController controller;
+  final double? width;
+  final double? height;
+  final String? value;
+  final Function(String)? onSearch;
+  final Function(String)? onSubmit;
+  final TextEditingController? controller;
 
   const AnimatedSearchBar(
-      {Key key,
+      {Key? key,
       this.width,
       this.height,
       this.onSearch,

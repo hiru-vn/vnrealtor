@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 class LoadMoreScrollView extends StatelessWidget {
   final Widget list;
   final Function onLoadMore;
-  final ScrollController scrollController;
-  LoadMoreScrollView({@required this.list, @required this.onLoadMore, @required this.scrollController});
+  final ScrollController? scrollController;
+  LoadMoreScrollView({required this.list, required this.onLoadMore, required this.scrollController});
 
 
   @override
@@ -13,7 +13,7 @@ class LoadMoreScrollView extends StatelessWidget {
     return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification scrollInfo) {
           if (scrollInfo is ScrollEndNotification &&
-              scrollController.position.extentAfter == 0) {
+              scrollController!.position.extentAfter == 0) {
             onLoadMore();
           }
           if (scrollInfo.metrics.pixels < scrollInfo.metrics.maxScrollExtent) {}

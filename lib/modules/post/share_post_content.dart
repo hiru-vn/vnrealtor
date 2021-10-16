@@ -13,7 +13,7 @@ import 'package:hashtagable/hashtagable.dart';
 
 class SharePostGroupContent extends StatefulWidget {
   final GroupModel groupModel;
-  final PostModel post;
+  final PostModel? post;
   SharePostGroupContent(this.post, this.groupModel);
   @override
   _SharePostGroupContentState createState() => _SharePostGroupContentState();
@@ -22,9 +22,9 @@ class SharePostGroupContent extends StatefulWidget {
 class _SharePostGroupContentState extends State<SharePostGroupContent> {
   FocusNode _activityNode = FocusNode();
   TextEditingController _contentC = TextEditingController();
-  PostBloc _postBloc;
+  PostBloc? _postBloc;
   bool isProcess = false;
-  List<UserModel> _tagUsers = [];
+  List<UserModel>? _tagUsers = [];
 
   get group => widget.groupModel;
   get post => widget.post;
@@ -38,9 +38,9 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
   }
 
   Future _sharePost() async {
-    await navigatorKey.currentState.maybePop([
+    await navigatorKey.currentState!.maybePop([
       _contentC.text,
-      _tagUsers.map((e) => e.id).toList(),
+      _tagUsers?.map((e) => e.id).toList(),
     ]);
   }
 
@@ -81,9 +81,9 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
                     radius: 20,
                     backgroundColor: Colors.white,
                     backgroundImage:
-                        (AuthBloc.instance.userModel.avatar != null)
+                        ((AuthBloc.instance.userModel!.avatar != null)
                             ? CachedNetworkImageProvider(group.coverImage)
-                            : AssetImage('assets/image/default_avatar.png'),
+                            : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
                     child: VerifiedIcon(
                       AuthBloc.instance.userModel?.role,
                       10,
@@ -97,7 +97,7 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
                       children: [
                         Text.rich(TextSpan(children: [
                           TextSpan(
-                            text: AuthBloc.instance.userModel.name ?? '',
+                            text: AuthBloc.instance.userModel!.name ?? '',
                             style: ptTitle(),
                           ),
                           TextSpan(
@@ -112,7 +112,7 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
                         Row(
                           children: [
                             Text(
-                              Formart.formatToWeekTime(DateTime.now()),
+                              Formart.formatToWeekTime(DateTime.now())!,
                               style: ptTiny().copyWith(color: Colors.black54),
                             ),
                             SizedBox(width: 12),
@@ -203,7 +203,7 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
                                   setState(() {
                                     _contentC.text = _contentC.text +
                                         ' ' +
-                                        _postBloc.hasTags
+                                        _postBloc!.hasTags!
                                             .where((element) => !_contentC.text
                                                 .contains(element['value']))
                                             .toList()[index]['value']
@@ -221,7 +221,7 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
                                       borderRadius: BorderRadius.circular(15)),
                                   child: Center(
                                     child: Text(
-                                      _postBloc.hasTags
+                                      _postBloc!.hasTags!
                                           .where((element) => !_contentC.text
                                               .contains(element['value']))
                                           .toList()[index]['value']
@@ -231,7 +231,7 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
                                 ),
                               );
                             },
-                            itemCount: _postBloc.hasTags
+                            itemCount: _postBloc!.hasTags!
                                 .where((element) =>
                                     !_contentC.text.contains(element['value']))
                                 .toList()
@@ -255,13 +255,13 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
                   TextSpan(
                       text: 'Gắn thẻ: ',
                       style: ptSmall().copyWith(color: Colors.black)),
-                  ..._tagUsers.map(
+                  ..._tagUsers?.map(
                     (e) => TextSpan(
                         text: '${e.name}, ',
                         recognizer: new TapGestureRecognizer()
                           ..onTap = () => ProfileOtherPage.navigate(e),
                         style: ptSmall().copyWith(fontStyle: FontStyle.italic)),
-                  )
+                  )??[]
                 ])),
               ),
             SizedBox(
@@ -315,7 +315,7 @@ class _SharePostGroupContentState extends State<SharePostGroupContent> {
 
 class SharePostPageContent extends StatefulWidget {
   final PagesCreate page;
-  final PostModel post;
+  final PostModel? post;
   SharePostPageContent(this.post, this.page);
   @override
   _SharePostPageContentState createState() => _SharePostPageContentState();
@@ -324,12 +324,12 @@ class SharePostPageContent extends StatefulWidget {
 class _SharePostPageContentState extends State<SharePostPageContent> {
   FocusNode _activityNode = FocusNode();
   TextEditingController _contentC = TextEditingController();
-  PostBloc _postBloc;
+  PostBloc? _postBloc;
   bool isProcess = false;
-  List<UserModel> _tagUsers = [];
+  List<UserModel>? _tagUsers = [];
 
   PagesCreate get page => widget.page;
-  PostModel get post => widget.post;
+  PostModel? get post => widget.post;
 
   @override
   void didChangeDependencies() {
@@ -340,9 +340,9 @@ class _SharePostPageContentState extends State<SharePostPageContent> {
   }
 
   Future _sharePost() async {
-    await navigatorKey.currentState.maybePop([
+    await navigatorKey.currentState!.maybePop([
       _contentC.text,
-      _tagUsers.map((e) => e.id).toList(),
+      _tagUsers?.map((e) => e.id).toList(),
     ]);
   }
 
@@ -383,9 +383,9 @@ class _SharePostPageContentState extends State<SharePostPageContent> {
                     radius: 20,
                     backgroundColor: Colors.white,
                     backgroundImage:
-                        (AuthBloc.instance.userModel.avatar != null)
-                            ? CachedNetworkImageProvider(page.avartar)
-                            : AssetImage('assets/image/default_avatar.png'),
+                        ((AuthBloc.instance.userModel!.avatar != null)
+                            ? CachedNetworkImageProvider(page.avartar!)
+                            : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
                     child: VerifiedIcon(
                       AuthBloc.instance.userModel?.role,
                       10,
@@ -399,7 +399,7 @@ class _SharePostPageContentState extends State<SharePostPageContent> {
                       children: [
                         Text.rich(TextSpan(children: [
                           TextSpan(
-                            text: AuthBloc.instance.userModel.name ?? '',
+                            text: AuthBloc.instance.userModel!.name ?? '',
                             style: ptTitle(),
                           ),
                           TextSpan(
@@ -407,7 +407,7 @@ class _SharePostPageContentState extends State<SharePostPageContent> {
                             style: ptBody(),
                           ),
                           TextSpan(
-                            text: page?.name ?? '',
+                            text: page.name ?? '',
                             style:
                                 ptBody().copyWith(fontWeight: FontWeight.w500),
                           ),
@@ -415,7 +415,7 @@ class _SharePostPageContentState extends State<SharePostPageContent> {
                         Row(
                           children: [
                             Text(
-                              Formart.formatToWeekTime(DateTime.now()),
+                              Formart.formatToWeekTime(DateTime.now())!,
                               style: ptTiny().copyWith(color: Colors.black54),
                             ),
                             SizedBox(width: 12),
@@ -492,7 +492,7 @@ class _SharePostPageContentState extends State<SharePostPageContent> {
                                   setState(() {
                                     _contentC.text = _contentC.text +
                                         ' ' +
-                                        _postBloc.hasTags
+                                        _postBloc!.hasTags!
                                             .where((element) => !_contentC.text
                                                 .contains(element['value']))
                                             .toList()[index]['value']
@@ -510,7 +510,7 @@ class _SharePostPageContentState extends State<SharePostPageContent> {
                                       borderRadius: BorderRadius.circular(15)),
                                   child: Center(
                                     child: Text(
-                                      _postBloc.hasTags
+                                      _postBloc!.hasTags!
                                           .where((element) => !_contentC.text
                                               .contains(element['value']))
                                           .toList()[index]['value']
@@ -520,7 +520,7 @@ class _SharePostPageContentState extends State<SharePostPageContent> {
                                 ),
                               );
                             },
-                            itemCount: _postBloc.hasTags
+                            itemCount: _postBloc!.hasTags!
                                 .where((element) =>
                                     !_contentC.text.contains(element['value']))
                                 .toList()
@@ -544,13 +544,13 @@ class _SharePostPageContentState extends State<SharePostPageContent> {
                   TextSpan(
                       text: 'Gắn thẻ: ',
                       style: ptSmall().copyWith(color: Colors.black)),
-                  ..._tagUsers.map(
+                  ..._tagUsers?.map(
                     (e) => TextSpan(
                         text: '${e.name}, ',
                         recognizer: new TapGestureRecognizer()
                           ..onTap = () => ProfileOtherPage.navigate(e),
                         style: ptSmall().copyWith(fontStyle: FontStyle.italic)),
-                  )
+                  )??[]
                 ])),
               ),
             SizedBox(

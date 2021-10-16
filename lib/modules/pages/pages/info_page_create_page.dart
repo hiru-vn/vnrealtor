@@ -8,10 +8,10 @@ import 'package:datcao/share/widget/base_widgets.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class InfoPageCreatePage extends StatefulWidget {
-  final PageController pageController;
-  final TextEditingController nameController;
-  final TextEditingController describeController;
-  final TextEditingController categoriesController;
+  final PageController? pageController;
+  final TextEditingController? nameController;
+  final TextEditingController? describeController;
+  final TextEditingController? categoriesController;
 
   const InfoPageCreatePage(
       {this.pageController,
@@ -26,13 +26,13 @@ class InfoPageCreatePage extends StatefulWidget {
 class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
   final _formKey = GlobalKey<FormState>();
 
-  PageController get _pageController => widget.pageController;
+  PageController? get _pageController => widget.pageController;
 
-  TextEditingController get _nameC => widget.nameController;
-  TextEditingController get _describeC => widget.describeController;
-  TextEditingController get _categoriesC => widget.categoriesController;
+  TextEditingController? get _nameC => widget.nameController;
+  TextEditingController? get _describeC => widget.describeController;
+  TextEditingController? get _categoriesC => widget.categoriesController;
 
-  PagesBloc _pagesBloc;
+  PagesBloc? _pagesBloc;
 
   @override
   void didChangeDependencies() {
@@ -43,15 +43,15 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
     super.didChangeDependencies();
   }
 
-  _onAddCategory(String val) => _pagesBloc.addSelectedCategories(val);
+  _onAddCategory(String val) => _pagesBloc!.addSelectedCategories(val);
 
   _initData() async {
-    await _pagesBloc.getAllCategories();
+    await _pagesBloc!.getAllCategories();
   }
 
   void _nextPage() {
-    if (!_formKey.currentState.validate()) return;
-    _pageController.nextPage(
+    if (!_formKey.currentState!.validate()) return;
+    _pageController!.nextPage(
         duration: Duration(milliseconds: 300), curve: Curves.easeIn);
   }
 
@@ -93,7 +93,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
             ],
           ),
         ),
-        if (_pagesBloc.isLoading)
+        if (_pagesBloc!.isLoading)
           Container(
             height: deviceHeight(context),
             color: ptSecondaryColor(context),
@@ -104,7 +104,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
   }
 
   Widget _itemInfoField(
-          {String title, TextEditingController controller, String hintText}) =>
+          {required String title, TextEditingController? controller, String? hintText}) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -121,7 +121,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
         ),
       );
 
-  Widget _itemTextField({TextEditingController controller, String hintText}) =>
+  Widget _itemTextField({TextEditingController? controller, String? hintText}) =>
       Material(
         elevation: 0,
         color: ptSecondaryColor(context),
@@ -167,14 +167,14 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_pagesBloc.listCategoriesSelected.isNotEmpty)
+            if (_pagesBloc!.listCategoriesSelected.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: ListItemTags(
                   title: "",
-                  list: _pagesBloc.listCategoriesSelected,
+                  list: _pagesBloc!.listCategoriesSelected,
                   isEnableRemove: true,
-                  onClickAt: _pagesBloc.removeCategory,
+                  onClickAt: _pagesBloc!.removeCategory,
                   alignment: WrapAlignment.end,
                 ),
               ),
@@ -187,28 +187,28 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
       );
 
   _itemAutoFillText({
-    String hintText,
-    List<String> items,
-    OnChange onSubmit,
-    TextEditingController controller,
+    String? hintText,
+    List<String>? items,
+    OnChange? onSubmit,
+    TextEditingController? controller,
   }) =>
       MediaQuery(
         data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
         child: TypeAheadFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (str) {
-            if (_pagesBloc.listCategoriesSelected.isEmpty) {
+            if (_pagesBloc!.listCategoriesSelected.isEmpty) {
               return 'Vui lòng điền thông tin';
             } else {
               return null;
             }
           },
-          onSuggestionSelected: (val) {
-            onSubmit(val);
-            controller.clear();
+          onSuggestionSelected: (dynamic val) {
+            onSubmit!(val);
+            controller!.clear();
           },
           noItemsFoundBuilder: (context) => _itemEmpty(),
-          itemBuilder: (context, item) => ListTile(
+          itemBuilder: (context, dynamic item) => ListTile(
             title: Text(
               item,
               style: ptBody(),
@@ -216,8 +216,8 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
           ),
           suggestionsCallback: (val) async {
             var list = [];
-            if (controller.text.isNotEmpty) {
-              list = await _pagesBloc.getCategoriesByKeyword(
+            if (controller!.text.isNotEmpty) {
+              list = await _pagesBloc!.getCategoriesByKeyword(
                   filter: GraphqlFilter(search: val, order: '{createdAt: -1}'));
             }
             return list.isNotEmpty ? list : [];
@@ -266,7 +266,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
 
   _buildTextField(String hint, String initialValue, Function(String) onChange,
           {TextInputType type = TextInputType.text,
-          Function(String) validator}) =>
+          Function(String)? validator}) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -279,7 +279,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
               child: TextFormField(
-                validator: validator,
+                validator: validator as String? Function(String?)?,
                 keyboardType: type,
                 initialValue: initialValue,
                 onChanged: onChange,

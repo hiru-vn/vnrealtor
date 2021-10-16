@@ -7,23 +7,23 @@ import 'package:flutter/material.dart';
 
 class InviteGroup extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(InviteGroup()));
+    return navigatorKey.currentState!.push(pageBuilder(InviteGroup()));
   }
 
-  const InviteGroup({Key key}) : super(key: key);
+  const InviteGroup({Key? key}) : super(key: key);
 
   @override
   _InviteGroupState createState() => _InviteGroupState();
 }
 
 class _InviteGroupState extends State<InviteGroup> {
-  GroupBloc _groupBloc;
+  GroupBloc? _groupBloc;
 
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
-      _groupBloc.getListInviteGroupNotification();
+      _groupBloc = Provider.of<GroupBloc>(context);
+      _groupBloc!.getListInviteGroupNotification();
     }
     super.didChangeDependencies();
   }
@@ -38,16 +38,16 @@ class _InviteGroupState extends State<InviteGroup> {
         centerTitle: true,
         automaticallyImplyLeading: true,
       ),
-      body: (_groupBloc.invites == null)
+      body: (_groupBloc!.invites == null)
           ? ListSkeleton()
-          : (_groupBloc.invites.length == 0
+          : (_groupBloc!.invites!.length == 0
               ? Center(child: Text('Bạn không có lời mời nào'))
               : ListView.separated(
                   padding: EdgeInsets.all(15),
                   itemBuilder: (context, index) {
-                    return InviteGroupWidget(_groupBloc.invites[index]);
+                    return InviteGroupWidget(_groupBloc!.invites![index]);
                   },
-                  itemCount: _groupBloc.invites.length,
+                  itemCount: _groupBloc!.invites!.length,
                   separatorBuilder: (context, index) => SizedBox(height: 20),
                 )),
     );
@@ -56,22 +56,22 @@ class _InviteGroupState extends State<InviteGroup> {
 
 class InviteGroupWidget extends StatefulWidget {
   final NotificationModel noti;
-  InviteGroupWidget(this.noti, {Key key}) : super(key: key);
+  InviteGroupWidget(this.noti, {Key? key}) : super(key: key);
 
   @override
   _InviteGroupWidgetState createState() => _InviteGroupWidgetState();
 }
 
 class _InviteGroupWidgetState extends State<InviteGroupWidget> {
-  GroupModel group;
-  GroupBloc _groupBloc;
+  GroupModel? group;
+  GroupBloc? _groupBloc;
   bool canNotLoad = false;
 
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
-      _groupBloc.getOneGroup(widget.noti.data['modelId']).then((res) {
+      _groupBloc = Provider.of<GroupBloc>(context);
+      _groupBloc!.getOneGroup(widget.noti.data['modelId']).then((res) {
         if (res.isSuccess)
           setState(() {
             group = res.data;
@@ -94,7 +94,7 @@ class _InviteGroupWidgetState extends State<InviteGroupWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Lời mời từ ' + widget.noti.body.split(' ')[0],
+          'Lời mời từ ' + widget.noti.body!.split(' ')[0],
           style: ptBody().copyWith(color: Colors.black54),
         ),
         SizedBox(height: 6),
@@ -109,9 +109,10 @@ class _InviteGroupWidgetState extends State<InviteGroupWidget> {
                     width: deviceWidth(context) / 2.1 - 30,
                     height: deviceWidth(context) / 4 - 10,
                     child: Image.network(
-                      group.coverImage,
+                      group!.coverImage!,
                       fit: BoxFit.cover,
-                      loadingBuilder: kLoadingBuilder,
+                      loadingBuilder: kLoadingBuilder as Widget Function(
+                          BuildContext, Widget, ImageChunkEvent?)?,
                     )),
                 SizedBox(
                   width: 12,
@@ -130,19 +131,19 @@ class _InviteGroupWidgetState extends State<InviteGroupWidget> {
                       children: [
                         SizedBox(height: 5),
                         Text(
-                          group.name,
+                          group!.name!,
                         ),
                         SizedBox(height: 3),
                         Text(
-                          group.privacy
+                          group!.privacy!
                               ? 'Nhóm kín'
                               : 'Công khai' +
-                                  ' • ${group.countMember} thành viên',
+                                  ' • ${group!.countMember} thành viên',
                           style: ptTiny().copyWith(color: Colors.black),
                         ),
                         SizedBox(height: 5),
                         Text(
-                          '${group.postIn24h} bài đăng hôm nay',
+                          '${group!.postIn24h} bài đăng hôm nay',
                           style: ptTiny().copyWith(color: Colors.black),
                         ),
                       ],

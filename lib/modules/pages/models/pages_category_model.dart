@@ -1,7 +1,7 @@
 
 class PagesCategoriesModel {
-  String id;
-  String name;
+  String? id;
+  String? name;
 
   PagesCategoriesModel({this.id, this.name});
 

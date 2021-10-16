@@ -14,35 +14,35 @@ import 'inbox_bloc.dart';
 class ShareFriendMedias extends StatefulWidget {
   static Future navigate(List<String> medias) {
     // navigatorKey in MaterialApp
-    return navigatorKey.currentState
+    return navigatorKey.currentState!
         .push(pageBuilder(ShareFriendMedias(medias)));
   }
 
   final List<String> medias;
-  const ShareFriendMedias(this.medias, {Key key}) : super(key: key);
+  const ShareFriendMedias(this.medias, {Key? key}) : super(key: key);
 
   @override
   _ShareFriendMediasState createState() => _ShareFriendMediasState();
 }
 
 class _ShareFriendMediasState extends State<ShareFriendMedias> {
-  AuthBloc _authBloc;
-  UserBloc _userBloc;
-  List<UserModel> friends;
-  List<FbInboxGroupModel> groups;
+  AuthBloc? _authBloc;
+  late UserBloc _userBloc;
+  List<UserModel>? friends;
+  List<FbInboxGroupModel>? groups;
   List<UserModel> tagUsers = [];
   List<FbInboxGroupModel> tagGroups = [];
   String search = '';
   String name = '';
-  List<String> medias;
+  List<String>? medias;
   TextEditingController _textC = TextEditingController();
 
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
-      _authBloc = Provider.of(context);
-      _userBloc = Provider.of(context);
-      _userBloc.getListUserIn(_authBloc.userModel.friendIds).then((value) {
+      _authBloc = Provider.of<AuthBloc>(context);
+      _userBloc = Provider.of<UserBloc>(context);
+      _userBloc.getListUserIn(_authBloc!.userModel!.friendIds!).then((value) {
         if (value.isSuccess) {
           setState(() {
             friends = value.data;
@@ -52,11 +52,11 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
               context);
       });
       // InboxBloc.instance.init();
-      groups = InboxBloc.instance.groupInboxList.sublist(
+      groups = InboxBloc.instance.groupInboxList!.sublist(
           0,
-          InboxBloc.instance.groupInboxList.length > 10
+          InboxBloc.instance.groupInboxList!.length > 10
               ? 9
-              : InboxBloc.instance.groupInboxList.length);
+              : InboxBloc.instance.groupInboxList!.length);
     }
     super.didChangeDependencies();
   }
@@ -88,60 +88,60 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
     try {
       await Future.wait([
         ...tagUsers.map((e) {
-          final list = [e.id, _authBloc.userModel.id];
+          final list = [e.id, _authBloc!.userModel!.id];
           list.sort();
           final groupId = list.join("-");
           InboxBloc.instance.updateGroupOnMessage(
               groupId,
-              _authBloc.userModel.name,
+              _authBloc!.userModel!.name,
               DateTime.now(),
-              AuthBloc.instance.userModel.name +
+              AuthBloc.instance.userModel!.name! +
                   'đã chia sẻ ${widget.medias.length} ảnh/video',
               [],
-              [AuthBloc.instance.userModel.id]);
+              [AuthBloc.instance.userModel!.id]);
           if (_textC.text != '') {
             InboxBloc.instance.addMessage(
                 groupId,
                 _textC.text,
                 DateTime.now(),
-                _authBloc.userModel.id,
-                _authBloc.userModel.name,
-                _authBloc.userModel.avatar);
+                _authBloc!.userModel!.id,
+                _authBloc!.userModel!.name,
+                _authBloc!.userModel!.avatar);
           }
           return InboxBloc.instance.addMessage(
               groupId,
               '',
               DateTime.now(),
-              _authBloc.userModel.id,
-              _authBloc.userModel.name,
-              _authBloc.userModel.avatar,
+              _authBloc!.userModel!.id,
+              _authBloc!.userModel!.name,
+              _authBloc!.userModel!.avatar,
               filePaths: widget.medias);
         }),
         ...tagGroups.map((e) {
           InboxBloc.instance.updateGroupOnMessage(
               e.id,
-              _authBloc.userModel.name,
+              _authBloc!.userModel!.name,
               DateTime.now(),
-              AuthBloc.instance.userModel.name +
+              AuthBloc.instance.userModel!.name! +
                   'đã chia sẻ ${widget.medias.length} ảnh/video',
               [],
-              [AuthBloc.instance.userModel.id]);
+              [AuthBloc.instance.userModel!.id]);
           if (_textC.text != '') {
             InboxBloc.instance.addMessage(
                 e.id,
                 _textC.text,
                 DateTime.now(),
-                _authBloc.userModel.id,
-                _authBloc.userModel.name,
-                _authBloc.userModel.avatar);
+                _authBloc!.userModel!.id,
+                _authBloc!.userModel!.name,
+                _authBloc!.userModel!.avatar);
           }
           return InboxBloc.instance.addMessage(
               e.id,
               '',
               DateTime.now(),
-              _authBloc.userModel.id,
-              _authBloc.userModel.name,
-              _authBloc.userModel.avatar,
+              _authBloc!.userModel!.id,
+              _authBloc!.userModel!.name,
+              _authBloc!.userModel!.avatar,
               filePaths: widget.medias);
         }),
       ]);
@@ -153,7 +153,7 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
     } catch (e) {
       showToast(e.toString(), context);
     } finally {
-      navigatorKey.currentState.maybePop();
+      navigatorKey.currentState!.maybePop();
     }
   }
 
@@ -256,15 +256,15 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
                       ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: groups
-                            .where((e) => e.users.any((u) => u.name
+                        itemCount: groups!
+                            .where((e) => e.users.any((u) => u.name!
                                 .toLowerCase()
                                 .contains(search.toLowerCase().trim())))
                             .toList()
                             .length,
                         itemBuilder: (context, index) {
-                          final group = groups
-                              .where((e) => e.users.any((u) => u.name
+                          final group = groups!
+                              .where((e) => e.users.any((u) => u.name!
                                   .toLowerCase()
                                   .contains(search.toLowerCase().trim())))
                               .toList()[index];
@@ -299,15 +299,15 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
                       ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: friends
-                            .where((e) => e.name
+                        itemCount: friends!
+                            .where((e) => e.name!
                                 .toLowerCase()
                                 .contains(search.toLowerCase().trim()))
                             .toList()
                             .length,
                         itemBuilder: (context, index) {
-                          final friend = friends
-                              .where((e) => e.name
+                          final friend = friends!
+                              .where((e) => e.name!
                                   .toLowerCase()
                                   .contains(search.toLowerCase()))
                               .toList()[index];
@@ -350,7 +350,7 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
               margin: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.grey[200], width: 2),
+                border: Border.all(color: Colors.grey[200]!, width: 2),
               ),
             )
           else
@@ -372,20 +372,20 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
           CircleAvatar(
             backgroundColor: Colors.white,
             radius: 15,
-            backgroundImage: user.avatar != null
-                ? CachedNetworkImageProvider(user.avatar)
-                : AssetImage('assets/image/default_avatar.png'),
+            backgroundImage: (user.avatar != null
+                ? CachedNetworkImageProvider(user.avatar!)
+                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
           ),
           SizedBox(width: 14),
-          Text(user.name, style: ptBody().copyWith(color: Colors.black)),
+          Text(user.name!, style: ptBody().copyWith(color: Colors.black)),
         ],
       ),
     );
   }
 
   _buildGroupItem(FbInboxGroupModel group, bool isSelect, Function onTap) {
-    String nameGroup = group.users
-        .where((element) => element.id != _authBloc.userModel.id)
+    String? nameGroup = group.users
+        .where((element) => element.id != _authBloc!.userModel!.id)
         .toList()
         .map((e) => e.name)
         .join(', ');
@@ -408,7 +408,7 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
               margin: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.grey[200], width: 2),
+                border: Border.all(color: Colors.grey[200]!, width: 2),
               ),
             )
           else
@@ -430,9 +430,9 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
           CircleAvatar(
             backgroundColor: Colors.white,
             radius: 15,
-            backgroundImage: group.image != null
-                ? CachedNetworkImageProvider(group.image)
-                : AssetImage('assets/image/default_avatar.png'),
+            backgroundImage: (group.image != null
+                ? CachedNetworkImageProvider(group.image!)
+                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
           ),
           SizedBox(width: 14),
           Text(nameGroup ?? '', style: ptBody().copyWith(color: Colors.black)),
@@ -464,42 +464,42 @@ class _ShareFriendMediasState extends State<ShareFriendMedias> {
       ),
       items: 3,
       period: Duration(seconds: 2),
-      highlightColor: Colors.grey[200],
+      highlightColor: Colors.grey[200]!,
       direction: SkeletonDirection.ltr,
     );
   }
 }
 
 class ShareFriendPost extends StatefulWidget {
-  static Future navigate(PostModel post) {
+  static Future navigate(PostModel? post) {
     // navigatorKey in MaterialApp
-    return navigatorKey.currentState.push(pageBuilder(ShareFriendPost(post)));
+    return navigatorKey.currentState!.push(pageBuilder(ShareFriendPost(post)));
   }
 
-  final PostModel post;
-  const ShareFriendPost(this.post, {Key key}) : super(key: key);
+  final PostModel? post;
+  const ShareFriendPost(this.post, {Key? key}) : super(key: key);
 
   @override
   _ShareFriendPostState createState() => _ShareFriendPostState();
 }
 
 class _ShareFriendPostState extends State<ShareFriendPost> {
-  AuthBloc _authBloc;
-  UserBloc _userBloc;
-  List<UserModel> friends;
-  List<FbInboxGroupModel> groups;
+  AuthBloc? _authBloc;
+  late UserBloc _userBloc;
+  List<UserModel>? friends;
+  List<FbInboxGroupModel>? groups;
   List<UserModel> tagUsers = [];
   List<FbInboxGroupModel> tagGroups = [];
   String search = '';
   String name = '';
-  List<String> medias;
+  List<String>? medias;
 
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
-      _authBloc = Provider.of(context);
-      _userBloc = Provider.of(context);
-      _userBloc.getListUserIn(_authBloc.userModel.friendIds).then((value) {
+      _authBloc = Provider.of<AuthBloc>(context);
+      _userBloc = Provider.of<UserBloc>(context);
+      _userBloc.getListUserIn(_authBloc!.userModel!.friendIds!).then((value) {
         if (value.isSuccess) {
           setState(() {
             friends = value.data;
@@ -508,11 +508,11 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
           showToast('Có lỗi khi lấy danh sách, vui lòng đóng trang và thử lại',
               context);
       });
-      groups = InboxBloc.instance.groupInboxList.sublist(
+      groups = InboxBloc.instance.groupInboxList!.sublist(
           0,
-          InboxBloc.instance.groupInboxList.length > 10
+          InboxBloc.instance.groupInboxList!.length > 10
               ? 9
-              : InboxBloc.instance.groupInboxList.length);
+              : InboxBloc.instance.groupInboxList!.length);
     }
     super.didChangeDependencies();
   }
@@ -544,59 +544,59 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
     try {
       await Future.wait([
         ...tagUsers.map((e) {
-          final list = [e.id, _authBloc.userModel.id];
+          final list = [e.id, _authBloc!.userModel!.id];
           list.sort();
           final groupId = list.join("-");
           InboxBloc.instance.addMessage(
               groupId,
-              widget.post.dynamicLink.shortLink + '\n${widget.post.content}',
+              widget.post!.dynamicLink!.shortLink! + '\n${widget.post!.content}',
               DateTime.now(),
-              _authBloc.userModel.id,
-              _authBloc.userModel.name,
-              _authBloc.userModel.avatar);
+              _authBloc!.userModel!.id,
+              _authBloc!.userModel!.name,
+              _authBloc!.userModel!.avatar);
 
           InboxBloc.instance.updateGroupOnMessage(
               groupId,
-              _authBloc.userModel.name,
+              _authBloc!.userModel!.name,
               DateTime.now(),
-              AuthBloc.instance.userModel.name + 'đã chia sẻ 1 bài viết',
+              AuthBloc.instance.userModel!.name! + 'đã chia sẻ 1 bài viết',
               [],
-              [AuthBloc.instance.userModel.id]);
+              [AuthBloc.instance.userModel!.id]);
 
           return InboxBloc.instance.addMessage(
               e.id,
               '',
               DateTime.now(),
-              _authBloc.userModel.id,
-              _authBloc.userModel.name,
-              _authBloc.userModel.avatar,
-              filePaths: widget.post.mediaPosts.map((e) => e.url).toList());
+              _authBloc!.userModel!.id,
+              _authBloc!.userModel!.name,
+              _authBloc!.userModel!.avatar,
+              filePaths: widget.post!.mediaPosts!.map((e) => e.url).toList());
         }),
         ...tagGroups.map((e) {
           InboxBloc.instance.addMessage(
               e.id,
-              widget.post.dynamicLink.shortLink + '\n${widget.post.content}',
+              widget.post!.dynamicLink!.shortLink! + '\n${widget.post!.content}',
               DateTime.now(),
-              _authBloc.userModel.id,
-              _authBloc.userModel.name,
-              _authBloc.userModel.avatar);
+              _authBloc!.userModel!.id,
+              _authBloc!.userModel!.name,
+              _authBloc!.userModel!.avatar);
 
           InboxBloc.instance.updateGroupOnMessage(
             e.id,
-            _authBloc.userModel.name,
+            _authBloc!.userModel!.name,
             DateTime.now(),
-            AuthBloc.instance.userModel.name + 'đã chia sẻ 1 bài viết',
+            AuthBloc.instance.userModel!.name! + 'đã chia sẻ 1 bài viết',
             [],
-            [AuthBloc.instance.userModel.id],
+            [AuthBloc.instance.userModel!.id],
           );
           return InboxBloc.instance.addMessage(
               e.id,
               '',
               DateTime.now(),
-              _authBloc.userModel.id,
-              _authBloc.userModel.name,
-              _authBloc.userModel.avatar,
-              filePaths: widget.post.mediaPosts.map((e) => e.url).toList());
+              _authBloc!.userModel!.id,
+              _authBloc!.userModel!.name,
+              _authBloc!.userModel!.avatar,
+              filePaths: widget.post!.mediaPosts!.map((e) => e.url).toList());
         }),
       ]);
 
@@ -607,7 +607,7 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
     } catch (e) {
       showToast(e.toString(), context);
     } finally {
-      navigatorKey.currentState.maybePop(true);
+      navigatorKey.currentState!.maybePop(true);
     }
   }
 
@@ -689,15 +689,15 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
                       ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: groups
-                            .where((e) => e.users.any((u) => u.name
+                        itemCount: groups!
+                            .where((e) => e.users.any((u) => u.name!
                                 .toLowerCase()
                                 .contains(search.toLowerCase().trim())))
                             .toList()
                             .length,
                         itemBuilder: (context, index) {
-                          final group = groups
-                              .where((e) => e.users.any((u) => u.name
+                          final group = groups!
+                              .where((e) => e.users.any((u) => u.name!
                                   .toLowerCase()
                                   .contains(search.toLowerCase().trim())))
                               .toList()[index];
@@ -732,15 +732,15 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
                       ListView.separated(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: friends
-                            .where((e) => e.name
+                        itemCount: friends!
+                            .where((e) => e.name!
                                 .toLowerCase()
                                 .contains(search.toLowerCase().trim()))
                             .toList()
                             .length,
                         itemBuilder: (context, index) {
-                          final friend = friends
-                              .where((e) => e.name
+                          final friend = friends!
+                              .where((e) => e.name!
                                   .toLowerCase()
                                   .contains(search.toLowerCase()))
                               .toList()[index];
@@ -783,7 +783,7 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
               margin: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.grey[200], width: 2),
+                border: Border.all(color: Colors.grey[200]!, width: 2),
               ),
             )
           else
@@ -805,20 +805,20 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
           CircleAvatar(
             backgroundColor: Colors.white,
             radius: 15,
-            backgroundImage: user.avatar != null
-                ? CachedNetworkImageProvider(user.avatar)
-                : AssetImage('assets/image/default_avatar.png'),
+            backgroundImage: (user.avatar != null
+                ? CachedNetworkImageProvider(user.avatar!)
+                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
           ),
           SizedBox(width: 14),
-          Text(user.name, style: ptBody().copyWith(color: Colors.black)),
+          Text(user.name!, style: ptBody().copyWith(color: Colors.black)),
         ],
       ),
     );
   }
 
   _buildGroupItem(FbInboxGroupModel group, bool isSelect, Function onTap) {
-    String nameGroup = group.users
-        .where((element) => element.id != _authBloc.userModel.id)
+    String? nameGroup = group.users
+        .where((element) => element.id != _authBloc!.userModel!.id)
         .toList()
         .map((e) => e.name)
         .join(', ');
@@ -841,7 +841,7 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
               margin: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.grey[200], width: 2),
+                border: Border.all(color: Colors.grey[200]!, width: 2),
               ),
             )
           else
@@ -863,9 +863,9 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
           CircleAvatar(
             backgroundColor: Colors.white,
             radius: 15,
-            backgroundImage: group.image != null
-                ? CachedNetworkImageProvider(group.image)
-                : AssetImage('assets/image/default_avatar.png'),
+            backgroundImage: (group.image != null
+                ? CachedNetworkImageProvider(group.image!)
+                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
           ),
           SizedBox(width: 14),
           Text(nameGroup ?? '', style: ptBody().copyWith(color: Colors.black)),
@@ -897,7 +897,7 @@ class _ShareFriendPostState extends State<ShareFriendPost> {
       ),
       items: 3,
       period: Duration(seconds: 2),
-      highlightColor: Colors.grey[200],
+      highlightColor: Colors.grey[200]!,
       direction: SkeletonDirection.ltr,
     );
   }

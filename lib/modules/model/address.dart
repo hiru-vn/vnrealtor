@@ -1,8 +1,8 @@
 class Address {
-  String address;
-  String ward;
-  String district;
-  String province;
+  String? address;
+  String? ward;
+  String? district;
+  String? province;
 
   Address({this.address, this.ward, this.district, this.province});
 

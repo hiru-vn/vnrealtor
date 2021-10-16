@@ -3,7 +3,7 @@ import 'package:datcao/share/import.dart';
 
 class PointPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(PointPage()));
+    return navigatorKey.currentState!.push(pageBuilder(PointPage()));
   }
 
   @override
@@ -12,7 +12,7 @@ class PointPage extends StatefulWidget {
 
 class _PointPageState extends State<PointPage>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
+  TabController? _tabController;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _PointPageState extends State<PointPage>
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              AuthBloc.instance.userModel.reputationScore
+                              AuthBloc.instance.userModel!.reputationScore
                                   .toString(),
                               style: ptHeadLine().copyWith(
                                   color: Colors.red,
@@ -140,7 +140,7 @@ class PointInfoWidget extends StatefulWidget {
 
 class _PointInfoWidgetState extends State<PointInfoWidget>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
+  TabController? _tabController;
 
   @override
   void initState() {
@@ -241,7 +241,7 @@ class _PointInfoWidgetState extends State<PointInfoWidget>
               width: 42,
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border.all(color: Colors.grey[200], width: 1.5),
+                border: Border.all(color: Colors.grey[200]!, width: 1.5),
                 shape: BoxShape.circle,
               ),
               child: Center(child: Image.asset('assets/image/gift.png')),
@@ -268,7 +268,7 @@ class _PointInfoWidgetState extends State<PointInfoWidget>
               width: 42,
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border.all(color: Colors.grey[200], width: 1.5),
+                border: Border.all(color: Colors.grey[200]!, width: 1.5),
                 shape: BoxShape.circle,
               ),
               child: Center(child: Image.asset('assets/image/gift.png')),
@@ -295,7 +295,7 @@ class _PointInfoWidgetState extends State<PointInfoWidget>
               width: 42,
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border.all(color: Colors.grey[200], width: 1.5),
+                border: Border.all(color: Colors.grey[200]!, width: 1.5),
                 shape: BoxShape.circle,
               ),
               child: Center(child: Image.asset('assets/image/gift.png')),

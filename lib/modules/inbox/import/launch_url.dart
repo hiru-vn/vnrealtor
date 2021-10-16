@@ -33,7 +33,7 @@ launchMaps(double lat, double lng) async {
   }
 }
 
-launchCaller(String number) async {
+launchCaller(String? number) async {
   String url = "tel:$number";
   if (await canLaunch(url)) {
     await launch(url);

@@ -5,7 +5,7 @@ import 'package:datcao/share/import.dart';
 import 'filter.dart';
 
 class NotificationRepo {
-  Future getMyNotification({GraphqlFilter filter}) async {
+  Future getMyNotification({GraphqlFilter? filter}) async {
     final id = await SPref.instance.get('id');
     final res = await NotificationSrv().getList(
         limit: filter?.limit,
@@ -17,7 +17,7 @@ class NotificationRepo {
     return res;
   }
 
-  Future getListNotification({GraphqlFilter filter}) async {
+  Future getListNotification({GraphqlFilter? filter}) async {
     final res = await NotificationSrv().getList(
         limit: filter?.limit,
         offset: filter?.offset,
@@ -28,7 +28,7 @@ class NotificationRepo {
     return res;
   }
 
-  Future sendNotiMessage(List<String> users, String content) async {
+  Future sendNotiMessage(List<String> users, String? content) async {
     final res = await NotificationSrv().mutate('sendNotiMes', '''
 userIds: ${GraphqlHelper.listStringToGraphqlString(users)}
 content: "$content"
@@ -36,7 +36,7 @@ content: "$content"
     return res;
   }
 
-  Future seenNoti(String id) async {
+  Future seenNoti(String? id) async {
     final res = await NotificationSrv().mutate(
         'seenNotifification',
         '''

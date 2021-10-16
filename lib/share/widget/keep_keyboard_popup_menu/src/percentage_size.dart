@@ -4,9 +4,9 @@ import 'package:flutter/rendering.dart';
 /// A widget that sizes it self based on percentages of the size of its child.
 class PercentageSize extends SingleChildRenderObjectWidget {
   const PercentageSize({
-    Key key,
-    @required Widget child,
-    @required this.sizePercentage,
+    Key? key,
+    required Widget child,
+    required this.sizePercentage,
     this.alignment = Alignment.center,
     this.clipBehavior = Clip.hardEdge,
   })  : assert(child != null),
@@ -38,9 +38,9 @@ class PercentageSize extends SingleChildRenderObjectWidget {
 
 class _RenderPercentageSize extends RenderAligningShiftedBox {
   _RenderPercentageSize({
-    @required AlignmentGeometry alignment,
-    @required double sizePercentage,
-    RenderBox child,
+    required AlignmentGeometry alignment,
+    required double sizePercentage,
+    RenderBox? child,
     Clip clipBehavior = Clip.hardEdge,
   })  : _clipBehavior = clipBehavior,
         _sizePercentage = sizePercentage,
@@ -62,12 +62,12 @@ class _RenderPercentageSize extends RenderAligningShiftedBox {
 
   @override
   void performLayout() {
-    child.layout(constraints, parentUsesSize: true);
-    size = constraints.constrain(child.size * _sizePercentage);
+    child!.layout(constraints, parentUsesSize: true);
+    size = constraints.constrain(child!.size * _sizePercentage);
     alignChild();
   }
 
-  ClipRectLayer _clipRectLayer;
+  ClipRectLayer? _clipRectLayer;
 
   @override
   void paint(PaintingContext context, Offset offset) {

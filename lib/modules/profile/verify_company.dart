@@ -5,7 +5,7 @@ import 'package:datcao/share/import.dart';
 
 class VerifyCompany extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(VerifyCompany()));
+    return navigatorKey.currentState!.push(pageBuilder(VerifyCompany()));
   }
 
   @override
@@ -13,24 +13,24 @@ class VerifyCompany extends StatefulWidget {
 }
 
 class _VerifyCompanyState extends State<VerifyCompany> {
-  VerificationBloc _verificationBloc;
-  AuthBloc _authBloc;
+  VerificationBloc? _verificationBloc;
+  AuthBloc? _authBloc;
   final _formKey = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
     if (_verificationBloc == null) {
-      _verificationBloc = Provider.of(context);
-      _authBloc = Provider.of(context);
+      _verificationBloc = Provider.of<VerificationBloc>(context);
+      _authBloc = Provider.of<AuthBloc>(context);
     }
     super.didChangeDependencies();
   }
 
   Future _submit() async {
     FocusScope.of(context).requestFocus(FocusNode());
-    if (!_formKey.currentState.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
     showWaitingDialog(context);
-    final res = await _verificationBloc.createCompanyVerification();
+    final res = await _verificationBloc!.createCompanyVerification();
     closeLoading();
     if (res.isSuccess) {
       showToast('Gửi yêu cầu xác minh thành công', context, isSuccess: true);
@@ -77,37 +77,37 @@ class _VerifyCompanyState extends State<VerifyCompany> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    _buildTextField('Tên công ty', _verificationBloc.name,
-                        (val) => _verificationBloc.name = val,
+                    _buildTextField('Tên công ty', _verificationBloc!.name,
+                        (val) => _verificationBloc!.name = val,
                         validator: TextFieldValidator.notEmptyValidator,
                         icon: MdiIcons.officeBuilding),
                     SizedBox(height: 15),
                     _buildTextField(
                         'Địa chỉ công ty',
-                        _verificationBloc.currentAddress,
-                        (val) => _verificationBloc.currentAddress = val,
+                        _verificationBloc!.currentAddress,
+                        (val) => _verificationBloc!.currentAddress = val,
                         validator: TextFieldValidator.notEmptyValidator,
                         icon: MdiIcons.mapMarker),
                     SizedBox(height: 15),
-                    _buildTextField('Mã số thuế', _verificationBloc.taxCode,
-                        (val) => _verificationBloc.taxCode = val,
+                    _buildTextField('Mã số thuế', _verificationBloc!.taxCode,
+                        (val) => _verificationBloc!.taxCode = val,
                         validator: TextFieldValidator.notEmptyValidator,
                         icon: MdiIcons.fax),
                     SizedBox(height: 15),
-                    _buildTextField('Email công ty', _verificationBloc.email,
-                        (val) => _verificationBloc.email = val,
+                    _buildTextField('Email công ty', _verificationBloc!.email,
+                        (val) => _verificationBloc!.email = val,
                         validator: TextFieldValidator.emailValidator,
                         icon: MdiIcons.email),
                     SizedBox(height: 15),
-                    _buildTextField('SĐT công ty', _verificationBloc.phoneCom,
-                        (val) => _verificationBloc.phoneCom = val,
+                    _buildTextField('SĐT công ty', _verificationBloc!.phoneCom,
+                        (val) => _verificationBloc!.phoneCom = val,
                         validator: TextFieldValidator.notEmptyValidator,
                         icon: MdiIcons.phone),
                     SizedBox(height: 15),
                     _buildTextField(
                         'Website công ty',
-                        _verificationBloc.website,
-                        (val) => _verificationBloc.website = val,
+                        _verificationBloc!.website,
+                        (val) => _verificationBloc!.website = val,
                         validator: TextFieldValidator.notEmptyValidator,
                         icon: MdiIcons.web),
                     SizedBox(height: 25),
@@ -133,10 +133,10 @@ class _VerifyCompanyState extends State<VerifyCompany> {
     );
   }
 
-  _buildTextField(String hint, String initialValue, Function(String) onChange,
+  _buildTextField(String hint, String? initialValue, Function(String) onChange,
           {TextInputType type = TextInputType.text,
-          Function(String) validator,
-          IconData icon}) =>
+          Function(String)? validator,
+          IconData? icon}) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Material(
@@ -154,7 +154,7 @@ class _VerifyCompanyState extends State<VerifyCompany> {
                   ),
                   Expanded(
                     child: TextFormField(
-                      validator: validator,
+                      validator: validator as String? Function(String?)?,
                       keyboardType: type,
                       initialValue: initialValue,
                       onChanged: onChange,

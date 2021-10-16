@@ -1,8 +1,8 @@
 
 class BaseResponse {
   bool isSuccess;
-  String errMessage;
-  String message;
+  String? errMessage;
+  String? message;
   dynamic data;
 
   BaseResponse(

@@ -14,28 +14,28 @@ const double _kMenuHorizontalPadding = 16.0;
 class KeepKeyboardPopupMenuItem extends StatelessWidget {
   final double height;
   final Widget child;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
   final VoidCallback onTap;
 
   const KeepKeyboardPopupMenuItem({
-    Key key,
+    Key? key,
     this.height = kMinInteractiveDimension,
     this.textStyle,
-    @required this.child,
-    @required this.onTap,
+    required this.child,
+    required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
-    TextStyle style =
+    TextStyle? style =
         textStyle ?? popupMenuTheme.textStyle ?? theme.textTheme.subtitle1;
 
-    if (onTap == null) style = style.copyWith(color: theme.disabledColor);
+    if (onTap == null) style = style!.copyWith(color: theme.disabledColor);
 
     Widget item = DefaultTextStyle(
-      style: style,
+      style: style!,
       child: Container(
         alignment: AlignmentDirectional.centerStart,
         constraints: BoxConstraints(minHeight: height),

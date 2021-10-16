@@ -17,10 +17,10 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
 
 class GroupMediaPostWidget extends StatelessWidget {
-  final List<MediaPost> posts;
+  final List<MediaPost>? posts;
   final bool autoPlayVideo;
 
-  const GroupMediaPostWidget({Key key, this.posts, this.autoPlayVideo = false})
+  const GroupMediaPostWidget({Key? key, this.posts, this.autoPlayVideo = false})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -32,27 +32,27 @@ class GroupMediaPostWidget extends StatelessWidget {
         );
       }));
     };
-    if (posts.length == 1) {
+    if (posts!.length == 1) {
       return ConstrainedBox(
         constraints: BoxConstraints(maxHeight: deviceWidth(context) * 1.1),
         child: SizedBox(
           width: deviceWidth(context),
           child: MediaPostWidget(
-            post: posts[0],
+            post: posts![0],
             onTapPostCallBack: () => callBack(0),
             autoPlayVideo: autoPlayVideo,
           ),
         ),
       );
     }
-    if (posts.length == 2) {
+    if (posts!.length == 2) {
       return Row(
         children: [
           SizedBox(
             width: deviceWidth(context) / 2 - 1.5,
             height: deviceWidth(context) / 2,
             child: MediaPostWidget(
-              post: posts[0],
+              post: posts![0],
               onTapPostCallBack: () => callBack(0),
             ),
           ),
@@ -63,21 +63,21 @@ class GroupMediaPostWidget extends StatelessWidget {
             width: deviceWidth(context) / 2 - 1.5,
             height: deviceWidth(context) / 2,
             child: MediaPostWidget(
-              post: posts[1],
+              post: posts![1],
               onTapPostCallBack: () => callBack(1),
             ),
           ),
         ],
       );
     }
-    if (posts.length == 3) {
+    if (posts!.length == 3) {
       return Column(
         children: [
           SizedBox(
             width: deviceWidth(context),
             height: deviceWidth(context) / 2,
             child: MediaPostWidget(
-              post: posts[0],
+              post: posts![0],
               onTapPostCallBack: () => callBack(0),
             ),
           ),
@@ -90,7 +90,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 2 - 1.5,
                 height: deviceWidth(context) / 2.5,
                 child: MediaPostWidget(
-                  post: posts[1],
+                  post: posts![1],
                   onTapPostCallBack: () => callBack(1),
                 ),
               ),
@@ -101,7 +101,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 2 - 1.5,
                 height: deviceWidth(context) / 2.5,
                 child: MediaPostWidget(
-                  post: posts[2],
+                  post: posts![2],
                   onTapPostCallBack: () => callBack(2),
                 ),
               ),
@@ -110,14 +110,14 @@ class GroupMediaPostWidget extends StatelessWidget {
         ],
       );
     }
-    if (posts.length == 4) {
+    if (posts!.length == 4) {
       return Column(
         children: [
           SizedBox(
             width: deviceWidth(context),
             height: deviceWidth(context) / 2,
             child: MediaPostWidget(
-              post: posts[0],
+              post: posts![0],
               onTapPostCallBack: () => callBack(0),
             ),
           ),
@@ -130,7 +130,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 3 - 2,
                 height: deviceWidth(context) / 3,
                 child: MediaPostWidget(
-                  post: posts[1],
+                  post: posts![1],
                   onTapPostCallBack: () => callBack(1),
                 ),
               ),
@@ -141,7 +141,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 3 - 2,
                 height: deviceWidth(context) / 3,
                 child: MediaPostWidget(
-                  post: posts[2],
+                  post: posts![2],
                   onTapPostCallBack: () => callBack(2),
                 ),
               ),
@@ -152,7 +152,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 3 - 2,
                 height: deviceWidth(context) / 3,
                 child: MediaPostWidget(
-                  post: posts[3],
+                  post: posts![3],
                   onTapPostCallBack: () => callBack(3),
                 ),
               ),
@@ -161,7 +161,7 @@ class GroupMediaPostWidget extends StatelessWidget {
         ],
       );
     }
-    if (posts.length == 5) {
+    if (posts!.length == 5) {
       return Column(
         children: [
           Row(
@@ -170,7 +170,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 2 - 1.5,
                 height: deviceWidth(context) / 2,
                 child: MediaPostWidget(
-                  post: posts[0],
+                  post: posts![0],
                   onTapPostCallBack: () => callBack(0),
                 ),
               ),
@@ -181,7 +181,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 2 - 1.5,
                 height: deviceWidth(context) / 2,
                 child: MediaPostWidget(
-                  post: posts[1],
+                  post: posts![1],
                   onTapPostCallBack: () => callBack(1),
                 ),
               ),
@@ -196,7 +196,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 3 - 2,
                 height: deviceWidth(context) / 3,
                 child: MediaPostWidget(
-                  post: posts[2],
+                  post: posts![2],
                   onTapPostCallBack: () => callBack(2),
                 ),
               ),
@@ -207,7 +207,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 3 - 2,
                 height: deviceWidth(context) / 3,
                 child: MediaPostWidget(
-                  post: posts[3],
+                  post: posts![3],
                   onTapPostCallBack: () => callBack(3),
                 ),
               ),
@@ -218,7 +218,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 3 - 2,
                 height: deviceWidth(context) / 3,
                 child: MediaPostWidget(
-                  post: posts[4],
+                  post: posts![4],
                   onTapPostCallBack: () => callBack(4),
                 ),
               ),
@@ -228,7 +228,7 @@ class GroupMediaPostWidget extends StatelessWidget {
       );
     }
 
-    if (posts.length > 5) {
+    if (posts!.length > 5) {
       return Column(
         children: [
           Row(
@@ -237,7 +237,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 2 - 1.5,
                 height: deviceWidth(context) / 2,
                 child: MediaPostWidget(
-                  post: posts[0],
+                  post: posts![0],
                   onTapPostCallBack: () => callBack(0),
                 ),
               ),
@@ -248,7 +248,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 2 - 1.5,
                 height: deviceWidth(context) / 2,
                 child: MediaPostWidget(
-                  post: posts[1],
+                  post: posts![1],
                   onTapPostCallBack: () => callBack(1),
                 ),
               ),
@@ -263,7 +263,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 3 - 2,
                 height: deviceWidth(context) / 3,
                 child: MediaPostWidget(
-                  post: posts[2],
+                  post: posts![2],
                   onTapPostCallBack: () => callBack(2),
                 ),
               ),
@@ -274,7 +274,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                 width: deviceWidth(context) / 3 - 2,
                 height: deviceWidth(context) / 3,
                 child: MediaPostWidget(
-                  post: posts[3],
+                  post: posts![3],
                   onTapPostCallBack: () => callBack(3),
                 ),
               ),
@@ -290,7 +290,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                       width: deviceWidth(context) / 3 - 2,
                       height: deviceWidth(context) / 3,
                       child: MediaPostWidget(
-                        post: posts[4],
+                        post: posts![4],
                         onTapPostCallBack: () => callBack(4),
                       ),
                     ),
@@ -304,7 +304,7 @@ class GroupMediaPostWidget extends StatelessWidget {
                     IgnorePointer(
                       child: Center(
                         child: Text(
-                          '+' + (posts.length - 4).toString(),
+                          '+' + (posts!.length - 4).toString(),
                           style: TextStyle(
                               color: Colors.white70,
                               fontSize: 40,
@@ -330,8 +330,8 @@ class MediaPostWidget extends StatefulWidget {
   final Function onTapPostCallBack;
   final bool autoPlayVideo;
   MediaPostWidget(
-      {@required this.post,
-      @required this.onTapPostCallBack,
+      {required this.post,
+      required this.onTapPostCallBack,
       this.autoPlayVideo = false});
 
   @override
@@ -339,23 +339,23 @@ class MediaPostWidget extends StatefulWidget {
 }
 
 class _MediaPostWidgetState extends State<MediaPostWidget> {
-  String thumbnailPath;
-  FileType type;
-  VideoPlayerController _controller;
+  String? thumbnailPath;
+  FileType? type;
+  VideoPlayerController? _controller;
 
   @override
   void initState() {
     type = FileUtil.getFbUrlFileType(widget.post.url);
     if (type == FileType.video) {
       _getThumbnail();
-      _controller = VideoPlayerController.network(widget.post.url)
+      _controller = VideoPlayerController.network(widget.post.url!)
         ..initialize().then(
           (_) {
             if (mounted)
               setState(() {
-                _controller.setLooping(true);
-                _controller.setVolume(0);
-                _controller.play();
+                _controller!.setLooping(true);
+                _controller!.setVolume(0);
+                _controller!.play();
               });
           },
         );
@@ -371,7 +371,7 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
 
   _getThumbnail() async {
     thumbnailPath = await VideoThumbnail.thumbnailFile(
-      video: widget.post.url,
+      video: widget.post.url!,
       thumbnailPath: (await getTemporaryDirectory()).path,
       imageFormat: ImageFormat.WEBP,
       maxHeight:
@@ -383,29 +383,32 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {audioCache.play('tab3.mp3');
+      onTap: () {
+        audioCache.play('tab3.mp3');
         widget.onTapPostCallBack();
-  
+
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: _getWidget(type),
     );
   }
 
-  Widget _getWidget(FileType type) {
+  Widget _getWidget(FileType? type) {
     final thumb = thumbnailPath == null
         ? Image.asset(
             'assets/image/video_holder.png',
             fit: BoxFit.cover,
-            errorBuilder: imageNetworkErrorBuilder,
+            errorBuilder: imageNetworkErrorBuilder as Widget Function(
+                BuildContext, Object, StackTrace?)?,
           )
         : Stack(
             fit: StackFit.expand,
             children: [
               Image.file(
-                File(thumbnailPath),
+                File(thumbnailPath!),
                 fit: BoxFit.cover,
-                errorBuilder: imageNetworkErrorBuilder,
+                errorBuilder: imageNetworkErrorBuilder as Widget Function(
+                    BuildContext, Object, StackTrace?)?,
               ),
               Center(
                 child: Icon(Icons.play_circle_outline_rounded,
@@ -416,9 +419,10 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
     if (type == FileType.image || type == FileType.gif)
       return Image(
         image:
-            CachedNetworkImageProvider(widget.post.halfUrl ?? widget.post.url),
+            CachedNetworkImageProvider(widget.post.halfUrl ?? widget.post.url!),
         fit: BoxFit.cover,
-        errorBuilder: imageNetworkErrorBuilder,
+        errorBuilder: imageNetworkErrorBuilder as Widget Function(
+            BuildContext, Object, StackTrace?)?,
         loadingBuilder: kLoadingBuilder,
       );
     else if (type == FileType.video) {
@@ -426,19 +430,19 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
         return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
           try {
-            final InViewState inViewState = InViewNotifierList.of(context);
+            final InViewState? inViewState = InViewNotifierList.of(context);
             if (inViewState == null) return thumb;
 
-            inViewState.addContext(context: context, id: widget.post.url);
-            final Size size = _controller.value.size;
+            inViewState.addContext(context: context, id: widget.post.url!);
+            final Size? size = _controller?.value.size;
             if (size == null) return thumb;
             return AnimatedBuilder(
                 animation: inViewState,
                 builder: (context, snapshot) {
-                  if (inViewState.inView(widget.post.url)) {
-                    _controller.play();
+                  if (inViewState.inView(widget.post.url!)) {
+                    _controller!.play();
                   } else {
-                    _controller.pause();
+                    _controller!.pause();
                   }
                   return ClipRect(
                       child: OverflowBox(
@@ -449,11 +453,9 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
                               fit: BoxFit.cover,
                               alignment: Alignment.center,
                               child: Container(
-                                  width: size?.width ?? deviceWidth(context),
-                                  height: size?.height ??
-                                      (deviceWidth(context) *
-                                          _controller.value.aspectRatio),
-                                  child: VideoPlayer(_controller)))));
+                                  width: size.width,
+                                  height: size.height,
+                                  child: VideoPlayer(_controller!)))));
                 });
           } catch (e) {
             return thumb;
@@ -467,17 +469,17 @@ class _MediaPostWidgetState extends State<MediaPostWidget> {
 }
 
 class DetailListMediaPost extends StatelessWidget {
-  final List<MediaPost> posts;
-  final int index;
+  final List<MediaPost>? posts;
+  final int? index;
 
-  const DetailListMediaPost({Key key, this.posts, this.index})
+  const DetailListMediaPost({Key? key, this.posts, this.index})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    PageController controller = PageController(initialPage: index);
+    PageController controller = PageController(initialPage: index!);
     return PageView(
       controller: controller,
-      children: posts.map((e) {
+      children: posts!.map((e) {
         if (e.type == 'VIDEO') return DetailVideoPost(e);
         if (e.type == 'PICTURE') return DetailImagePost(e);
         return SizedBox();
@@ -496,15 +498,15 @@ class DetailImagePost extends StatefulWidget {
 
 class _DetailImagePostState extends State<DetailImagePost> {
   bool _isLike = false;
-  PostBloc _postBloc;
-  MediaPost _post;
+  PostBloc? _postBloc;
+  MediaPost? _post;
 
   @override
   void initState() {
     _post = widget.post;
     if (AuthBloc.instance.userModel != null)
       _isLike =
-          widget.post.userLikeIds.contains(AuthBloc.instance.userModel.id);
+          widget.post.userLikeIds!.contains(AuthBloc.instance.userModel!.id);
     super.initState();
   }
 
@@ -513,12 +515,12 @@ class _DetailImagePostState extends State<DetailImagePost> {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
       if (AuthBloc.instance.userModel != null)
-        _postBloc.getOneMediaPost(widget.post.id).then((res) {
+        _postBloc!.getOneMediaPost(widget.post.id).then((res) {
           if (res.isSuccess)
             setState(() {
               _post = res.data;
               _isLike =
-                  _post.userLikeIds.contains(AuthBloc.instance.userModel.id);
+                  _post!.userLikeIds!.contains(AuthBloc.instance.userModel!.id);
             });
           else
             showToast(res.errMessage, context);
@@ -537,7 +539,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
             child: PhotoView(
               backgroundDecoration: BoxDecoration(color: Colors.black87),
               imageProvider: CachedNetworkImageProvider(
-                _post.halfUrl ?? _post.url,
+                _post!.halfUrl ?? _post!.url!,
               ),
               errorBuilder: (_, __, ___) => SizedBox.shrink(),
               loadingBuilder: (context, event) => Center(
@@ -573,18 +575,19 @@ class _DetailImagePostState extends State<DetailImagePost> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         if (AuthBloc.instance.userModel == null) {
                           LoginPage.navigatePush();
                           return;
                         }
                         _isLike = !_isLike;
                         if (_isLike) {
-                          _post.like++;
-                          _postBloc.likeMediaPost(_post.id);
+                          _post!.like = _post!.like! + 1;
+                          _postBloc!.likeMediaPost(_post!.id);
                         } else {
-                          if (_post.like > 0) _post.like--;
-                          _postBloc.unlikeMediaPost(_post.id);
+                          if (_post!.like! > 0) _post!.like = _post!.like! - 1;
+                          _postBloc!.unlikeMediaPost(_post!.id);
                         }
                         setState(() {});
                       },
@@ -614,7 +617,8 @@ class _DetailImagePostState extends State<DetailImagePost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () async {audioCache.play('tab3.mp3');
+                      onTap: () async {
+                        audioCache.play('tab3.mp3');
                         // if (AuthBloc.instance.userModel == null) {
                         //   await navigatorKey.currentState.maybePop();
                         //   LoginPage.navigatePush();
@@ -643,7 +647,8 @@ class _DetailImagePostState extends State<DetailImagePost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         String content =
                             widget.post.dynamicLink?.shortLink ?? '';
                         shareTo(context,
@@ -695,16 +700,17 @@ class _DetailImagePostState extends State<DetailImagePost> {
                     width: 5,
                   ),
                   Text(
-                    _post.like?.toString() ?? '0',
+                    _post!.like?.toString() ?? '0',
                     style: ptSmall().copyWith(color: Colors.white),
                   ),
                   Spacer(),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showComment(widget.post, context);
                     },
                     child: Text(
-                      '${widget.post?.commentIds?.length.toString() ?? '0'} bình luận',
+                      '${widget.post.commentIds?.length.toString() ?? '0'} bình luận',
                       style: ptSmall().copyWith(color: Colors.white),
                     ),
                   ),
@@ -720,7 +726,7 @@ class _DetailImagePostState extends State<DetailImagePost> {
 
 class DetailVideoPost extends StatefulWidget {
   final MediaPost post;
-  final int scaleW, scaleH;
+  final int? scaleW, scaleH;
   DetailVideoPost(this.post, {this.scaleW, this.scaleH});
 
   @override
@@ -728,23 +734,23 @@ class DetailVideoPost extends StatefulWidget {
 }
 
 class _DetailVideoPostState extends State<DetailVideoPost> {
-  VideoPlayerController _controller;
+  late VideoPlayerController _controller;
   bool videoEnded = false;
   bool _isLike = false;
-  PostBloc _postBloc;
-  MediaPost _post;
+  PostBloc? _postBloc;
+  MediaPost? _post;
 
   @override
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
       if (AuthBloc.instance.userModel != null) {
-        _postBloc.getOneMediaPost(widget.post.id).then((res) {
+        _postBloc!.getOneMediaPost(widget.post.id).then((res) {
           if (res.isSuccess)
             setState(() {
               _post = res.data;
               _isLike =
-                  _post.userLikeIds.contains(AuthBloc.instance.userModel.id);
+                  _post!.userLikeIds!.contains(AuthBloc.instance.userModel!.id);
             });
           else
             showToast(res.errMessage, context);
@@ -759,9 +765,9 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
     _post = widget.post;
     if (AuthBloc.instance.userModel != null)
       _isLike =
-          widget.post.userLikeIds.contains(AuthBloc.instance.userModel.id);
+          widget.post.userLikeIds!.contains(AuthBloc.instance.userModel!.id);
     super.initState();
-    _controller = VideoPlayerController.network(widget.post.url)
+    _controller = VideoPlayerController.network(widget.post.url!)
       ..initialize().then(
         (_) {
           if (mounted)
@@ -797,7 +803,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
             bottom: 0,
             child: Container(
               child: Center(
-                child: _controller.value.initialized
+                child: _controller.value.isInitialized
                     ? AspectRatio(
                         aspectRatio: _controller.value.aspectRatio,
                         child: VideoPlayer(_controller),
@@ -834,18 +840,19 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         if (AuthBloc.instance.userModel == null) {
                           LoginPage.navigatePush();
                           return;
                         }
                         _isLike = !_isLike;
                         if (_isLike) {
-                          _post.like++;
-                          _postBloc.likeMediaPost(_post.id);
+                          _post!.like = _post!.like! + 1;
+                          _postBloc!.likeMediaPost(_post!.id);
                         } else {
-                          if (_post.like > 0) _post.like--;
-                          _postBloc.unlikeMediaPost(_post.id);
+                          if (_post!.like! > 0) _post!.like = _post!.like! - 1;
+                          _postBloc!.unlikeMediaPost(_post!.id);
                         }
                         setState(() {});
                       },
@@ -875,7 +882,8 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         showComment(_post, context);
                       },
                       child: Row(
@@ -899,7 +907,8 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {audioCache.play('tab3.mp3');
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
                         String content =
                             widget.post.dynamicLink?.shortLink ?? '';
                         shareTo(context,
@@ -951,16 +960,17 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
                     width: 5,
                   ),
                   Text(
-                    _post.like?.toString() ?? '0',
+                    _post!.like?.toString() ?? '0',
                     style: ptSmall().copyWith(color: Colors.white),
                   ),
                   Spacer(),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showComment(widget.post, context);
                     },
                     child: Text(
-                      '${widget.post?.commentIds?.length.toString() ?? '0'} bình luận',
+                      '${widget.post.commentIds?.length.toString() ?? '0'} bình luận',
                       style: ptSmall().copyWith(color: Colors.white),
                     ),
                   ),
@@ -996,7 +1006,7 @@ class _DetailVideoPostState extends State<DetailVideoPost> {
   }
 }
 
-showComment(MediaPost postModel, BuildContext context) {
+showComment(MediaPost? postModel, BuildContext context) {
   showModalBottomSheet(
       useRootNavigator: true,
       context: context,

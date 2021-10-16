@@ -6,12 +6,12 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:dio/dio.dart';
 
 class CustomFloatingSearchBar extends StatefulWidget {
-  final Function(double lat, double long, String name) onSearch;
+  final Function(double? lat, double? long, String? name)? onSearch;
   final bool automaticallyImplyBackButton;
-  final List<Widget> actions;
+  final List<Widget>? actions;
 
   const CustomFloatingSearchBar(
-      {Key key, this.onSearch, this.automaticallyImplyBackButton = false, this.actions})
+      {Key? key, this.onSearch, this.automaticallyImplyBackButton = false, this.actions})
       : super(key: key);
 
   @override
@@ -56,10 +56,10 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
         print(request);
         final response = await Dio().get(request);
         if (response.statusCode == 200) {
-          final List list = response.data["predictions"];
+          final List? list = response.data["predictions"];
           setState(() {
             _autoCompletePlaces = List<PredictionPlace>.generate(
-              list.length,
+              list!.length,
               (index) => PredictionPlace.fromJson(list[index]),
             );
           });
@@ -79,7 +79,7 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
         FloatingSearchBarAction.searchToClear(
           showIfClosed: false,
         ),
-        if (widget.actions!=null) ...widget.actions
+        if (widget.actions!=null) ...widget.actions!
       ],
       builder: (context, transition) {
         return _autoCompletePlaces.length == 0 || !_isFocus
@@ -112,9 +112,9 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
                                 if (response.statusCode == 200) {
                                   final data = response.data["result"];
                                   final place = Place.fromJson(data);
-                                  widget.onSearch(place.geometry.location.lat,
-                                      place.geometry.location.lng, place.name);
-                                  FloatingSearchBar.of(context).close();
+                                  widget.onSearch!(place.geometry!.location!.lat,
+                                      place.geometry!.location!.lng, place.name);
+                                  FloatingSearchBar.of(context)!.close();
                                 }
                               },
                               child: Container(
@@ -141,7 +141,7 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
                                     ),
                                     Expanded(
                                         child: Text(
-                                      _autoCompletePlaces[index].description,
+                                      _autoCompletePlaces[index].description!,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: ptBody()
@@ -167,10 +167,10 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
 }
 
 class PredictionPlace {
-  String description;
-  String placeId;
-  String reference;
-  List<String> types;
+  String? description;
+  String? placeId;
+  String? reference;
+  List<String>? types;
 
   PredictionPlace({this.description, this.placeId, this.reference, this.types});
 
@@ -192,8 +192,8 @@ class PredictionPlace {
 }
 
 class Place {
-  Geometry geometry;
-  String name;
+  Geometry? geometry;
+  String? name;
 
   Place({this.geometry, this.name});
 
@@ -207,7 +207,7 @@ class Place {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.geometry != null) {
-      data['geometry'] = this.geometry.toJson();
+      data['geometry'] = this.geometry!.toJson();
     }
     data['name'] = this.name;
     return data;
@@ -215,7 +215,7 @@ class Place {
 }
 
 class Geometry {
-  Location location;
+  Location? location;
 
   Geometry({this.location});
 
@@ -228,15 +228,15 @@ class Geometry {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.location != null) {
-      data['location'] = this.location.toJson();
+      data['location'] = this.location!.toJson();
     }
     return data;
   }
 }
 
 class Location {
-  double lat;
-  double lng;
+  double? lat;
+  double? lng;
 
   Location({this.lat, this.lng});
 

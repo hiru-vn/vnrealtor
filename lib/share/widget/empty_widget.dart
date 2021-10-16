@@ -1,12 +1,12 @@
 import 'package:datcao/share/import.dart';
 
 class EmptyWidget extends StatelessWidget {
-  final String assetImg;
-  final String title;
-  final String content;
+  final String? assetImg;
+  final String? title;
+  final String? content;
 
   const EmptyWidget(
-      {Key key,this.assetImg, this.title, this.content})
+      {Key? key,this.assetImg, this.title, this.content})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class EmptyWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (assetImg!=null) SizedBox(
-              width: deviceWidth(context) / 1.7, child: Image.asset(assetImg)),
+              width: deviceWidth(context) / 1.7, child: Image.asset(assetImg!)),
           if (title != null) ...[
             SizedBox(
               height: 20,
@@ -23,7 +23,7 @@ class EmptyWidget extends StatelessWidget {
             SizedBox(
               width: deviceWidth(context) / 1.25,
               child: Text(
-                title,
+                title!,
                 style: ptBigTitle(),
                 textAlign: TextAlign.center,
               ),
@@ -36,7 +36,7 @@ class EmptyWidget extends StatelessWidget {
             SizedBox(
               width: deviceWidth(context) / 1.4,
               child: Text(
-                content,
+                content!,
                 textAlign: TextAlign.center,
                 style: ptBody().copyWith(color: Colors.black54),
               ),

@@ -8,16 +8,16 @@ import 'spin_loader.dart';
 
 class VideoViewNetwork extends StatefulWidget {
   final String url;
-  final String tag;
-  final int w, h;
-  VideoViewNetwork({@required this.url, this.tag, this.w, this.h});
+  final String? tag;
+  final int? w, h;
+  VideoViewNetwork({required this.url, this.tag, this.w, this.h});
 
   @override
   _VideoViewNetworkState createState() => _VideoViewNetworkState();
 }
 
 class _VideoViewNetworkState extends State<VideoViewNetwork> {
-  String thumbnailPath;
+  String? thumbnailPath;
   @override
   void initState() {
     _getThumbnail();
@@ -62,9 +62,9 @@ class _VideoViewNetworkState extends State<VideoViewNetwork> {
             : Stack(
                 children: [
                   Image.file(
-                    File(thumbnailPath),
+                    File(thumbnailPath!),
                     fit: BoxFit.cover,
-                    errorBuilder: imageNetworkErrorBuilder,
+                    errorBuilder: imageNetworkErrorBuilder as Widget Function(BuildContext, Object, StackTrace?)?,
                   ),
                   Positioned(
                     bottom: 0,
@@ -84,9 +84,9 @@ class _VideoViewNetworkState extends State<VideoViewNetwork> {
 }
 
 class DetailVideoScreen extends StatefulWidget {
-  final String url;
-  final String tag;
-  final int scaleW, scaleH;
+  final String? url;
+  final String? tag;
+  final int? scaleW, scaleH;
   DetailVideoScreen(this.url, {this.tag, this.scaleW, this.scaleH});
 
   @override
@@ -94,13 +94,13 @@ class DetailVideoScreen extends StatefulWidget {
 }
 
 class _DetailVideoScreenState extends State<DetailVideoScreen> {
-  VideoPlayerController _controller;
+  late VideoPlayerController _controller;
   bool videoEnded = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.url)
+    _controller = VideoPlayerController.network(widget.url!)
       ..initialize().then(
         (_) {
           if (mounted)
@@ -136,7 +136,7 @@ class _DetailVideoScreenState extends State<DetailVideoScreen> {
             bottom: 0,
             child: Container(
               child: Center(
-                child: _controller.value.initialized
+                child: _controller.value.isInitialized
                     ? AspectRatio(
                         aspectRatio: _controller.value.aspectRatio,
                         child: VideoPlayer(_controller),
@@ -195,9 +195,9 @@ class _DetailVideoScreenState extends State<DetailVideoScreen> {
 }
 
 class DetailVideoScreenCache extends StatefulWidget {
-  final String path;
-  final String tag;
-  final int scaleW, scaleH;
+  final String? path;
+  final String? tag;
+  final int? scaleW, scaleH;
   DetailVideoScreenCache(this.path, {this.tag, this.scaleW, this.scaleH});
 
   @override
@@ -205,13 +205,13 @@ class DetailVideoScreenCache extends StatefulWidget {
 }
 
 class _DetailVideoScreenCacheState extends State<DetailVideoScreenCache> {
-  VideoPlayerController _controller;
+  late VideoPlayerController _controller;
   bool videoEnded = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.file(File(widget.path))
+    _controller = VideoPlayerController.file(File(widget.path!))
       ..initialize().then(
         (_) {
           if (mounted)
@@ -247,7 +247,7 @@ class _DetailVideoScreenCacheState extends State<DetailVideoScreenCache> {
             bottom: 0,
             child: Container(
               child: Center(
-                child: _controller.value.initialized
+                child: _controller.value.isInitialized
                     ? AspectRatio(
                         aspectRatio: _controller.value.aspectRatio,
                         child: VideoPlayer(_controller),

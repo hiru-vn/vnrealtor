@@ -31,9 +31,9 @@ void showWaitingDialog(BuildContext context) {
 
 closeLoading() => BotToast.closeAllLoading();
 
-Future<bool> showConfirmDialog(BuildContext context, String errorMessage,
-    {@required TapConfirm confirmTap,
-    @required GlobalKey<NavigatorState> navigatorKey}) async {
+Future<bool?> showConfirmDialog(BuildContext context, String errorMessage,
+    {required TapConfirm confirmTap,
+    required GlobalKey<NavigatorState> navigatorKey}) async {
   final val = await showDialog(
       context: context,
       barrierDismissible: false,
@@ -45,16 +45,16 @@ Future<bool> showConfirmDialog(BuildContext context, String errorMessage,
                 child: Text('Huỷ',
                     style: TextStyle(color: Theme.of(context).primaryColor)),
                 onPressed: () {
-                  navigatorKey.currentState.pop(false);
-                  return false;
+                  navigatorKey.currentState!.pop(false);
+                  return;
                 }),
             FlatButton(
               child: Text('Ok',
                   style: TextStyle(color: Theme.of(context).primaryColor)),
               onPressed: () {
                 confirmTap();
-                navigatorKey.currentState.pop(true);
-                return true;
+                navigatorKey.currentState!.pop(true);
+                return;
               },
             ),
             SizedBox(
@@ -63,42 +63,42 @@ Future<bool> showConfirmDialog(BuildContext context, String errorMessage,
           ],
         );
       });
-  return val as bool;
+  return val as bool?;
 }
 
-Future<bool> showAlertDialog(BuildContext context, String errorMessage,
-    {TapConfirm confirmTap,
-    String confirmLabel,
+Future<bool?> showAlertDialog(BuildContext context, String errorMessage,
+    {TapConfirm? confirmTap,
+    String? confirmLabel,
     bool showClose = false,
-    @required GlobalKey<NavigatorState> navigatorKey}) async {
+    required GlobalKey<NavigatorState> navigatorKey}) async {
   Color primaryColor = Theme.of(context).primaryColor;
   return await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext ctx) {
         return AlertDialog(
-          content: Text(errorMessage ?? '', style: TextStyle(fontSize: 15.0)),
+          content: Text(errorMessage, style: TextStyle(fontSize: 15.0)),
           actions: <Widget>[
             if (showClose)
               FlatButton(
                   child: Text('Close', style: TextStyle(color: primaryColor)),
-                  onPressed: () => navigatorKey.currentState.pop()),
+                  onPressed: () => navigatorKey.currentState!.pop()),
             FlatButton(
                 child: Text(confirmLabel != null ? confirmLabel : 'Ok',
                     style: TextStyle(color: primaryColor)),
                 onPressed: confirmTap != null
                     ? confirmTap
-                    : () => navigatorKey.currentState.pop(true)),
+                    : () => navigatorKey.currentState!.pop(true)),
           ],
         );
       });
 }
 
-Future<bool> showPasswordDialog(BuildContext context,
-    {TapConfirm confirmTap,
-    String content,
-    TextEditingController passController,
-    @required GlobalKey<NavigatorState> navigatorKey}) async {
+Future<bool?> showPasswordDialog(BuildContext context,
+    {TapConfirm? confirmTap,
+    String? content,
+    TextEditingController? passController,
+    required GlobalKey<NavigatorState> navigatorKey}) async {
   return await showDialog(
       context: context,
       barrierDismissible: false,
@@ -123,12 +123,12 @@ Future<bool> showPasswordDialog(BuildContext context,
             FlatButton(
                 child: Text('Close',
                     style: TextStyle(color: Theme.of(context).primaryColor)),
-                onPressed: () => navigatorKey.currentState.pop(false)),
+                onPressed: () => navigatorKey.currentState!.pop(false)),
             FlatButton(
               child: Text('Ok',
                   style: TextStyle(color: Theme.of(context).primaryColor)),
               onPressed: () {
-                navigatorKey.currentState.pop(true);
+                navigatorKey.currentState!.pop(true);
                 if (confirmTap != null) confirmTap();
               },
             ),
@@ -139,21 +139,21 @@ Future<bool> showPasswordDialog(BuildContext context,
 
 Future showAlertWithTitleDialog(
     BuildContext context, String title, String content,
-    {String firstAction,
-    TapConfirm firstTap,
-    String secondAction,
-    TapConfirm secondTap,
-    String thirdAction,
-    TapConfirm thirdTap,
-    @required GlobalKey<NavigatorState> navigatorKey}) {
-  List<Widget> actions = new List<Widget>();
+    {String? firstAction,
+    TapConfirm? firstTap,
+    String? secondAction,
+    TapConfirm? secondTap,
+    String? thirdAction,
+    TapConfirm? thirdTap,
+    required GlobalKey<NavigatorState> navigatorKey}) {
+  List<Widget> actions =  <Widget>[];
   Color primaryColor = Theme.of(context).primaryColor;
 
   if (thirdAction != null && thirdAction.isNotEmpty) {
     actions.add(new FlatButton(
       child: Text(thirdAction, style: TextStyle(color: primaryColor)),
       onPressed:
-          thirdTap != null ? thirdTap : () => navigatorKey.currentState.pop(),
+          thirdTap != null ? thirdTap : () => navigatorKey.currentState!.pop(),
     ));
   }
 
@@ -161,14 +161,14 @@ Future showAlertWithTitleDialog(
     actions.add(new FlatButton(
       child: Text(secondAction, style: TextStyle(color: primaryColor)),
       onPressed:
-          secondTap != null ? secondTap : () => navigatorKey.currentState.pop(),
+          secondTap != null ? secondTap : () => navigatorKey.currentState!.pop(),
     ));
   }
 
   actions.add(new FlatButton(
     child: Text(firstAction ?? 'Ok', style: TextStyle(color: primaryColor)),
     onPressed:
-        firstTap != null ? firstTap : () => navigatorKey.currentState.pop(),
+        firstTap != null ? firstTap : () => navigatorKey.currentState!.pop(),
   ));
 
   return showDialog(

@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 enum FileType { document, image, video, gif }
 
 class FileUtil {
-  static FileType getFbUrlFileType(String path) {
+  static FileType? getFbUrlFileType(String? path) {
     if (path == null) return null;
 
     if (path.toLowerCase().contains('.png') ||
@@ -25,7 +25,7 @@ class FileUtil {
     return null;
   }
 
-  static FileType getFilePathType(String path) {
+  static FileType? getFilePathType(String? path) {
     if (path == null) return null;
 
     if (Path.extension(path).toLowerCase() == '.png' ||
@@ -41,7 +41,7 @@ class FileUtil {
   }
 
   static Future<File> resizeImage(Uint8List data, int resizeWidth) async {
-    img.Image image = img.decodeImage(data);
+    img.Image image = img.decodeImage(data)!;
 
     // Resize the image to a 240? thumbnail (maintaining the aspect ratio).
     img.Image thumbnail = img.copyResize(image, width: resizeWidth);
@@ -54,7 +54,7 @@ class FileUtil {
 
   static Future<File> resizeImageOverride(
       String filePath, int resizeWidth) async {
-    img.Image image = img.decodeImage(File(filePath).readAsBytesSync());
+    img.Image image = img.decodeImage(File(filePath).readAsBytesSync())!;
 
     // Resize the image to a 240? thumbnail (maintaining the aspect ratio).
     img.Image thumbnail = img.copyResize(image, width: resizeWidth);
@@ -63,7 +63,7 @@ class FileUtil {
   }
 
   static Future<String> uploadFireStorage(String filePath,
-      {String path, bool isResize = true, int resizeWidth = 1080}) async {
+      {String? path, bool isResize = true, int resizeWidth = 1080}) async {
     if (filePath == null) return '';
     File file = File(filePath);
     if ((await file.length()) > 20 * 1024 * 1024) {

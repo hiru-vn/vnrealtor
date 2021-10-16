@@ -5,15 +5,15 @@ import 'package:datcao/share/widget/base_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomButton extends StatelessWidget {
-  final String title;
-  final String image;
-  final String imageSvg;
-  final double sizeSvg;
+  final String? title;
+  final String? image;
+  final String? imageSvg;
+  final double? sizeSvg;
   final bool isLoading;
-  final double size;
-  final VoidCallback callback;
-  final Color color;
-  final TextStyle style;
+  final double? size;
+  final VoidCallback? callback;
+  final Color? color;
+  final TextStyle? style;
   const CustomButton(
       {this.title,
       this.image,
@@ -47,7 +47,7 @@ class CustomButton extends StatelessWidget {
                   children: [
                     image != null
                         ? Image.asset(
-                            image,
+                            image!,
                             width: 24,
                           )
                         : const SizedBox(),
@@ -56,7 +56,7 @@ class CustomButton extends StatelessWidget {
                             width: sizeSvg??25,
                             height: sizeSvg??25,
                             child: SvgPicture.asset(
-                              imageSvg,
+                              imageSvg!,
                               color: AppColors.mainColor,
                               semanticsLabel: imageSvg,
                               fit: BoxFit.contain,
@@ -65,7 +65,7 @@ class CustomButton extends StatelessWidget {
                         : const SizedBox(),
                     widthSpace(10),
                     Text(
-                      title,
+                      title!,
                       style: style ??
                           ptButton().copyWith(color: AppColors.mainColor),
                     )

@@ -11,27 +11,27 @@ import 'package:datcao/share/widget/load_more.dart';
 import './widget/suggest_list_group.dart';
 
 class GroupPage extends StatefulWidget {
-  const GroupPage({Key key}) : super(key: key);
+  const GroupPage({Key? key}) : super(key: key);
 
   @override
   _GroupPageState createState() => _GroupPageState();
 }
 
 class _GroupPageState extends State<GroupPage> {
-  GroupBloc _groupBloc;
+  GroupBloc? _groupBloc;
 
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
-      Future.delayed(Duration(seconds: 2), () => _groupBloc.init());
+      _groupBloc = Provider.of<GroupBloc>(context);
+      Future.delayed(Duration(seconds: 2), () => _groupBloc!.init());
     }
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    _groupBloc.groupScrollController = ScrollController();
+    _groupBloc!.groupScrollController = ScrollController();
     return Scaffold(
         appBar: AppBar1(
           bgColor: ptSecondaryColor(context),
@@ -41,25 +41,26 @@ class _GroupPageState extends State<GroupPage> {
           automaticallyImplyLeading: true,
         ),
         body: LoadMoreScrollView(
-            scrollController: _groupBloc.groupScrollController,
+            scrollController: _groupBloc!.groupScrollController,
             onLoadMore: () {
-              _groupBloc.loadMoreNewFeedGroup();
+              _groupBloc!.loadMoreNewFeedGroup();
             },
             list: RefreshIndicator(
                 color: ptPrimaryColor(context),
-                onRefresh: () async {audioCache.play('tab3.mp3');
-                  _groupBloc.getNewFeedGroup(
+                onRefresh: () async {
+                  audioCache.play('tab3.mp3');
+                  await _groupBloc!.getNewFeedGroup(
                       filter:
                           GraphqlFilter(limit: 10, order: "{updatedAt: -1}"));
-                  return true;
+                  return;
                 },
                 child: SingleChildScrollView(
                   controller: GroupBloc.instance.groupScrollController,
                   child: Column(
                     children: [
                       _buildHeader(),
-                      if (_groupBloc.isReloadFeed) PostSkeleton(),
-                      _groupBloc.feed.length == 0
+                      if (_groupBloc!.isReloadFeed) PostSkeleton(),
+                      _groupBloc!.feed.length == 0
                           ? ConstrainedBox(
                               constraints: BoxConstraints(
                                   minHeight: deviceHeight(context) / 2),
@@ -71,15 +72,15 @@ class _GroupPageState extends State<GroupPage> {
                           : ListView.builder(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
-                              itemCount: _groupBloc.feed.length,
+                              itemCount: _groupBloc!.feed.length,
                               itemBuilder: (context, index) {
-                                final item = _groupBloc.feed[index];
+                                final item = _groupBloc!.feed[index];
                                 return PostWidget(item);
                               },
                             ),
-                      if (_groupBloc.isLoadMoreFeed &&
-                          !_groupBloc.isEndFeed &&
-                          _groupBloc.feed.length > 9)
+                      if (_groupBloc!.isLoadMoreFeed &&
+                          !_groupBloc!.isEndFeed &&
+                          _groupBloc!.feed.length > 9)
                         PostSkeleton(
                           count: 1,
                         ),
@@ -159,8 +160,8 @@ class _GroupPageState extends State<GroupPage> {
                   SizedBox(width: 12),
                 ]),
           ),
-          if (_groupBloc.suggestGroup != null &&
-              _groupBloc.suggestGroup.length > 0) ...[
+          if (_groupBloc!.suggestGroup != null &&
+              _groupBloc!.suggestGroup!.length > 0) ...[
             SizedBox(height: 15),
             SuggestListGroup()
           ]
@@ -170,7 +171,7 @@ class _GroupPageState extends State<GroupPage> {
   }
 
   Widget _buildButton(String text, IconData icon, Function onTap,
-      {int counter}) {
+      {int? counter}) {
     return GestureDetector(
       onTap: () {
         onTap();

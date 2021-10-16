@@ -6,22 +6,22 @@ import 'package:datcao/share/import.dart';
 import '../profile/profile_other_page.dart';
 
 class SuggestListUser extends StatefulWidget {
-  final List<UserModel> users;
-  const SuggestListUser({Key key, this.users}) : super(key: key);
+  final List<UserModel>? users;
+  const SuggestListUser({Key? key, this.users}) : super(key: key);
 
   @override
   _SuggestListUserState createState() => _SuggestListUserState();
 }
 
 class _SuggestListUserState extends State<SuggestListUser> {
-  AuthBloc authBloc;
-  UserBloc userBloc;
+  AuthBloc? authBloc;
+  late UserBloc userBloc;
 
   @override
   void didChangeDependencies() {
     if (authBloc == null) {
-      authBloc = Provider.of(context);
-      userBloc = Provider.of(context);
+      authBloc = Provider.of<AuthBloc>(context);
+      userBloc = Provider.of<UserBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -42,7 +42,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
                 padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                 child: Text(
                   AuthBloc.firstLogin
-                      ? 'Chào mừng, ${authBloc.userModel.name}'
+                      ? 'Chào mừng, ${authBloc!.userModel!.name}'
                       : 'Gợi ý cho bạn',
                   style: ptBigTitle().copyWith(color: Colors.black),
                 ),
@@ -86,17 +86,17 @@ class _SuggestListUserState extends State<SuggestListUser> {
                               GestureDetector(
                                 onTap: () {audioCache.play('tab3.mp3');
                                   ProfileOtherPage.navigate(
-                                      widget.users[index]);
+                                      widget.users![index]);
                                 },
                                 child: CircleAvatar(
                                   radius: 30,
                                   backgroundColor: Colors.white,
-                                  backgroundImage: widget.users[index].avatar !=
+                                  backgroundImage: (widget.users![index].avatar !=
                                           null
                                       ? CachedNetworkImageProvider(
-                                          widget.users[index].avatar)
+                                          widget.users![index].avatar!)
                                       : AssetImage(
-                                          'assets/image/default_avatar.png'),
+                                          'assets/image/default_avatar.png')) as ImageProvider<Object>?,
                                 ),
                               ),
                               Expanded(
@@ -106,10 +106,10 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                   GestureDetector(
                                     onTap: () {audioCache.play('tab3.mp3');
                                       ProfileOtherPage.navigate(
-                                          widget.users[index]);
+                                          widget.users![index]);
                                     },
                                     child: Text(
-                                      widget.users[index].name,
+                                      widget.users![index].name!,
                                       style: ptBody().copyWith(
                                           fontWeight: FontWeight.w600),
                                       textAlign: TextAlign.center,
@@ -118,12 +118,12 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                   GestureDetector(
                                     onTap: () {audioCache.play('tab3.mp3');
                                       ProfileOtherPage.navigate(
-                                          widget.users[index]);
+                                          widget.users![index]);
                                     },
                                     child: Text(
                                       (() {
                                         final role = UserBloc.getRole(
-                                            widget.users[index]);
+                                            widget.users![index]);
                                         if (role == UserRole.company)
                                           return 'Công ty';
                                         if (role == UserRole.agent)
@@ -143,18 +143,18 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                     LoginPage.navigatePush();
                                     return;
                                   }
-                                  authBloc.userModel.followingIds
-                                      .add(widget.users[index].id);
+                                  authBloc!.userModel!.followingIds!
+                                      .add(widget.users![index].id);
 
                                   setState(() {});
                                   final res = await userBloc
-                                      .followUser(widget.users[index].id);
+                                      .followUser(widget.users![index].id);
 
                                   if (res.isSuccess) {
                                   } else {
                                     showToast(res.errMessage, context);
-                                    authBloc.userModel.followingIds
-                                        .remove(widget.users[index].id);
+                                    authBloc!.userModel!.followingIds!
+                                        .remove(widget.users![index].id);
 
                                     setState(() {});
                                   }
@@ -166,7 +166,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                     border: (AuthBloc.instance.userModel
                                                 ?.followingIds
                                                 ?.contains(
-                                                    widget.users[index].id) ==
+                                                    widget.users![index].id) ==
                                             true)
                                         ? Border.all(color: Colors.black12)
                                         : Border.all(
@@ -175,7 +175,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                     color: (AuthBloc.instance.userModel
                                                 ?.followingIds
                                                 ?.contains(
-                                                    widget.users[index].id) ==
+                                                    widget.users![index].id) ==
                                             true)
                                         ? Colors.transparent
                                         : ptSecondaryColor(context),
@@ -185,20 +185,20 @@ class _SuggestListUserState extends State<SuggestListUser> {
                                     child: Text(
                                       AuthBloc.instance.userModel == null
                                           ? 'Theo dõi'
-                                          : (AuthBloc.instance.userModel
-                                                  .followerIds
+                                          : (AuthBloc.instance.userModel!
+                                                  .followerIds!
                                                   .contains(
-                                                      widget.users[index].id)
-                                              ? ((AuthBloc.instance.userModel
-                                                      .followingIds
+                                                      widget.users![index].id)
+                                              ? AuthBloc.instance.userModel!
+                                                      .followingIds!
                                                       .contains(widget
-                                                          .users[index].id)
+                                                          .users![index].id)
                                                   ? 'Bạn bè'
-                                                  : 'Theo dõi lại'))
-                                              : (AuthBloc.instance.userModel
-                                                      .followingIds
+                                                  : 'Theo dõi lại'
+                                              : (AuthBloc.instance.userModel!
+                                                      .followingIds!
                                                       .contains(widget
-                                                          .users[index].id)
+                                                          .users![index].id)
                                                   ? 'Đã theo dõi'
                                                   : 'Theo dõi')),
                                       style: ptSmall().copyWith(
@@ -220,7 +220,7 @@ class _SuggestListUserState extends State<SuggestListUser> {
                     separatorBuilder: (context, index) => SizedBox(
                           width: 10,
                         ),
-                    itemCount: widget.users.length),
+                    itemCount: widget.users!.length),
               )
             ],
           )),

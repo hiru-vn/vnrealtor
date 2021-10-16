@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/info_post_page.dart';
@@ -27,22 +28,22 @@ class CreatePostPage extends StatefulWidget {
 
 class _CreatePostPageState extends State<CreatePostPage> {
   FocusNode _activityNode = FocusNode();
-  LatLng _pos;
-  String _placeName;
-  DateTime _expirationDate;
+  LatLng? _pos;
+  String? _placeName;
+  DateTime? _expirationDate;
   String _shareWith = 'public';
   TextEditingController _contentC = TextEditingController();
   List<String> _cacheMedias = [];
   List<String> _cachePic = [];
   List<String> _urlMedias = [];
-  PostBloc _postBloc;
+  PostBloc? _postBloc;
   bool isProcess = false;
-  List<LatLng> _polygonPoints = [];
-  List<UserModel> _tagUsers = [];
-  double _price;
-  double _area;
-  String _type;
-  String _need;
+  List<LatLng>? _polygonPoints = [];
+  List<UserModel>? _tagUsers = [];
+  double? _price;
+  double? _area;
+  String? _type;
+  String? _need;
   List<UrlPreviewData> links = [];
 
   @override
@@ -71,7 +72,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         await Future.delayed(Duration(milliseconds: 500));
       }
 
-      final res = await _postBloc.createPost(
+      final res = await _postBloc!.createPost(
           _contentC.text.trim(),
           _expirationDate?.toIso8601String(),
           _shareWith == 'public',
@@ -86,8 +87,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
               .where(
                   (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
               .toList(),
-          _polygonPoints,
-          _tagUsers.map((e) => e.id).toList(),
+          _polygonPoints!,
+          _tagUsers?.map((e) => e.id).toList()??[],
           _type,
           _need,
           _area,
@@ -138,11 +139,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     radius: 20,
                     backgroundColor: Colors.white,
                     backgroundImage:
-                        (AuthBloc.instance.userModel.avatar != null &&
-                                AuthBloc.instance.userModel.avatar != 'null')
+                        ((AuthBloc.instance.userModel!.avatar != null &&
+                                AuthBloc.instance.userModel!.avatar != 'null')
                             ? CachedNetworkImageProvider(
-                                AuthBloc.instance.userModel.avatar)
-                            : AssetImage('assets/image/default_avatar.png'),
+                                AuthBloc.instance.userModel!.avatar!)
+                            : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
                     child: VerifiedIcon(AuthBloc.instance.userModel?.role, 10),
                   ),
                   SizedBox(width: 10),
@@ -150,13 +151,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AuthBloc.instance.userModel.name ?? '',
+                        AuthBloc.instance.userModel!.name ?? '',
                         style: ptTitle(),
                       ),
                       Row(
                         children: [
                           Text(
-                            Formart.formatToWeekTime(DateTime.now()),
+                            Formart.formatToWeekTime(DateTime.now())!,
                             style: ptTiny().copyWith(color: Colors.black54),
                           ),
                           SizedBox(width: 12),
@@ -247,14 +248,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   context, 'Xác nhận xóa file này?',
                                   navigatorKey: navigatorKey, confirmTap: () {
                                 setState(() {
-                                  final url = _urlMedias.firstWhere(
+                                  final url = _urlMedias.firstWhereOrNull(
                                       (element) => element.contains(
                                           FileUtil.changeImageToJpg(
                                                   Path.basename(list[index]))
                                               .replaceAll(
                                                   new RegExp(r'(\?alt).*'), '')
-                                              .replaceAll(' ', '')),
-                                      orElse: () => null);
+                                              .replaceAll(' ', '')));
                                   if (url != null) {
                                     _cacheMedias.remove(list[index]);
                                     _cachePic.remove(list[index]);
@@ -342,13 +342,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               child: GestureDetector(
                                 onTap: () {
                                   audioCache.play('tab3.mp3');
-                                  launchURL(links[0].url);
+                                  launchURL(links[0].url!);
                                 },
                                 child: Column(
                                   children: [
                                     if (links[0].image != null)
                                       CachedNetworkImage(
-                                          imageUrl: links[0].image,
+                                          imageUrl: links[0].image!,
                                           fit: BoxFit.cover),
                                     Container(
                                       color: Colors.grey[100],
@@ -363,14 +363,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                               padding: const EdgeInsets.only(
                                                   bottom: 8.0),
                                               child: Text(
-                                                links[0].title,
+                                                links[0].title!,
                                                 style: ptTitle().copyWith(
                                                     color: Colors.black87),
                                               ),
                                             ),
                                           if (links[0].description != null)
                                             Text(
-                                              links[0].description +
+                                              links[0].description! +
                                                   (links[0].siteName != null
                                                       ? '  - từ ${links[0].siteName}'
                                                       : ''),
@@ -459,7 +459,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       setState(() {
                         _contentC.text = _contentC.text +
                             ' ' +
-                            _postBloc.hasTags
+                            _postBloc!.hasTags!
                                 .where((element) =>
                                     !_contentC.text.contains(element['value']))
                                 .toList()[index]['value']
@@ -476,7 +476,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           borderRadius: BorderRadius.circular(15)),
                       child: Center(
                         child: Text(
-                          _postBloc.hasTags
+                          _postBloc!.hasTags!
                               .where((element) =>
                                   !_contentC.text.contains(element['value']))
                               .toList()[index]['value']
@@ -486,7 +486,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ),
                   );
                 },
-                itemCount: _postBloc.hasTags
+                itemCount: _postBloc!.hasTags!
                     .where(
                         (element) => !_contentC.text.contains(element['value']))
                     .toList()
@@ -518,7 +518,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   (filePath) => FileUtil.uploadFireStorage(
                                       filePath,
                                       path:
-                                          'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
+                                          'posts/user_${AuthBloc.instance.userModel!.id}/${DateTime.now().millisecondsSinceEpoch}')));
                               setState(() {
                                 _urlMedias.addAll(listUrls);
                               });
@@ -544,7 +544,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            ImagePicker.pickImage(source: ImageSource.camera)
+                            ImagePicker().pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {
@@ -554,7 +554,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               final url = await FileUtil.uploadFireStorage(
                                   value.path,
                                   path:
-                                      'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
+                                      'posts/user_${AuthBloc.instance.userModel!.id}/${DateTime.now().millisecondsSinceEpoch}');
                               setState(() {
                                 _urlMedias.add(url);
                               });
@@ -574,7 +574,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     onTap: () {
                       audioCache.play('tab3.mp3');
                       PickCoordinates.navigate(
-                              polygon: _polygonPoints, position: _pos)
+                              polygon: _polygonPoints!, position: _pos)
                           .then((value) {
                         if (value == null) return;
                         setState(() {
@@ -625,7 +625,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               height: 10,
             ),
             // _buildForm(),
-            if (_placeName != null && _placeName.trim() != '')
+            if (_placeName != null && _placeName!.trim() != '')
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Text.rich(TextSpan(children: [
@@ -644,7 +644,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   TextSpan(
                       text: 'Gắn thẻ: ',
                       style: ptSmall().copyWith(color: Colors.black)),
-                  ..._tagUsers.map(
+                  ...(_tagUsers??[]).map(
                     (e) => TextSpan(
                         text: '${e.name}, ',
                         recognizer: new TapGestureRecognizer()
@@ -705,7 +705,7 @@ class CreatePostPageAppBar extends StatelessWidget
             Spacer(),
             FlatButton(
                 color: ptPrimaryColor(context),
-                onPressed: enableBtn ? createPost : null,
+                onPressed: enableBtn ? createPost as void Function()? : null,
                 child: Text(
                   'Đăng',
                   style: ptTitle().copyWith(color: Colors.white),

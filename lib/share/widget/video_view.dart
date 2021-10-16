@@ -8,16 +8,16 @@ import 'spin_loader.dart';
 
 class VideoViewNetwork extends StatefulWidget {
   final String url;
-  final String tag;
-  final int w, h;
-  VideoViewNetwork({@required this.url, this.tag, this.w, this.h});
+  final String? tag;
+  final int? w, h;
+  VideoViewNetwork({required this.url, this.tag, this.w, this.h});
 
   @override
   _VideoViewNetworkState createState() => _VideoViewNetworkState();
 }
 
 class _VideoViewNetworkState extends State<VideoViewNetwork> {
-  String thumbnailPath;
+  String? thumbnailPath;
   @override
   void initState() {
     _getThumbnail();
@@ -63,9 +63,9 @@ class _VideoViewNetworkState extends State<VideoViewNetwork> {
                 fit: StackFit.expand,
                 children: [
                   Image.file(
-                    File(thumbnailPath),
+                    File(thumbnailPath!),
                     fit: BoxFit.cover,
-                    errorBuilder: imageNetworkErrorBuilder,
+                    errorBuilder: imageNetworkErrorBuilder as Widget Function(BuildContext, Object, StackTrace?)?,
                   ),
                   Center(
                     child: Icon(Icons.play_circle_outline_rounded,

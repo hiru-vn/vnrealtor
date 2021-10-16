@@ -20,13 +20,13 @@ import 'package:datcao/utils/file_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class PageDetail extends StatefulWidget {
-  final PagesCreate page;
+  final PagesCreate? page;
   final bool isParamPageCreate;
-  const PageDetail({Key key, this.page, this.isParamPageCreate = false})
+  const PageDetail({Key? key, this.page, this.isParamPageCreate = false})
       : super(key: key);
 
-  static Future navigate(PagesCreate page, {bool isParamPageCreate = false}) {
-    return navigatorKey.currentState.push(
+  static Future navigate(PagesCreate? page, {bool isParamPageCreate = false}) {
+    return navigatorKey.currentState!.push(
       pageBuilder(
         PageDetail(
           page: page,
@@ -41,10 +41,10 @@ class PageDetail extends StatefulWidget {
 }
 
 class _PageDetailState extends State<PageDetail> {
-  AuthBloc _authBloc;
-  PagesBloc _pagesBloc;
+  AuthBloc? _authBloc;
+  PagesBloc? _pagesBloc;
 
-  PagesCreate get _pageState => widget.page;
+  PagesCreate? get _pageState => widget.page;
   bool get _isParamPageCreate => widget.isParamPageCreate;
 
   @override
@@ -62,42 +62,42 @@ class _PageDetailState extends State<PageDetail> {
 
   Future _getPageDetail() async {
     var res;
-    _pagesBloc.pageDetail = null;
-    if (_authBloc.userModel != null) {
-      res = await _pagesBloc.getOnePage(_pageState.id);
+    _pagesBloc!.pageDetail = null;
+    if (_authBloc!.userModel != null) {
+      res = await _pagesBloc!.getOnePage(_pageState!.id);
     } else {
-      res = await _pagesBloc.getOnePageGuess(_pageState.id);
+      res = await _pagesBloc!.getOnePageGuess(_pageState!.id);
     }
     if (res.isSuccess) {
-      _pagesBloc.pageDetail = res.data;
-      if (_authBloc.userModel != null)
-        _pagesBloc.updatePageFollowed(_authBloc.userModel.id);
-      _pagesBloc.isReceiveNotified = _pagesBloc.pageDetail?.isNoty;
+      _pagesBloc!.pageDetail = res.data;
+      if (_authBloc!.userModel != null)
+        _pagesBloc!.updatePageFollowed(_authBloc!.userModel!.id);
+      _pagesBloc!.isReceiveNotified = _pagesBloc!.pageDetail?.isNoty;
     } else {
-      navigatorKey.currentState.maybePop();
+      navigatorKey.currentState!.maybePop();
       showToast(res.errMessage, context);
     }
   }
 
   Future _getPostPage() async {
-    if (_authBloc.userModel != null) {
+    if (_authBloc!.userModel != null) {
       _getAllPostOfPage();
     } else {
       _getAllPostOfPageByGuess();
     }
   }
 
-  Future<void> _getAllPostOfPage() async => await _pagesBloc.getPostsOfPage(
+  Future<void> _getAllPostOfPage() async => await _pagesBloc!.getPostsOfPage(
         filter: GraphqlFilter(
-          filter: '{ pageId: "${_pageState.id}"}',
+          filter: '{ pageId: "${_pageState!.id}"}',
           order: "{updatedAt: -1}",
         ),
       );
 
   Future<void> _getAllPostOfPageByGuess() async =>
-      await _pagesBloc.getPostsOfPageByGuess(
+      await _pagesBloc!.getPostsOfPageByGuess(
         filter: GraphqlFilter(
-          filter: '{ pageId: "${_pageState.id}"}',
+          filter: '{ pageId: "${_pageState!.id}"}',
           order: "{updatedAt: -1}",
         ),
       );
@@ -114,25 +114,25 @@ class _PageDetailState extends State<PageDetail> {
 
   Future _updateCover(String filePath) async {
     try {
-      _pagesBloc.isLoadingUploadCover = true;
+      _pagesBloc!.isLoadingUploadCover = true;
       final uint8 = (await File(filePath).readAsBytes());
       final thumbnail = await FileUtil.resizeImage(uint8, 360);
-      final url = await FileUtil.uploadFireStorage(thumbnail?.path,
+      final url = await FileUtil.uploadFireStorage(thumbnail.path,
           path:
-              "pages/coverImage_user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}");
-      _pagesBloc.isLoadingUploadCover = false;
-      _pagesBloc.pageDetail.coverImage = url;
-      await _pagesBloc.updatePage(
-          id: _pageState.id,
-          avatar: _pagesBloc.pageDetail.avartar,
-          cover: _pagesBloc.pageDetail.coverImage,
-          name: _pagesBloc.pageDetail.name,
-          description: _pagesBloc.pageDetail.description,
-          categoryIds: _pagesBloc.pageDetail.categoryIds,
-          address: _pagesBloc.pageDetail.address,
-          phone: _pagesBloc.pageDetail.phone,
+              "pages/coverImage_user_${AuthBloc.instance.userModel!.id}/${DateTime.now().millisecondsSinceEpoch}");
+      _pagesBloc!.isLoadingUploadCover = false;
+      _pagesBloc!.pageDetail!.coverImage = url;
+      await _pagesBloc!.updatePage(
+          id: _pageState!.id,
+          avatar: _pagesBloc!.pageDetail!.avartar,
+          cover: _pagesBloc!.pageDetail!.coverImage,
+          name: _pagesBloc!.pageDetail!.name,
+          description: _pagesBloc!.pageDetail!.description,
+          categoryIds: _pagesBloc!.pageDetail!.categoryIds,
+          address: _pagesBloc!.pageDetail!.address,
+          phone: _pagesBloc!.pageDetail!.phone,
           email: "",
-          website: _pagesBloc.pageDetail.website);
+          website: _pagesBloc!.pageDetail!.website);
     } catch (e) {
       showToast(e.toString(), context);
     }
@@ -140,26 +140,26 @@ class _PageDetailState extends State<PageDetail> {
 
   Future _updateAvatar(String filePath) async {
     try {
-      _pagesBloc.isLoadingUploadAvatar = true;
+      _pagesBloc!.isLoadingUploadAvatar = true;
       // final compressImage = await _compressedFile(filePath);
       final uint8 = (await File(filePath).readAsBytes());
       final thumbnail = await FileUtil.resizeImage(uint8, 120);
-      final url = await FileUtil.uploadFireStorage(thumbnail?.path,
+      final url = await FileUtil.uploadFireStorage(thumbnail.path,
           path:
-              "pages/avatar_user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}");
-      _pagesBloc.isLoadingUploadAvatar = false;
-      _pagesBloc.pageDetail.avartar = url;
-      await _pagesBloc.updatePage(
-        id: _pageState.id,
-        avatar: _pagesBloc.pageDetail.avartar,
-        cover: _pagesBloc.pageDetail.coverImage,
-        name: _pagesBloc.pageDetail.name,
-        description: _pagesBloc.pageDetail.description,
-        categoryIds: _pagesBloc.pageDetail.categoryIds,
-        address: _pagesBloc.pageDetail.address,
-        phone: _pagesBloc.pageDetail.phone,
+              "pages/avatar_user_${AuthBloc.instance.userModel!.id}/${DateTime.now().millisecondsSinceEpoch}");
+      _pagesBloc!.isLoadingUploadAvatar = false;
+      _pagesBloc!.pageDetail!.avartar = url;
+      await _pagesBloc!.updatePage(
+        id: _pageState!.id,
+        avatar: _pagesBloc!.pageDetail!.avartar,
+        cover: _pagesBloc!.pageDetail!.coverImage,
+        name: _pagesBloc!.pageDetail!.name,
+        description: _pagesBloc!.pageDetail!.description,
+        categoryIds: _pagesBloc!.pageDetail!.categoryIds,
+        address: _pagesBloc!.pageDetail!.address,
+        phone: _pagesBloc!.pageDetail!.phone,
         email: "",
-        website: _pagesBloc.pageDetail.website,
+        website: _pagesBloc!.pageDetail!.website,
       );
     } catch (e) {
       showToast(e.toString(), context);
@@ -168,14 +168,13 @@ class _PageDetailState extends State<PageDetail> {
 
   @override
   Widget build(BuildContext context) {
-    _pagesBloc.pagePostsScrollController = ScrollController();
+    _pagesBloc!.pagePostsScrollController = ScrollController();
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
       appBar: AppBar1(
         bgColor: ptSecondaryColor(context),
-        title: _pagesBloc.pageDetail != null
-            ? _pagesBloc.pageDetail.name
+        title: _pagesBloc!.pageDetail != null
+            ? _pagesBloc!.pageDetail!.name
             : "Trang",
         textColor: AppColors.mainColor,
         centerTitle: true,
@@ -197,7 +196,7 @@ class _PageDetailState extends State<PageDetail> {
           color: AppColors.backgroundColor.withOpacity(0.6),
         ),
         child: LoadMoreScrollView(
-          scrollController: _pagesBloc.pagePostsScrollController,
+          scrollController: _pagesBloc!.pagePostsScrollController,
           onLoadMore: () {
             // _postBloc.loadMoreNewFeed();
           },
@@ -213,11 +212,11 @@ class _PageDetailState extends State<PageDetail> {
               return;
             },
             child: SingleChildScrollView(
-              controller: _pagesBloc.pagePostsScrollController,
+              controller: _pagesBloc!.pagePostsScrollController,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _pagesBloc.pageDetail != null
+                  _pagesBloc!.pageDetail != null
                       ? _buildHasData()
                       : PageDetailLoading(),
                   _buildListPostOfPage()
@@ -233,7 +232,7 @@ class _PageDetailState extends State<PageDetail> {
   Widget _buildHasData() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          !_pagesBloc.isLoadingUploadCover
+          !_pagesBloc!.isLoadingUploadCover
               ? _buildBanner()
               : Container(
                   height: deviceWidth(context) / 2,
@@ -248,15 +247,15 @@ class _PageDetailState extends State<PageDetail> {
       );
 
   Widget _buildBanner() => GestureDetector(
-        onTap: _pagesBloc.pageDetail.isOwner
+        onTap: _pagesBloc!.pageDetail!.isOwner!
             ? () {audioCache.play('tab3.mp3');
                 imagePicker(context,
                     onImagePick: _updateCover, onCameraPick: _updateCover);
               }
             : null,
         child: CachedNetworkImage(
-          imageUrl: _pagesBloc.pageDetail.coverImage != null
-              ? _pagesBloc.pageDetail.coverImage
+          imageUrl: _pagesBloc!.pageDetail!.coverImage != null
+              ? _pagesBloc!.pageDetail!.coverImage!
               : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
           imageBuilder: (context, imageProvider) => Container(
             height: deviceWidth(context) / 2,
@@ -298,26 +297,26 @@ class _PageDetailState extends State<PageDetail> {
                 Flexible(
                   child: _itemHeaderInfo(),
                 ),
-                if (_authBloc.userModel != null)
-                  if (!_pagesBloc.pageDetail.isOwner)
+                if (_authBloc!.userModel != null)
+                  if (!_pagesBloc!.pageDetail!.isOwner!)
                     Flexible(
                       child: _itemButtonFollow(),
                     )
               ],
             ),
-            if (_authBloc.userModel != null) heightSpace(25),
-            if (_authBloc.userModel != null)
-              !_pagesBloc.pageDetail.isOwner
+            if (_authBloc!.userModel != null) heightSpace(25),
+            if (_authBloc!.userModel != null)
+              !_pagesBloc!.pageDetail!.isOwner!
                   ? _buildContainerButtonsToolMessage()
                   : _buildContainerButtonsToolCreatePost(_pageState),
-            if (_authBloc.userModel != null) heightSpace(10),
+            if (_authBloc!.userModel != null) heightSpace(10),
           ],
         ),
       );
 
   Widget _itemHeaderInfo() => Row(
         children: [
-          _pagesBloc.isLoadingUploadAvatar
+          _pagesBloc!.isLoadingUploadAvatar
               ? Container(
                   width: 50.0,
                   height: 50.0,
@@ -330,7 +329,7 @@ class _PageDetailState extends State<PageDetail> {
                   ),
                 )
               : GestureDetector(
-                  onTap: _pagesBloc.pageDetail.isOwner
+                  onTap: _pagesBloc!.pageDetail!.isOwner!
                       ? () {audioCache.play('tab3.mp3');
                           imagePicker(context,
                               onImagePick: _updateAvatar,
@@ -338,8 +337,8 @@ class _PageDetailState extends State<PageDetail> {
                         }
                       : null,
                   child: CachedNetworkImage(
-                    imageUrl: _pagesBloc.pageDetail.avartar != null
-                        ? _pagesBloc.pageDetail.avartar
+                    imageUrl: _pagesBloc!.pageDetail!.avartar != null
+                        ? _pagesBloc!.pageDetail!.avartar!
                         : "https://i.ibb.co/Zcx1Ms8/error-image-generic.png",
                     imageBuilder: (context, imageProvider) => Container(
                       width: 50.0,
@@ -385,7 +384,7 @@ class _PageDetailState extends State<PageDetail> {
               Row(
                 children: [
                   Text(
-                    _pagesBloc.pageDetail.name,
+                    _pagesBloc!.pageDetail!.name!,
                     style: ptTitle().copyWith(fontWeight: FontWeight.w900),
                   ),
                   SizedBox(width: 8),
@@ -393,7 +392,7 @@ class _PageDetailState extends State<PageDetail> {
               ),
               SizedBox(height: 3),
               Text(
-                _pagesBloc.pageDetail.category[0].name,
+                _pagesBloc!.pageDetail!.category![0].name!,
                 style: ptSmall().copyWith(color: ptPrimaryColor(context)),
               )
             ],
@@ -403,30 +402,30 @@ class _PageDetailState extends State<PageDetail> {
 
   Widget _itemButtonFollow() => GestureDetector(
         onTap: () async {audioCache.play('tab3.mp3');
-          if (_pagesBloc.isFollowed) {
-            _pagesBloc.isFollowPageLoading = true;
-            final res = await _pagesBloc.unFollowPage(_pageState.id);
+          if (_pagesBloc!.isFollowed) {
+            _pagesBloc!.isFollowPageLoading = true;
+            final res = await _pagesBloc!.unFollowPage(_pageState!.id);
 
             if (res.isSuccess) {
-              _pagesBloc.removeItemOutOfListFollowPage(_pageState);
+              _pagesBloc!.removeItemOutOfListFollowPage(_pageState);
             } else {
-              _pagesBloc.isFollowPageLoading = false;
+              _pagesBloc!.isFollowPageLoading = false;
               showToast(res.errMessage, context);
             }
 
-            _pagesBloc.isFollowPageLoading = false;
+            _pagesBloc!.isFollowPageLoading = false;
           } else {
-            _pagesBloc.isFollowPageLoading = true;
-            final res = await _pagesBloc.followPage(_pageState.id);
+            _pagesBloc!.isFollowPageLoading = true;
+            final res = await _pagesBloc!.followPage(_pageState!.id);
 
             if (res.isSuccess) {
-              _pagesBloc.addItemToListFollowPage(_pageState);
+              _pagesBloc!.addItemToListFollowPage(_pageState);
             } else {
-              _pagesBloc.isFollowPageLoading = false;
+              _pagesBloc!.isFollowPageLoading = false;
               showToast(res.errMessage, context);
             }
 
-            _pagesBloc.isFollowPageLoading = false;
+            _pagesBloc!.isFollowPageLoading = false;
           }
         },
         child: Container(
@@ -435,20 +434,20 @@ class _PageDetailState extends State<PageDetail> {
             color: AppColors.buttonPrimaryColor,
             borderRadius: BorderRadius.circular(7),
           ),
-          child: _pagesBloc.isFollowPageLoading
+          child: _pagesBloc!.isFollowPageLoading
               ? SizedBox(
                   width: 20,
                   height: 20,
                   child: ActivityIndicator(),
                 )
               : Text(
-                  _pagesBloc.isFollowed ? "Bỏ theo dõi" : "Theo dõi",
+                  _pagesBloc!.isFollowed ? "Bỏ theo dõi" : "Theo dõi",
                   style: ptButton(),
                 ),
         ),
       );
 
-  Widget _buildContainerButtonsToolCreatePost(PagesCreate page) => Container(
+  Widget _buildContainerButtonsToolCreatePost(PagesCreate? page) => Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -480,25 +479,25 @@ class _PageDetailState extends State<PageDetail> {
         callback: () async {
           showWaitingDialog(context);
           await InboxBloc.instance.navigateToChatWith(
-              widget.page.owner.name,
-              widget.page.avartar,
+              widget.page!.owner!.name,
+              widget.page!.avartar,
               DateTime.now(),
-              widget.page.avartar,
+              widget.page!.avartar,
               [
-                AuthBloc.instance.userModel.id,
-                widget.page.ownerId,
+                AuthBloc.instance.userModel!.id,
+                widget.page!.ownerId,
               ],
               [
-                AuthBloc.instance.userModel.avatar,
-                widget.page.avartar,
+                AuthBloc.instance.userModel!.avatar,
+                widget.page!.avartar,
               ],
-              pageName: widget.page.name,
-              pageId: widget.page.id);
+              pageName: widget.page!.name,
+              pageId: widget.page!.id);
           closeLoading();
         },
       );
 
-  Widget _buildButtonCreatePost(PagesCreate page) => CustomButton(
+  Widget _buildButtonCreatePost(PagesCreate? page) => CustomButton(
         title: "Tạo bài viết",
         imageSvg: AppImages.icCreatePost,
         callback: () => PageCreatePostPage.navigate(page),
@@ -537,29 +536,29 @@ class _PageDetailState extends State<PageDetail> {
 
   Widget _buildButtonBell() => GestureDetector(
         onTap: () async {audioCache.play('tab3.mp3');
-          if (_pagesBloc.isReceiveNotified) {
-            _pagesBloc.isReciveNotiPageLoading = true;
-            final res = await _pagesBloc.unReceiveNotifyPage(_pageState.id);
+          if (_pagesBloc!.isReceiveNotified!) {
+            _pagesBloc!.isReciveNotiPageLoading = true;
+            final res = await _pagesBloc!.unReceiveNotifyPage(_pageState!.id);
             if (res.isSuccess) {
-              _pagesBloc.isReceiveNotified = false;
+              _pagesBloc!.isReceiveNotified = false;
             } else {
-              _pagesBloc.isReciveNotiPageLoading = false;
+              _pagesBloc!.isReciveNotiPageLoading = false;
               showToast(res.errMessage, context);
             }
 
-            _pagesBloc.isReciveNotiPageLoading = false;
+            _pagesBloc!.isReciveNotiPageLoading = false;
           } else {
-            _pagesBloc.isReciveNotiPageLoading = true;
-            final res = await _pagesBloc.receiveNotifyPage(_pageState.id);
+            _pagesBloc!.isReciveNotiPageLoading = true;
+            final res = await _pagesBloc!.receiveNotifyPage(_pageState!.id);
 
             if (res.isSuccess) {
-              _pagesBloc.isReceiveNotified = true;
+              _pagesBloc!.isReceiveNotified = true;
             } else {
-              _pagesBloc.isReciveNotiPageLoading = false;
+              _pagesBloc!.isReciveNotiPageLoading = false;
               showToast(res.errMessage, context);
             }
 
-            _pagesBloc.isReciveNotiPageLoading = false;
+            _pagesBloc!.isReciveNotiPageLoading = false;
           }
         },
         child: Stack(
@@ -580,12 +579,12 @@ class _PageDetailState extends State<PageDetail> {
                 borderRadius: BorderRadius.circular(7),
                 color: AppColors.backgroundLightColor,
               ),
-              child: _pagesBloc.isReciveNotiPageLoading
+              child: _pagesBloc!.isReciveNotiPageLoading
                   ? CircularProgressIndicator(
                       backgroundColor: Color(0xff05515e),
                     )
                   : SvgPicture.asset(
-                      _pagesBloc.isReceiveNotified
+                      _pagesBloc!.isReceiveNotified!
                           ? AppImages.icBellActivePage
                           : AppImages.icBellPage,
                       color: AppColors.mainColor,
@@ -609,22 +608,22 @@ class _PageDetailState extends State<PageDetail> {
             ItemInfoPage(
               image: AppImages.icFollower,
               title:
-                  '${_pagesBloc.pageDetail.followers.length > 0 ? _pagesBloc.pageDetail.followers.length : 0} lượt follow',
+                  '${_pagesBloc!.pageDetail!.followers!.length > 0 ? _pagesBloc!.pageDetail!.followers!.length : 0} lượt follow',
             ),
-            if (_pagesBloc.pageDetail.address != null)
+            if (_pagesBloc!.pageDetail!.address != null)
               ItemInfoPage(
                 image: AppImages.icLocation,
-                title: _pagesBloc.pageDetail.address,
+                title: _pagesBloc!.pageDetail!.address,
               ),
-            if (_pagesBloc.pageDetail.phone != null)
+            if (_pagesBloc!.pageDetail!.phone != null)
               ItemInfoPage(
                 image: AppImages.icPhone,
-                title: _pagesBloc.pageDetail.phone,
+                title: _pagesBloc!.pageDetail!.phone,
               ),
-            if (_pagesBloc.pageDetail.website != null)
+            if (_pagesBloc!.pageDetail!.website != null)
               ItemInfoPage(
                 image: AppImages.icSocial,
-                title: _pagesBloc.pageDetail.website,
+                title: _pagesBloc!.pageDetail!.website,
               )
           ],
         ),
@@ -632,8 +631,8 @@ class _PageDetailState extends State<PageDetail> {
 
   Widget _buildListPostOfPage() => Container(
         child: Column(children: [
-          if (_pagesBloc.isGetPostPageLoading) PostSkeleton(),
-          if (_pagesBloc.listPagePost.isEmpty)
+          if (_pagesBloc!.isGetPostPageLoading) PostSkeleton(),
+          if (_pagesBloc!.listPagePost.isEmpty)
             Container(
               margin: const EdgeInsets.only(top: 20),
               child: Center(
@@ -646,9 +645,9 @@ class _PageDetailState extends State<PageDetail> {
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: _pagesBloc.listPagePost.length,
+            itemCount: _pagesBloc!.listPagePost.length,
             itemBuilder: (context, index) {
-              final item = _pagesBloc.listPagePost[index];
+              final item = _pagesBloc!.listPagePost[index];
               return PostWidget(item);
             },
           ),

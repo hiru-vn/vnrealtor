@@ -4,10 +4,13 @@ import './font.dart';
 
 final lightTheme = ThemeData(
   primaryColor: HexColor('#05515e'),
+  appBarTheme:
+      AppBarTheme(iconTheme: IconThemeData(color: HexColor('#05515e'))),
   accentColor: HexColor('#e4f4f7'),
   bottomAppBarColor: HexColor('#ffffff'),
   scaffoldBackgroundColor: HexColor('#ffffff'),
   backgroundColor: HexColor('f7f7f7'),
+  brightness: Brightness.light,
   cardTheme: CardTheme(
     color: HexColor('#FEFEFE'),
     shadowColor: HexColor('#FEFEFE'),

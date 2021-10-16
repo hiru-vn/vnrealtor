@@ -8,31 +8,31 @@ import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 
 class SuggestListPages extends StatefulWidget {
-  final List<PagesCreate> suggest;
-  const SuggestListPages({Key key, this.suggest}) : super(key: key);
+  final List<PagesCreate>? suggest;
+  const SuggestListPages({Key? key, this.suggest}) : super(key: key);
 
   @override
   _SuggestListPagesState createState() => _SuggestListPagesState();
 }
 
 class _SuggestListPagesState extends State<SuggestListPages> {
-  AuthBloc authBloc;
-  UserBloc userBloc;
-  PagesBloc pagesBloc;
+  AuthBloc? authBloc;
+  UserBloc? userBloc;
+  PagesBloc? pagesBloc;
 
   @override
   void didChangeDependencies() {
     if (authBloc == null) {
-      authBloc = Provider.of(context);
-      userBloc = Provider.of(context);
-      pagesBloc = Provider.of(context);
+      authBloc = Provider.of<AuthBloc>(context);
+      userBloc = Provider.of<UserBloc>(context);
+      pagesBloc = Provider.of<PagesBloc>(context);
     }
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.suggest.length > 0
+    return widget.suggest!.length > 0
         ? Container(
             width: deviceWidth(context),
             color: Colors.white,
@@ -69,12 +69,12 @@ class _SuggestListPagesState extends State<SuggestListPages> {
                       padding: EdgeInsets.only(right: 20, left: 15),
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return PageItem(widget.suggest[index], pagesBloc);
+                        return PageItem(widget.suggest![index], pagesBloc);
                       },
                       separatorBuilder: (context, index) => SizedBox(
                             width: 10,
                           ),
-                      itemCount: widget.suggest.length),
+                      itemCount: widget.suggest!.length),
                 )
               ],
             ))
@@ -84,7 +84,7 @@ class _SuggestListPagesState extends State<SuggestListPages> {
 
 class PageItem extends StatelessWidget {
   final PagesCreate page;
-  final PagesBloc pagesBloc;
+  final PagesBloc? pagesBloc;
   const PageItem(this.page, this.pagesBloc);
 
   @override
@@ -112,9 +112,10 @@ class PageItem extends StatelessWidget {
               child: CircleAvatar(
                 radius: 30,
                 backgroundColor: Colors.white,
-                backgroundImage: page.avartar != null
-                    ? CachedNetworkImageProvider(page.avartar)
-                    : AssetImage('assets/image/default_avatar.png'),
+                backgroundImage: (page.avartar != null
+                        ? CachedNetworkImageProvider(page.avartar!)
+                        : AssetImage('assets/image/default_avatar.png'))
+                    as ImageProvider<Object>?,
               ),
             ),
             Expanded(
@@ -127,7 +128,7 @@ class PageItem extends StatelessWidget {
                     audioCache.play('tab3.mp3');
                   },
                   child: Text(
-                    page.name,
+                    page.name!,
                     style: ptBody().copyWith(fontWeight: FontWeight.w600),
                     textAlign: TextAlign.center,
                   ),
@@ -137,19 +138,19 @@ class PageItem extends StatelessWidget {
             GestureDetector(
               onTap: () async {
                 audioCache.play('tab3.mp3');
-                final res = await pagesBloc.followPage(page.id);
+                final res = await pagesBloc!.followPage(page.id);
                 if (res.isSuccess) {
-                  pagesBloc.suggestFollowPage.forEach((element) {
+                  pagesBloc!.suggestFollowPage.forEach((element) {
                     if (element.id == page.id) {
-                      pagesBloc.suggestFollowPage.remove(element);
-                      pagesBloc.listPageFollow.add(element);
+                      pagesBloc!.suggestFollowPage.remove(element);
+                      pagesBloc!.listPageFollow.add(element);
                     }
                   });
                 } else {
                   showToast(res.errMessage, context);
                 }
 
-                pagesBloc.isSuggestFollowLoading = false;
+                pagesBloc!.isSuggestFollowLoading = false;
               },
               child: Container(
                 width: 90,
@@ -160,8 +161,8 @@ class PageItem extends StatelessWidget {
                   color: ptSecondaryColor(context),
                   borderRadius: BorderRadius.circular(3),
                 ),
-                child: pagesBloc.isSuggestFollowLoading &&
-                        pagesBloc.followingPageIds.contains(page.id)
+                child: pagesBloc!.isSuggestFollowLoading &&
+                        pagesBloc!.followingPageIds.contains(page.id)
                     ? Center(
                         child: Container(
                           height: 15,
@@ -195,7 +196,7 @@ class PageItem extends StatelessWidget {
 
 class PageWidget extends StatelessWidget {
   final PagesCreate page;
-  final PagesBloc pagesBloc;
+  final PagesBloc? pagesBloc;
   const PageWidget(this.page, this.pagesBloc);
 
   @override
@@ -214,9 +215,10 @@ class PageWidget extends StatelessWidget {
               CircleAvatar(
                 radius: 24,
                 backgroundColor: Colors.white,
-                backgroundImage: page.avartar != null
-                    ? CachedNetworkImageProvider(page.avartar)
-                    : AssetImage('assets/image/default_avatar.png'),
+                backgroundImage: (page.avartar != null
+                        ? CachedNetworkImageProvider(page.avartar!)
+                        : AssetImage('assets/image/default_avatar.png'))
+                    as ImageProvider<Object>?,
               ),
               SizedBox(width: 13),
               Expanded(
@@ -256,13 +258,13 @@ class PageWidget extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            page.description,
+                            page.description!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: ptSmall().copyWith(color: Colors.grey),
                           ),
                         ),
-                        if (pagesBloc.followingPageIds.contains(page.id)) ...[
+                        if (pagesBloc!.followingPageIds.contains(page.id)) ...[
                           Text(
                             ' • ',
                             style: ptSmall().copyWith(color: Colors.grey),
@@ -279,7 +281,7 @@ class PageWidget extends StatelessWidget {
                 ),
               ),
               if (AuthBloc.instance.userModel != null &&
-                  !pagesBloc.followingPageIds.contains(page.id) &&
+                  !pagesBloc!.followingPageIds.contains(page.id) &&
                   !PagesBloc.instance.pageCreated
                       .map((e) => e.id)
                       .toList()
@@ -287,8 +289,8 @@ class PageWidget extends StatelessWidget {
                 GestureDetector(
                   onTap: () async {
                     audioCache.play('tab3.mp3');
-                    page.followerIds.add(AuthBloc.instance.userModel.id);
-                    final res = await pagesBloc.followPage(page.id);
+                    page.followerIds!.add(AuthBloc.instance.userModel!.id);
+                    final res = await pagesBloc!.followPage(page.id);
                     if (!res.isSuccess) showToast(res.errMessage, context);
                   },
                   child: Container(

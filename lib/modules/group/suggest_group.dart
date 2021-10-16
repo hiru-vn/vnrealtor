@@ -6,35 +6,35 @@ import 'package:datcao/modules/model/group.dart';
 
 class SuggestGroup extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(SuggestGroup()));
+    return navigatorKey.currentState!.push(pageBuilder(SuggestGroup()));
   }
 
-  const SuggestGroup({Key key}) : super(key: key);
+  const SuggestGroup({Key? key}) : super(key: key);
 
   @override
   _SuggestGroupState createState() => _SuggestGroupState();
 }
 
 class _SuggestGroupState extends State<SuggestGroup> {
-  GroupBloc _groupBloc;
+  GroupBloc? _groupBloc;
   TextEditingController _searchC = TextEditingController();
 
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
-      _groupBloc.getSuggestGroup();
+      _groupBloc = Provider.of<GroupBloc>(context);
+      _groupBloc!.getSuggestGroup();
     }
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<GroupModel> searchGroups = _groupBloc.suggestGroup
-        ?.where((element) => element.name
+    final List<GroupModel>? searchGroups = _groupBloc!.suggestGroup
+        ?.where((element) => element.name!
             .toLowerCase()
             .contains(_searchC.text.trim().toLowerCase()))
-        ?.toList();
+        .toList();
     return Scaffold(
       backgroundColor: ptSecondaryColor(context),
       appBar: AppBar1(
@@ -71,15 +71,15 @@ class _SuggestGroupState extends State<SuggestGroup> {
           ),
           SizedBox(height: 15),
           Expanded(
-            child: _groupBloc.suggestGroup == null
+            child: _groupBloc!.suggestGroup == null
                 ? ListSkeleton()
-                : (_groupBloc.suggestGroup.length == 0
+                : (_groupBloc!.suggestGroup!.length == 0
                     ? Text('Bạn không có danh sách gợi ý nào')
                     : ListView.separated(
                         itemBuilder: (context, index) {
-                          return _buildGroupItem(searchGroups[index]);
+                          return _buildGroupItem(searchGroups![index]);
                         },
-                        itemCount: searchGroups.length,
+                        itemCount: searchGroups!.length,
                         separatorBuilder: (context, index) =>
                             SizedBox(height: 0),
                       )),
@@ -91,7 +91,8 @@ class _SuggestGroupState extends State<SuggestGroup> {
 
   _buildGroupItem(GroupModel group) {
     return GestureDetector(
-      onTap: () {audioCache.play('tab3.mp3');
+      onTap: () {
+        audioCache.play('tab3.mp3');
         DetailGroupPage.navigate(group);
       },
       child: Container(
@@ -108,7 +109,7 @@ class _SuggestGroupState extends State<SuggestGroup> {
                     borderRadius: BorderRadius.circular(10),
                     color: ptSecondaryColor(context)),
                 child: CachedNetworkImage(
-                  imageUrl: group.coverImage,
+                  imageUrl: group.coverImage!,
                   fit: BoxFit.cover,
                 ),
               ),

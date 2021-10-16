@@ -3,7 +3,7 @@ import 'package:datcao/share/import.dart';
 
 class UpdatePasswordPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(
+    return navigatorKey.currentState!.push(
       pageBuilder(UpdatePasswordPage()),
     );
   }
@@ -13,7 +13,7 @@ class UpdatePasswordPage extends StatefulWidget {
 }
 
 class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
-  UserBloc _userBloc;
+  UserBloc? _userBloc;
   TextEditingController _passC = TextEditingController();
   TextEditingController _newPassC = TextEditingController();
   TextEditingController _rePassC = TextEditingController();
@@ -29,15 +29,15 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
   }
 
   _submit() async {
-    if (!_formKey.currentState.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
     setState(() {
       isLoading = true;
     });
-    final res = await _userBloc.changePassword(_passC.text, _newPassC.text);
+    final res = await _userBloc!.changePassword(_passC.text, _newPassC.text);
     if (res.isSuccess) {
       showToast('Change password successfully', context, isSuccess: true);
-      await navigatorKey.currentState.maybePop();
-      await navigatorKey.currentState.maybePop();
+      await navigatorKey.currentState!.maybePop();
+      await navigatorKey.currentState!.maybePop();
     } else {
       showToast(res.errMessage, context);
     }
@@ -123,7 +123,7 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 25),
               child: TextFormField(
-                validator: validator,
+                validator: validator as String? Function(String?)?,
                 obscureText: true,
                 controller: controller,
                 decoration:

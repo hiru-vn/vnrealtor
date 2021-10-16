@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @dart = 2.8
-
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -36,7 +34,7 @@ class CustomListTileTheme extends InheritedTheme {
   /// Creates a list tile theme that controls the color and style parameters for
   /// [CustomListTile]s.
   const CustomListTileTheme({
-    Key key,
+    Key? key,
     this.dense = false,
     this.shape,
     this.style = CustomListTileStyle.list,
@@ -46,7 +44,7 @@ class CustomListTileTheme extends InheritedTheme {
     this.contentPadding,
     this.tileColor,
     this.selectedTileColor,
-    Widget child,
+    required Widget child,
   }) : super(key: key, child: child);
 
   /// Creates a list tile theme that controls the color and style parameters for
@@ -54,17 +52,17 @@ class CustomListTileTheme extends InheritedTheme {
   ///
   /// The [child] argument must not be null.
   static Widget merge({
-    Key key,
-    bool dense,
-    ShapeBorder shape,
-    CustomListTileStyle style,
-    Color selectedColor,
-    Color iconColor,
-    Color textColor,
-    EdgeInsetsGeometry contentPadding,
-    Color tileColor,
-    Color selectedTileColor,
-    @required Widget child,
+    Key? key,
+    bool? dense,
+    ShapeBorder? shape,
+    CustomListTileStyle? style,
+    Color? selectedColor,
+    Color? iconColor,
+    Color? textColor,
+    EdgeInsetsGeometry? contentPadding,
+    Color? tileColor,
+    Color? selectedTileColor,
+    required Widget child,
   }) {
     assert(child != null);
     return Builder(
@@ -91,37 +89,37 @@ class CustomListTileTheme extends InheritedTheme {
   final bool dense;
 
   /// If specified, [shape] defines the shape of the [CustomListTile]'s [InkWell] border.
-  final ShapeBorder shape;
+  final ShapeBorder? shape;
 
   /// If specified, [style] defines the font used for [CustomListTile] titles.
   final CustomListTileStyle style;
 
   /// If specified, the color used for icons and text when a [CustomListTile] is selected.
-  final Color selectedColor;
+  final Color? selectedColor;
 
   /// If specified, the icon color used for enabled [CustomListTile]s that are not selected.
-  final Color iconColor;
+  final Color? iconColor;
 
   /// If specified, the text color used for enabled [CustomListTile]s that are not selected.
-  final Color textColor;
+  final Color? textColor;
 
   /// The tile's internal padding.
   ///
   /// Insets a [CustomListTile]'s contents: its [CustomListTile.leading], [CustomListTile.title],
   /// [CustomListTile.subtitle], and [CustomListTile.trailing] widgets.
-  final EdgeInsetsGeometry contentPadding;
+  final EdgeInsetsGeometry? contentPadding;
 
   /// If specified, defines the background color for `CustomListTile` when
   /// [CustomListTile.selected] is false.
   ///
   /// If [CustomListTile.tileColor] is provided, [tileColor] is ignored.
-  final Color tileColor;
+  final Color? tileColor;
 
   /// If specified, defines the background color for `CustomListTile` when
   /// [CustomListTile.selected] is true.
   ///
   /// If [CustomListTile.selectedTileColor] is provided, [selectedTileColor] is ignored.
-  final Color selectedTileColor;
+  final Color? selectedTileColor;
 
   /// The closest instance of this class that encloses the given context.
   ///
@@ -131,14 +129,17 @@ class CustomListTileTheme extends InheritedTheme {
   /// CustomListTileTheme theme = CustomListTileTheme.of(context);
   /// ```
   static CustomListTileTheme of(BuildContext context) {
-    final CustomListTileTheme result =
+    final CustomListTileTheme? result =
         context.dependOnInheritedWidgetOfExactType<CustomListTileTheme>();
-    return result ?? const CustomListTileTheme();
+    return result ??
+        const CustomListTileTheme(
+          child: SizedBox.shrink(),
+        );
   }
 
   @override
   Widget wrap(BuildContext context, Widget child) {
-    final CustomListTileTheme ancestorTheme =
+    final CustomListTileTheme? ancestorTheme =
         context.findAncestorWidgetOfExactType<CustomListTileTheme>();
     return identical(this, ancestorTheme)
         ? child
@@ -659,7 +660,7 @@ class CustomListTile extends StatelessWidget {
   ///
   /// Requires one of its ancestors to be a [Material] widget.
   const CustomListTile({
-    Key key,
+    Key? key,
     this.leading,
     this.title,
     this.subtitle,
@@ -690,7 +691,7 @@ class CustomListTile extends StatelessWidget {
   /// A widget to display before the title.
   ///
   /// Typically an [Icon] or a [CircleAvatar] widget.
-  final Widget leading;
+  final Widget? leading;
 
   /// The primary content of the list tile.
   ///
@@ -698,7 +699,7 @@ class CustomListTile extends StatelessWidget {
   ///
   /// This should not wrap. To enforce the single line limit, use
   /// [Text.maxLines].
-  final Widget title;
+  final Widget? title;
 
   /// Additional content displayed below the title.
   ///
@@ -724,7 +725,7 @@ class CustomListTile extends StatelessWidget {
   /// When [selected] is false, the text color is set to [CustomListTileTheme.textColor]
   /// if it's not null and to [TextTheme.caption]'s color if [CustomListTileTheme.textColor]
   /// is null.
-  final Widget subtitle;
+  final Widget? subtitle;
 
   /// A widget to display after the title.
   ///
@@ -735,7 +736,7 @@ class CustomListTile extends StatelessWidget {
   /// [CrossAxisAlignment.baseline] alignment whose first item is [Expanded] and
   /// whose second child is the metadata text, instead of using the [trailing]
   /// property.
-  final Widget trailing;
+  final Widget? trailing;
 
   /// Whether this list tile is intended to display three lines of text.
   ///
@@ -754,7 +755,7 @@ class CustomListTile extends StatelessWidget {
   /// If this property is null then its value is based on [CustomListTileTheme.dense].
   ///
   /// Dense list tiles default to a smaller height.
-  final bool dense;
+  final bool? dense;
 
   /// Defines how compact the list tile's layout will be.
   ///
@@ -764,7 +765,7 @@ class CustomListTile extends StatelessWidget {
   ///
   ///  * [ThemeData.visualDensity], which specifies the [visualDensity] for all
   ///    widgets within a [Theme].
-  final VisualDensity visualDensity;
+  final VisualDensity? visualDensity;
 
   /// The shape of the tile's [InkWell].
   ///
@@ -773,7 +774,7 @@ class CustomListTile extends StatelessWidget {
   /// If this property is null then [CardTheme.shape] of [ThemeData.cardTheme]
   /// is used. If that's null then the shape will be a [RoundedRectangleBorder]
   /// with a circular corner radius of 4.0.
-  final ShapeBorder shape;
+  final ShapeBorder? shape;
 
   /// The tile's internal padding.
   ///
@@ -781,7 +782,7 @@ class CustomListTile extends StatelessWidget {
   /// and [trailing] widgets.
   ///
   /// If null, `EdgeInsets.symmetric(horizontal: 16.0)` is used.
-  final EdgeInsetsGeometry contentPadding;
+  final EdgeInsetsGeometry? contentPadding;
 
   /// Whether this list tile is interactive.
   ///
@@ -793,12 +794,12 @@ class CustomListTile extends StatelessWidget {
   /// Called when the user taps this list tile.
   ///
   /// Inoperative if [enabled] is false.
-  final GestureTapCallback onTap;
+  final GestureTapCallback? onTap;
 
   /// Called when the user long-presses on this list tile.
   ///
   /// Inoperative if [enabled] is false.
-  final GestureLongPressCallback onLongPress;
+  final GestureLongPressCallback? onLongPress;
 
   /// The cursor for a mouse pointer when it enters or is hovering over the
   /// widget.
@@ -810,7 +811,7 @@ class CustomListTile extends StatelessWidget {
   ///  * [MaterialState.disabled].
   ///
   /// If this property is null, [MaterialStateMouseCursor.clickable] will be used.
-  final MouseCursor mouseCursor;
+  final MouseCursor? mouseCursor;
 
   /// If this tile is also [enabled] then icons and text are rendered with the same color.
   ///
@@ -848,13 +849,13 @@ class CustomListTile extends StatelessWidget {
   final bool selected;
 
   /// The color for the tile's [Material] when it has the input focus.
-  final Color focusColor;
+  final Color? focusColor;
 
   /// The color for the tile's [Material] when a pointer is hovering over it.
-  final Color hoverColor;
+  final Color? hoverColor;
 
   /// {@macro flutter.widgets.Focus.focusNode}
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
 
   /// {@macro flutter.widgets.Focus.autofocus}
   final bool autofocus;
@@ -863,13 +864,13 @@ class CustomListTile extends StatelessWidget {
   ///
   /// When the value is null, the `tileColor` is set to [CustomListTileTheme.tileColor]
   /// if it's not null and to [Colors.transparent] if it's null.
-  final Color tileColor;
+  final Color? tileColor;
 
   /// Defines the background color of `CustomListTile` when [selected] is true.
   ///
   /// When the value if null, the `selectedTileColor` is set to [CustomListTileTheme.selectedTileColor]
   /// if it's not null and to [Colors.transparent] if it's null.
-  final Color selectedTileColor;
+  final Color? selectedTileColor;
 
   /// Add a one pixel border in between each tile. If color isn't specified the
   /// [ThemeData.dividerColor] of the context's [Theme] is used.
@@ -878,10 +879,9 @@ class CustomListTile extends StatelessWidget {
   ///
   ///  * [Divider], which you can use to obtain this effect manually.
   static Iterable<Widget> divideTiles(
-      {BuildContext context,
-      @required Iterable<Widget> tiles,
-      Color color}) sync* {
-    assert(tiles != null);
+      {BuildContext? context,
+      required Iterable<Widget> tiles,
+      Color? color}) sync* {
     assert(color != null || context != null);
 
     final Iterator<Widget> iterator = tiles.iterator;
@@ -905,13 +905,13 @@ class CustomListTile extends StatelessWidget {
     if (isNotEmpty) yield tile;
   }
 
-  Color _iconColor(ThemeData theme, CustomListTileTheme tileTheme) {
+  Color? _iconColor(ThemeData theme, CustomListTileTheme tileTheme) {
     if (!enabled) return theme.disabledColor;
 
-    if (selected && tileTheme?.selectedColor != null)
+    if (selected && tileTheme.selectedColor != null)
       return tileTheme.selectedColor;
 
-    if (!selected && tileTheme?.iconColor != null) return tileTheme.iconColor;
+    if (!selected && tileTheme.iconColor != null) return tileTheme.iconColor;
 
     switch (theme.brightness) {
       case Brightness.light:
@@ -921,18 +921,16 @@ class CustomListTile extends StatelessWidget {
             ? theme.accentColor
             : null; // null - use current icon theme color
     }
-    assert(theme.brightness != null);
-    return null;
   }
 
-  Color _textColor(
-      ThemeData theme, CustomListTileTheme tileTheme, Color defaultColor) {
+  Color? _textColor(
+      ThemeData theme, CustomListTileTheme tileTheme, Color? defaultColor) {
     if (!enabled) return theme.disabledColor;
 
-    if (selected && tileTheme?.selectedColor != null)
+    if (selected && tileTheme.selectedColor != null)
       return tileTheme.selectedColor;
 
-    if (!selected && tileTheme?.textColor != null) return tileTheme.textColor;
+    if (!selected && tileTheme.textColor != null) return tileTheme.textColor;
 
     if (selected) {
       switch (theme.brightness) {
@@ -946,11 +944,11 @@ class CustomListTile extends StatelessWidget {
   }
 
   bool _isDenseLayout(CustomListTileTheme tileTheme) {
-    return dense ?? tileTheme?.dense ?? false;
+    return dense ?? tileTheme.dense;
   }
 
   TextStyle _titleTextStyle(ThemeData theme, CustomListTileTheme tileTheme) {
-    TextStyle style;
+    TextStyle? style;
     if (tileTheme != null) {
       switch (tileTheme.style) {
         case CustomListTileStyle.drawer:
@@ -963,30 +961,30 @@ class CustomListTile extends StatelessWidget {
     } else {
       style = theme.textTheme.subtitle1;
     }
-    final Color color = _textColor(theme, tileTheme, style.color);
+    final Color? color = _textColor(theme, tileTheme, style!.color);
     return _isDenseLayout(tileTheme)
         ? style.copyWith(fontSize: 13.0, color: color)
         : style.copyWith(color: color);
   }
 
   TextStyle _subtitleTextStyle(ThemeData theme, CustomListTileTheme tileTheme) {
-    final TextStyle style = theme.textTheme.bodyText2;
-    final Color color =
-        _textColor(theme, tileTheme, theme.textTheme.caption.color);
+    final TextStyle? style = theme.textTheme.bodyText2;
+    final Color? color =
+        _textColor(theme, tileTheme, theme.textTheme.caption!.color);
     return _isDenseLayout(tileTheme)
-        ? style.copyWith(color: color, fontSize: 12.0)
-        : style.copyWith(color: color);
+        ? style!.copyWith(color: color, fontSize: 12.0)
+        : style!.copyWith(color: color);
   }
 
-  Color _tileBackgroundColor(CustomListTileTheme tileTheme) {
+  Color? _tileBackgroundColor(CustomListTileTheme tileTheme) {
     if (!selected) {
       if (tileColor != null) return tileColor;
-      if (tileTheme?.tileColor != null) return tileTheme.tileColor;
+      if (tileTheme.tileColor != null) return tileTheme.tileColor;
     }
 
     if (selected) {
       if (selectedTileColor != null) return selectedTileColor;
-      if (tileTheme?.selectedTileColor != null)
+      if (tileTheme.selectedTileColor != null)
         return tileTheme.selectedTileColor;
     }
 
@@ -999,15 +997,15 @@ class CustomListTile extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final CustomListTileTheme tileTheme = CustomListTileTheme.of(context);
 
-    IconThemeData iconThemeData;
+    late IconThemeData iconThemeData;
     if (leading != null || trailing != null)
       iconThemeData = IconThemeData(color: _iconColor(theme, tileTheme));
 
-    Widget leadingIcon;
+    Widget? leadingIcon;
     if (leading != null) {
       leadingIcon = IconTheme.merge(
         data: iconThemeData,
-        child: leading,
+        child: leading!,
       );
     }
 
@@ -1018,22 +1016,22 @@ class CustomListTile extends StatelessWidget {
       child: title ?? const SizedBox(),
     );
 
-    Widget subtitleText;
-    TextStyle subtitleStyle;
+    Widget? subtitleText;
+    TextStyle? subtitleStyle;
     if (subtitle != null) {
       subtitleStyle = _subtitleTextStyle(theme, tileTheme);
       subtitleText = AnimatedDefaultTextStyle(
         style: subtitleStyle,
         duration: kThemeChangeDuration,
-        child: subtitle,
+        child: subtitle!,
       );
     }
 
-    Widget trailingIcon;
+    Widget? trailingIcon;
     if (trailing != null) {
       trailingIcon = IconTheme.merge(
         data: iconThemeData,
-        child: trailing,
+        child: trailing!,
       );
     }
 
@@ -1042,7 +1040,7 @@ class CustomListTile extends StatelessWidget {
     final TextDirection textDirection = Directionality.of(context);
     final EdgeInsets resolvedContentPadding =
         contentPadding?.resolve(textDirection) ??
-            tileTheme?.contentPadding?.resolve(textDirection) ??
+            tileTheme.contentPadding?.resolve(textDirection) ??
             _defaultContentPadding;
 
     final MouseCursor effectiveMouseCursor =
@@ -1069,7 +1067,7 @@ class CustomListTile extends StatelessWidget {
         selected: selected,
         enabled: enabled,
         child: ColoredBox(
-          color: _tileBackgroundColor(tileTheme),
+          color: _tileBackgroundColor(tileTheme)!,
           child: SafeArea(
             top: false,
             bottom: false,
@@ -1083,7 +1081,7 @@ class CustomListTile extends StatelessWidget {
               visualDensity: visualDensity ?? theme.visualDensity,
               isThreeLine: isThreeLine,
               textDirection: textDirection,
-              titleBaselineType: titleStyle.textBaseline,
+              titleBaselineType: titleStyle.textBaseline!,
               subtitleBaselineType: subtitleStyle?.textBaseline,
             ),
           ),
@@ -1103,16 +1101,16 @@ enum _CustomListTileSlot {
 
 class _CustomListTile extends RenderObjectWidget {
   const _CustomListTile({
-    Key key,
+    Key? key,
     this.leading,
     this.title,
     this.subtitle,
     this.trailing,
-    @required this.isThreeLine,
-    @required this.isDense,
-    @required this.visualDensity,
-    @required this.textDirection,
-    @required this.titleBaselineType,
+    required this.isThreeLine,
+    required this.isDense,
+    required this.visualDensity,
+    required this.textDirection,
+    required this.titleBaselineType,
     this.subtitleBaselineType,
   })  : assert(isThreeLine != null),
         assert(isDense != null),
@@ -1121,16 +1119,16 @@ class _CustomListTile extends RenderObjectWidget {
         assert(titleBaselineType != null),
         super(key: key);
 
-  final Widget leading;
-  final Widget title;
-  final Widget subtitle;
-  final Widget trailing;
+  final Widget? leading;
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? trailing;
   final bool isThreeLine;
   final bool isDense;
   final VisualDensity visualDensity;
   final TextDirection textDirection;
   final TextBaseline titleBaselineType;
-  final TextBaseline subtitleBaselineType;
+  final TextBaseline? subtitleBaselineType;
 
   @override
   _CustomListTileElement createElement() => _CustomListTileElement(this);
@@ -1187,9 +1185,9 @@ class _CustomListTileElement extends RenderObjectElement {
     super.forgetChild(child);
   }
 
-  void _mountChild(Widget widget, _CustomListTileSlot slot) {
-    final Element oldChild = slotToChild[slot];
-    final Element newChild = updateChild(oldChild, widget, slot);
+  void _mountChild(Widget? widget, _CustomListTileSlot slot) {
+    final Element? oldChild = slotToChild[slot];
+    final Element? newChild = updateChild(oldChild, widget, slot);
     if (oldChild != null) {
       slotToChild.remove(slot);
     }
@@ -1199,7 +1197,7 @@ class _CustomListTileElement extends RenderObjectElement {
   }
 
   @override
-  void mount(Element parent, dynamic newSlot) {
+  void mount(Element? parent, dynamic newSlot) {
     super.mount(parent, newSlot);
     _mountChild(widget.leading, _CustomListTileSlot.leading);
     _mountChild(widget.title, _CustomListTileSlot.title);
@@ -1207,9 +1205,9 @@ class _CustomListTileElement extends RenderObjectElement {
     _mountChild(widget.trailing, _CustomListTileSlot.trailing);
   }
 
-  void _updateChild(Widget widget, _CustomListTileSlot slot) {
-    final Element oldChild = slotToChild[slot];
-    final Element newChild = updateChild(oldChild, widget, slot);
+  void _updateChild(Widget? widget, _CustomListTileSlot slot) {
+    final Element? oldChild = slotToChild[slot];
+    final Element? newChild = updateChild(oldChild, widget, slot);
     if (oldChild != null) {
       slotToChild.remove(slot);
     }
@@ -1228,7 +1226,7 @@ class _CustomListTileElement extends RenderObjectElement {
     _updateChild(widget.trailing, _CustomListTileSlot.trailing);
   }
 
-  void _updateRenderObject(RenderBox child, _CustomListTileSlot slot) {
+  void _updateRenderObject(RenderBox? child, _CustomListTileSlot? slot) {
     switch (slot) {
       case _CustomListTileSlot.leading:
         renderObject.leading = child;
@@ -1242,20 +1240,22 @@ class _CustomListTileElement extends RenderObjectElement {
       case _CustomListTileSlot.trailing:
         renderObject.trailing = child;
         break;
+      case null:
+        break;
     }
   }
 
   @override
-  void insertRenderObjectChild(RenderObject child, _CustomListTileSlot slot) {
+  void insertRenderObjectChild(RenderObject child, _CustomListTileSlot? slot) {
     assert(child is RenderBox);
     _updateRenderObject(child as RenderBox, slot);
     assert(renderObject.children.keys.contains(slot));
   }
 
   @override
-  void removeRenderObjectChild(RenderObject child, _CustomListTileSlot slot) {
+  void removeRenderObjectChild(RenderObject child, _CustomListTileSlot? slot) {
     assert(child is RenderBox);
-    assert(renderObject.children[slot] == child);
+    assert(renderObject.children[slot!] == child);
     _updateRenderObject(null, slot);
     assert(!renderObject.children.keys.contains(slot));
   }
@@ -1269,12 +1269,12 @@ class _CustomListTileElement extends RenderObjectElement {
 
 class _RenderCustomListTile extends RenderBox {
   _RenderCustomListTile({
-    @required bool isDense,
-    @required VisualDensity visualDensity,
-    @required bool isThreeLine,
-    @required TextDirection textDirection,
-    @required TextBaseline titleBaselineType,
-    TextBaseline subtitleBaselineType,
+    required bool isDense,
+    required VisualDensity visualDensity,
+    required bool isThreeLine,
+    required TextDirection textDirection,
+    required TextBaseline titleBaselineType,
+    TextBaseline? subtitleBaselineType,
   })  : assert(isDense != null),
         assert(visualDensity != null),
         assert(isThreeLine != null),
@@ -1296,8 +1296,8 @@ class _RenderCustomListTile extends RenderBox {
   final Map<_CustomListTileSlot, RenderBox> children =
       <_CustomListTileSlot, RenderBox>{};
 
-  RenderBox _updateChild(
-      RenderBox oldChild, RenderBox newChild, _CustomListTileSlot slot) {
+  RenderBox? _updateChild(
+      RenderBox? oldChild, RenderBox? newChild, _CustomListTileSlot slot) {
     if (oldChild != null) {
       dropChild(oldChild);
       children.remove(slot);
@@ -1309,36 +1309,36 @@ class _RenderCustomListTile extends RenderBox {
     return newChild;
   }
 
-  RenderBox _leading;
-  RenderBox get leading => _leading;
-  set leading(RenderBox value) {
+  RenderBox? _leading;
+  RenderBox? get leading => _leading;
+  set leading(RenderBox? value) {
     _leading = _updateChild(_leading, value, _CustomListTileSlot.leading);
   }
 
-  RenderBox _title;
-  RenderBox get title => _title;
-  set title(RenderBox value) {
+  RenderBox? _title;
+  RenderBox? get title => _title;
+  set title(RenderBox? value) {
     _title = _updateChild(_title, value, _CustomListTileSlot.title);
   }
 
-  RenderBox _subtitle;
-  RenderBox get subtitle => _subtitle;
-  set subtitle(RenderBox value) {
+  RenderBox? _subtitle;
+  RenderBox? get subtitle => _subtitle;
+  set subtitle(RenderBox? value) {
     _subtitle = _updateChild(_subtitle, value, _CustomListTileSlot.subtitle);
   }
 
-  RenderBox _trailing;
-  RenderBox get trailing => _trailing;
-  set trailing(RenderBox value) {
+  RenderBox? _trailing;
+  RenderBox? get trailing => _trailing;
+  set trailing(RenderBox? value) {
     _trailing = _updateChild(_trailing, value, _CustomListTileSlot.trailing);
   }
 
   // The returned list is ordered for hit testing.
   Iterable<RenderBox> get _children sync* {
-    if (leading != null) yield leading;
-    if (title != null) yield title;
-    if (subtitle != null) yield subtitle;
-    if (trailing != null) yield trailing;
+    if (leading != null) yield leading!;
+    if (title != null) yield title!;
+    if (subtitle != null) yield subtitle!;
+    if (trailing != null) yield trailing!;
   }
 
   bool get isDense => _isDense;
@@ -1386,9 +1386,9 @@ class _RenderCustomListTile extends RenderBox {
     markNeedsLayout();
   }
 
-  TextBaseline get subtitleBaselineType => _subtitleBaselineType;
-  TextBaseline _subtitleBaselineType;
-  set subtitleBaselineType(TextBaseline value) {
+  TextBaseline? get subtitleBaselineType => _subtitleBaselineType;
+  TextBaseline? _subtitleBaselineType;
+  set subtitleBaselineType(TextBaseline? value) {
     if (_subtitleBaselineType == value) return;
     _subtitleBaselineType = value;
     markNeedsLayout();
@@ -1419,7 +1419,7 @@ class _RenderCustomListTile extends RenderBox {
   @override
   List<DiagnosticsNode> debugDescribeChildren() {
     final List<DiagnosticsNode> value = <DiagnosticsNode>[];
-    void add(RenderBox child, String name) {
+    void add(RenderBox? child, String name) {
       if (child != null) value.add(child.toDiagnosticsNode(name: name));
     }
 
@@ -1433,18 +1433,18 @@ class _RenderCustomListTile extends RenderBox {
   @override
   bool get sizedByParent => false;
 
-  static double _minWidth(RenderBox box, double height) {
+  static double _minWidth(RenderBox? box, double height) {
     return box == null ? 0.0 : box.getMinIntrinsicWidth(height);
   }
 
-  static double _maxWidth(RenderBox box, double height) {
+  static double _maxWidth(RenderBox? box, double height) {
     return box == null ? 0.0 : box.getMaxIntrinsicWidth(height);
   }
 
   @override
   double computeMinIntrinsicWidth(double height) {
     final double leadingWidth = leading != null
-        ? math.max(leading.getMinIntrinsicWidth(height), _minLeadingWidth) +
+        ? math.max(leading!.getMinIntrinsicWidth(height), _minLeadingWidth) +
             _horizontalTitleGap
         : 0.0;
     return leadingWidth +
@@ -1455,7 +1455,7 @@ class _RenderCustomListTile extends RenderBox {
   @override
   double computeMaxIntrinsicWidth(double height) {
     final double leadingWidth = leading != null
-        ? math.max(leading.getMaxIntrinsicWidth(height), _minLeadingWidth) +
+        ? math.max(leading!.getMaxIntrinsicWidth(height), _minLeadingWidth) +
             _horizontalTitleGap
         : 0.0;
     return leadingWidth +
@@ -1478,7 +1478,7 @@ class _RenderCustomListTile extends RenderBox {
   double computeMinIntrinsicHeight(double width) {
     return math.max(
       _defaultTileHeight,
-      title.getMinIntrinsicHeight(width) +
+      title!.getMinIntrinsicHeight(width) +
           (subtitle?.getMinIntrinsicHeight(width) ?? 0.0),
     );
   }
@@ -1491,15 +1491,15 @@ class _RenderCustomListTile extends RenderBox {
   @override
   double computeDistanceToActualBaseline(TextBaseline baseline) {
     assert(title != null);
-    final BoxParentData parentData = title.parentData as BoxParentData;
-    return parentData.offset.dy + title.getDistanceToActualBaseline(baseline);
+    final BoxParentData parentData = title!.parentData as BoxParentData;
+    return parentData.offset.dy + title!.getDistanceToActualBaseline(baseline)!;
   }
 
-  static double _boxBaseline(RenderBox box, TextBaseline baseline) {
+  static double? _boxBaseline(RenderBox box, TextBaseline baseline) {
     return box.getDistanceToBaseline(baseline);
   }
 
-  static Size _layoutBox(RenderBox box, BoxConstraints constraints) {
+  static Size _layoutBox(RenderBox? box, BoxConstraints constraints) {
     if (box == null) return Size.zero;
     box.layout(constraints, parentUsesSize: true);
     return box.size;
@@ -1560,8 +1560,8 @@ class _RenderCustomListTile extends RenderBox {
     final Size titleSize = _layoutBox(title, textConstraints);
     final Size subtitleSize = _layoutBox(subtitle, textConstraints);
 
-    double titleBaseline;
-    double subtitleBaseline;
+    late double titleBaseline;
+    late double subtitleBaseline;
     if (isTwoLine) {
       titleBaseline = isDense ? 28.0 : 32.0;
       subtitleBaseline = isDense ? 48.0 : 52.0;
@@ -1576,16 +1576,16 @@ class _RenderCustomListTile extends RenderBox {
 
     double tileHeight;
     double titleY;
-    double subtitleY;
+    late double subtitleY;
     if (!hasSubtitle) {
       tileHeight = math.max(
           defaultTileHeight, titleSize.height + 2.0 * _minVerticalPadding);
       titleY = (tileHeight - titleSize.height) / 2.0;
     } else {
       assert(subtitleBaselineType != null);
-      titleY = titleBaseline - _boxBaseline(title, titleBaselineType);
+      titleY = titleBaseline - _boxBaseline(title!, titleBaselineType)!;
       subtitleY = subtitleBaseline -
-          _boxBaseline(subtitle, subtitleBaselineType) +
+          _boxBaseline(subtitle!, subtitleBaselineType!)! +
           visualDensity.vertical * 2.0;
       tileHeight = defaultTileHeight;
 
@@ -1635,22 +1635,22 @@ class _RenderCustomListTile extends RenderBox {
         {
           if (hasLeading)
             _positionBox(
-                leading, Offset(tileWidth - leadingSize.width, leadingY));
-          _positionBox(title, Offset(adjustedTrailingWidth, titleY));
+                leading!, Offset(tileWidth - leadingSize.width, leadingY));
+          _positionBox(title!, Offset(adjustedTrailingWidth, titleY));
           if (hasSubtitle)
-            _positionBox(subtitle, Offset(adjustedTrailingWidth, subtitleY));
-          if (hasTrailing) _positionBox(trailing, Offset(0.0, trailingY));
+            _positionBox(subtitle!, Offset(adjustedTrailingWidth, subtitleY));
+          if (hasTrailing) _positionBox(trailing!, Offset(0.0, trailingY));
           break;
         }
       case TextDirection.ltr:
         {
-          if (hasLeading) _positionBox(leading, Offset(0.0, leadingY));
-          _positionBox(title, Offset(titleStart, titleY));
+          if (hasLeading) _positionBox(leading!, Offset(0.0, leadingY));
+          _positionBox(title!, Offset(titleStart, titleY));
           if (hasSubtitle)
-            _positionBox(subtitle, Offset(titleStart, subtitleY));
+            _positionBox(subtitle!, Offset(titleStart, subtitleY));
           if (hasTrailing)
             _positionBox(
-                trailing, Offset(tileWidth - trailingSize.width, trailingY));
+                trailing!, Offset(tileWidth - trailingSize.width, trailingY));
           break;
         }
     }
@@ -1662,7 +1662,7 @@ class _RenderCustomListTile extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    void doPaint(RenderBox child) {
+    void doPaint(RenderBox? child) {
       if (child != null) {
         final BoxParentData parentData = child.parentData as BoxParentData;
         context.paintChild(child, parentData.offset + offset);
@@ -1679,7 +1679,7 @@ class _RenderCustomListTile extends RenderBox {
   bool hitTestSelf(Offset position) => true;
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, {@required Offset position}) {
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     assert(position != null);
     for (final RenderBox child in _children) {
       final BoxParentData parentData = child.parentData as BoxParentData;

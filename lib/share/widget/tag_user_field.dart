@@ -7,13 +7,13 @@ import 'package:flutter/gestures.dart';
 import './keep_keyboard_popup_menu/keep_keyboard_popup_menu.dart';
 
 class TagUserField extends StatefulWidget {
-  final TextEditingController controller;
-  final FocusNode focusNode;
-  final Function(String) onSubmitted;
-  final InputDecoration decoration;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final Function(String)? onSubmitted;
+  final InputDecoration? decoration;
   final double keyboardPadding;
-  final Function onTap;
-  final Function(List<UserModel>) onUpdateTags;
+  final Function? onTap;
+  final Function(List<UserModel>)? onUpdateTags;
 
   TagUserField(
       {this.controller,
@@ -32,11 +32,11 @@ class _TagUserFieldState extends State<TagUserField> {
   List<String> words = [];
   List<String> comments = [];
   String str = '';
-  String err;
+  String? err;
   String lastText = '';
   List<UserModel> tagUsers = [];
 
-  static List<UserModel> tagablePeople;
+  static List<UserModel>? tagablePeople;
 
   @override
   void initState() {
@@ -46,8 +46,8 @@ class _TagUserFieldState extends State<TagUserField> {
 
   Future _getTagable() async {
     final res = await UserBloc.instance.getListUserIn([
-      ...AuthBloc.instance.userModel.friendIds,
-      ...AuthBloc.instance.userModel.followingIds
+      ...AuthBloc.instance.userModel!.friendIds!,
+      ...AuthBloc.instance.userModel!.followingIds!
     ].toSet().toList());
     if (res.isSuccess) {
       setState(() {
@@ -74,25 +74,25 @@ class _TagUserFieldState extends State<TagUserField> {
                 ),
         menuItemBuilder: tagablePeople == null
             ? null
-            : (context, closePopup) => tagablePeople
-                .where((s) => ('@' + s.name).toLowerCase().contains(str))
+            : (context, closePopup) => tagablePeople!
+                .where((s) => ('@' + s.name!).toLowerCase().contains(str))
                 .map((e) => KeepKeyboardPopupMenuItem(
                     child: GestureDetector(
                       onTap: () {audioCache.play('tab3.mp3');
                         setState(() {
-                          widget.controller
-                              .text = widget.controller.text.substring(0,
-                                  widget.controller.text.length - str.length) +
+                          widget.controller!
+                              .text = widget.controller!.text.substring(0,
+                                  widget.controller!.text.length - str.length) +
                               '@' +
-                              e.name;
-                          widget.controller.selection =
+                              e.name!;
+                          widget.controller!.selection =
                               TextSelection.fromPosition(TextPosition(
-                                  offset: widget.controller.text.length));
+                                  offset: widget.controller!.text.length));
                         });
 
                         closePopup();
                         tagUsers.add(e);
-                        widget.onUpdateTags(tagUsers);
+                        widget.onUpdateTags!(tagUsers);
                       },
                       child: Row(
                         children: [
@@ -100,16 +100,16 @@ class _TagUserFieldState extends State<TagUserField> {
                               radius: 17,
                               backgroundColor: Colors.white,
                               backgroundImage:
-                                  e.avatar != null && e.avatar.trim() != ''
-                                      ? NetworkImage(e.avatar)
+                                  (e.avatar != null && e.avatar!.trim() != ''
+                                      ? NetworkImage(e.avatar!)
                                       : AssetImage(
-                                          'assets/image/default_avatar.png')),
+                                          'assets/image/default_avatar.png')) as ImageProvider<Object>?),
                           SizedBox(width: 12),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                e.name,
+                                e.name!,
                                 style: ptBody().copyWith(color: Colors.black),
                               ),
                               Text(
@@ -124,7 +124,7 @@ class _TagUserFieldState extends State<TagUserField> {
                     onTap: () {}))
                 .toList(),
         childBuilder: (context, openPopup, closePopup) => TextField(
-            onTap: widget.onTap,
+            onTap: widget.onTap as void Function()?,
             focusNode: widget.focusNode,
             controller: widget.controller,
             onSubmitted: widget.onSubmitted,
@@ -143,9 +143,9 @@ class _TagUserFieldState extends State<TagUserField> {
               });
               if (str.trim() != '' &&
                   tagablePeople != null &&
-                  tagablePeople
+                  tagablePeople!
                           .map((e) => e.name)
-                          .where((s) => ('@' + s).toLowerCase().contains(str))
+                          .where((s) => ('@' + s!).toLowerCase().contains(str))
                           .length >
                       0) {
                 closePopup().then(

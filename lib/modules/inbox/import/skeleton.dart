@@ -36,7 +36,7 @@ class ListSkeleton extends StatelessWidget {
       ),
       items: 5,
       period: Duration(seconds: 2),
-      highlightColor: Colors.grey[200],
+      highlightColor: Colors.grey[200]!,
       direction: SkeletonDirection.ltr,
     );
   }

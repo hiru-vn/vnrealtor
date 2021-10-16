@@ -22,8 +22,8 @@ Center kLoadingSpinner = Center(
   ),
 );
 
-Function kLoadingBuilder =
-    (BuildContext context, Widget child, ImageChunkEvent loadingProgress) =>
+Widget Function(BuildContext, Widget, ImageChunkEvent?)? kLoadingBuilder =
+    (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) =>
         loadingProgress != null ? kLoadingSpinner : child;
 
 Function imageNetworkErrorBuilder = (_, __, ___) => SizedBox.shrink();

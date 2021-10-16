@@ -22,8 +22,8 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   bool showAppBar = true;
-  PostBloc _postBloc;
-  AuthBloc _authBloc;
+  PostBloc? _postBloc;
+  late AuthBloc _authBloc;
   bool isFilterDistance = false;
   int distance = 20;
   // ScrollController _postBloc.feedScrollController = ScrollController();
@@ -39,7 +39,7 @@ class _PostPageState extends State<PostPage> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
-      _authBloc = Provider.of(context);
+      _authBloc = Provider.of<AuthBloc>(context);
       Future.delayed(Duration(seconds: 5), () => _showRecomendDialog(context));
     }
     super.didChangeDependencies();
@@ -52,15 +52,15 @@ class _PostPageState extends State<PostPage> {
   }
 
   void appBarControll() {
-    if (_postBloc.feedScrollController.position.userScrollDirection ==
+    if (_postBloc!.feedScrollController.position.userScrollDirection ==
             ScrollDirection.forward ||
-        _postBloc.feedScrollController.offset == 0) {
+        _postBloc!.feedScrollController.offset == 0) {
       if (!showAppBar)
         setState(() {
           showAppBar = !showAppBar;
         });
     } else {
-      if (showAppBar) if (_postBloc.feedScrollController.offset >
+      if (showAppBar) if (_postBloc!.feedScrollController.offset >
           kToolbarHeight)
         setState(() {
           showAppBar = !showAppBar;
@@ -69,7 +69,7 @@ class _PostPageState extends State<PostPage> {
   }
 
   _getPostLocal() async {
-    final res = await _postBloc.getPostLocal(distance.toDouble());
+    final res = await _postBloc!.getPostLocal(distance.toDouble());
     if (!res.isSuccess) {
       showToast(res.errMessage, context);
     }
@@ -77,21 +77,21 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    _postBloc.pageController = PageController();
-    _postBloc.feedScrollController = ScrollController();
+    _postBloc!.pageController = PageController();
+    _postBloc!.feedScrollController = ScrollController();
     return PageView(
-        controller: _postBloc.pageController,
+        controller: _postBloc!.pageController,
         physics: NeverScrollableScrollPhysics(),
         children: [
           Scaffold(
             backgroundColor: ptBackgroundColor(context),
             appBar: showAppBar
-                ? PostPageAppBar(_authBloc.userModel.messNotiCount ?? 0)
+                ? PostPageAppBar(_authBloc.userModel!.messNotiCount ?? 0)
                 : null,
             body: LoadMoreScrollView(
-              scrollController: _postBloc.feedScrollController,
+              scrollController: _postBloc!.feedScrollController,
               onLoadMore: () {
-                _postBloc.loadMoreNewFeed();
+                _postBloc!.loadMoreNewFeed();
               },
               list: RefreshIndicator(
                 color: ptPrimaryColor(context),
@@ -100,10 +100,10 @@ class _PostPageState extends State<PostPage> {
                     isFilterDistance = false;
                   });
                   await Future.wait([
-                    _postBloc.getNewFeed(
+                    _postBloc!.getNewFeed(
                         filter:
                             GraphqlFilter(limit: 10, order: "{updatedAt: -1}")),
-                    _postBloc.getStoryFollowing()
+                    _postBloc!.getStoryFollowing()
                   ]);
 
                   return;
@@ -117,7 +117,7 @@ class _PostPageState extends State<PostPage> {
                           deltaBottom > (0.5 * viewPortDimension) - 100.0;
                     },
                     physics: const AlwaysScrollableScrollPhysics(),
-                    controller: _postBloc.feedScrollController,
+                    controller: _postBloc!.feedScrollController,
                     slivers: <Widget>[
                       SliverList(
                           delegate: SliverChildListDelegate(
@@ -130,11 +130,11 @@ class _PostPageState extends State<PostPage> {
                           ),
                           CreatePostCard(
                             postBloc: _postBloc,
-                            pageController: _postBloc.pageController,
+                            pageController: _postBloc!.pageController,
                           ),
-                          if (_postBloc.isReloadFeed) PostSkeleton(),
-                          if (_postBloc.hasTags != null &&
-                              _postBloc.hasTags.length > 0)
+                          if (_postBloc!.isReloadFeed) PostSkeleton(),
+                          if (_postBloc!.hasTags != null &&
+                              _postBloc!.hasTags!.length > 0)
                             Container(
                               width: deviceWidth(context),
                               height: 30,
@@ -184,7 +184,7 @@ class _PostPageState extends State<PostPage> {
                                             ),
                                             value: 50),
                                       ],
-                                      onSelected: (val) async {
+                                      onSelected: (dynamic val) async {
                                         setState(() {
                                           isFilterDistance = true;
                                           distance = val;
@@ -204,7 +204,7 @@ class _PostPageState extends State<PostPage> {
                                     borderRadius: BorderRadius.circular(15),
                                     onTap: () {
                                       SearchPostPage.navigate(
-                                          hashTag: _postBloc.hasTags[index - 1]
+                                          hashTag: _postBloc!.hasTags![index - 1]
                                               ['value']);
                                     },
                                     child: Container(
@@ -217,18 +217,18 @@ class _PostPageState extends State<PostPage> {
                                               BorderRadius.circular(15)),
                                       child: Center(
                                         child: Text(
-                                          _postBloc.hasTags[index - 1]['value']
+                                          _postBloc!.hasTags![index - 1]['value']
                                               .toString(),
                                         ),
                                       ),
                                     ),
                                   );
                                 },
-                                itemCount: _postBloc.hasTags.length,
+                                itemCount: _postBloc!.hasTags!.length,
                                 scrollDirection: Axis.horizontal,
                               ),
                             ),
-                          _postBloc.feed.length == 0
+                          _postBloc!.feed!.length == 0
                               ? EmptyWidget(
                                   assetImg: 'assets/image/no_post.png',
                                   title: 'Không tìm thấy bài đăng',
@@ -236,9 +236,9 @@ class _PostPageState extends State<PostPage> {
                               : ListView.builder(
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
-                                  itemCount: _postBloc.feed.length,
+                                  itemCount: _postBloc!.feed!.length,
                                   itemBuilder: (context, index) {
-                                    final item = _postBloc.feed[index];
+                                    final item = _postBloc!.feed![index];
                                     return Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -259,7 +259,7 @@ class _PostPageState extends State<PostPage> {
                                     );
                                   },
                                 ),
-                          if (_postBloc.isLoadMoreFeed && !_postBloc.isEndFeed)
+                          if (_postBloc!.isLoadMoreFeed && !_postBloc!.isEndFeed)
                             PostSkeleton(
                               count: 1,
                             ),
@@ -272,24 +272,24 @@ class _PostPageState extends State<PostPage> {
               ),
             ),
           ),
-          CreatePostPage(_postBloc.pageController)
+          CreatePostPage(_postBloc!.pageController)
         ]);
   }
 }
 
-Future<bool> _showRecomendDialog(BuildContext context) async {
+Future<bool?> _showRecomendDialog(BuildContext context) async {
   final notShowRecomendAgain =
       await SPref.instance.getBool('notShowRecomendAgain');
   if (notShowRecomendAgain) return Future.value(false);
   if (AuthBloc.firstLogin) return Future.value(false);
-  if (PostBloc.instance.myPosts
+  if (PostBloc.instance.myPosts!
           .where((element) =>
-              DateTime.tryParse(element.createdAt)
+              DateTime.tryParse(element.createdAt!)!
                   .compareTo(DateTime.now().subtract(Duration(days: 1))) >=
               0)
           .length ==
       0) return Future.value(false);
-  if (AuthBloc.instance.userModel.role != 'EDITOR') return Future.value(false);
+  if (AuthBloc.instance.userModel!.role != 'EDITOR') return Future.value(false);
 
   return showDialog<bool>(
       context: context,
@@ -299,10 +299,10 @@ Future<bool> _showRecomendDialog(BuildContext context) async {
 }
 
 class CreatePostCard extends StatelessWidget {
-  final PostBloc postBloc;
-  final PageController pageController;
+  final PostBloc? postBloc;
+  final PageController? pageController;
 
-  const CreatePostCard({Key key, this.postBloc, this.pageController})
+  const CreatePostCard({Key? key, this.postBloc, this.pageController})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -322,7 +322,7 @@ class CreatePostCard extends StatelessWidget {
               child: GestureDetector(
                 onTap: () {
                   audioCache.play('tab3.mp3');
-                  pageController
+                  pageController!
                       .animateToPage(1,
                           duration: Duration(milliseconds: 300),
                           curve: Curves.decelerate)
@@ -343,7 +343,7 @@ class CreatePostCard extends StatelessWidget {
                         Spacer(),
                         GestureDetector(
                           onTap: () {audioCache.play('tab3.mp3');
-                            pageController.animateToPage(1,
+                            pageController!.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
                           },
@@ -361,7 +361,7 @@ class CreatePostCard extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {audioCache.play('tab3.mp3');
-                            pageController.animateToPage(1,
+                            pageController!.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
                           },
@@ -380,24 +380,24 @@ class CreatePostCard extends StatelessWidget {
                 ),
               ),
             ),
-            if ((postBloc.stories?.length ?? 0) > 0 || postBloc.isLoadStory)
+            if ((postBloc?.stories.length ?? 0) > 0 || postBloc!.isLoadStory)
               Divider(
                 height: 10,
               ),
-            postBloc.isLoadStory
+            postBloc!.isLoadStory
                 ? StorySkeleton()
-                : postBloc.stories.length == 0
+                : postBloc!.stories.length == 0
                     ? SizedBox.shrink()
                     : SizedBox(
                         height: 150,
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(horizontal: 15),
-                            itemCount: postBloc.stories.length,
+                            itemCount: postBloc!.stories.length,
                             separatorBuilder: (context, index) =>
                                 SizedBox(width: 8),
                             itemBuilder: (context, index) {
-                              return buildStoryWidget(postBloc.stories[index]);
+                              return buildStoryWidget(postBloc!.stories[index]);
                             }),
                       ),
           ],
@@ -423,8 +423,8 @@ buildStoryWidget(PostModel postModel) {
               borderRadius: BorderRadius.circular(8),
               image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(postModel.storyImages[0] ??
-                      postModel.mediaPosts[0].halfUrl))),
+                  image: CachedNetworkImageProvider(postModel.storyImages?[0] ??
+                      postModel.mediaPosts![0].halfUrl!))),
           child: Column(children: [
             Padding(
               padding: const EdgeInsets.all(4),
@@ -441,17 +441,17 @@ buildStoryWidget(PostModel postModel) {
                       child: CircleAvatar(
                         radius: 13,
                         backgroundColor: Colors.white,
-                        backgroundImage: postModel.isPage
-                            ? postModel.page.avartar != null &&
-                                    postModel.page.avartar != 'null'
+                        backgroundImage: postModel.isPage!
+                            ? (postModel.page!.avartar != null &&
+                                    postModel.page!.avartar != 'null'
                                 ? CachedNetworkImageProvider(
-                                    postModel.page.avartar)
-                                : AssetImage('assets/image/default_avatar.png')
-                            : postModel.user.avatar != null &&
-                                    postModel.user.avatar != 'null'
+                                    postModel.page!.avartar!)
+                                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?
+                            : (postModel.user!.avatar != null &&
+                                    postModel.user!.avatar != 'null'
                                 ? CachedNetworkImageProvider(
-                                    postModel.user.avatar)
-                                : AssetImage('assets/image/default_avatar.png'),
+                                    postModel.user!.avatar!)
+                                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
                       ),
                     ),
                   ),
@@ -460,9 +460,9 @@ buildStoryWidget(PostModel postModel) {
                   ),
                   Expanded(
                     child: Text(
-                      postModel.isPage
-                          ? postModel.page.name
-                          : postModel.user.name ?? '',
+                      postModel.isPage!
+                          ? postModel.page!.name!
+                          : postModel.user!.name ?? '',
                       overflow: TextOverflow.fade,
                       style: ptTiny().copyWith(
                         color: Colors.white,
@@ -474,7 +474,7 @@ buildStoryWidget(PostModel postModel) {
               ),
             ),
             SizedBox(height: 6),
-            if (postModel.district != null && postModel.district.trim() != "")
+            if (postModel.district != null && postModel.district!.trim() != "")
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
@@ -490,7 +490,7 @@ buildStoryWidget(PostModel postModel) {
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 84),
                           child: Text(
-                            postModel.district,
+                            postModel.district!,
                             style: ptTiny().copyWith(fontSize: 11),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -544,7 +544,7 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           GestureDetector(
             onTap: () {audioCache.play('tab3.mp3');
-              AuthBloc.instance.userModel.messNotiCount = 0;
+              AuthBloc.instance.userModel!.messNotiCount = 0;
               UserBloc.instance.seenNotiMess();
               InboxList.navigate();
             },

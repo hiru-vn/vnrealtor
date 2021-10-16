@@ -7,11 +7,11 @@ import 'package:datcao/share/import.dart';
 import 'dart:async';
 
 class PageSetting extends StatefulWidget {
-  final PagesBloc pageBloc;
-  const PageSetting({Key key, this.pageBloc}) : super(key: key);
+  final PagesBloc? pageBloc;
+  const PageSetting({Key? key, this.pageBloc}) : super(key: key);
 
-  static Future navigate(PagesBloc pageBloc) {
-    return navigatorKey.currentState.push(
+  static Future navigate(PagesBloc? pageBloc) {
+    return navigatorKey.currentState!.push(
       pageBuilder(
         PageSetting(
           pageBloc: pageBloc,
@@ -37,33 +37,33 @@ class _PageSettingState extends State<PageSetting> {
 
   bool isUpdateLoading = false;
 
-  PagesBloc get _pageBloc => widget.pageBloc;
+  PagesBloc? get _pageBloc => widget.pageBloc;
 
   @override
   void initState() {
-    _nameC.text = _pageBloc.pageDetail.name;
-    _webC.text = _pageBloc.pageDetail.website;
-    _phoneC.text = _pageBloc.pageDetail.phone;
-    _addressC.text = _pageBloc.pageDetail.address;
-    _descriptionC.text = _pageBloc.pageDetail.description;
+    _nameC.text = _pageBloc!.pageDetail!.name!;
+    _webC.text = _pageBloc!.pageDetail!.website!;
+    _phoneC.text = _pageBloc!.pageDetail!.phone!;
+    _addressC.text = _pageBloc!.pageDetail!.address!;
+    _descriptionC.text = _pageBloc!.pageDetail!.description!;
     super.initState();
   }
 
 
 
   Future _updateInfo() async {
-    if (!_formKey.currentState.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
     setState(() {
       isUpdateLoading = true;
     });
 
     var res;
-    res = await  _pageBloc.updatePage(id: _pageBloc.pageDetail.id,
-        avatar: _pageBloc.pageDetail.avartar,
-        cover: _pageBloc.pageDetail.coverImage,
+    res = await  _pageBloc!.updatePage(id: _pageBloc!.pageDetail!.id,
+        avatar: _pageBloc!.pageDetail!.avartar,
+        cover: _pageBloc!.pageDetail!.coverImage,
         name: _nameC.text,
         description: _descriptionC.text,
-        categoryIds: _pageBloc.pageDetail.categoryIds,
+        categoryIds: _pageBloc!.pageDetail!.categoryIds,
         address: _addressC.text,
         phone: _phoneC.text,
         email: "",
@@ -74,17 +74,17 @@ class _PageSettingState extends State<PageSetting> {
       });
       showAlertDialog(context, 'Thông tin đã được cập nhật',
           navigatorKey: navigatorKey);
-      _pageBloc.pageDetail.name = _nameC.text;
-      _pageBloc.pageDetail.website = _webC.text;
-      _pageBloc.pageDetail.address = _addressC.text;
-      _pageBloc.pageDetail.phone = _phoneC.text;
-      _pageBloc.pageDetail.description = _descriptionC.text;
+      _pageBloc!.pageDetail!.name = _nameC.text;
+      _pageBloc!.pageDetail!.website = _webC.text;
+      _pageBloc!.pageDetail!.address = _addressC.text;
+      _pageBloc!.pageDetail!.phone = _phoneC.text;
+      _pageBloc!.pageDetail!.description = _descriptionC.text;
       Future.delayed(Duration(seconds: 1), () => _pageBloc?.notifyListeners());
     } else {
       setState(() {
         isUpdateLoading = false;
       });
-      navigatorKey.currentState.maybePop();
+      navigatorKey.currentState!.maybePop();
       showToast(res.errMessage, context);
     }
     Future.delayed(Duration(seconds: 1), () => _pageBloc?.notifyListeners());
@@ -153,10 +153,10 @@ class _PageSettingState extends State<PageSetting> {
     ),
   );
 
-  Widget _itemInfoField({TextEditingController controller, String hintText}) =>
+  Widget _itemInfoField({TextEditingController? controller, String? hintText}) =>
       _itemTextField(controller: controller, hintText: hintText);
 
-  Widget _itemTextField({TextEditingController controller, String hintText}) =>
+  Widget _itemTextField({TextEditingController? controller, String? hintText}) =>
       Material(
         elevation: 0,
         color: ptSecondaryColor(context),

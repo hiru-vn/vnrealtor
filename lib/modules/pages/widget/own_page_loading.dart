@@ -55,7 +55,7 @@ class OwnPageLoading extends StatelessWidget {
       ),
       items: 3,
       period: Duration(seconds: 2),
-      highlightColor: Colors.grey[200],
+      highlightColor: Colors.grey[200]!,
       direction: SkeletonDirection.ltr,
     );
   }

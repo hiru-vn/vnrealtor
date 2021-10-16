@@ -12,14 +12,14 @@ class RecomendDialog extends StatefulWidget {
 }
 
 class _RecomendDialogState extends State<RecomendDialog> {
-  UserBloc _userBloc;
-  String errMessage;
+  UserBloc? _userBloc;
+  String? errMessage;
   bool isLoading = false;
 
   @override
   void didChangeDependencies() {
     if (_userBloc == null) {
-      _userBloc = Provider.of(context);
+      _userBloc = Provider.of<UserBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -47,7 +47,7 @@ class _RecomendDialogState extends State<RecomendDialog> {
                     child: errMessage != null
                         ? Center(
                             child: Text(
-                              errMessage,
+                              errMessage!,
                               style: ptBody().copyWith(color: Colors.red),
                             ),
                           )
@@ -61,7 +61,7 @@ class _RecomendDialogState extends State<RecomendDialog> {
                             Expanded(
                                 child: InkWell(
                                     onTap: () {
-                                      navigatorKey.currentState.maybePop(false);
+                                      navigatorKey.currentState!.maybePop(false);
                                     },
                                     child: Center(
                                       child: Padding(
@@ -110,18 +110,18 @@ class FunkyOverlay extends StatefulWidget {
 
 class FunkyOverlayState extends State<FunkyOverlay>
     with SingleTickerProviderStateMixin {
-  AnimationController controller;
-  Animation<double> scaleAnimation;
+  late AnimationController controller;
+  late Animation<double> scaleAnimation;
 
-  UserBloc _userBloc;
-  String errMessage;
+  UserBloc? _userBloc;
+  String? errMessage;
   bool isLoading = false;
   bool notShowAgain = false;
 
   @override
   void didChangeDependencies() {
     if (_userBloc == null) {
-      _userBloc = Provider.of(context);
+      _userBloc = Provider.of<UserBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -186,7 +186,7 @@ class FunkyOverlayState extends State<FunkyOverlay>
                           child: errMessage != null
                               ? Center(
                                   child: Text(
-                                    errMessage,
+                                    errMessage!,
                                     style: ptBody().copyWith(color: Colors.red),
                                   ),
                                 )
@@ -233,7 +233,7 @@ class FunkyOverlayState extends State<FunkyOverlay>
                                             if (notShowAgain == true)
                                               SPref.instance.setBool(
                                                   'notShowRecomendAgain', true);
-                                            navigatorKey.currentState
+                                            navigatorKey.currentState!
                                                 .maybePop(false);
                                           },
                                           child: Center(
@@ -260,15 +260,15 @@ class FunkyOverlayState extends State<FunkyOverlay>
                                       if (notShowAgain == true)
                                         SPref.instance.setBool(
                                             'notShowRecomendAgain', true);
-                                      if (AuthBloc.instance.userModel.role ==
+                                      if (AuthBloc.instance.userModel!.role ==
                                           'COMPANY') {
                                         VerifyCompany.navigate().then((value) =>
-                                            navigatorKey.currentState
+                                            navigatorKey.currentState!
                                                 .maybePop());
                                         return;
                                       }
                                       VertifyAccountPage1.navigate().then(
-                                          (value) => navigatorKey.currentState
+                                          (value) => navigatorKey.currentState!
                                               .maybePop());
                                     },
                                     child: Center(

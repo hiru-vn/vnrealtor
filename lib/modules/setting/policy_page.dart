@@ -3,7 +3,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class PolicyPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(PolicyPage()));
+    return navigatorKey.currentState!.push(pageBuilder(PolicyPage()));
   }
 
   @override

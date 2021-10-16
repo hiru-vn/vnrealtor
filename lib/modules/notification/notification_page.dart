@@ -16,9 +16,9 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPageState extends State<NotificationPage>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
-  UserBloc _userBloc;
-  NotificationBloc _notificationBloc;
+  TabController? _tabController;
+  UserBloc? _userBloc;
+  late NotificationBloc _notificationBloc;
   TextEditingController _searchC = TextEditingController();
 
   @override
@@ -130,24 +130,24 @@ class _NotificationPageState extends State<NotificationPage>
 }
 
 class NotificationTab extends StatefulWidget {
-  final String search;
+  final String? search;
 
-  const NotificationTab({Key key, this.search}) : super(key: key);
+  const NotificationTab({Key? key, this.search}) : super(key: key);
 
   @override
   _NotificationTabState createState() => _NotificationTabState();
 }
 
 class _NotificationTabState extends State<NotificationTab> {
-  UserBloc _userBloc;
-  NotificationBloc _notificationBloc;
+  UserBloc? _userBloc;
+  late NotificationBloc _notificationBloc;
   List<dynamic> list = [];
 
   @override
   void didChangeDependencies() {
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
-      _notificationBloc = Provider.of(context);
+      _notificationBloc = Provider.of<NotificationBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -157,10 +157,10 @@ class _NotificationTabState extends State<NotificationTab> {
     list = [
       ..._notificationBloc.notifications
           .where((element) =>
-              element.body.contains(widget.search) ||
-              element.title.contains(widget.search))
+              element.body!.contains(widget.search!) ||
+              element.title!.contains(widget.search!))
           .toList(),
-      ..._userBloc.followersIn7Days
+      ..._userBloc!.followersIn7Days
     ];
     list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
     if (_notificationBloc.isLoadNoti)
@@ -176,7 +176,7 @@ class _NotificationTabState extends State<NotificationTab> {
                 _notificationBloc.getListNotification(
                   filter: GraphqlFilter(order: '{createdAt: -1}'),
                 ),
-                _userBloc.getFollowerIn7d()
+                _userBloc!.getFollowerIn7d()
               ]);
               return;
             },
@@ -195,10 +195,10 @@ class _NotificationTabState extends State<NotificationTab> {
                       },
                       leading: CircleAvatar(
                         radius: 22,
-                        backgroundImage: (list[index].avatar == null ||
+                        backgroundImage: ((list[index].avatar == null ||
                                 list[index].avatar == '')
                             ? AssetImage('assets/image/icon_white.png')
-                            : NetworkImage(list[index].avatar),
+                            : NetworkImage(list[index].avatar)) as ImageProvider<Object>?,
                       ),
                       title: Text(
                         list[index].name + ' đã theo dõi bạn',
@@ -206,8 +206,7 @@ class _NotificationTabState extends State<NotificationTab> {
                       ),
                       subtitle: Text(
                         Formart.timeByDayVi(
-                                DateTime.tryParse(list[index].updatedAt)) ??
-                            '',
+                                DateTime.tryParse(list[index].updatedAt)!),
                         style: ptTiny(),
                       ),
                     )
@@ -240,10 +239,10 @@ class _NotificationTabState extends State<NotificationTab> {
                       leading: CircleAvatar(
                         radius: 22,
                         backgroundColor: Colors.white,
-                        backgroundImage: (list[index].image == null ||
+                        backgroundImage: ((list[index].image == null ||
                                 list[index].image == '')
                             ? AssetImage('assets/image/default_avatar.png')
-                            : CachedNetworkImageProvider(list[index].image),
+                            : CachedNetworkImageProvider(list[index].image)) as ImageProvider<Object>?,
                       ),
                       title: Text(
                         list[index].body,
@@ -251,8 +250,7 @@ class _NotificationTabState extends State<NotificationTab> {
                       ),
                       subtitle: Text(
                         Formart.timeByDayVi(
-                                DateTime.tryParse(list[index].createdAt)) ??
-                            '',
+                                DateTime.tryParse(list[index].createdAt)!),
                         style: ptTiny(),
                       ),
                     ),
@@ -272,15 +270,15 @@ class _NotificationTabState extends State<NotificationTab> {
 }
 
 class FriendRequestTab extends StatefulWidget {
-  final String search;
+  final String? search;
 
-  const FriendRequestTab({Key key, this.search}) : super(key: key);
+  const FriendRequestTab({Key? key, this.search}) : super(key: key);
   @override
   _FriendRequestTabState createState() => _FriendRequestTabState();
 }
 
 class _FriendRequestTabState extends State<FriendRequestTab> {
-  UserBloc _userBloc;
+  UserBloc? _userBloc;
 
   @override
   void didChangeDependencies() {
@@ -292,18 +290,18 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
 
   @override
   Widget build(BuildContext context) {
-    return _userBloc.friendRequestFromOtherUsers.length != 0
+    return _userBloc!.friendRequestFromOtherUsers.length != 0
         ? RefreshIndicator(
             color: ptPrimaryColor(context),
             onRefresh: () async {audioCache.play('tab3.mp3');
-              await _userBloc.getFriendRequestFromOtherUsers();
+              await _userBloc!.getFriendRequestFromOtherUsers();
               return;
             },
             child: ListView.builder(
               controller: NotificationBloc.instance.notiScrollController,
-              itemCount: _userBloc.friendRequestFromOtherUsers.length,
+              itemCount: _userBloc!.friendRequestFromOtherUsers.length,
               itemBuilder: (context, index) {
-                final item = _userBloc.friendRequestFromOtherUsers[index];
+                final item = _userBloc!.friendRequestFromOtherUsers[index];
                 return ListTile(
                   onTap: () {
                     ProfileOtherPage.navigate(item.user1);
@@ -312,9 +310,9 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                   leading: CircleAvatar(
                     radius: 22,
                     backgroundColor: Colors.white,
-                    backgroundImage: item.user1.avatar != null
-                        ? CachedNetworkImageProvider(item.user1.avatar)
-                        : AssetImage('assets/image/default_avatar.png'),
+                    backgroundImage: (item.user1!.avatar != null
+                        ? CachedNetworkImageProvider(item.user1!.avatar!)
+                        : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
                   ),
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,13 +320,12 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                     children: [
                       SizedBox(height: 10),
                       Text(
-                        '${item.user1.name} đã gửi lời mời kết bạn',
+                        '${item.user1!.name} đã gửi lời mời kết bạn',
                         style: ptBody(),
                       ),
                       Text(
                         Formart.timeByDayVi(
-                                DateTime.tryParse(item.updatedAt ?? '')) ??
-                            '',
+                                DateTime.tryParse(item.updatedAt ?? '')!),
                         style: ptTiny().copyWith(color: Colors.black54),
                       ),
                     ],
@@ -345,19 +342,19 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                         ),
                         onPressed: () async {
                           setState(() {
-                            _userBloc.friendRequestFromOtherUsers.remove(item);
+                            _userBloc!.friendRequestFromOtherUsers.remove(item);
                           });
                           final res =
-                              await _userBloc.acceptFriendInvite(item.id);
+                              await _userBloc!.acceptFriendInvite(item.id);
                           if (res.isSuccess) {
                             setState(() {
-                              _userBloc.friendRequestFromOtherUsers
+                              _userBloc!.friendRequestFromOtherUsers
                                   .remove(item);
                             });
                           } else {
                             showToast(res.errMessage, context);
                             setState(() {
-                              _userBloc.friendRequestFromOtherUsers.add(item);
+                              _userBloc!.friendRequestFromOtherUsers.add(item);
                             });
                           }
                         },
@@ -375,15 +372,15 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
                         ),
                         onPressed: () async {
                           setState(() {
-                            _userBloc.friendRequestFromOtherUsers.remove(item);
+                            _userBloc!.friendRequestFromOtherUsers.remove(item);
                           });
                           final res =
-                              await _userBloc.declineFriendInvite(item.id);
+                              await _userBloc!.declineFriendInvite(item.id);
                           if (res.isSuccess) {
                           } else {
                             showToast(res.errMessage, context);
                             setState(() {
-                              _userBloc.friendRequestFromOtherUsers.add(item);
+                              _userBloc!.friendRequestFromOtherUsers.add(item);
                             });
                           }
                         },
@@ -403,13 +400,13 @@ class _FriendRequestTabState extends State<FriendRequestTab> {
 }
 
 class FollowTab extends StatelessWidget {
-  final List<UserModel> list;
-  final String search;
+  final List<UserModel>? list;
+  final String? search;
 
-  const FollowTab({Key key, this.list, this.search}) : super(key: key);
+  const FollowTab({Key? key, this.list, this.search}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return list.length > 0
+    return list!.length > 0
         ? RefreshIndicator(
             color: ptPrimaryColor(context),
             onRefresh: () async {audioCache.play('tab3.mp3');
@@ -421,27 +418,26 @@ class FollowTab extends StatelessWidget {
               separatorBuilder: (context, index) => Divider(
                 height: 1,
               ),
-              itemCount: list.length,
+              itemCount: list!.length,
               itemBuilder: (context, index) => ListTile(
                 tileColor: ptBackgroundColor(context),
                 onTap: () {
-                  ProfileOtherPage.navigate(list[index]);
+                  ProfileOtherPage.navigate(list![index]);
                 },
                 leading: CircleAvatar(
                   radius: 22,
                   backgroundImage:
-                      (list[index].avatar == null || list[index].avatar == '')
+                      ((list![index].avatar == null || list![index].avatar == '')
                           ? AssetImage('assets/image/icon_white.png')
-                          : NetworkImage(list[index].avatar),
+                          : NetworkImage(list![index].avatar!)) as ImageProvider<Object>?,
                 ),
                 title: Text(
-                  list[index].name + ' đã theo dõi bạn',
+                  list![index].name! + ' đã theo dõi bạn',
                   style: ptBody(),
                 ),
                 subtitle: Text(
                   Formart.timeByDayVi(
-                          DateTime.tryParse(list[index].updatedAt)) ??
-                      '',
+                          DateTime.tryParse(list![index].updatedAt!)!),
                   style: ptTiny(),
                 ),
               ),

@@ -1,17 +1,17 @@
 class NotificationModel {
-  String id;
-  String type;
-  String title;
-  String body;
-  String html;
-  bool seen;
-  String seenAt;
+  String? id;
+  String? type;
+  String? title;
+  String? body;
+  String? html;
+  bool? seen;
+  String? seenAt;
   dynamic data;
-  String image;
-  String toUserId;
-  String fromUserId;
-  String createdAt;
-  String updatedAt;
+  String? image;
+  String? toUserId;
+  String? fromUserId;
+  String? createdAt;
+  String? updatedAt;
 
   NotificationModel({
     this.id,

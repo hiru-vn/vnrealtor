@@ -8,12 +8,12 @@ import 'package:datcao/share/import.dart';
 
 class LoginPage extends StatefulWidget {
   static Future navigate() async {
-    navigatorKey.currentState.popUntil((route) => route.isFirst);
-    return navigatorKey.currentState.pushReplacement(pageBuilder(LoginPage()));
+    navigatorKey.currentState!.popUntil((route) => route.isFirst);
+    return navigatorKey.currentState!.pushReplacement(pageBuilder(LoginPage()));
   }
 
   static Future navigatePush() {
-    return navigatorKey.currentState.push(pageBuilder(LoginPage()));
+    return navigatorKey.currentState!.push(pageBuilder(LoginPage()));
   }
 
   @override
@@ -21,7 +21,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  AuthBloc _authBloc;
+  AuthBloc? _authBloc;
   TextEditingController _nameC = TextEditingController(text: '');
   TextEditingController _passC = TextEditingController(text: '');
 
@@ -38,10 +38,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _submit() async {
-    if (!_formKey.currentState.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
     showWaitingDialog(context);
     try {
-      final res = await _authBloc.signIn(_nameC.text, _passC.text);
+      final res = await _authBloc!.signIn(_nameC.text, _passC.text);
       closeLoading();
       if (res.isSuccess) {
         HomePage.navigate();

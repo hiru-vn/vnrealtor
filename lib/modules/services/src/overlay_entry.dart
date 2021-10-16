@@ -6,15 +6,17 @@ part of 'overlay.dart';
 /// provide function [dismiss] to dismiss a Notification/Overlay
 ///
 class OverlaySupportEntry {
-  static final _entries = HashMap<_OverlayKey, OverlaySupportEntry>();
-  static final _entriesGlobal = HashMap<GlobalKey, OverlaySupportEntry>();
+  static final _entries = HashMap<_OverlayKey?, OverlaySupportEntry>();
+  static final _entriesGlobal = HashMap<GlobalKey?, OverlaySupportEntry>();
 
-  final OverlayEntry _entry;
-  final _OverlayKey _key;
-  final GlobalKey<_AnimatedOverlayState> _stateKey;
+  final OverlayEntry? _entry;
+  final _OverlayKey? _key;
+  final GlobalKey<_AnimatedOverlayState>? _stateKey;
 
-  static OverlaySupportEntry of(BuildContext context, {Widget requireForDebug}) {
-    final animatedOverlay = context.ancestorWidgetOfExactType(_AnimatedOverlay);
+  static OverlaySupportEntry? of(BuildContext context,
+      {Widget? requireForDebug}) {
+    final animatedOverlay =
+        context.findAncestorWidgetOfExactType<_AnimatedOverlay>()!;
     assert(() {
       if (animatedOverlay == null && requireForDebug != null) {
         throw FlutterError('No _AnimatedOverlay widget found.\n'
@@ -24,16 +26,17 @@ class OverlaySupportEntry {
       return true;
     }());
 
-    final key = animatedOverlay.key;
+    final key = animatedOverlay.key!;
     assert(key is GlobalKey);
 
-    return OverlaySupportEntry._entriesGlobal[key];
+    return OverlaySupportEntry._entriesGlobal[key as GlobalKey<State<StatefulWidget>>];
   }
 
   OverlaySupportEntry(this._entry, this._key, this._stateKey) {
     assert(() {
       if (_entries[_key] != null) {
-        throw FlutterError('there still a OverlaySupportEntry associactd with $_key');
+        throw FlutterError(
+            'there still a OverlaySupportEntry associactd with $_key');
       }
       return true;
     }());
@@ -46,9 +49,9 @@ class OverlaySupportEntry {
   }
 
   ///to known when notification has been dismissed
-  final Completer _dismissedCompleter = Completer();
+  final Completer? _dismissedCompleter = Completer();
 
-  Future get dismissed => _dismissedCompleter.future;
+  Future get dismissed => _dismissedCompleter!.future;
 
   // OverlayEntry has been scheduled to dismiss,
   // indicate OverlayEntry is hiding or already remove from Overlay
@@ -77,14 +80,14 @@ class OverlaySupportEntry {
     }
 
     void animateRemove() {
-      if (_stateKey.currentState != null) {
-        _stateKey.currentState.hide().whenComplete(() {
+      if (_stateKey!.currentState != null) {
+        _stateKey!.currentState!.hide().whenComplete(() {
           _dismissEntry();
         });
       } else {
         //we need show animation before remove this entry
         //so need ensure entry has been inserted into screen
-        WidgetsBinding.instance.scheduleFrameCallback((_) => animateRemove());
+        WidgetsBinding.instance!.scheduleFrameCallback((_) => animateRemove());
       }
     }
 
@@ -99,8 +102,8 @@ class OverlaySupportEntry {
     }
     _dismissed = true;
     _entriesGlobal.remove(_stateKey);
-    _entry.remove();
-    _dismissedCompleter.complete();
+    _entry!.remove();
+    _dismissedCompleter!.complete();
   }
 }
 
@@ -109,16 +112,16 @@ class _OverlaySupportEntryEmpty implements OverlaySupportEntry {
   void _dismissEntry() {}
 
   @override
-  Completer get _dismissedCompleter => null;
+  Completer? get _dismissedCompleter => null;
 
   @override
-  OverlayEntry get _entry => null;
+  OverlayEntry? get _entry => null;
 
   @override
-  _OverlayKey get _key => null;
+  _OverlayKey? get _key => null;
 
   @override
-  GlobalKey<_AnimatedOverlayState> get _stateKey => null;
+  GlobalKey<_AnimatedOverlayState>? get _stateKey => null;
 
   @override
   void dismiss({bool animate = true}) {}

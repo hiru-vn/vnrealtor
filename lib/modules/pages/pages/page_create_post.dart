@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
@@ -21,11 +22,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PageCreatePostPage extends StatefulWidget {
-  final PagesCreate page;
+  final PagesCreate? page;
   const PageCreatePostPage({this.page});
 
-  static Future navigate(PagesCreate page) {
-    return navigatorKey.currentState.push(
+  static Future navigate(PagesCreate? page) {
+    return navigatorKey.currentState!.push(
       pageBuilder(
         PageCreatePostPage(
           page: page,
@@ -41,25 +42,25 @@ class PageCreatePostPage extends StatefulWidget {
 
 class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
   FocusNode _activityNode = FocusNode();
-  LatLng _pos;
-  String _placeName;
-  DateTime _expirationDate;
+  LatLng? _pos;
+  String? _placeName;
+  DateTime? _expirationDate;
   String _shareWith = 'public';
   TextEditingController _contentC = TextEditingController();
   List<String> _cacheMedias = [];
   List<String> _cachePic = [];
   List<String> _urlMedias = [];
-  PagesBloc _pagesBloc;
-  List<LatLng> _polygonPoints = [];
+  PagesBloc? _pagesBloc;
+  List<LatLng>? _polygonPoints = [];
   List<UserModel> _tagUsers = [];
-  double _price;
-  double _area;
-  String _type;
-  String _need;
+  double? _price;
+  double? _area;
+  String? _type;
+  String? _need;
   List<UrlPreviewData> links = [];
 
-  String get pageId => widget.page.id;
-  PagesCreate get page => widget.page;
+  String? get pageId => widget.page!.id;
+  PagesCreate? get page => widget.page;
 
   @override
   void didChangeDependencies() {
@@ -70,9 +71,9 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
   }
 
   Future _createPagePost() async {
-    if (_pagesBloc.isCreatePostLoading) return;
+    if (_pagesBloc!.isCreatePostLoading) return;
     try {
-      _pagesBloc.isCreatePostLoading = true;
+      _pagesBloc!.isCreatePostLoading = true;
       if (_contentC.text.trim() == '') {
         showToast('Nội dung không được để trống', context);
         return;
@@ -87,32 +88,32 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
         await Future.delayed(Duration(milliseconds: 500));
       }
 
-      final res = await _pagesBloc.createPagePost(
-        pageId,
-        _contentC.text.trim(),
-        _expirationDate?.toIso8601String(),
-        _shareWith == 'public',
-        _pos?.latitude,
-        _pos?.longitude,
-        _urlMedias
-            .where((path) =>
-                FileUtil.getFbUrlFileType(path) == FileType.image ||
-                FileUtil.getFbUrlFileType(path) == FileType.gif)
-            .toList(),
-        _urlMedias
-            .where((path) => FileUtil.getFbUrlFileType(path) == FileType.video)
-            .toList(),
-        _polygonPoints,
-        _tagUsers.map((e) => e.id).toList(),
-        _type,
-        _need,
-        _area,
-        _price,
-        _shareWith == 'onlyme'
-      );
+      final res = await _pagesBloc!.createPagePost(
+          pageId,
+          _contentC.text.trim(),
+          _expirationDate!.toIso8601String(),
+          _shareWith == 'public',
+          _pos!.latitude,
+          _pos!.longitude,
+          _urlMedias
+              .where((path) =>
+                  FileUtil.getFbUrlFileType(path) == FileType.image ||
+                  FileUtil.getFbUrlFileType(path) == FileType.gif)
+              .toList(),
+          _urlMedias
+              .where(
+                  (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
+              .toList(),
+          _polygonPoints!,
+          _tagUsers.map((e) => e.id).toList(),
+          _type,
+          _need,
+          _area,
+          _price,
+          _shareWith == 'onlyme');
       closeLoading();
       if (res.isSuccess) {
-        navigatorKey.currentState.pop();
+        navigatorKey.currentState!.pop();
         FocusScope.of(context).requestFocus(FocusNode());
         _expirationDate = null;
         _contentC.clear();
@@ -123,11 +124,11 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
         showToast(res.errMessage, context);
       }
 
-      Future.delayed(Duration(seconds: 2), () => _pagesBloc?.notifyListeners());
+      Future.delayed(Duration(seconds: 2), () => _pagesBloc!.notifyListeners());
     } catch (e) {
       showToast(e.toString(), context);
     } finally {
-      _pagesBloc.isCreatePostLoading = false;
+      _pagesBloc!.isCreatePostLoading = false;
     }
   }
 
@@ -150,11 +151,12 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                     radius: 20,
                     backgroundColor: Colors.white,
                     backgroundImage:
-                        (page.avartar != null && page.avartar != 'null')
-                            ? CachedNetworkImageProvider(page.avartar)
-                            : AssetImage('assets/image/default_avatar.png'),
+                        ((page!.avartar != null && page!.avartar != 'null')
+                                ? CachedNetworkImageProvider(page!.avartar!)
+                                : AssetImage('assets/image/default_avatar.png'))
+                            as ImageProvider<Object>?,
                     child: VerifiedIcon(
-                      AuthBloc.instance.userModel?.role,
+                      AuthBloc.instance.userModel!.role,
                       10,
                       isPage: true,
                     ),
@@ -164,18 +166,19 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        page.name ?? '',
+                        page!.name ?? '',
                         style: ptTitle(),
                       ),
                       Row(
                         children: [
                           Text(
-                            Formart.formatToWeekTime(DateTime.now()),
+                            Formart.formatToWeekTime(DateTime.now())!,
                             style: ptTiny().copyWith(color: Colors.black54),
                           ),
                           SizedBox(width: 12),
                           GestureDetector(
-                            onTap: () {audioCache.play('tab3.mp3');
+                            onTap: () {
+                              audioCache.play('tab3.mp3');
                               pickList(context, title: 'Chia sẻ với',
                                   onPicked: (value) {
                                 setState(() {
@@ -223,7 +226,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                 ],
               ),
             ),
-            if (!(_cacheMedias.length == 0 && _cachePic.length == 0))
+            if ((_cacheMedias.length == 0 && _cachePic.length == 0))
               SizedBox(
                 height: 95,
                 child: ListView.separated(
@@ -256,17 +259,16 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                           child: InkWell(
                             onTap: () {
                               showConfirmDialog(
-                                  context, 'Xác nhận xóa file này?',
+                                  context, 'Xác nhận xóa file này',
                                   navigatorKey: navigatorKey, confirmTap: () {
                                 setState(() {
-                                  final url = _urlMedias.firstWhere(
+                                  final url = _urlMedias.firstWhereOrNull(
                                       (element) => element.contains(
                                           FileUtil.changeImageToJpg(
                                                   Path.basename(list[index]))
                                               .replaceAll(
-                                                  new RegExp(r'(\?alt).*'), '')
-                                              .replaceAll(' ', '')),
-                                      orElse: () => null);
+                                                  new RegExp(r'(\alt).*'), '')
+                                              .replaceAll(' ', '')));
                                   if (url != null) {
                                     _cacheMedias.remove(list[index]);
                                     _cachePic.remove(list[index]);
@@ -342,12 +344,12 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                               child: GestureDetector(
                                 onTap: () {
                                   audioCache.play('tab3.mp3');
-                                  launchURL(links[0].url);
+                                  launchURL(links[0].url!);
                                 },
                                 child: Column(
                                   children: [
                                     if (links[0].image != null)
-                                      Image.network(links[0].image),
+                                      Image.network(links[0].image!),
                                     Container(
                                       color: Colors.grey[100],
                                       width: double.infinity,
@@ -361,14 +363,14 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                                               padding: const EdgeInsets.only(
                                                   bottom: 8.0),
                                               child: Text(
-                                                links[0].title,
+                                                links[0].title!,
                                                 style: ptTitle().copyWith(
                                                     color: Colors.black87),
                                               ),
                                             ),
                                           if (links[0].description != null)
                                             Text(
-                                              links[0].description +
+                                              links[0].description! +
                                                   (links[0].siteName != null
                                                       ? '  - từ ${links[0].siteName}'
                                                       : ''),
@@ -392,7 +394,8 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                         height: 30,
                         left: 0,
                         child: GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
                             FocusScope.of(context).requestFocus(FocusNode());
                             showModalBottomSheet(
                               isScrollControlled: true,
@@ -456,9 +459,9 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                       setState(() {
                         _contentC.text = _contentC.text +
                             ' ' +
-                            _pagesBloc.hasTags
+                            _pagesBloc!.hasTags!
                                 .where((element) =>
-                                    !_contentC.text.contains(element['value']))
+                                    _contentC.text.contains(element['value']))
                                 .toList()[index]['value']
                                 .toString();
                         _contentC.selection = TextSelection.fromPosition(
@@ -473,9 +476,9 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                           borderRadius: BorderRadius.circular(15)),
                       child: Center(
                         child: Text(
-                          _pagesBloc.hasTags
+                          _pagesBloc!.hasTags!
                               .where((element) =>
-                                  !_contentC.text.contains(element['value']))
+                                  _contentC.text.contains(element['value']))
                               .toList()[index]['value']
                               .toString(),
                         ),
@@ -483,9 +486,9 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                     ),
                   );
                 },
-                itemCount: _pagesBloc.hasTags
+                itemCount: _pagesBloc!.hasTags!
                     .where(
-                        (element) => !_contentC.text.contains(element['value']))
+                        (element) => _contentC.text.contains(element['value']))
                     .toList()
                     .length,
                 scrollDirection: Axis.horizontal,
@@ -501,7 +504,8 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                 children: [
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -515,7 +519,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                                   (filePath) => FileUtil.uploadFireStorage(
                                       filePath,
                                       path:
-                                          'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
+                                          'posts/user_${AuthBloc.instance.userModel!.id}/${DateTime.now().millisecondsSinceEpoch}')));
                               setState(() {
                                 _urlMedias = listUrls;
                               });
@@ -536,11 +540,13 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            ImagePicker.pickImage(source: ImageSource.camera)
+                            ImagePicker()
+                                .pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {
@@ -550,7 +556,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                               final url = await FileUtil.uploadFireStorage(
                                   value.path,
                                   path:
-                                      'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
+                                      'posts/user_${AuthBloc.instance.userModel!.id}/${DateTime.now().millisecondsSinceEpoch}');
                               setState(() {
                                 _urlMedias.add(url);
                               });
@@ -567,9 +573,10 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       PickCoordinates.navigate(
-                              polygon: _polygonPoints, position: _pos)
+                              polygon: _polygonPoints!, position: _pos)
                           .then((value) => setState(() {
                                 _pos = value[0];
                                 _placeName = value[1];
@@ -588,7 +595,8 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -615,7 +623,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
               height: 10,
             ),
             // _buildForm(),
-            if (_placeName != null && _placeName.trim() != '')
+            if (_placeName != null && _placeName!.trim() != '')
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Text.rich(TextSpan(children: [
@@ -627,7 +635,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                       style: ptSmall().copyWith(fontStyle: FontStyle.italic))
                 ])),
               ),
-            if ((_tagUsers?.length ?? 0) > 0)
+            if (_tagUsers.length > 0)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Text.rich(TextSpan(children: [

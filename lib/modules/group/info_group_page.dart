@@ -11,13 +11,13 @@ import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class InfoGroupPage extends StatefulWidget {
-  static Future navigate(GroupModel groupModel, {String groupId}) {
-    return navigatorKey.currentState
+  static Future navigate(GroupModel? groupModel, {String? groupId}) {
+    return navigatorKey.currentState!
         .push(pageBuilder(InfoGroupPage(groupModel, groupId: groupId)));
   }
 
-  final GroupModel groupModel;
-  final String groupId;
+  final GroupModel? groupModel;
+  final String? groupId;
   InfoGroupPage(this.groupModel, {this.groupId});
 
   @override
@@ -25,11 +25,11 @@ class InfoGroupPage extends StatefulWidget {
 }
 
 class _InfoGroupPageState extends State<InfoGroupPage> {
-  List<UserModel> admins;
-  GroupBloc _groupBloc;
+  List<UserModel>? admins;
+  GroupBloc? _groupBloc;
   Completer<GoogleMapController> _controller = Completer();
-  List<PostModel> posts;
-  GroupModel group;
+  List<PostModel>? posts;
+  GroupModel? group;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
+      _groupBloc = Provider.of<GroupBloc>(context);
       if (group == null) {
         _loadGroup();
       }
@@ -62,7 +62,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
   }
 
   _loadPost() {
-    _groupBloc.getPostGroup(group?.id ?? widget.groupId).then((res) {
+    _groupBloc!.getPostGroup(group?.id ?? widget.groupId).then((res) {
       if (res.isSuccess)
         setState(() {
           posts = res.data;
@@ -100,7 +100,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
           children: [
             Text('Mô tả', style: ptTitle()),
             SizedBox(height: 8),
-            Text(group.description, style: ptTitle()),
+            Text(group!.description!, style: ptTitle()),
             SizedBox(height: 8),
             SizedBox(height: 8),
             Row(
@@ -111,11 +111,11 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
                           height: 20,
-                          child: Image.asset(!group.privacy
+                          child: Image.asset(!group!.privacy!
                               ? 'assets/icon/public.png'
                               : 'assets/icon/lock.png')),
                     )),
-                Text(group.privacy ? 'Nhóm kín' : 'Công khai'),
+                Text(group!.privacy! ? 'Nhóm kín' : 'Công khai'),
               ],
             ),
             SizedBox(height: 8),
@@ -129,11 +129,11 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                           height: 20,
                           child: Image.asset('assets/icon/location.png')),
                     )),
-                Expanded(child: Text('Địa chỉ: ' + group.address)),
+                Expanded(child: Text('Địa chỉ: ' + group!.address!)),
               ],
             ),
             SizedBox(height: 12),
-            if (group.locationLat != null && group.locationLong != null)
+            if (group!.locationLat != null && group!.locationLong != null)
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: ConstrainedBox(
@@ -144,14 +144,14 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                   child: GoogleMap(
                     mapType: MapType.normal,
                     initialCameraPosition: CameraPosition(
-                      target: LatLng(group.locationLat, group.locationLong),
+                      target: LatLng(group!.locationLat!, group!.locationLong!),
                       zoom: 16,
                     ),
                     markers: {
                       Marker(
                           markerId: MarkerId('1'),
                           position:
-                              LatLng(group.locationLat, group.locationLong))
+                              LatLng(group!.locationLat!, group!.locationLong!))
                     },
                     onMapCreated: (GoogleMapController controller) {
                       _controller.complete(controller);
@@ -179,9 +179,9 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                   child: SizedBox(
                     height: 22,
                     width: 22,
-                    child: group.owner.avatar != null
+                    child: group!.owner!.avatar != null
                         ? Image.network(
-                            group.owner.avatar,
+                            group!.owner!.avatar!,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
                                 Image.asset('assets/image/default_avatar.png'),
@@ -190,7 +190,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
                   ),
                 ),
                 SizedBox(width: 5),
-                Text(group.owner.name),
+                Text(group!.owner!.name!),
                 Spacer(),
                 GestureDetector(
                   onTap: () {audioCache.play('tab3.mp3');
@@ -222,15 +222,15 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
             SizedBox(height: 2),
             _buildTile(
                 'post',
-                '${widget.groupModel.postIn24h ?? 0} bài viết hôm nay',
-                '${widget.groupModel.totalPost ?? 0} bài viết'),
+                '${widget.groupModel!.postIn24h ?? 0} bài viết hôm nay',
+                '${widget.groupModel!.totalPost ?? 0} bài viết'),
             _buildTile(
                 'person',
-                '${widget.groupModel.countMember ?? 0} thành viên',
-                '${widget.groupModel.memberIn24h ?? 0} thành viên tham gia hôm nay'),
+                '${widget.groupModel!.countMember ?? 0} thành viên',
+                '${widget.groupModel!.memberIn24h ?? 0} thành viên tham gia hôm nay'),
             _buildTile(
                 'group',
-                'Tạo ${Formart.timeByDayVi(DateTime.tryParse(widget.groupModel.createdAt))}',
+                'Tạo ${Formart.timeByDayVi(DateTime.tryParse(widget.groupModel!.createdAt!)!)}',
                 null)
           ],
         ),
@@ -238,7 +238,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
       SizedBox(
         height: 18,
       ),
-      if (group.isOwner || group.isAdmin)
+      if (group!.isOwner! || group!.isAdmin!)
         GestureDetector(
           onTap: () async {audioCache.play('tab3.mp3');
             UpdateGroupPage.navigate(group);
@@ -270,7 +270,7 @@ class _InfoGroupPageState extends State<InfoGroupPage> {
     return PageSkeleton();
   }
 
-  Widget _buildTile(String asset, String title, String content) {
+  Widget _buildTile(String asset, String title, String? content) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6, top: 6, right: 4, left: 4),
       child: Row(

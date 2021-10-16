@@ -1,8 +1,8 @@
 class SettingModel {
-  bool likeNoti;
-  bool shareNoti;
-  bool commentNoti;
-  bool postNoti;
+  bool? likeNoti;
+  bool? shareNoti;
+  bool? commentNoti;
+  bool? postNoti;
 
   SettingModel(
       {this.likeNoti, this.shareNoti, this.commentNoti, this.postNoti});

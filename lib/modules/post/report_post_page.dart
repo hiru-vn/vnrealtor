@@ -3,7 +3,7 @@ import 'package:datcao/modules/model/media_post.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/share/import.dart';
 
-showReport(PostModel postModel, BuildContext context) {
+showReport(PostModel? postModel, BuildContext context) {
   showModalBottomSheet(
       useRootNavigator: true,
       context: context,
@@ -19,12 +19,12 @@ showReport(PostModel postModel, BuildContext context) {
 }
 
 class ReportPostPage extends StatefulWidget {
-  final PostModel post;
+  final PostModel? post;
 
-  const ReportPostPage({Key key, this.post}) : super(key: key);
+  const ReportPostPage({Key? key, this.post}) : super(key: key);
 
   static Future navigate(PostModel post, MediaPost mediaPost) {
-    return navigatorKey.currentState.push(pageBuilder(ReportPostPage(
+    return navigatorKey.currentState!.push(pageBuilder(ReportPostPage(
       post: post,
     )));
   }
@@ -34,8 +34,8 @@ class ReportPostPage extends StatefulWidget {
 }
 
 class _ReportPostPageState extends State<ReportPostPage> {
-  PostBloc _postBloc;
-  String _type;
+  PostBloc? _postBloc;
+  String? _type;
   bool _isLoading = false;
   TextEditingController _contentC = TextEditingController();
 
@@ -44,7 +44,7 @@ class _ReportPostPageState extends State<ReportPostPage> {
       _isLoading = true;
     });
     final res =
-        await _postBloc.createReport(_type, _contentC.text, widget.post.id);
+        await _postBloc!.createReport(_type, _contentC.text, widget.post!.id);
     setState(() {
       _isLoading = false;
     });
@@ -83,7 +83,7 @@ class _ReportPostPageState extends State<ReportPostPage> {
               IconButton(
                 icon: Icon(MdiIcons.close),
                 onPressed: () {
-                  navigatorKey.currentState.maybePop();
+                  navigatorKey.currentState!.maybePop();
                 },
               ),
             ],

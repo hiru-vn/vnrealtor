@@ -4,13 +4,13 @@ import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/share/import.dart';
 
 class FollowPage extends StatefulWidget {
-  final UserModel user;
-  final int page;
+  final UserModel? user;
+  final int? page;
 
-  const FollowPage({Key key, this.user, this.page}) : super(key: key);
+  const FollowPage({Key? key, this.user, this.page}) : super(key: key);
 
-  static Future navigate(UserModel user, int page) {
-    return navigatorKey.currentState
+  static Future navigate(UserModel? user, int page) {
+    return navigatorKey.currentState!
         .push(pageBuilder(FollowPage(user: user, page: page)));
   }
 
@@ -20,15 +20,15 @@ class FollowPage extends StatefulWidget {
 
 class _FollowPageState extends State<FollowPage>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
-  UserBloc _userBloc;
-  List<UserModel> followers;
-  List<UserModel> following;
+  TabController? _tabController;
+  UserBloc? _userBloc;
+  List<UserModel>? followers;
+  List<UserModel>? following;
 
   @override
   void initState() {
     _tabController =
-        TabController(length: 2, vsync: this, initialIndex: widget.page);
+        TabController(length: 2, vsync: this, initialIndex: widget.page!);
 
     super.initState();
   }
@@ -36,8 +36,8 @@ class _FollowPageState extends State<FollowPage>
   @override
   void didChangeDependencies() {
     if (_userBloc == null) {
-      _userBloc = Provider.of(context);
-      _userBloc.getListUserIn(widget.user.followerIds).then((value) {
+      _userBloc = Provider.of<UserBloc>(context);
+      _userBloc!.getListUserIn(widget.user!.followerIds!).then((value) {
         if (value.isSuccess) {
           setState(() {
             followers = value.data;
@@ -46,7 +46,7 @@ class _FollowPageState extends State<FollowPage>
           showToast(value.errMessage, context);
         }
       });
-      _userBloc.getListUserIn(widget.user.followingIds).then((value) {
+      _userBloc!.getListUserIn(widget.user!.followingIds!).then((value) {
         if (value.isSuccess) {
           setState(() {
             following = value.data;
@@ -63,7 +63,7 @@ class _FollowPageState extends State<FollowPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar1(
-        title: widget.user.name,
+        title: widget.user!.name,
         automaticallyImplyLeading: true,
       ),
       body: Column(
@@ -113,7 +113,7 @@ class _FollowPageState extends State<FollowPage>
     );
   }
 
-  _buildListUser(List<UserModel> users) {
+  _buildListUser(List<UserModel>? users) {
     if (users == null)
       return ListSkeleton();
     else

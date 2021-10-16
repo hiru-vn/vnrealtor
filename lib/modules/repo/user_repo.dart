@@ -11,11 +11,11 @@ class UserRepo {
       ' id uid name tagName email phone groupIds totalPost isVerify description dynamicLink { shortLink previewLink } savedPostIds messNotiCount facebookUrl role reputationScore friendIds createdAt updatedAt followerIds followingIds avatar settings { likeNoti shareNoti commentNoti}';
 
   Future registerWithPhone(
-      {String name,
-      String email,
-      String password,
-      String phone,
-      String idToken}) async {
+      {required String name,
+      String? email,
+      String? password,
+      String? phone,
+      String? idToken}) async {
     final res = await UserSrv().mutate(
         'registerWithPhone',
         '''
@@ -46,12 +46,12 @@ idToken: "$idToken"
     return res['registerCompany'];
   }
 
-  Future loginFirebase(String uid) async {
+  Future loginFirebase(String? uid) async {
     final res = await UserSrv().mutate('createTokenFirebase', 'uid: "$uid"');
     return res['createTokenFirebase'];
   }
 
-  Future getListFollower({String userId, String limit, String page}) async {
+  Future getListFollower({String? userId, String? limit, String? page}) async {
     final res = await UserSrv().mutate(
         'getListFollower',
         '''
@@ -64,10 +64,10 @@ Page: "$page"
   }
 
   Future login(
-      {String userName,
-      String password,
-      String deviceId,
-      String deviceToken}) async {
+      {String? userName,
+      String? password,
+      String? deviceId,
+      String? deviceToken}) async {
     final res = await UserSrv().mutate(
         'loginUser',
         '''
@@ -80,12 +80,12 @@ Page: "$page"
     return res['loginUser'];
   }
 
-  Future getOneUser({String id}) async {
+  Future getOneUser({String? id}) async {
     final res = await UserSrv().getItem(id);
     return res;
   }
 
-  Future getOneUserForClient({String id}) async {
+  Future getOneUserForClient({String? id}) async {
     final res =
         await UserSrv().query('getOneUserForClient', 'id: "$id"', fragment: '''
     $userFragment
@@ -93,7 +93,7 @@ Page: "$page"
     return res['getOneUserForClient'];
   }
 
-  Future getListUser({GraphqlFilter filter}) async {
+  Future getListUser({GraphqlFilter? filter}) async {
     final res = await UserSrv().getList(
         limit: filter?.limit,
         offset: filter?.offset,
@@ -103,7 +103,7 @@ Page: "$page"
     return res;
   }
 
-  Future getAllUserForClient({GraphqlFilter filter}) async {
+  Future getAllUserForClient({required GraphqlFilter filter}) async {
     final res = await UserSrv().query('getAllUserForClient',
         'q:{limit: ${filter.limit}, page: ${filter.page ?? 1}, offset: ${filter.offset}, filter: ${filter.filter}, search: "${filter.search}" , order: ${filter.order} }',
         fragment: '''
@@ -115,7 +115,7 @@ Page: "$page"
   }
 
   Future setUserlocation(
-    String userId,
+    String? userId,
     double lat,
     double long,
   ) async {
@@ -132,8 +132,8 @@ Page: "$page"
 
   Future setOnline(
     String deviceId,
-    String deviceToken,
-    String ip,
+    String? deviceToken,
+    String? ip,
   ) async {
     final res = await UserSrv().mutate(
         'setOnline',
@@ -146,7 +146,7 @@ Page: "$page"
     return res['setOnline'];
   }
 
-  Future getListUserIn(List<String> ids) async {
+  Future getListUserIn(List<String?> ids) async {
     final res = await UserSrv().query('getAllUserForClient',
         'q:{order: {createdAt: 1} filter: {_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}}',
         fragment: '''
@@ -188,7 +188,7 @@ phone: "$phone"
     return res['suggestFollowForGuest'];
   }
 
-  Future resetPassWithPhone({String password, String idToken}) async {
+  Future resetPassWithPhone({String? password, String? idToken}) async {
     final res = await UserSrv().mutate(
         'resetPassword',
         '''
@@ -200,14 +200,14 @@ idToken: "$idToken"
   }
 
   Future updateUser(
-      String id,
+      String? id,
       String name,
-      String tagName,
-      String email,
-      String phone,
-      String avatar,
-      String description,
-      String facebookUrl) async {
+      String? tagName,
+      String? email,
+      String? phone,
+      String? avatar,
+      String? description,
+      String? facebookUrl) async {
     final res = await UserSrv().update(
         id: id,
         data: '''
@@ -224,7 +224,7 @@ facebookUrl: "$facebookUrl"
     return res['id'];
   }
 
-  Future updateUserStatus(String id, {@required bool isOnline}) async {
+  Future updateUserStatus(String? id, {required bool isOnline}) async {
     final res = await UserSrv().update(
         id: id,
         data: '''
@@ -234,7 +234,7 @@ isOnline: isOnline
     return res['id'];
   }
 
-  Future seenNotiMess(String id) async {
+  Future seenNotiMess(String? id) async {
     final res = await UserSrv().update(
         id: id,
         data: '''
@@ -244,7 +244,7 @@ messNotiCount: 0
     return res['id'];
   }
 
-  Future updateSetting(bool like, bool share, bool comment, bool post) async {
+  Future updateSetting(bool? like, bool? share, bool? comment, bool? post) async {
     final res = await UserSrv().mutate(
         'updateSetting',
         '''
@@ -257,7 +257,7 @@ postNoti: $post
     return res['id'];
   }
 
-  Future blockUserByAdmin(String userId) async {
+  Future blockUserByAdmin(String? userId) async {
     final res = await UserSrv().mutate(
         'blockUserByAdmin',
         '''
@@ -306,7 +306,7 @@ status
     return res['sendFriendInvite'];
   }
 
-  Future acceptFriend(String friendShipId) async {
+  Future acceptFriend(String? friendShipId) async {
     final res = await UserSrv()
         .mutate('acceptFriend', 'friendShipId: "$friendShipId"', fragment: '''
 id
@@ -317,7 +317,7 @@ status
     return res['acceptFriend'];
   }
 
-  Future declineFriend(String friendShipId) async {
+  Future declineFriend(String? friendShipId) async {
     final res = await UserSrv()
         .mutate('declineFriend', 'friendShipId: "$friendShipId"', fragment: '''
 id
@@ -328,7 +328,7 @@ status
     return res['declineFriend'];
   }
 
-  Future followUser(String userId) async {
+  Future followUser(String? userId) async {
     final res =
         await UserSrv().mutate('followUser', 'userId: "$userId"', fragment: '''
 id
@@ -336,7 +336,7 @@ id
     return res['followUser'];
   }
 
-  Future unfollowUser(String userId) async {
+  Future unfollowUser(String? userId) async {
     final res = await UserSrv()
         .mutate('unfollowUser', 'userId: "$userId"', fragment: '''
 id
@@ -351,14 +351,14 @@ id
     return res['changePassword'];
   }
 
-  Future getFollowerIn7d(String userId) async {
+  Future getFollowerIn7d(String? userId) async {
     final res = await UserSrv().query('getFollowerIn7d', 'Page: 1 limit: 40',
         fragment:
             'data { fromUser { ${userFragment.replaceAll('uid', '')} } }');
     return res['getFollowerIn7d'];
   }
 
-  Future checkChatAble(String userId) async {
+  Future checkChatAble(String? userId) async {
     final res = await UserSrv().mutate(
       'checkChatAble',
       'userId: "$userId"',

@@ -7,55 +7,55 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UpdateGroupPage extends StatefulWidget {
-  final GroupModel group;
-  static Future navigate(GroupModel group) {
-    return navigatorKey.currentState.push(pageBuilder(UpdateGroupPage(group)));
+  final GroupModel? group;
+  static Future navigate(GroupModel? group) {
+    return navigatorKey.currentState!.push(pageBuilder(UpdateGroupPage(group)));
   }
 
-  UpdateGroupPage(this.group, {Key key}) : super(key: key);
+  UpdateGroupPage(this.group, {Key? key}) : super(key: key);
 
   @override
   _UpdateGroupPageState createState() => _UpdateGroupPageState();
 }
 
 class _UpdateGroupPageState extends State<UpdateGroupPage> {
-  GroupBloc _groupBloc;
+  GroupBloc? _groupBloc;
   TextEditingController _nameC = TextEditingController();
-  bool _isPrivate = false;
+  bool? _isPrivate = false;
   TextEditingController _descriptionC = TextEditingController();
-  String _cover;
+  String? _cover;
   TextEditingController _addressC = TextEditingController();
-  LatLng _position;
+  LatLng? _position;
   bool _isUpload = false;
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    _nameC.text = widget.group.name;
-    _descriptionC.text = widget.group.description;
-    _addressC.text = widget.group.address;
-    _isPrivate = widget.group.privacy;
-    _cover = widget.group.coverImage;
-    _position = LatLng(widget.group.locationLat, widget.group.locationLong);
+    _nameC.text = widget.group!.name!;
+    _descriptionC.text = widget.group!.description!;
+    _addressC.text = widget.group!.address!;
+    _isPrivate = widget.group!.privacy;
+    _cover = widget.group!.coverImage;
+    _position = LatLng(widget.group!.locationLat!, widget.group!.locationLong!);
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
+      _groupBloc = Provider.of<GroupBloc>(context);
     }
     super.didChangeDependencies();
   }
 
   _updateGroup() async {
-    if (!_formKey.currentState.validate()) return;
-    _formKey.currentState.save();
+    if (!_formKey.currentState!.validate()) return;
+    _formKey.currentState!.save();
 
     showWaitingDialog(context);
 
-    final res = await _groupBloc.updateGroup(
-        widget.group.id,
+    final res = await _groupBloc!.updateGroup(
+        widget.group!.id,
         _nameC.text,
         _isPrivate,
         _descriptionC.text,
@@ -67,7 +67,7 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
     closeLoading();
     if (res.isSuccess) {
       showToast('Cập nhật nhóm thành công', context, isSuccess: true);
-      navigatorKey.currentState.maybePop();
+      navigatorKey.currentState!.maybePop();
     } else {
       showToast(res.errMessage, context);
     }
@@ -77,7 +77,8 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
     onCustomPersionRequest(
         permission: Permission.photos,
         onGranted: () {
-          ImagePicker.pickImage(source: ImageSource.gallery)
+          ImagePicker()
+              .pickImage(source: ImageSource.gallery)
               .then((value) async {
             if (value == null) return;
             setState(() {
@@ -152,7 +153,7 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
                           child: Text('Nhóm kín'), value: 'private')
                     ],
                     value: _isPrivate == true ? 'private' : 'public',
-                    onChanged: (val) {
+                    onChanged: (dynamic val) {
                       if (val == 'public') {
                         _isPrivate = false;
                       } else {
@@ -218,7 +219,7 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
                                 ),
                               )
                             : CachedNetworkImage(
-                                imageUrl: _cover, fit: BoxFit.cover)),
+                                imageUrl: _cover!, fit: BoxFit.cover)),
                   ),
                 ),
                 SizedBox(height: 15),

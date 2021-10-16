@@ -12,13 +12,13 @@ typedef Widget PopupMenuBackgroundBuilder(
 /// Implements the menu opening and closing animation.
 class AnimatedPopupMenu extends StatefulWidget {
   final Widget child;
-  final VoidCallback onFullyOpened;
+  final VoidCallback? onFullyOpened;
   final PopupMenuBackgroundBuilder backgroundBuilder;
 
   const AnimatedPopupMenu({
-    Key key,
-    @required this.child,
-    @required this.backgroundBuilder,
+    Key? key,
+    required this.child,
+    required this.backgroundBuilder,
     this.onFullyOpened,
   })  : assert(child != null),
         assert(backgroundBuilder != null),
@@ -43,10 +43,10 @@ class AnimatedPopupMenuState extends State<AnimatedPopupMenu>
     curve: Curves.linear,
   );
 
-  AnimationController _enterAnimationController;
-  Animation<double> _enterAnimation;
-  AnimationController _exitAnimationController;
-  Animation<double> _exitAnimation;
+  late AnimationController _enterAnimationController;
+  late Animation<double> _enterAnimation;
+  late AnimationController _exitAnimationController;
+  late Animation<double> _exitAnimation;
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class AnimatedPopupMenuState extends State<AnimatedPopupMenu>
     _enterAnimation =
         Tween(begin: 0.0, end: 1.0).animate(_enterAnimationController);
     _enterAnimationController.forward().then((value) {
-      if (widget.onFullyOpened != null) widget.onFullyOpened();
+      if (widget.onFullyOpened != null) widget.onFullyOpened!();
     });
 
     _exitAnimationController = AnimationController(

@@ -11,7 +11,8 @@ import 'package:datcao/share/import.dart';
 
 class SplashPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.pushReplacement(pageBuilder(SplashPage()));
+    return navigatorKey.currentState!
+        .pushReplacement(pageBuilder(SplashPage()));
   }
 
   @override
@@ -19,7 +20,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  AuthBloc _authBloc;
+  AuthBloc? _authBloc;
 
   @override
   void didChangeDependencies() {
@@ -29,21 +30,20 @@ class _SplashPageState extends State<SplashPage> {
       Future.delayed(
         Duration(milliseconds: 500),
         () async {
-          final firstTime =
-              (await SPref.instance.getBool('first_time')) ?? true;
+          final firstTime = (await SPref.instance.getBool('first_time'));
           if (firstTime) {
             GuestFeedPage.navigate();
             SPref.instance.setBool('first_time', false);
             return;
           }
-          final isLog = await _authBloc.checkToken();
+          final isLog = await _authBloc!.checkToken();
           if (!isLog) {
             //LoginPage.navigate();
             GuestFeedPage.navigate();
             Future.delayed(Duration(milliseconds: 600),
                 () => NotificationBloc.handleInitActions());
           } else {
-            final res = await _authBloc.getUserInfo();
+            final res = await _authBloc!.getUserInfo();
             if (res.isSuccess) {
               await Future.wait([
                 FcmService.instance.init(),
@@ -51,9 +51,10 @@ class _SplashPageState extends State<SplashPage> {
                 UserBloc.instance.init(),
               ]);
               HomePage.navigate();
-              if (_authBloc.userModel.role == 'COMPANY' &&
-                  !_authBloc.userModel.isVerify &&
-                  _authBloc.userModel.isPendingVerify) VerifyCompany.navigate();
+              if (_authBloc!.userModel!.role == 'COMPANY' &&
+                  !_authBloc!.userModel!.isVerify! &&
+                  _authBloc!.userModel!.isPendingVerify!)
+                VerifyCompany.navigate();
               Future.delayed(Duration(milliseconds: 600),
                   () => NotificationBloc.handleInitActions());
             } else

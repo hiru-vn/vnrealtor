@@ -1,16 +1,16 @@
 import 'package:datcao/share/import.dart';
 
 class RoundedBtn extends StatelessWidget {
-  final Color color;
-  final String text;
-  final Function onPressed;
+  final Color? color;
+  final String? text;
+  final Function? onPressed;
   final bool hasBorder;
-  final double height;
-  final EdgeInsets padding;
-  final double width;
+  final double? height;
+  final EdgeInsets? padding;
+  final double? width;
 
   const RoundedBtn(
-      {Key key,
+      {Key? key,
       this.color,
       this.padding,
       this.width,
@@ -37,12 +37,12 @@ class RoundedBtn extends StatelessWidget {
           splashColor: Colors.transparent,
           highlightColor: Colors.white38,
           borderRadius: BorderRadius.circular(30),
-          onTap: onPressed,
+          onTap: onPressed as void Function()?,
           child: Container(
             padding: padding ?? EdgeInsets.zero,
             child: Center(
               child: Text(
-                text,
+                text!,
                 style: ptButton(),
               ),
             ),

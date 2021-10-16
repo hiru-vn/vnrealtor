@@ -20,7 +20,7 @@ class Toast {
 /// for most situation, you can use [Toast.LENGTH_SHORT] and [Toast.LENGTH_LONG]
 ///
 void toast(String message,
-    {Duration duration = Toast.LENGTH_SHORT, Function onTap}) {
+    {Duration duration = Toast.LENGTH_SHORT, Function? onTap}) {
   if (duration <= Duration.zero) {
     //fast fail
     return;
@@ -39,10 +39,10 @@ void toast(String message,
 }
 
 class _Toast extends StatelessWidget {
-  final Widget content;
-  final Function onTap;
+  final Widget? content;
+  final Function? onTap;
 
-  const _Toast({Key key, this.content, this.onTap}) : super(key: key);
+  const _Toast({Key? key, this.content, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class _Toast extends StatelessWidget {
     return SafeArea(
       maintainBottomViewPadding: true,
       child: GestureDetector(
-        onTap: onTap,
+        onTap: onTap as void Function()?,
         child: Padding(
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -63,7 +63,7 @@ class _Toast extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
-                    color: toastTheme?.background,
+                    color: toastTheme.background,
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     child: content,

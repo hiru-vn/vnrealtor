@@ -8,9 +8,9 @@ import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 
 class GroupMemberPage extends StatefulWidget {
-  final GroupModel groupModel;
-  static Future navigate(GroupModel groupModel) {
-    return navigatorKey.currentState
+  final GroupModel? groupModel;
+  static Future navigate(GroupModel? groupModel) {
+    return navigatorKey.currentState!
         .push(pageBuilder(GroupMemberPage(groupModel)));
   }
 
@@ -21,30 +21,30 @@ class GroupMemberPage extends StatefulWidget {
 }
 
 class _GroupMemberPageState extends State<GroupMemberPage> {
-  GroupBloc _groupBloc;
-  UserModel owner;
-  List<UserModel> admins;
-  List<UserModel> members;
+  GroupBloc? _groupBloc;
+  UserModel? owner;
+  List<UserModel>? admins;
+  List<UserModel>? members;
   String search = '';
   bool enableManageUser = false;
-  List<String> _selectedUserIds = [];
-  GroupModel _group;
-  List<String> adminIds;
-  List<String> memberIds;
+  List<String?> _selectedUserIds = [];
+  GroupModel? _group;
+  late List<String?> adminIds;
+  late List<String> memberIds;
 
   @override
   void initState() {
     _group = widget.groupModel;
-    adminIds = [..._group.adminIds, _group.ownerId];
-    memberIds = _group.memberIds.where((e) => !adminIds.contains(e)).toList();
+    adminIds = [..._group!.adminIds!, _group!.ownerId];
+    memberIds = _group!.memberIds!.where((e) => !adminIds.contains(e)).toList();
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
-      owner = widget.groupModel.owner;
+      _groupBloc = Provider.of<GroupBloc>(context);
+      owner = widget.groupModel!.owner;
       UserBloc.instance.getListUserIn(adminIds).then((res) {
         if (res.isSuccess) {
           setState(() {
@@ -74,7 +74,7 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
         textColor: ptPrimaryColor(context),
         automaticallyImplyLeading: true,
         actions: [
-          if (_group.isOwner || _group.isAdmin)
+          if (_group!.isOwner! || _group!.isAdmin!)
             Center(
               child: GestureDetector(
                 onTap: () {
@@ -150,16 +150,16 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                       children: [
                         _buildActionBtn(_selectedUserIds.length > 0, () async {
                           showWaitingDialog(context);
-                          final res = await _groupBloc.sendInviteGroupAdmin(
-                              _group.id, _selectedUserIds);
+                          final res = await _groupBloc!.sendInviteGroupAdmin(
+                              _group!.id, _selectedUserIds);
                           closeLoading();
                           if (res.isSuccess) {
                             setState(() {
-                              _group.adminIds.addAll(_selectedUserIds);
-                              admins.addAll(members
+                              _group!.adminIds!.addAll(_selectedUserIds);
+                              admins!.addAll(members!
                                   .where((e) => _selectedUserIds.contains(e))
                                   .toList());
-                              members.removeWhere(
+                              members!.removeWhere(
                                   (e) => _selectedUserIds.contains(e));
                               _selectedUserIds.clear();
                             });
@@ -170,15 +170,15 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                         SizedBox(width: 15),
                         _buildActionBtn(_selectedUserIds.length > 0, () async {
                           showWaitingDialog(context);
-                          final res = await _groupBloc.kickMem(
-                              _group.id, _selectedUserIds);
+                          final res = await _groupBloc!.kickMem(
+                              _group!.id, _selectedUserIds);
                           closeLoading();
                           if (res.isSuccess) {
                             setState(() {
-                              _group.memberIds.removeWhere((e) =>
+                              _group!.memberIds!.removeWhere((e) =>
                                   _selectedUserIds.contains(_selectedUserIds));
 
-                              members.removeWhere(
+                              members!.removeWhere(
                                   (e) => _selectedUserIds.contains(e));
                               _selectedUserIds.clear();
                             });
@@ -216,14 +216,14 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return MemberWidget(admins
-                              .where((e) => e.name
+                          return MemberWidget(admins!
+                              .where((e) => e.name!
                                   .toLowerCase()
                                   .contains(search.toLowerCase().trim()))
                               .toList()[index]);
                         },
-                        itemCount: admins
-                            .where((e) => e.name
+                        itemCount: admins!
+                            .where((e) => e.name!
                                 .toLowerCase()
                                 .contains(search.toLowerCase().trim()))
                             .toList()
@@ -258,8 +258,8 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          final member = members
-                              .where((e) => e.name
+                          final member = members!
+                              .where((e) => e.name!
                                   .toLowerCase()
                                   .contains(search.toLowerCase().trim()))
                               .toList()[index];
@@ -278,8 +278,8 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
                             isSelect: _selectedUserIds.contains(member.id),
                           );
                         },
-                        itemCount: members
-                            .where((e) => e.name
+                        itemCount: members!
+                            .where((e) => e.name!
                                 .toLowerCase()
                                 .contains(search.toLowerCase().trim()))
                             .toList()
@@ -320,14 +320,14 @@ class _GroupMemberPageState extends State<GroupMemberPage> {
 
 class MemberWidget extends StatelessWidget {
   final UserModel user;
-  final Function(UserModel) onSelect;
+  final Function(UserModel)? onSelect;
   final bool isSelect;
 
   const MemberWidget(this.user, {this.onSelect, this.isSelect = false});
   @override
   Widget build(BuildContext context) {
-    UserBloc _userBloc = Provider.of(context);
-    AuthBloc _authBloc = Provider.of(context);
+    UserBloc _userBloc = Provider.of<UserBloc>(context);
+    AuthBloc _authBloc = Provider.of<AuthBloc>(context);
     return Padding(
       padding: const EdgeInsets.all(5).copyWith(bottom: 0),
       child: GestureDetector(
@@ -342,15 +342,15 @@ class MemberWidget extends StatelessWidget {
               GestureDetector(
                   onTap: () {
                     audioCache.play('tab3.mp3');
-                    onSelect(user);
+                    onSelect!(user);
                   },
                   child: _buildCheckBox(context)),
             CircleAvatar(
               radius: 20,
               backgroundColor: Colors.white,
-              backgroundImage: user.avatar != null
-                  ? CachedNetworkImageProvider(user.avatar)
-                  : AssetImage('assets/image/default_avatar.png'),
+              backgroundImage: (user.avatar != null
+                  ? CachedNetworkImageProvider(user.avatar!)
+                  : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
             ),
             SizedBox(width: 13),
             Expanded(
@@ -409,7 +409,7 @@ class MemberWidget extends StatelessWidget {
                         })(),
                         style: ptSmall().copyWith(color: Colors.grey),
                       ),
-                      if (_authBloc.userModel.followingIds
+                      if (_authBloc.userModel!.followingIds!
                           .contains(user.id)) ...[
                         Text(
                           ' • ',
@@ -437,12 +437,12 @@ class MemberWidget extends StatelessWidget {
               ),
             ),
             if (AuthBloc.instance.userModel != null &&
-                !_authBloc.userModel.followingIds.contains(user.id) &&
-                user.id != AuthBloc.instance.userModel.id)
+                !_authBloc.userModel!.followingIds!.contains(user.id) &&
+                user.id != AuthBloc.instance.userModel!.id)
               GestureDetector(
                 onTap: () {audioCache.play('tab3.mp3');
-                  _authBloc.userModel.followingIds.add(user.id);
-                  user.followerIds.add(_authBloc.userModel.id);
+                  _authBloc.userModel!.followingIds!.add(user.id);
+                  user.followerIds!.add(_authBloc.userModel!.id);
                   _userBloc.followUser(user.id);
                 },
                 child: Container(
@@ -471,7 +471,7 @@ class MemberWidget extends StatelessWidget {
         margin: EdgeInsets.all(12),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.grey[200], width: 2),
+          border: Border.all(color: Colors.grey[200]!, width: 2),
         ),
       );
     else

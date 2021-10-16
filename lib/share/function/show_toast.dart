@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' as ft;
 
-void showToast(String mes, BuildContext context,
-    {bool isSuccess = false, Function onTap}) {
+void showToast(String? mes, BuildContext context,
+    {bool isSuccess = false, Function? onTap}) {
   if (mes == null || mes.trim() == '') return;
   Toast.show(mes, context,
       duration: mes.length > 40 ? 5 : 3,
@@ -13,7 +13,7 @@ void showToast(String mes, BuildContext context,
       onTap: onTap);
 }
 
-Future showToastNoContext(String mes, {Color bgColor, Color textColor}) async {
+Future showToastNoContext(String mes, {Color? bgColor, Color? textColor}) async {
   await ft.Fluttertoast.cancel();
   return ft.Fluttertoast.showToast(
       fontSize: 14,
@@ -37,8 +37,8 @@ class Toast {
       Color backgroundColor = const Color(0xAA000000),
       Color textColor = Colors.white,
       double backgroundRadius = 20,
-      Border border,
-      Function onTap}) {
+      Border? border,
+      Function? onTap}) {
     ToastView.dismiss();
     ToastView.createView(msg, context, duration, gravity, backgroundColor,
         textColor, backgroundRadius, border,
@@ -55,8 +55,8 @@ class ToastView {
 
   ToastView._internal();
 
-  static OverlayState overlayState;
-  static OverlayEntry _overlayEntry;
+  static OverlayState? overlayState;
+  static OverlayEntry? _overlayEntry;
   static bool _isVisible = false;
 
   static void createView(
@@ -67,8 +67,8 @@ class ToastView {
       Color background,
       Color textColor,
       double backgroundRadius,
-      Border border,
-      {Function onTap}) async {
+      Border? border,
+      {Function? onTap}) async {
     overlayState = Overlay.of(context);
 
     Paint paint = Paint();
@@ -99,7 +99,7 @@ class ToastView {
           gravity: gravity),
     );
     _isVisible = true;
-    overlayState.insert(_overlayEntry);
+    overlayState!.insert(_overlayEntry!);
     await new Future.delayed(
         Duration(seconds: duration == null ? Toast.LENGTH_SHORT : duration));
     dismiss();
@@ -116,12 +116,12 @@ class ToastView {
 
 class ToastWidget extends StatelessWidget {
   ToastWidget(
-      {Key key, @required this.widget, @required this.gravity, this.onTap})
+      {Key? key, required this.widget, required this.gravity, this.onTap})
       : super(key: key);
 
   final Widget widget;
   final int gravity;
-  final Function onTap;
+  final Function? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +130,7 @@ class ToastWidget extends StatelessWidget {
         bottom: gravity == 0 ? 50 : null,
         child: Material(
           color: Colors.transparent,
-          child: GestureDetector(onTap: onTap, child: widget),
+          child: GestureDetector(onTap: onTap as void Function()?, child: widget),
         ));
   }
 }

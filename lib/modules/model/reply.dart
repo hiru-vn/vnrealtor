@@ -1,14 +1,14 @@
 import 'package:datcao/modules/model/user.dart';
 
 class ReplyModel {
-  String id;
-  String content;
-  String userId;
-  String commentId;
-  UserModel user;
-  String createdAt;
-  String updatedAt;
-  Map userTags;
+  String? id;
+  String? content;
+  String? userId;
+  String? commentId;
+  UserModel? user;
+  String? createdAt;
+  String? updatedAt;
+  Map? userTags;
 
   ReplyModel(
       {this.id,
@@ -40,7 +40,7 @@ class ReplyModel {
     data['userId'] = this.userId;
     data['commentId'] = this.commentId;
     if (this.user != null) {
-      data['user'] = this.user.toJson();
+      data['user'] = this.user!.toJson();
     }
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;

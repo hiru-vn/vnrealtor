@@ -3,14 +3,14 @@ import 'package:datcao/modules/model/user.dart';
 enum FriendShipStatus { PENDING, DECLINE, ACCEPTED }
 
 class FriendshipModel {
-  String id;
-  String user1Id;
-  String user2Id;
-  FriendShipStatus status;
-  UserModel user1;
-  UserModel user2;
-  String createdAt;
-  String updatedAt;
+  String? id;
+  String? user1Id;
+  String? user2Id;
+  FriendShipStatus? status;
+  UserModel? user1;
+  UserModel? user2;
+  String? createdAt;
+  String? updatedAt;
 
   FriendshipModel({this.id, this.user1Id, this.user2Id, this.status});
 
@@ -34,14 +34,14 @@ class FriendshipModel {
     return data;
   }
 
-  FriendShipStatus fromStatus(String status) {
+  FriendShipStatus? fromStatus(String? status) {
     if (status == 'PENDING') return FriendShipStatus.PENDING;
     if (status == 'ACCEPTED') return FriendShipStatus.ACCEPTED;
     if (status == 'DECLINE') return FriendShipStatus.DECLINE;
     return null;
   }
 
-  String toStatus(FriendShipStatus status) {
+  String? toStatus(FriendShipStatus? status) {
     if (status == FriendShipStatus.PENDING) return 'PENDING';
     if (status == FriendShipStatus.ACCEPTED) return 'ACCEPTED';
     if (status == FriendShipStatus.DECLINE) return 'DECLINE';

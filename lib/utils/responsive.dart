@@ -2,13 +2,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 class Responsive {
-  static double _screenWidth;
-  static double _screenHeight;
+  static late double _screenWidth;
+  static late double _screenHeight;
   static double _blockWidth = 0;
   static double _blockHeight = 0;
 
-  static double heightMultiplier;
-  static double widthMultiplier;
+  static late double heightMultiplier;
+  static late double widthMultiplier;
   static bool isPortrait = true;
   static bool isMobilePortrait = false;
 

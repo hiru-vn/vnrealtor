@@ -4,8 +4,8 @@ import 'package:datcao/share/widget/base_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ItemInfoPage extends StatelessWidget {
-  final String image;
-  final String title;
+  final String? image;
+  final String? title;
   const ItemInfoPage({this.image, this.title});
 
   @override
@@ -30,7 +30,7 @@ class ItemInfoPage extends StatelessWidget {
                 width: 20,
                 height: 20,
                 child: SvgPicture.asset(
-                  image,
+                  image!,
                   color: AppColors.mainColor,
                   semanticsLabel: image,
                   fit: BoxFit.contain,
@@ -41,7 +41,7 @@ class ItemInfoPage extends StatelessWidget {
           widthSpace(15),
           title != null
               ? Text(
-                  title,
+                  title!,
                   style: ptButton().copyWith(color: AppColors.mainColor, fontWeight: FontWeight.w400),
                 )
               : const SizedBox(),

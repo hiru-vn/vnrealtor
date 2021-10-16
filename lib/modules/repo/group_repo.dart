@@ -3,7 +3,7 @@ import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/modules/services/group_srv.dart';
 
 class GroupRepo {
-  Future getListGroup({GraphqlFilter filter}) async {
+  Future getListGroup({GraphqlFilter? filter}) async {
     final res = await GroupSrv().getList(
         limit: filter?.limit,
         offset: filter?.offset,
@@ -14,12 +14,12 @@ class GroupRepo {
     return res;
   }
 
-  Future getOneGroup(String id) async {
+  Future getOneGroup(String? id) async {
     final res = await GroupSrv().getItem(id);
     return res;
   }
 
-  Future getListGroupIn(List<String> ids) async {
+  Future getListGroupIn(List<String?>? ids) async {
     final res = await GroupSrv().getList(
         order: '{createdAt: 1}',
         filter:
@@ -33,51 +33,51 @@ class GroupRepo {
     return res['suggestGroup'];
   }
 
-  Future joinGroup(String id) async {
+  Future joinGroup(String? id) async {
     final res = await GroupSrv().mutate('joinGroup', 'groupId: "$id"',
         fragment: ' ${GroupSrv().fragmentDefault} ');
     return res['joinGroup'];
   }
 
-  Future sendInviteGroup(String id, List<String> userIds) async {
+  Future sendInviteGroup(String? id, List<String?> userIds) async {
     final res = await GroupSrv().mutate('sendInviteGroup',
         'groupId: "$id", userIds: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
     return res['sendInviteGroup'];
   }
 
-  Future sendInviteGroupAdmin(String id, List<String> userIds) async {
+  Future sendInviteGroupAdmin(String? id, List<String?> userIds) async {
     final res = await GroupSrv().mutate('addAdminForGroup',
         'groupId: "$id", memberId: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
     return res['addAdminForGroup'];
   }
 
-  Future kickMem(String id, List<String> userIds) async {
+  Future kickMem(String? id, List<String?> userIds) async {
     final res = await GroupSrv().mutate('kickMem',
         'groupId: "$id", memberId: ${GraphqlHelper.listStringToGraphqlString(userIds)}');
     return res['kickMem'];
   }
 
-  Future adminAcceptMem(String id, List<String> userIds) async {
+  Future adminAcceptMem(String? id, List<String?> userIds) async {
     final res = await GroupSrv().mutate('adminAcceptMem',
         'groupId: "$id", memberIds: ${GraphqlHelper.listStringToGraphqlString(userIds)}',
         fragment: '${GroupSrv().fragmentDefault}');
     return res['adminAcceptMem'];
   }
 
-  Future leaveGroup(String id) async {
+  Future leaveGroup(String? id) async {
     final res = await GroupSrv().mutate('leaveGroup', 'groupId: "$id"',
         fragment: ' ${GroupSrv().fragmentDefault} ');
     return res['leaveGroup'];
   }
 
   Future createGroup(
-      String name,
-      bool privacy,
-      String description,
-      String coverImage,
-      String address,
-      double locationLat,
-      double locationLong) async {
+      String? name,
+      bool? privacy,
+      String? description,
+      String? coverImage,
+      String? address,
+      double? locationLat,
+      double? locationLong) async {
     String data = '''
       name: "${name ?? ''}"
     	privacy: $privacy
@@ -92,14 +92,14 @@ class GroupRepo {
   }
 
   Future updateGroup(
-      String id,
-      String name,
-      bool privacy,
-      String description,
-      String coverImage,
-      String address,
-      double locationLat,
-      double locationLong) async {
+      String? id,
+      String? name,
+      bool? privacy,
+      String? description,
+      String? coverImage,
+      String? address,
+      double? locationLat,
+      double? locationLong) async {
     String data = '''
       name: "${name ?? ''}"
     	privacy: $privacy
@@ -113,7 +113,7 @@ class GroupRepo {
     return res;
   }
 
-  Future browseMemberSetting(String id, bool value) async {
+  Future browseMemberSetting(String? id, bool value) async {
     String data = '''
       censor: $value
     ''';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AnimatedSearchBar extends StatefulWidget {
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
 
-  const AnimatedSearchBar({Key key, this.width, this.height}) : super(key: key);
+  const AnimatedSearchBar({Key? key, this.width, this.height}) : super(key: key);
 
   @override
   _AnimatedSearchBarState createState() => _AnimatedSearchBarState();

@@ -4,7 +4,7 @@ class LoadMoreScrollUp extends StatelessWidget {
   final Widget list;
   final Function onLoadMore;
   final ScrollController scrollController;
-  LoadMoreScrollUp({@required this.list, @required this.onLoadMore, @required this.scrollController});
+  LoadMoreScrollUp({required this.list, required this.onLoadMore, required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class LoadMoreScrollDown extends StatelessWidget {
   final Widget list;
   final Function onLoadMore;
   final ScrollController scrollController;
-  LoadMoreScrollDown({@required this.list, @required this.onLoadMore, @required this.scrollController});
+  LoadMoreScrollDown({required this.list, required this.onLoadMore, required this.scrollController});
 
   @override
   Widget build(BuildContext context) {

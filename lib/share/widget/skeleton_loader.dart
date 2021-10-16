@@ -36,7 +36,7 @@ class ListSkeleton extends StatelessWidget {
       ),
       items: 3,
       period: Duration(seconds: 2),
-      highlightColor: Colors.grey[200],
+      highlightColor: Colors.grey[200]!,
       direction: SkeletonDirection.ltr,
     );
   }
@@ -45,7 +45,7 @@ class ListSkeleton extends StatelessWidget {
 class PostSkeleton extends StatelessWidget {
   final int count;
 
-  const PostSkeleton({Key key, this.count = 2}) : super(key: key);
+  const PostSkeleton({Key? key, this.count = 2}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SkeletonLoader(
@@ -104,7 +104,7 @@ class PostSkeleton extends StatelessWidget {
       ),
       items: count,
       period: Duration(seconds: 2),
-      highlightColor: Colors.grey[200],
+      highlightColor: Colors.grey[200]!,
       direction: SkeletonDirection.ltr,
     );
   }
@@ -161,7 +161,7 @@ class StorySkeleton extends StatelessWidget {
       ),
       items: 1,
       period: Duration(seconds: 2),
-      highlightColor: Colors.grey[200],
+      highlightColor: Colors.grey[200]!,
       direction: SkeletonDirection.ltr,
     );
   }

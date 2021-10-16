@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/inbox/import/launch_url.dart';
@@ -22,11 +23,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GroupCreatePostPage extends StatefulWidget {
-  final GroupModel group;
+  final GroupModel? group;
   const GroupCreatePostPage({this.group});
 
-  static Future navigate(GroupModel group) {
-    return navigatorKey.currentState.push(
+  static Future navigate(GroupModel? group) {
+    return navigatorKey.currentState!.push(
       pageBuilder(
         GroupCreatePostPage(
           group: group,
@@ -42,33 +43,33 @@ class GroupCreatePostPage extends StatefulWidget {
 
 class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
   FocusNode _activityNode = FocusNode();
-  LatLng _pos;
-  String _placeName;
-  DateTime _expirationDate;
+  LatLng? _pos;
+  String? _placeName;
+  DateTime? _expirationDate;
   String _shareWith = 'public';
   TextEditingController _contentC = TextEditingController();
   List<String> _cacheMedias = [];
   List<String> _cachePic = [];
   List<String> _urlMedias = [];
-  GroupBloc _groupBloc;
-  PostBloc _postBloc;
-  List<LatLng> _polygonPoints = [];
+  GroupBloc? _groupBloc;
+  late PostBloc _postBloc;
+  List<LatLng>? _polygonPoints = [];
   List<UserModel> _tagUsers = [];
   bool isLoading = false;
-  double _price;
-  double _area;
-  String _type;
-  String _need;
+  double? _price;
+  double? _area;
+  String? _type;
+  String? _need;
   List<UrlPreviewData> links = [];
 
-  String get groupId => widget.group.id;
-  GroupModel get group => widget.group;
+  String? get groupId => widget.group!.id;
+  GroupModel? get group => widget.group;
 
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
-      _postBloc = Provider.of(context);
+      _groupBloc = Provider.of<GroupBloc>(context);
+      _postBloc = Provider.of<PostBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -91,7 +92,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
         await Future.delayed(Duration(milliseconds: 500));
       }
 
-      final res = await _groupBloc.createPost(
+      final res = await _groupBloc!.createPost(
         groupId,
         _contentC.text.trim(),
         _expirationDate?.toIso8601String(),
@@ -106,7 +107,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
         _urlMedias
             .where((path) => FileUtil.getFbUrlFileType(path) == FileType.video)
             .toList(),
-        _polygonPoints,
+        _polygonPoints!,
         _tagUsers.map((e) => e.id).toList(),
         _type,
         _need,
@@ -116,7 +117,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
       );
       closeLoading();
       if (res.isSuccess) {
-        navigatorKey.currentState.pop();
+        navigatorKey.currentState!.pop();
         FocusScope.of(context).requestFocus(FocusNode());
         _expirationDate = null;
         _contentC.clear();
@@ -155,9 +156,10 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                     radius: 20,
                     backgroundColor: Colors.white,
                     backgroundImage:
-                        (AuthBloc.instance.userModel.avatar != null)
-                            ? CachedNetworkImageProvider(group.coverImage)
-                            : AssetImage('assets/image/default_avatar.png'),
+                        ((AuthBloc.instance.userModel!.avatar != null)
+                                ? CachedNetworkImageProvider(group!.coverImage!)
+                                : AssetImage('assets/image/default_avatar.png'))
+                            as ImageProvider<Object>?,
                     child: VerifiedIcon(
                       AuthBloc.instance.userModel?.role,
                       10,
@@ -171,7 +173,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                       children: [
                         Text.rich(TextSpan(children: [
                           TextSpan(
-                            text: AuthBloc.instance.userModel.name ?? '',
+                            text: AuthBloc.instance.userModel!.name ?? '',
                             style: ptTitle(),
                           ),
                           TextSpan(
@@ -186,11 +188,11 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                         Row(
                           children: [
                             Text(
-                              Formart.formatToWeekTime(DateTime.now()),
+                              Formart.formatToWeekTime(DateTime.now()) ?? '',
                               style: ptTiny().copyWith(color: Colors.black54),
                             ),
                             SizedBox(width: 12),
-                            if (group.privacy) ...[
+                            if (group!.privacy!) ...[
                               SizedBox(
                                 height: 13,
                                 width: 13,
@@ -259,14 +261,13 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                                   context, 'Xác nhận xóa file này?',
                                   navigatorKey: navigatorKey, confirmTap: () {
                                 setState(() {
-                                  final url = _urlMedias.firstWhere(
+                                  final url = _urlMedias.firstWhereOrNull(
                                       (element) => element.contains(
                                           FileUtil.changeImageToJpg(
                                                   Path.basename(list[index]))
                                               .replaceAll(
                                                   new RegExp(r'(\?alt).*'), '')
-                                              .replaceAll(' ', '')),
-                                      orElse: () => null);
+                                              .replaceAll(' ', '')));
                                   if (url != null) {
                                     _cacheMedias.remove(list[index]);
                                     _cachePic.remove(list[index]);
@@ -342,12 +343,12 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                               child: GestureDetector(
                                 onTap: () {
                                   audioCache.play('tab3.mp3');
-                                  launchURL(links[0].url);
+                                  launchURL(links[0].url!);
                                 },
                                 child: Column(
                                   children: [
                                     if (links[0].image != null)
-                                      Image.network(links[0].image),
+                                      Image.network(links[0].image!),
                                     Container(
                                       color: Colors.grey[100],
                                       width: double.infinity,
@@ -361,14 +362,14 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                                               padding: const EdgeInsets.only(
                                                   bottom: 8.0),
                                               child: Text(
-                                                links[0].title,
+                                                links[0].title!,
                                                 style: ptTitle().copyWith(
                                                     color: Colors.black87),
                                               ),
                                             ),
                                           if (links[0].description != null)
                                             Text(
-                                              links[0].description +
+                                              links[0].description! +
                                                   (links[0].siteName != null
                                                       ? '  - từ ${links[0].siteName}'
                                                       : ''),
@@ -457,7 +458,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                       setState(() {
                         _contentC.text = _contentC.text +
                             ' ' +
-                            _postBloc.hasTags
+                            _postBloc.hasTags!
                                 .where((element) =>
                                     !_contentC.text.contains(element['value']))
                                 .toList()[index]['value']
@@ -474,7 +475,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                           borderRadius: BorderRadius.circular(15)),
                       child: Center(
                         child: Text(
-                          _postBloc.hasTags
+                          _postBloc.hasTags!
                               .where((element) =>
                                   !_contentC.text.contains(element['value']))
                               .toList()[index]['value']
@@ -484,7 +485,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                     ),
                   );
                 },
-                itemCount: _postBloc.hasTags
+                itemCount: _postBloc.hasTags!
                     .where(
                         (element) => !_contentC.text.contains(element['value']))
                     .toList()
@@ -516,7 +517,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                                   (filePath) => FileUtil.uploadFireStorage(
                                       filePath,
                                       path:
-                                          'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
+                                          'posts/user_${AuthBloc.instance.userModel!.id}/${DateTime.now().millisecondsSinceEpoch}')));
                               setState(() {
                                 _urlMedias = listUrls;
                               });
@@ -542,7 +543,8 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            ImagePicker.pickImage(source: ImageSource.camera)
+                            ImagePicker()
+                                .pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {
@@ -552,7 +554,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                               final url = await FileUtil.uploadFireStorage(
                                   value.path,
                                   path:
-                                      'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
+                                      'posts/user_${AuthBloc.instance.userModel!.id}/${DateTime.now().millisecondsSinceEpoch}');
                               setState(() {
                                 _urlMedias.add(url);
                               });
@@ -572,7 +574,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                     onTap: () {
                       audioCache.play('tab3.mp3');
                       PickCoordinates.navigate(
-                              polygon: _polygonPoints, position: _pos)
+                              polygon: _polygonPoints!, position: _pos)
                           .then((value) => setState(() {
                                 _pos = value[0];
                                 _placeName = value[1];
@@ -621,7 +623,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
               height: 10,
             ),
             // _buildForm(),
-            if (_placeName != null && _placeName.trim() != '')
+            if (_placeName != null && _placeName!.trim() != '')
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Text.rich(TextSpan(children: [
@@ -633,7 +635,7 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                       style: ptSmall().copyWith(fontStyle: FontStyle.italic))
                 ])),
               ),
-            if ((_tagUsers?.length ?? 0) > 0)
+            if (_tagUsers.length > 0)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Text.rich(TextSpan(children: [

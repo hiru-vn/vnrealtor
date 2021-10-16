@@ -15,19 +15,19 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileOtherPage extends StatefulWidget {
-  final UserModel user;
-  final String userId;
+  final UserModel? user;
+  final String? userId;
 
   const ProfileOtherPage(this.user, {this.userId});
-  static Future navigate(UserModel user, {String userId}) {
+  static Future navigate(UserModel? user, {String? userId}) {
     if (AuthBloc.instance.userModel == null) {
-      return navigatorKey.currentState
+      return navigatorKey.currentState!
           .push(pageBuilder(ProfileOtherPage(user, userId: userId)));
     }
     if (user?.id == AuthBloc.instance.userModel?.id) {
-      return navigatorKey.currentState.push(pageBuilder(ProfilePage()));
+      return navigatorKey.currentState!.push(pageBuilder(ProfilePage()));
     }
-    return navigatorKey.currentState
+    return navigatorKey.currentState!
         .push(pageBuilder(ProfileOtherPage(user, userId: userId)));
   }
 
@@ -36,9 +36,9 @@ class ProfileOtherPage extends StatefulWidget {
 }
 
 class _ProfileOtherPageState extends State<ProfileOtherPage> {
-  PostBloc _postBloc;
-  List<PostModel> _posts;
-  UserModel _user;
+  PostBloc? _postBloc;
+  List<PostModel>? _posts;
+  UserModel? _user;
 
   @override
   void initState() {
@@ -71,8 +71,8 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
 
   Future _loadPost() async {
     final res = AuthBloc.instance.userModel != null
-        ? await _postBloc.getUserPost(_user?.id ?? widget.userId)
-        : await _postBloc.getUserPostGuest(_user?.id ?? widget.userId);
+        ? await _postBloc!.getUserPost(_user?.id ?? widget.userId)
+        : await _postBloc!.getUserPostGuest(_user?.id ?? widget.userId);
     if (!res.isSuccess)
       showToast(res.errMessage, context);
     else {
@@ -122,7 +122,7 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
                     ),
                     value: 'lock'),
               ],
-              onSelected: (val) async {
+              onSelected: (dynamic val) async {
                 if (val == 'lock') {
                   final res =
                       await UserBloc.instance.blockUserByAdmin(_user?.id);
@@ -163,11 +163,11 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
         body: Container(
           child: _posts == null
               ? SingleChildScrollView(child: PostSkeleton())
-              : (_posts.length != 0
+              : (_posts!.length != 0
                   ? ListView.separated(
-                      itemCount: _posts.length,
+                      itemCount: _posts!.length,
                       itemBuilder: (context, index) {
-                        final post = _posts[index];
+                        final post = _posts![index];
                         return PostWidget(post);
                       },
                       separatorBuilder: (context, index) =>
@@ -221,26 +221,26 @@ class _ProfileOtherPageState extends State<ProfileOtherPage> {
 // }
 
 class ProfileCard extends StatefulWidget {
-  final UserModel user;
+  final UserModel? user;
 
-  const ProfileCard({Key key, this.user}) : super(key: key);
+  const ProfileCard({Key? key, this.user}) : super(key: key);
 
   @override
   _ProfileCardState createState() => _ProfileCardState();
 }
 
 class _ProfileCardState extends State<ProfileCard> {
-  UserBloc _userBloc;
-  AuthBloc _authBloc;
+  UserBloc? _userBloc;
+  late AuthBloc _authBloc;
   bool initFetchStatus = false;
-  Uri _emailLaunchUri;
+  Uri? _emailLaunchUri;
 
   @override
   void initState() {
     super.initState();
     _emailLaunchUri = Uri(
       scheme: 'mailto',
-      path: widget.user.email,
+      path: widget.user!.email,
     );
   }
 
@@ -283,10 +283,10 @@ class _ProfileCardState extends State<ProfileCard> {
                           child: CircleAvatar(
                             radius: 37.5,
                             backgroundColor: Colors.white,
-                            backgroundImage: widget.user.avatar != null
-                                ? CachedNetworkImageProvider(widget.user.avatar)
-                                : AssetImage('assets/image/default_avatar.png'),
-                            child: VerifiedIcon(widget.user.role, 14),
+                            backgroundImage: (widget.user!.avatar != null
+                                ? CachedNetworkImageProvider(widget.user!.avatar!)
+                                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
+                            child: VerifiedIcon(widget.user!.role, 14),
                           ),
                         ),
                       ),
@@ -310,7 +310,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                   width: 5,
                                 ),
                                 Text(
-                                  widget.user.name ?? '',
+                                  widget.user!.name ?? '',
                                   style: ptBigTitle(),
                                 ),
                                 SizedBox(width: 8),
@@ -343,7 +343,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        widget.user.totalPost.toString(),
+                                        widget.user!.totalPost.toString(),
                                         style: ptBigTitle(),
                                       ),
                                       SizedBox(height: 3),
@@ -370,7 +370,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          widget.user.followerIds.length
+                                          widget.user!.followerIds!.length
                                               .toString(),
                                           style: ptBigTitle(),
                                         ),
@@ -399,7 +399,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          widget.user.followingIds.length
+                                          widget.user!.followingIds!.length
                                               .toString(),
                                           style: ptBigTitle(),
                                         ),
@@ -427,8 +427,8 @@ class _ProfileCardState extends State<ProfileCard> {
                   //       : 'Người dùng cơ bản',
                   //   style: ptSmall().copyWith(color: Colors.blue),
                   // ),
-                  if (widget.user.description != null)
-                    Text(widget.user.description),
+                  if (widget.user!.description != null)
+                    Text(widget.user!.description!),
                   SizedBox(height: 5),
                   Row(
                     children: [
@@ -439,7 +439,7 @@ class _ProfileCardState extends State<ProfileCard> {
                           Row(
                             children: [
                               Text(
-                                'Điểm tương tác: ${widget.user.reputationScore.toString()}',
+                                'Điểm tương tác: ${widget.user!.reputationScore.toString()}',
                                 style: ptBody().copyWith(color: Colors.black54),
                               ),
                               SizedBox(width: 5),
@@ -472,7 +472,7 @@ class _ProfileCardState extends State<ProfileCard> {
                           height: 23,
                           child: Image.asset('assets/image/facebook_icon.png')),
                       SizedBox(width: 15),
-                      if (widget.user.email != null)
+                      if (widget.user!.email != null)
                         GestureDetector(
                           onTap: () {audioCache.play('tab3.mp3');
                             launch(_emailLaunchUri.toString());
@@ -484,13 +484,13 @@ class _ProfileCardState extends State<ProfileCard> {
                                   Image.asset('assets/image/gmail_icon.png')),
                         ),
                       SizedBox(width: 12),
-                      if (widget.user.dynamicLink != null)
+                      if (widget.user!.dynamicLink != null)
                         GestureDetector(
                           onTap: () {audioCache.play('tab3.mp3');
                             showToast('Đã copy đường dẫn tài khoản', context,
                                 isSuccess: true);
                             Clipboard.setData(ClipboardData(
-                                text: widget.user.dynamicLink.shortLink));
+                                text: widget.user!.dynamicLink!.shortLink));
                           },
                           child: SizedBox(
                               width: 23,
@@ -506,39 +506,39 @@ class _ProfileCardState extends State<ProfileCard> {
                             child: GestureDetector(
                               onTap: () async {audioCache.play('tab3.mp3');
                                 BaseResponse res;
-                                if (_authBloc.userModel.followingIds
-                                    .contains(widget.user.id)) {
-                                  widget.user.followerIds
-                                      .remove(_authBloc.userModel.id);
-                                  _authBloc.userModel.followingIds
-                                      .remove(widget.user.id);
+                                if (_authBloc.userModel!.followingIds!
+                                    .contains(widget.user!.id)) {
+                                  widget.user!.followerIds!
+                                      .remove(_authBloc.userModel!.id);
+                                  _authBloc.userModel!.followingIds!
+                                      .remove(widget.user!.id);
                                   setState(() {});
-                                  res = await _userBloc
-                                      .unfollowUser(widget.user.id);
+                                  res = await _userBloc!
+                                      .unfollowUser(widget.user!.id);
                                   if (res.isSuccess) {
                                   } else {
                                     showToast(res.errMessage, context);
-                                    widget.user.followerIds
-                                        .add(_authBloc.userModel.id);
-                                    _authBloc.userModel.followingIds
-                                        .add(widget.user.id);
+                                    widget.user!.followerIds!
+                                        .add(_authBloc.userModel!.id);
+                                    _authBloc.userModel!.followingIds!
+                                        .add(widget.user!.id);
                                     setState(() {});
                                   }
                                 } else {
-                                  _authBloc.userModel.followingIds
-                                      .add(widget.user.id);
-                                  widget.user.followerIds
-                                      .add(_authBloc.userModel.id);
+                                  _authBloc.userModel!.followingIds!
+                                      .add(widget.user!.id);
+                                  widget.user!.followerIds!
+                                      .add(_authBloc.userModel!.id);
                                   setState(() {});
-                                  res = await _userBloc
-                                      .followUser(widget.user.id);
+                                  res = await _userBloc!
+                                      .followUser(widget.user!.id);
                                   if (res.isSuccess) {
                                   } else {
                                     showToast(res.errMessage, context);
-                                    _authBloc.userModel.followingIds
-                                        .remove(widget.user.id);
-                                    widget.user.followerIds
-                                        .remove(_authBloc.userModel.id);
+                                    _authBloc.userModel!.followingIds!
+                                        .remove(widget.user!.id);
+                                    widget.user!.followerIds!
+                                        .remove(_authBloc.userModel!.id);
                                     setState(() {});
                                   }
                                 }
@@ -553,14 +553,14 @@ class _ProfileCardState extends State<ProfileCard> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    _authBloc.userModel.followingIds
-                                            .contains(widget.user.id)
-                                        ? (_authBloc.userModel.followerIds
-                                                .contains(widget.user.id)
+                                    _authBloc.userModel!.followingIds!
+                                            .contains(widget.user!.id)
+                                        ? (_authBloc.userModel!.followerIds!
+                                                .contains(widget.user!.id)
                                             ? 'Bạn bè'
                                             : 'Bỏ theo dõi')
-                                        : (_authBloc.userModel.followerIds
-                                                .contains(widget.user.id)
+                                        : (_authBloc.userModel!.followerIds!
+                                                .contains(widget.user!.id)
                                             ? 'Follow lại'
                                             : 'Follow'),
                                     style: ptTitle(),
@@ -570,28 +570,28 @@ class _ProfileCardState extends State<ProfileCard> {
                             ),
                           ),
                           if (_authBloc.userModel != null &&
-                              _authBloc.userModel.followingIds
-                                  .contains(widget.user.id))
+                              _authBloc.userModel!.followingIds!
+                                  .contains(widget.user!.id))
                             SizedBox(
                               width: 12,
                             ),
                           if (_authBloc.userModel != null &&
-                              _authBloc.userModel.followingIds
-                                  .contains(widget.user.id))
+                              _authBloc.userModel!.followingIds!
+                                  .contains(widget.user!.id))
                             Expanded(
                               child: GestureDetector(
                                 onTap: () async {audioCache.play('tab3.mp3');
                                   showWaitingDialog(context);
                                   await InboxBloc.instance.navigateToChatWith(
-                                      widget.user.name,
-                                      widget.user.avatar,
+                                      widget.user!.name,
+                                      widget.user!.avatar,
                                       DateTime.now(),
-                                      widget.user.avatar, [
-                                    AuthBloc.instance.userModel.id,
-                                    widget.user.id,
+                                      widget.user!.avatar, [
+                                    AuthBloc.instance.userModel!.id,
+                                    widget.user!.id,
                                   ], [
-                                    AuthBloc.instance.userModel.avatar,
-                                    widget.user.avatar,
+                                    AuthBloc.instance.userModel!.avatar,
+                                    widget.user!.avatar,
                                   ]);
                                   closeLoading();
                                 },

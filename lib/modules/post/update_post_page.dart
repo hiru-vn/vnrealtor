@@ -20,11 +20,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 
 class UpdatePostPage extends StatefulWidget {
-  final PostModel post;
+  final PostModel? post;
   UpdatePostPage(this.post);
 
-  static Future navigate(PostModel post) {
-    return navigatorKey.currentState.push(pageBuilder(UpdatePostPage(
+  static Future navigate(PostModel? post) {
+    return navigatorKey.currentState!.push(pageBuilder(UpdatePostPage(
       post,
     )));
   }
@@ -35,35 +35,35 @@ class UpdatePostPage extends StatefulWidget {
 
 class _UpdatePostPageState extends State<UpdatePostPage> {
   FocusNode _activityNode = FocusNode();
-  LatLng _pos;
-  String _placeName;
-  DateTime _expirationDate;
+  LatLng? _pos;
+  String? _placeName;
+  DateTime? _expirationDate;
   String _shareWith = 'public';
   TextEditingController _contentC = TextEditingController();
   List<String> _cacheMedias = [];
   List<String> _cachePic = [];
-  List<String> _initUrls = [];
-  List<String> _urlMedias = [];
-  PostBloc _postBloc;
+  List<String?> _initUrls = [];
+  List<String?> _urlMedias = [];
+  PostBloc? _postBloc;
   bool isProcess = false;
-  List<LatLng> _polygonPoints = [];
-  List<UserModel> _tagUsers = [];
-  double _price;
-  double _area;
-  String _type;
-  String _need;
+  List<LatLng>? _polygonPoints = [];
+  List<UserModel>? _tagUsers = [];
+  double? _price;
+  double? _area;
+  String? _type;
+  String? _need;
   List<UrlPreviewData> links = [];
 
   @override
   void initState() {
-    _initUrls = widget.post.mediaPosts.map((e) => e.url).toList();
-    _urlMedias = widget.post.mediaPosts.map((e) => e.url).toList();
-    _expirationDate = DateTime.tryParse(widget.post.expirationDate);
-    if (widget.post.locationLat != null)
-      _pos = LatLng(widget.post.locationLat, widget.post.locationLong);
-    _contentC.text = widget.post.rawContent ?? widget.post.content;
-    _shareWith = widget.post.publicity ? 'public' : 'friend';
-    _tagUsers = widget.post.tagUsers;
+    _initUrls = widget.post!.mediaPosts!.map((e) => e.url).toList();
+    _urlMedias = widget.post!.mediaPosts!.map((e) => e.url).toList();
+    _expirationDate = DateTime.tryParse(widget.post!.expirationDate!);
+    if (widget.post!.locationLat != null)
+      _pos = LatLng(widget.post!.locationLat!, widget.post!.locationLong!);
+    _contentC.text = widget.post!.rawContent ?? widget.post!.content!;
+    _shareWith = widget.post!.publicity! ? 'public' : 'friend';
+    _tagUsers = widget.post!.tagUsers;
     super.initState();
   }
 
@@ -94,8 +94,8 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         await Future.delayed(Duration(milliseconds: 500));
       }
 
-      final res = await _postBloc.updatePost(
-        widget.post.id,
+      final res = await _postBloc!.updatePost(
+        widget.post!.id,
         _contentC.text.trim(),
         _expirationDate?.toIso8601String(),
         _shareWith == 'public',
@@ -109,8 +109,8 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
         _urlMedias
             .where((path) => FileUtil.getFbUrlFileType(path) == FileType.video)
             .toList(),
-        _polygonPoints,
-        _tagUsers.map((e) => e.id).toList(),
+        _polygonPoints!,
+        _tagUsers!.map((e) => e.id).toList(),
         _type,
         _need,
         _area,
@@ -120,16 +120,16 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
 
       closeLoading();
       if (res.isSuccess) {
-        final index = _postBloc.feed
-            .indexWhere((element) => element.id == widget.post.id);
-        _postBloc.feed[index] = res.data;
+        final index = _postBloc!.feed!
+            .indexWhere((element) => element!.id == widget.post!.id);
+        _postBloc!.feed![index] = res.data;
 
         FocusScope.of(context).requestFocus(FocusNode());
         _expirationDate = null;
         _contentC.clear();
         _cacheMedias.clear();
         _cachePic.clear();
-        navigatorKey.currentState.maybePop(true);
+        navigatorKey.currentState!.maybePop(true);
       } else {
         showToast(res.errMessage, context);
       }
@@ -149,7 +149,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
       height: deviceHeight(context),
       child: Scaffold(
         appBar: AppBar1(
-          title: widget.post.user != null ? 'Bài viết của tôi' : '',
+          title: widget.post!.user != null ? 'Bài viết của tôi' : '',
           automaticallyImplyLeading: true,
           bgColor: ptSecondaryColor(context),
           textColor: ptPrimaryColor(context),
@@ -181,11 +181,11 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                     radius: 20,
                     backgroundColor: Colors.white,
                     backgroundImage:
-                        (AuthBloc.instance.userModel.avatar != null &&
-                                AuthBloc.instance.userModel.avatar != 'null')
+                        ((AuthBloc.instance.userModel!.avatar != null &&
+                                AuthBloc.instance.userModel!.avatar != 'null')
                             ? CachedNetworkImageProvider(
-                                AuthBloc.instance.userModel.avatar)
-                            : AssetImage('assets/image/default_avatar.png'),
+                                AuthBloc.instance.userModel!.avatar!)
+                            : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
                     child: VerifiedIcon(AuthBloc.instance.userModel?.role, 10),
                   ),
                   SizedBox(width: 10),
@@ -193,13 +193,13 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AuthBloc.instance.userModel.name ?? '',
+                        AuthBloc.instance.userModel!.name ?? '',
                         style: ptTitle(),
                       ),
                       Row(
                         children: [
                           Text(
-                            Formart.formatToWeekTime(DateTime.now()),
+                            Formart.formatToWeekTime(DateTime.now())??'',
                             style: ptTiny().copyWith(color: Colors.black54),
                           ),
                           SizedBox(width: 12),
@@ -307,9 +307,9 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                                   navigatorKey: navigatorKey, confirmTap: () {
                                 setState(() {
                                   final url = _urlMedias.firstWhere(
-                                      (element) => element.contains(
+                                      (element) => element!.contains(
                                           FileUtil.changeImageToJpg(
-                                                  Path.basename(list[index]))
+                                                  Path.basename(list[index]!))
                                               .replaceAll(
                                                   new RegExp(r'(\?alt).*'), '')
                                               .replaceAll(' ', '')),
@@ -389,12 +389,12 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                               child: GestureDetector(
                                 onTap: () {
                                   audioCache.play('tab3.mp3');
-                                  launchURL(links[0].url);
+                                  launchURL(links[0].url!);
                                 },
                                 child: Column(
                                   children: [
                                     if (links[0].image != null)
-                                      Image.network(links[0].image),
+                                      Image.network(links[0].image!),
                                     Container(
                                       color: Colors.grey[100],
                                       width: double.infinity,
@@ -408,14 +408,14 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                                               padding: const EdgeInsets.only(
                                                   bottom: 8.0),
                                               child: Text(
-                                                links[0].title,
+                                                links[0].title!,
                                                 style: ptTitle().copyWith(
                                                     color: Colors.black87),
                                               ),
                                             ),
                                           if (links[0].description != null)
                                             Text(
-                                              links[0].description +
+                                              links[0].description! +
                                                   (links[0].siteName != null
                                                       ? '  - từ ${links[0].siteName}'
                                                       : ''),
@@ -503,7 +503,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                       setState(() {
                         _contentC.text = _contentC.text +
                             ' ' +
-                            _postBloc.hasTags
+                            _postBloc!.hasTags!
                                 .where((element) =>
                                     !_contentC.text.contains(element['value']))
                                 .toList()[index]['value']
@@ -520,7 +520,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                           borderRadius: BorderRadius.circular(15)),
                       child: Center(
                         child: Text(
-                          _postBloc.hasTags
+                          _postBloc!.hasTags!
                               .where((element) =>
                                   !_contentC.text.contains(element['value']))
                               .toList()[index]['value']
@@ -530,7 +530,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                     ),
                   );
                 },
-                itemCount: _postBloc.hasTags
+                itemCount: _postBloc!.hasTags!
                     .where(
                         (element) => !_contentC.text.contains(element['value']))
                     .toList()
@@ -563,7 +563,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                                   (filePath) => FileUtil.uploadFireStorage(
                                       filePath,
                                       path:
-                                          'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}')));
+                                          'posts/user_${AuthBloc.instance.userModel!.id}/${DateTime.now().millisecondsSinceEpoch}')));
                               setState(() {
                                 _urlMedias.addAll(listUrls);
                               });
@@ -588,7 +588,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            ImagePicker.pickImage(source: ImageSource.camera)
+                            ImagePicker().pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {
@@ -598,7 +598,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                               final url = await FileUtil.uploadFireStorage(
                                   value.path,
                                   path:
-                                      'posts/user_${AuthBloc.instance.userModel.id}/${DateTime.now().millisecondsSinceEpoch}');
+                                      'posts/user_${AuthBloc.instance.userModel!.id}/${DateTime.now().millisecondsSinceEpoch}');
                               setState(() {
                                 _urlMedias.add(url);
                               });
@@ -617,9 +617,9 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   GestureDetector(
                     onTap: () {audioCache.play('tab3.mp3');
                       PickCoordinates.navigate(
-                              polygon: widget.post.polygonPoints,
-                              position: LatLng(widget.post.locationLat,
-                                  widget.post.locationLong))
+                              polygon: widget.post!.polygonPoints!,
+                              position: LatLng(widget.post!.locationLat!,
+                                  widget.post!.locationLong!))
                           .then((value) {
                         if (value == null) return;
                         setState(() {
@@ -667,7 +667,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
               height: 10,
             ),
             // _buildForm(),
-            if (_placeName != null && _placeName.trim() != '')
+            if (_placeName != null && _placeName!.trim() != '')
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Text.rich(TextSpan(children: [
@@ -686,7 +686,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   TextSpan(
                       text: 'Gắn thẻ: ',
                       style: ptSmall().copyWith(color: Colors.black)),
-                  ..._tagUsers.map(
+                  ..._tagUsers!.map(
                     (e) => TextSpan(
                         text: '${e.name}, ',
                         recognizer: new TapGestureRecognizer()

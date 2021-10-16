@@ -2,15 +2,15 @@ import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/custom_tooltip.dart';
 
 class VerifiedIcon extends StatelessWidget {
-  final String role;
+  final String? role;
   final double size;
-  final bool isPage;
+  final bool? isPage;
   const VerifiedIcon(this.role, this.size, {this.isPage = false});
 
   @override
   Widget build(BuildContext context) {
-    String image;
-    String message;
+    String? image;
+    String? message;
     if (role == 'AGENT') {
       image = 'agent';
       message = 'Nhà môi giới';
@@ -25,7 +25,7 @@ class VerifiedIcon extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomRight,
       child: CustomTooltip(
-        message: isPage ? "Trang" : message,
+        message: isPage! ? "Trang" : message,
         child: Container(
           width: size + 10,
           height: size + 10,
@@ -44,7 +44,7 @@ class VerifiedIcon extends StatelessWidget {
               child: SizedBox(
                   width: size,
                   height: size,
-                  child: isPage
+                  child: isPage!
                       ? Image.asset('assets/image/ic_page.png')
                       : Image.asset('assets/image/$image.png')),
             ),

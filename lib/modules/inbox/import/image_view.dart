@@ -6,12 +6,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'spin_loader.dart';
 
 class ImageViewNetwork extends StatelessWidget {
-  final String url;
-  final String cacheFilePath;
-  final int w, h;
+  final String? url;
+  final String? cacheFilePath;
+  final int? w, h;
   final double borderRadius;
   ImageViewNetwork(
-      {@required this.url,
+      {required this.url,
       this.w,
       this.h,
       this.borderRadius = 0,
@@ -33,16 +33,16 @@ class ImageViewNetwork extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         child: url == null
             ? Image.file(
-                File(cacheFilePath),
+                File(cacheFilePath!),
                 fit: BoxFit.cover,
               )
             : Image(
-                image: CachedNetworkImageProvider(url),
+                image: CachedNetworkImageProvider(url!),
                 fit: BoxFit.cover,
-                errorBuilder: imageNetworkErrorBuilder,
+                errorBuilder: imageNetworkErrorBuilder as Widget Function(BuildContext, Object, StackTrace?)?,
                 loadingBuilder: cacheFilePath != null
-                    ? (_, __, ___) => Image.file(File(cacheFilePath))
-                    : kLoadingBuilder,
+                    ? ((_, __, ___) => Image.file(File(cacheFilePath!))) as Widget Function(BuildContext, Widget, ImageChunkEvent?)?
+                    : kLoadingBuilder as Widget Function(BuildContext, Widget, ImageChunkEvent?)?,
               ),
       ),
     );
@@ -50,9 +50,9 @@ class ImageViewNetwork extends StatelessWidget {
 }
 
 class DetailImageScreen extends StatelessWidget {
-  final String url;
-  final String tag;
-  final int scaleW, scaleH;
+  final String? url;
+  final String? tag;
+  final int? scaleW, scaleH;
   DetailImageScreen(this.url, {this.tag, this.scaleW, this.scaleH});
 
   @override
@@ -65,13 +65,13 @@ class DetailImageScreen extends StatelessWidget {
             child: PhotoView(
               backgroundDecoration: BoxDecoration(color: Colors.black87),
               imageProvider: NetworkImage(
-                url,
+                url!,
               ),
               errorBuilder: (_, __, ___) => SizedBox.shrink(),
               loadingBuilder: (context, event) => PhotoView(
                 backgroundDecoration: BoxDecoration(color: Colors.black87),
                 imageProvider: NetworkImage(
-                  url,
+                  url!,
                 ),
                 loadingBuilder: (context, event) => Center(
                   child: kLoadingSpinner,
@@ -107,8 +107,8 @@ class DetailImageScreen extends StatelessWidget {
 }
 
 class ImageViewNetworkCache extends StatelessWidget {
-  final String filePath;
-  final int w, h;
+  final String? filePath;
+  final int? w, h;
   final double borderRadius;
   ImageViewNetworkCache(
       {this.filePath,
@@ -131,7 +131,7 @@ class ImageViewNetworkCache extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
         child: Image.file(
-                File(filePath),
+                File(filePath!),
                 fit: BoxFit.cover,
               )
            ,
@@ -141,9 +141,9 @@ class ImageViewNetworkCache extends StatelessWidget {
 }
 
 class DetailImageScreenCache extends StatelessWidget {
-  final String filePath;
-  final String tag;
-  final int scaleW, scaleH;
+  final String? filePath;
+  final String? tag;
+  final int? scaleW, scaleH;
   DetailImageScreenCache(this.filePath, {this.tag, this.scaleW, this.scaleH});
 
   @override
@@ -155,7 +155,7 @@ class DetailImageScreenCache extends StatelessWidget {
             child: PhotoView(
               backgroundDecoration: BoxDecoration(color: Colors.black87),
               imageProvider: FileImage(
-                File(filePath),
+                File(filePath!),
               ),
               errorBuilder: (_, __, ___) => SizedBox.shrink(),
               

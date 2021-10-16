@@ -2,9 +2,9 @@ import 'package:datcao/share/import.dart';
 
 class SharePickList<T> extends StatelessWidget {
   final String title;
-  final List<T> list;
-  final String Function(int index) itemTitleBuilder;
-  final String Function(int index) itemUrlBuilder;
+  final List<T>? list;
+  final String? Function(int index) itemTitleBuilder;
+  final String? Function(int index) itemUrlBuilder;
   final TextEditingController _searchC = TextEditingController();
   SharePickList(
       this.title, this.list, this.itemTitleBuilder, this.itemUrlBuilder);
@@ -42,12 +42,12 @@ class SharePickList<T> extends StatelessWidget {
             ListView.separated(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: list.length,
+              itemCount: list!.length,
               itemBuilder: (context, index) {
                 return _buildItem(
                     itemUrlBuilder(index),
-                    itemTitleBuilder(index),
-                    () => navigatorKey.currentState.maybePop(index));
+                    itemTitleBuilder(index)!,
+                    () => navigatorKey.currentState!.maybePop(index));
               },
               separatorBuilder: (context, index) {
                 return Divider(
@@ -58,7 +58,7 @@ class SharePickList<T> extends StatelessWidget {
         ));
   }
 
-  _buildItem(String url, String title, Function onTap) {
+  _buildItem(String? url, String title, Function onTap) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -72,9 +72,9 @@ class SharePickList<T> extends StatelessWidget {
             CircleAvatar(
               backgroundColor: Colors.white,
               radius: 19,
-              backgroundImage: url != null
+              backgroundImage: (url != null
                   ? CachedNetworkImageProvider(url)
-                  : AssetImage('assets/image/default_avatar.png'),
+                  : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
             ),
             SizedBox(width: 14),
             Text(title,

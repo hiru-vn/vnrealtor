@@ -18,13 +18,13 @@ import './widget/setting_group_bottom_sheet.dart';
 import 'widget/choose_user_popup.dart';
 
 class DetailGroupPage extends StatefulWidget {
-  static Future navigate(GroupModel groupModel, {String groupId}) {
-    return navigatorKey.currentState
+  static Future navigate(GroupModel? groupModel, {String? groupId}) {
+    return navigatorKey.currentState!
         .push(pageBuilder(DetailGroupPage(groupModel, groupId: groupId)));
   }
 
-  final GroupModel groupModel;
-  final String groupId;
+  final GroupModel? groupModel;
+  final String? groupId;
   DetailGroupPage(this.groupModel, {this.groupId});
 
   @override
@@ -32,13 +32,13 @@ class DetailGroupPage extends StatefulWidget {
 }
 
 class _DetailGroupPageState extends State<DetailGroupPage> {
-  List<UserModel> admins;
-  GroupBloc _groupBloc;
+  List<UserModel>? admins;
+  GroupBloc? _groupBloc;
   Completer<GoogleMapController> _controller = Completer();
-  List<PostModel> posts;
-  GroupModel group;
+  List<PostModel>? posts;
+  GroupModel? group;
   bool isLoadingBtn = false;
-  List<UserModel> pendingUsers;
+  List<UserModel>? pendingUsers;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
+      _groupBloc = Provider.of<GroupBloc>(context);
       if (group == null) {
         _loadGroup();
       } else {
@@ -62,13 +62,13 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
   }
 
   _loadPendingUsers() {
-    if (!group.isAdmin && !group.isOwner) return;
+    if (!group!.isAdmin! && !group!.isOwner!) return;
     UserBloc.instance
-        .getListUserIn(widget.groupModel.pendingMemberIds.sublist(
+        .getListUserIn(widget.groupModel!.pendingMemberIds!.sublist(
             0,
-            widget.groupModel.pendingMemberIds.length > 5
+            widget.groupModel!.pendingMemberIds!.length > 5
                 ? 5
-                : widget.groupModel.pendingMemberIds.length))
+                : widget.groupModel!.pendingMemberIds!.length))
         .then((res) {
       if (res.isSuccess) {
         setState(() {
@@ -91,7 +91,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
   }
 
   _loadPost() {
-    _groupBloc.getPostGroup(group?.id ?? widget.groupId).then((res) {
+    _groupBloc!.getPostGroup(group?.id ?? widget.groupId).then((res) {
       if (res.isSuccess)
         setState(() {
           posts = res.data;
@@ -101,13 +101,13 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
     });
   }
 
-  _inviteUsers(List<String> users) async {
+  _inviteUsers(List<String?> users) async {
     if (users.length == 0) {
-      await navigatorKey.currentState.maybePop();
+      await navigatorKey.currentState!.maybePop();
       return;
     }
     showWaitingDialog(context);
-    final res = await _groupBloc.sendInviteGroup(group?.id, users);
+    final res = await _groupBloc!.sendInviteGroup(group?.id, users);
     closeLoading();
     if (res.isSuccess) {
       showToast('Gửi lời mời thành công', context, isSuccess: true);
@@ -136,7 +136,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
             if (posts == null)
               PostSkeleton()
             else
-              posts.length == 0
+              posts!.length == 0
                   ? SizedBox(
                       width: deviceWidth(context),
                       height: 50,
@@ -145,9 +145,9 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: posts.length,
+                      itemCount: posts!.length,
                       itemBuilder: (context, index) {
-                        final item = posts[index];
+                        final item = posts![index];
                         return PostWidget(item);
                       },
                     ),
@@ -165,24 +165,27 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
             width: deviceWidth(context),
             height: 160,
             child: Image.network(
-              group.coverImage ?? '',
+              group!.coverImage ?? '',
               fit: BoxFit.cover,
-              loadingBuilder: kLoadingBuilder,
+              loadingBuilder: kLoadingBuilder as Widget Function(
+                  BuildContext, Widget, ImageChunkEvent?)?,
             ),
           ),
-          if (!group.isOwner && group.isMember)
+          if (!group!.isOwner! && group!.isMember!)
             Positioned(
                 bottom: 5,
                 right: 5,
                 child: GestureDetector(
-                  onTap: () async {audioCache.play('tab3.mp3');
-                    final confirm = await showConfirmDialog(
+                  onTap: () async {
+                    audioCache.play('tab3.mp3');
+                    final confirm = await (showConfirmDialog(
                         context, 'Xác nhận rời nhóm này?',
-                        confirmTap: () {}, navigatorKey: navigatorKey);
+                        confirmTap: () {},
+                        navigatorKey: navigatorKey) as Future<bool>);
                     if (!confirm) return;
-                    final res = await _groupBloc.leaveGroup(group.id);
+                    final res = await _groupBloc!.leaveGroup(group!.id);
                     if (res.isSuccess) {
-                      await navigatorKey.currentState.maybePop();
+                      await navigatorKey.currentState!.maybePop();
                     } else {
                       showToast(res.errMessage, context);
                     }
@@ -204,12 +207,13 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                     ),
                   ),
                 )),
-          if (group.isOwner || group.isAdmin)
+          if (group!.isOwner! || group!.isAdmin!)
             Positioned(
                 top: 5,
                 right: 5,
                 child: GestureDetector(
-                  onTap: () async {audioCache.play('tab3.mp3');
+                  onTap: () async {
+                    audioCache.play('tab3.mp3');
                     showSettingGroup(context, group).then((value) {
                       if (value is GroupModel) {
                         setState(() {
@@ -242,13 +246,14 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GestureDetector(
-              onTap: () {audioCache.play('tab3.mp3');
+              onTap: () {
+                audioCache.play('tab3.mp3');
                 InfoGroupPage.navigate(group);
               },
               child: Row(
                 children: [
                   Text(
-                    group.name ?? 'null',
+                    group!.name ?? 'null',
                     style: ptBigTitle(),
                   ),
                   SizedBox(width: 5),
@@ -265,7 +270,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                   child: Image.asset('assets/icon/public.png'),
                 ),
                 SizedBox(width: 5),
-                Text(!group.privacy ? 'Công khai' : 'Nhóm kín',
+                Text(!group!.privacy! ? 'Công khai' : 'Nhóm kín',
                     style: ptBigBody().copyWith(fontSize: 14.6)),
                 SizedBox(width: 20),
                 Container(
@@ -275,11 +280,12 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                       BoxDecoration(shape: BoxShape.circle, color: Colors.cyan),
                 ),
                 SizedBox(width: 5),
-                Text('${group.countMember} thành viên',
+                Text('${group!.countMember} thành viên',
                     style: ptBigBody().copyWith(fontSize: 14.6)),
                 Spacer(),
                 GestureDetector(
-                  onTap: () async {audioCache.play('tab3.mp3');
+                  onTap: () async {
+                    audioCache.play('tab3.mp3');
                     showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,
@@ -290,7 +296,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                     ).then((user) {
                       if (user != null)
                         _inviteUsers((user as List<UserModel>)
-                            .map<String>((e) => e.id)
+                            .map<String?>((e) => e.id)
                             .toList());
                     });
                   },
@@ -312,14 +318,15 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
               ],
             ),
             SizedBox(height: 12),
-            if (group.pendingMemberIds.contains(AuthBloc.instance.userModel.id))
+            if (group!.pendingMemberIds!
+                .contains(AuthBloc.instance.userModel!.id))
               ExpandBtn(
                   color: Colors.white,
                   textColor: ptPrimaryColor(context),
                   text: 'Đang chờ duyệt yêu cầu',
                   onPress: () {},
                   borderRadius: 5)
-            else if (!group.isMember && !group.isOwner)
+            else if (!group!.isMember! && !group!.isOwner!)
               ExpandBtn(
                   text: 'Tham gia',
                   isLoading: isLoadingBtn,
@@ -327,7 +334,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                     setState(() {
                       isLoadingBtn = true;
                     });
-                    final res = await _groupBloc.joinGroup(group.id);
+                    final res = await _groupBloc!.joinGroup(group!.id);
                     setState(() {
                       isLoadingBtn = false;
                     });
@@ -365,9 +372,9 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                   child: SizedBox(
                     height: 22,
                     width: 22,
-                    child: group.owner.avatar != null
+                    child: group!.owner!.avatar != null
                         ? Image.network(
-                            group.owner.avatar,
+                            group!.owner!.avatar!,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
                                 Image.asset('assets/image/default_avatar.png'),
@@ -376,10 +383,11 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                   ),
                 ),
                 SizedBox(width: 5),
-                Text(group.owner.name),
+                Text(group!.owner!.name!),
                 Spacer(),
                 GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       GroupMemberPage.navigate(widget.groupModel ?? group);
                     },
                     child: Container(
@@ -397,7 +405,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
         ),
       ),
       SizedBox(height: 14),
-      if (group.censor && (group.isAdmin || group.isOwner)) ...[
+      if (group!.censor! && (group!.isAdmin! || group!.isOwner!)) ...[
         Container(
           color: Colors.white,
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
@@ -411,45 +419,47 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                 height: 25,
                 child: Row(
                   children: [
-                    group.pendingMemberIds != null &&
-                            group.pendingMemberIds.length > 0
+                    group!.pendingMemberIds != null &&
+                            group!.pendingMemberIds!.length > 0
                         ? Text(
-                            'Có ${group.pendingMemberIds.length} yêu cầu tham gia')
+                            'Có ${group!.pendingMemberIds!.length} yêu cầu tham gia')
                         : Text('Không có yêu cầu tham gia mới'),
                     SizedBox(width: 10),
                     pendingUsers != null
                         ? Expanded(
                             child: Stack(
                             fit: StackFit.expand,
-                            children: pendingUsers
+                            children: pendingUsers!
                                 .map<Widget>((e) => Positioned(
                                     height: 25,
                                     left:
-                                        5 * pendingUsers.indexOf(e).toDouble(),
+                                        5 * pendingUsers!.indexOf(e).toDouble(),
                                     child: Center(
                                       child: CircleAvatar(
                                         backgroundColor: Colors.white,
                                         radius: 9,
-                                        backgroundImage: e.avatar != null
-                                            ? CachedNetworkImageProvider(
-                                                e.avatar)
-                                            : AssetImage(
-                                                'assets/image/default_avatar.png'),
+                                        backgroundImage: (e.avatar != null
+                                                ? CachedNetworkImageProvider(
+                                                    e.avatar!)
+                                                : AssetImage(
+                                                    'assets/image/default_avatar.png'))
+                                            as ImageProvider<Object>?,
                                       ),
                                     )))
                                 .toList(),
                           ))
                         : Spacer(),
                     GestureDetector(
-                      onTap: () async {audioCache.play('tab3.mp3');
-                        final users = await showChooseUsersPopup(
-                            context, group.pendingMemberIds, 'Yêu cầu tham gia',
-                            submitText: 'Duyệt');
+                      onTap: () async {
+                        audioCache.play('tab3.mp3');
+                        final users = await (showChooseUsersPopup(context,
+                            group!.pendingMemberIds, 'Yêu cầu tham gia',
+                            submitText: 'Duyệt') as Future<List<UserModel>>);
 
                         if (users.length > 0) {
                           showWaitingDialog(context);
-                          final res = await _groupBloc.adminAcceptMem(
-                              group.id, users.map((e) => e.id).toList());
+                          final res = await _groupBloc!.adminAcceptMem(
+                              group!.id, users.map((e) => e.id).toList());
                           closeLoading();
                           if (res.isSuccess) {
                             showToast(
@@ -487,7 +497,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
           children: [
             Text('Mô tả', style: ptTitle()),
             SizedBox(height: 8),
-            Text(group.description, style: ptTitle()),
+            Text(group!.description!, style: ptTitle()),
             SizedBox(height: 8),
             SizedBox(height: 8),
             Row(
@@ -498,11 +508,11 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
                           height: 20,
-                          child: Image.asset(!group.privacy
+                          child: Image.asset(!group!.privacy!
                               ? 'assets/icon/public.png'
                               : 'assets/icon/lock.png')),
                     )),
-                Text(group.privacy ? 'Nhóm kín' : 'Công khai'),
+                Text(group!.privacy! ? 'Nhóm kín' : 'Công khai'),
               ],
             ),
             SizedBox(height: 8),
@@ -516,11 +526,11 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                           height: 20,
                           child: Image.asset('assets/icon/location.png')),
                     )),
-                Expanded(child: Text('Địa chỉ: ' + group.address)),
+                Expanded(child: Text('Địa chỉ: ' + group!.address!)),
               ],
             ),
             SizedBox(height: 12),
-            if (group.locationLat != null && group.locationLong != null)
+            if (group!.locationLat != null && group!.locationLong != null)
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: ConstrainedBox(
@@ -531,7 +541,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                   child: GoogleMap(
                     mapType: MapType.normal,
                     initialCameraPosition: CameraPosition(
-                      target: LatLng(group.locationLat, group.locationLong),
+                      target: LatLng(group!.locationLat!, group!.locationLong!),
                       zoom: 16,
                     ),
                     onMapCreated: (GoogleMapController controller) {
@@ -541,7 +551,7 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
                       Marker(
                           markerId: MarkerId('1'),
                           position:
-                              LatLng(group.locationLat, group.locationLong))
+                              LatLng(group!.locationLat!, group!.locationLong!))
                     },
                     onTap: (location) {},
                   ),

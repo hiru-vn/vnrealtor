@@ -13,22 +13,22 @@ class TagUserListPage extends StatefulWidget {
 }
 
 class _TagUserListPageState extends State<TagUserListPage> {
-  AuthBloc _authBloc;
-  UserBloc _userBloc;
-  List<UserModel> friends;
-  List<UserModel> followers;
+  AuthBloc? _authBloc;
+  late UserBloc _userBloc;
+  List<UserModel>? friends;
+  List<UserModel>? followers;
   List<UserModel> tagUsers = [];
   String search = '';
 
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
-      _authBloc = Provider.of(context);
-      _userBloc = Provider.of(context);
+      _authBloc = Provider.of<AuthBloc>(context);
+      _userBloc = Provider.of<UserBloc>(context);
       _userBloc
-          .getListUserIn(_authBloc.userModel.followerIds
+          .getListUserIn(_authBloc!.userModel!.followerIds!
               .where(
-                  (element) => !_authBloc.userModel.friendIds.contains(element))
+                  (element) => !_authBloc!.userModel!.friendIds!.contains(element))
               .toList())
           .then((value) {
         if (value.isSuccess) {
@@ -39,7 +39,7 @@ class _TagUserListPageState extends State<TagUserListPage> {
           showToast('Có lỗi khi lấy danh sách, vui lòng đóng trang và thử lại',
               context);
       });
-      _userBloc.getListUserIn(_authBloc.userModel.friendIds).then((value) {
+      _userBloc.getListUserIn(_authBloc!.userModel!.friendIds!).then((value) {
         if (value.isSuccess) {
           setState(() {
             friends = value.data;
@@ -75,7 +75,7 @@ class _TagUserListPageState extends State<TagUserListPage> {
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
-                navigatorKey.currentState.pop(tagUsers);
+                navigatorKey.currentState!.pop(tagUsers);
                 audioCache.play('tab3.mp3');
               },
               child: Center(
@@ -135,20 +135,20 @@ class _TagUserListPageState extends State<TagUserListPage> {
                           ListView.separated(
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: friends
-                                .where((e) => e.name.contains(search))
+                            itemCount: friends!
+                                .where((e) => e.name!.contains(search))
                                 .toList()
                                 .length,
                             itemBuilder: (context, index) {
                               return _buildUserItem(
-                                  friends
-                                      .where((e) => e.name.contains(search))
+                                  friends!
+                                      .where((e) => e.name!.contains(search))
                                       .toList()[index],
-                                  tagUsers.contains(friends
-                                      .where((e) => e.name.contains(search))
+                                  tagUsers.contains(friends!
+                                      .where((e) => e.name!.contains(search))
                                       .toList()[index]),
-                                  () => _tapUser(friends
-                                      .where((e) => e.name.contains(search))
+                                  () => _tapUser(friends!
+                                      .where((e) => e.name!.contains(search))
                                       .toList()[index]));
                             },
                             separatorBuilder: (context, index) {
@@ -179,20 +179,20 @@ class _TagUserListPageState extends State<TagUserListPage> {
                           ListView.separated(
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: followers
-                                .where((e) => e.name.contains(search))
+                            itemCount: followers!
+                                .where((e) => e.name!.contains(search))
                                 .toList()
                                 .length,
                             itemBuilder: (context, index) {
                               return _buildUserItem(
-                                  followers
-                                      .where((e) => e.name.contains(search))
+                                  followers!
+                                      .where((e) => e.name!.contains(search))
                                       .toList()[index],
-                                  tagUsers.contains(followers
-                                      .where((e) => e.name.contains(search))
+                                  tagUsers.contains(followers!
+                                      .where((e) => e.name!.contains(search))
                                       .toList()[index]),
-                                  () => _tapUser(followers
-                                      .where((e) => e.name.contains(search))
+                                  () => _tapUser(followers!
+                                      .where((e) => e.name!.contains(search))
                                       .toList()[index]));
                             },
                             separatorBuilder: (context, index) {
@@ -230,7 +230,7 @@ class _TagUserListPageState extends State<TagUserListPage> {
               margin: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.grey[200], width: 2),
+                border: Border.all(color: Colors.grey[200]!, width: 2),
               ),
             )
           else
@@ -252,12 +252,12 @@ class _TagUserListPageState extends State<TagUserListPage> {
           CircleAvatar(
             backgroundColor: Colors.white,
             radius: 15,
-            backgroundImage: user.avatar != null
-                ? CachedNetworkImageProvider(user.avatar)
-                : AssetImage('assets/image/default_avatar.png'),
+            backgroundImage: (user.avatar != null
+                ? CachedNetworkImageProvider(user.avatar!)
+                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
           ),
           SizedBox(width: 14),
-          Text(user.name, style: ptBody().copyWith(color: Colors.black)),
+          Text(user.name!, style: ptBody().copyWith(color: Colors.black)),
         ],
       ),
     );
@@ -286,7 +286,7 @@ class _TagUserListPageState extends State<TagUserListPage> {
       ),
       items: 3,
       period: Duration(seconds: 2),
-      highlightColor: Colors.grey[200],
+      highlightColor: Colors.grey[200]!,
       direction: SkeletonDirection.ltr,
     );
   }

@@ -13,7 +13,7 @@ import 'create_page_page.dart';
 
 class PagesPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(
+    return navigatorKey.currentState!.push(
       pageBuilder(
         PagesPage(),
       ),
@@ -25,20 +25,20 @@ class PagesPage extends StatefulWidget {
 }
 
 class _PagesPageState extends State<PagesPage> {
-  PagesBloc _pagesBloc;
-  AuthBloc _authBloc;
+  PagesBloc? _pagesBloc;
+  AuthBloc? _authBloc;
 
   bool isDataPageLoading = false;
 
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
-      _authBloc = Provider.of(context);
+      _authBloc = Provider.of<AuthBloc>(context);
     }
     if (_pagesBloc == null) {
       _pagesBloc = Provider.of<PagesBloc>(context)
         ..feedScrollController = ScrollController();
-      if (_authBloc.userModel.role == 'COMPANY') {
+      if (_authBloc!.userModel!.role == 'COMPANY') {
         _fetchDataCompany();
       } else {
         _fetchData();
@@ -52,7 +52,7 @@ class _PagesPageState extends State<PagesPage> {
     await _getSuggestFollow();
     await _getAllPageCreated();
     await _getAllPageFollow();
-    await _pagesBloc.getAllHashTagTP();
+    await _pagesBloc!.getAllHashTagTP();
     setState(() => isDataPageLoading = false);
   }
 
@@ -63,13 +63,13 @@ class _PagesPageState extends State<PagesPage> {
     setState(() => isDataPageLoading = false);
   }
 
-  Future<void> _getAllPageCreated() async => await _pagesBloc.getMyPage();
+  Future<void> _getAllPageCreated() async => await _pagesBloc!.getMyPage();
 
-  Future<void> _getAllPageFollow() async => await _pagesBloc.getPagesFollow(
+  Future<void> _getAllPageFollow() async => await _pagesBloc!.getPagesFollow(
       filter: GraphqlFilter(limit: 15, page: 1),
-      userId: _authBloc.userModel.id);
+      userId: _authBloc!.userModel!.id);
 
-  Future<void> _getSuggestFollow() async => await _pagesBloc.suggestFollow();
+  Future<void> _getSuggestFollow() async => await _pagesBloc!.suggestFollow();
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,7 @@ class _PagesPageState extends State<PagesPage> {
         body: RefreshIndicator(
           color: ptPrimaryColor(context),
           onRefresh: () async {audioCache.play('tab3.mp3');
-            if (AuthBloc.instance.userModel.role == 'COMPANY') {
+            if (AuthBloc.instance.userModel!.role == 'COMPANY') {
               _fetchDataCompany();
             } else {
               _fetchData();
@@ -92,7 +92,7 @@ class _PagesPageState extends State<PagesPage> {
           },
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            controller: _pagesBloc.feedScrollController,
+            controller: _pagesBloc!.feedScrollController,
             child: isDataPageLoading
                 ? PageSkeleton()
                 : Container(
@@ -104,13 +104,13 @@ class _PagesPageState extends State<PagesPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _pagesBloc.suggestFollowPage.isNotEmpty
+                        _pagesBloc!.suggestFollowPage.isNotEmpty
                             ? SuggestListPages(
-                                suggest: _pagesBloc.suggestFollowPage)
+                                suggest: _pagesBloc!.suggestFollowPage)
                             : const SizedBox(),
-                        if (AuthBloc.instance.userModel.role == 'COMPANY')
+                        if (AuthBloc.instance.userModel!.role == 'COMPANY')
                           _buildHeader(),
-                        if (AuthBloc.instance.userModel.role == 'COMPANY')
+                        if (AuthBloc.instance.userModel!.role == 'COMPANY')
                           _buildSectionOwnPage(),
                         _buildPageBodySection(
                             'Trang đã theo dõi', AppImages.icPageFollow),
@@ -155,13 +155,13 @@ class _PagesPageState extends State<PagesPage> {
 
   Widget _buildListPageCreate() {
     List<Widget> _listWidget = [];
-    _pagesBloc.pageCreated.forEach(
+    _pagesBloc!.pageCreated.forEach(
       (page) => _listWidget.add(
         _itemBodySectionOwnPage(
-          page.avartar,
-          page.name,
+          page.avartar!,
+          page.name!,
           2,
-          _pagesBloc.pageCreated.last == page ? true : false,
+          _pagesBloc!.pageCreated.last == page ? true : false,
           () => PageDetail.navigate(page),
         ),
       ),
@@ -191,13 +191,13 @@ class _PagesPageState extends State<PagesPage> {
 
   Widget _buildListPageFollow() {
     List<Widget> _listWidget = [];
-    _pagesBloc.listPageFollow.forEach(
+    _pagesBloc!.listPageFollow.forEach(
       (page) => _listWidget.add(
         _itemBodySectionPageFollow(
-          page.avartar,
-          page.name,
+          page!.avartar!,
+          page.name!,
           2,
-          _pagesBloc.listPageFollow.last == page ? true : false,
+          _pagesBloc!.listPageFollow.last == page ? true : false,
           () => PageDetail.navigate(page),
         ),
       ),
@@ -219,7 +219,7 @@ class _PagesPageState extends State<PagesPage> {
               ],
             ),
             child: Column(
-              children: _listWidget.isNotEmpty ? _listWidget : Container(),
+              children: _listWidget.isNotEmpty ? _listWidget : Container() as List<Widget>,
             ),
           )
         : const SizedBox();
@@ -242,13 +242,13 @@ class _PagesPageState extends State<PagesPage> {
       );
 
   Widget _itemIconButtonTitle(String image, String title, double iconSize,
-          {VoidCallback action}) =>
+          {VoidCallback? action}) =>
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           GestureDetector(
             onTap: () {
-              action();
+              action!();
               audioCache.play('tab3.mp3');
             },
             child: Container(
@@ -508,7 +508,7 @@ class _PagesPageState extends State<PagesPage> {
         ),
       );
 
-  Widget _itemButton(String text, {bool isApprove = false, IconData icon}) =>
+  Widget _itemButton(String text, {bool isApprove = false, IconData? icon}) =>
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
         decoration: BoxDecoration(

@@ -1,16 +1,16 @@
 class SuggestFollowModel {
-  String id;
-  String name;
-  String avartar;
-  String coverImage;
-  String description;
-  String address;
-  String phone;
-  String email;
-  String website;
-  List<String> followerIds;
-  List<String> followers;
-  Owner owner;
+  String? id;
+  String? name;
+  String? avartar;
+  String? coverImage;
+  String? description;
+  String? address;
+  String? phone;
+  String? email;
+  String? website;
+  List<String>? followerIds;
+  List<String>? followers;
+  Owner? owner;
 
   SuggestFollowModel(
       {this.id,
@@ -55,15 +55,15 @@ class SuggestFollowModel {
     data['followerIds'] = this.followerIds;
     data['followers'] = this.followers;
     if (this.owner != null) {
-      data['owner'] = this.owner.toJson();
+      data['owner'] = this.owner!.toJson();
     }
     return data;
   }
 }
 
 class Owner {
-  String id;
-  String name;
+  String? id;
+  String? name;
 
   Owner({this.id, this.name});
 

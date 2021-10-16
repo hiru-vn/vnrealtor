@@ -18,10 +18,10 @@ class BottomNavigator extends StatefulWidget {
   final Function(int) onSelect;
 
   BottomNavigator(
-      {Key key,
-      @required this.selectedIndex,
-      @required this.list,
-      @required this.onSelect})
+      {Key? key,
+      required this.selectedIndex,
+      required this.list,
+      required this.onSelect})
       : super(key: key);
 
   @override

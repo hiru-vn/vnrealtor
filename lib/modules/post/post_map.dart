@@ -17,13 +17,13 @@ class PostMapState extends State<PostMap> {
     target: LatLng(16.04, 108.19),
     zoom: 5,
   );
-  PostBloc _postBloc;
-  LatLng _lastMapPosition;
-  LatLng _currentMapPosition; // center of map
+  PostBloc? _postBloc;
+  LatLng? _lastMapPosition;
+  LatLng? _currentMapPosition; // center of map
   double distance = 30; //km
-  List<PostModel> posts = [];
+  List<PostModel>? posts = [];
   Set<Marker> selectedMarkers = <Marker>{};
-  InfoWidgetRoute _infoWidgetRoute;
+  InfoWidgetRoute? _infoWidgetRoute;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class PostMapState extends State<PostMap> {
 
   double calculateDistance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
-    var c = cos;
+    var c = cos as double Function(num?);
     var a = 0.5 -
         c((lat2 - lat1) * p) / 2 +
         c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
@@ -56,10 +56,10 @@ class PostMapState extends State<PostMap> {
   void _onCameraMove(CameraPosition position) {
     _currentMapPosition = position.target;
     if (calculateDistance(
-            _currentMapPosition.latitude,
-            _currentMapPosition.longitude,
-            _lastMapPosition.latitude,
-            _lastMapPosition.longitude) >
+            _currentMapPosition!.latitude,
+            _currentMapPosition!.longitude,
+            _lastMapPosition!.latitude,
+            _lastMapPosition!.longitude) >
         (distance * 0.5)) {
       _lastMapPosition = _currentMapPosition;
       _getPostLocal();
@@ -74,21 +74,21 @@ class PostMapState extends State<PostMap> {
   @override
   void didChangeDependencies() {
     if (_postBloc == null) {
-      _postBloc = Provider.of(context);
+      _postBloc = Provider.of<PostBloc>(context);
     }
     super.didChangeDependencies();
   }
 
   _getPostLocal() async {
-    final res = await _postBloc.searchPostWithLocation(
-        _lastMapPosition.longitude, _lastMapPosition.latitude, distance);
+    final res = await _postBloc!.searchPostWithLocation(
+        _lastMapPosition!.longitude, _lastMapPosition!.latitude, distance);
     if (res.isSuccess) {
       posts = res.data;
       selectedMarkers.clear();
-      posts.forEach((element) {
+      posts!.forEach((element) {
         Marker marker = Marker(
-          markerId: MarkerId(element.id),
-          position: LatLng(element.locationLat, element.locationLong),
+          markerId: MarkerId(element.id!),
+          position: LatLng(element.locationLat!, element.locationLong!),
           // infoWindow: InfoWindow(
           //   title: element.content.trim().length > 40
           //       ? (element.content.trim().substring(0, 37) + '...')
@@ -101,9 +101,9 @@ class PostMapState extends State<PostMap> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      element.content.trim().length > 40
-                          ? (element.content.trim().substring(0, 37) + '...')
-                          : element.content.trim(),
+                      element.content!.trim().length > 40
+                          ? (element.content!.trim().substring(0, 37) + '...')
+                          : element.content!.trim(),
                       maxLines: 2,
                     ),
                     GestureDetector(
@@ -123,7 +123,7 @@ class PostMapState extends State<PostMap> {
                     )
                   ],
                 ),
-                location: LatLng(element.locationLat, element.locationLong))),
+                location: LatLng(element.locationLat!, element.locationLong!))),
           ),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         );
@@ -136,7 +136,7 @@ class PostMapState extends State<PostMap> {
   }
 
   _onTapMarker(PointObject point) async {
-    final RenderBox renderBox = context.findRenderObject();
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
     Rect _itemRect = renderBox.localToGlobal(Offset.zero) & renderBox.size;
 
     _infoWidgetRoute = InfoWidgetRoute(
@@ -150,7 +150,7 @@ class PostMapState extends State<PostMap> {
     );
 
     Navigator.of(context, rootNavigator: true)
-        .push(_infoWidgetRoute)
+        .push(_infoWidgetRoute!)
         .then<void>(
       (newValue) {
         _infoWidgetRoute = null;
@@ -160,24 +160,24 @@ class PostMapState extends State<PostMap> {
     await (await _controller.future).animateCamera(
       CameraUpdate.newLatLng(
         LatLng(
-          point.location.latitude - 0.0001,
-          point.location.longitude,
+          point.location!.latitude - 0.0001,
+          point.location!.longitude,
         ),
       ),
     );
     await (await _controller.future).animateCamera(
       CameraUpdate.newLatLng(
         LatLng(
-          point.location.latitude - 0.0001,
-          point.location.longitude,
+          point.location!.latitude - 0.0001,
+          point.location!.longitude,
         ),
       ),
     );
   }
 
   _getInitPosPrefs() async {
-    final double lat = await SPref.instance.get('lat') as double;
-    final double long = await SPref.instance.get('long') as double;
+    final double? lat = await SPref.instance.get('lat') as double?;
+    final double? long = await SPref.instance.get('long') as double?;
     if (lat != null && long != null) {
       CameraPosition _lastSavedPos = CameraPosition(
           bearing: 0, target: LatLng(lat, long), tilt: 0, zoom: 15);
@@ -209,9 +209,9 @@ class PostMapState extends State<PostMap> {
         }));
   }
 
-  _onSearch(double lat, double long, String name) async {
+  _onSearch(double? lat, double? long, String? name) async {
     selectedMarkers.add(Marker(
-      markerId: MarkerId(LatLng(lat, long).toString()),
+      markerId: MarkerId(LatLng(lat!, long!).toString()),
       position: LatLng(lat, long),
       infoWindow: InfoWindow(
         title: name,
@@ -281,9 +281,9 @@ class _InfoWidgetRouteLayout<T> extends SingleChildLayoutDelegate {
   final double height;
 
   _InfoWidgetRouteLayout(
-      {@required this.mapsWidgetSize,
-      @required this.height,
-      @required this.width});
+      {required this.mapsWidgetSize,
+      required this.height,
+      required this.width});
 
   /// Depending of the size of the marker or the widget, the offset in y direction has to be adjusted;
   /// If the appear to be of different size, the commented code can be uncommented and
@@ -318,7 +318,7 @@ class _InfoWidgetRouteLayout<T> extends SingleChildLayoutDelegate {
 }
 
 class InfoWidgetRoute extends PopupRoute {
-  final Widget child;
+  final Widget? child;
   final double width;
   final double height;
   final BuildContext buildContext;
@@ -326,10 +326,10 @@ class InfoWidgetRoute extends PopupRoute {
   final Rect mapsWidgetSize;
 
   InfoWidgetRoute({
-    @required this.child,
-    @required this.buildContext,
-    @required this.textStyle,
-    @required this.mapsWidgetSize,
+    required this.child,
+    required this.buildContext,
+    required this.textStyle,
+    required this.mapsWidgetSize,
     this.width = 150,
     this.height = 80,
     this.barrierLabel,
@@ -342,10 +342,10 @@ class InfoWidgetRoute extends PopupRoute {
   bool get barrierDismissible => true;
 
   @override
-  Color get barrierColor => null;
+  Color? get barrierColor => null;
 
   @override
-  final String barrierLabel;
+  final String? barrierLabel;
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
@@ -371,8 +371,8 @@ class InfoWidgetRoute extends PopupRoute {
 
 class InfoWidgetPopUp extends StatefulWidget {
   const InfoWidgetPopUp({
-    Key key,
-    @required this.infoWidgetRoute,
+    Key? key,
+    required this.infoWidgetRoute,
   })  : assert(infoWidgetRoute != null),
         super(key: key);
 
@@ -383,13 +383,13 @@ class InfoWidgetPopUp extends StatefulWidget {
 }
 
 class _InfoWidgetPopUpState extends State<InfoWidgetPopUp> {
-  CurvedAnimation _fadeOpacity;
+  late CurvedAnimation _fadeOpacity;
 
   @override
   void initState() {
     super.initState();
     _fadeOpacity = CurvedAnimation(
-      parent: widget.infoWidgetRoute.animation,
+      parent: widget.infoWidgetRoute.animation!,
       curve: Curves.easeIn,
       reverseCurve: Curves.easeOut,
     );
@@ -440,8 +440,8 @@ class _InfoWidgetClipper extends CustomClipper<Path> {
 }
 
 class PointObject {
-  final Widget child;
-  final LatLng location;
+  final Widget? child;
+  final LatLng? location;
 
   PointObject({this.child, this.location});
 }

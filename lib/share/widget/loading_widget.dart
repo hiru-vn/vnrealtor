@@ -1,9 +1,9 @@
 import '../import.dart';
 
 class SearchingWidget extends StatelessWidget {
-  final String assetUrl;
+  final String? assetUrl;
 
-  const SearchingWidget({Key key, this.assetUrl}) : super(key: key);
+  const SearchingWidget({Key? key, this.assetUrl}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Center(

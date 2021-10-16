@@ -8,17 +8,17 @@ import '../../share/widget/keep_keyboard_popup_menu/keep_keyboard_popup_menu.dar
 
 class PickCoordinates extends StatefulWidget {
   final bool hasPolygon;
-  final LatLng position;
-  final List<LatLng> polygon;
+  final LatLng? position;
+  final List<LatLng>? polygon;
 
   const PickCoordinates(
-      {Key key, this.hasPolygon = true, this.position, this.polygon})
+      {Key? key, this.hasPolygon = true, this.position, this.polygon})
       : super(key: key);
   static Future navigate(
-      {bool hasPolygon = true, LatLng position, List<LatLng> polygon}) {
-    return navigatorKey.currentState.push(pageBuilder(PickCoordinates(
+      {bool hasPolygon = true, LatLng? position, List<LatLng>? polygon}) {
+    return navigatorKey.currentState!.push(pageBuilder(PickCoordinates(
       hasPolygon: hasPolygon,
-      polygon: polygon.length > 0 ? polygon : null,
+      polygon: (polygon?.length ?? 0) > 0 ? polygon : null,
       position: position,
     )));
   }
@@ -34,20 +34,20 @@ class PickCoordinatesState extends State<PickCoordinates>
     target: LatLng(16.04, 108.19),
     zoom: 5,
   );
-  Marker selectedMarker;
-  String _placeName;
+  Marker? selectedMarker;
+  String? _placeName;
   String _mode = 'point';
-  List<LatLng> polygonPoints = [];
-  LatLng center;
-  Function _openPopup;
+  List<LatLng>? polygonPoints = [];
+  LatLng? center;
+  Function? _openPopup;
   bool readedInstructionPolygon = false;
-  AnimationController animationController;
+  late AnimationController animationController;
 
   @override
   void initState() {
     if (widget.position != null) {
       Future.delayed(
-          Duration(milliseconds: 500), () => _selectMarker(widget.position));
+          Duration(milliseconds: 500), () => _selectMarker(widget.position!));
     }
     if (widget.polygon != null) {
       polygonPoints = widget.polygon;
@@ -117,14 +117,14 @@ class PickCoordinatesState extends State<PickCoordinates>
 
   void _addMarkerPoligon(LatLng point) {
     setState(() {
-      polygonPoints.add(point);
+      polygonPoints!.add(point);
     });
 
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   if (polygonPoints.length > 2 && _openPopup != null) _openPopup();
     // });
 
-    final center = getCenterCoordinate(polygonPoints);
+    final center = getCenterCoordinate(polygonPoints!);
     PostBloc.instance.getAddress(center.longitude, center.latitude).then((res) {
       if (res.isSuccess) {
         setState(() {
@@ -149,11 +149,11 @@ class PickCoordinatesState extends State<PickCoordinates>
 
   void _redoMarkerPoligon() {
     setState(() {
-      polygonPoints.remove(polygonPoints[polygonPoints.length - 1]);
+      polygonPoints!.remove(polygonPoints![polygonPoints!.length - 1]);
     });
 
-    if (polygonPoints.length < 1) return;
-    final center = getCenterCoordinate(polygonPoints);
+    if (polygonPoints!.length < 1) return;
+    final center = getCenterCoordinate(polygonPoints!);
     PostBloc.instance.getAddress(center.longitude, center.latitude).then((res) {
       if (res.isSuccess) {
         setState(() {
@@ -165,7 +165,7 @@ class PickCoordinatesState extends State<PickCoordinates>
 
   void _clearMarkerPoligon() {
     setState(() {
-      polygonPoints.clear();
+      polygonPoints!.clear();
     });
   }
 
@@ -194,8 +194,8 @@ class PickCoordinatesState extends State<PickCoordinates>
   }
 
   _getInitPosPrefs() async {
-    final double lat = await SPref.instance.get('lat') as double;
-    final double long = await SPref.instance.get('long') as double;
+    final double? lat = await SPref.instance.get('lat') as double?;
+    final double? long = await SPref.instance.get('long') as double?;
     if (lat != null && long != null) {
       CameraPosition _lastSavedPos = CameraPosition(
           bearing: 0, target: LatLng(lat, long), tilt: 0, zoom: 17);
@@ -206,9 +206,9 @@ class PickCoordinatesState extends State<PickCoordinates>
     }
   }
 
-  _onSearch(double lat, double long, String name) async {
+  _onSearch(double? lat, double? long, String? name) async {
     selectedMarker = Marker(
-      markerId: MarkerId(LatLng(lat, long).toString()),
+      markerId: MarkerId(LatLng(lat!, long!).toString()),
       position: LatLng(lat, long),
       infoWindow: InfoWindow(
         title: name,
@@ -226,19 +226,19 @@ class PickCoordinatesState extends State<PickCoordinates>
   Widget build(BuildContext context) {
     final List<double> edges = [];
 
-    for (int i = 0; i < polygonPoints.length; i++) {
-      var coor1 = polygonPoints[i];
-      var coor2 = (i == polygonPoints.length - 1)
-          ? polygonPoints[0]
-          : polygonPoints[i + 1];
+    for (int i = 0; i < polygonPoints!.length; i++) {
+      var coor1 = polygonPoints![i];
+      var coor2 = (i == polygonPoints!.length - 1)
+          ? polygonPoints![0]
+          : polygonPoints![i + 1];
       edges.add(getCoordinateDistanceInKm(coor1, coor2) * 1000);
     }
 
     final double perimeter = edges.fold(0, (e1, e2) => e1 + e2);
 
-    final double area = getAreaInMeter(polygonPoints);
+    final double area = getAreaInMeter(polygonPoints!);
     final shouldShowInstructionPolygon = _mode == 'polygon' &&
-        polygonPoints.length == 0 &&
+        polygonPoints!.length == 0 &&
         !readedInstructionPolygon;
     return Scaffold(
       body: Stack(
@@ -252,46 +252,48 @@ class PickCoordinatesState extends State<PickCoordinates>
               _controller.complete(controller);
             },
             onCameraMove: (_) {
-              if (_mode == 'polygon' && polygonPoints.length > 0) {
+              if (_mode == 'polygon' && polygonPoints!.length > 0) {
                 getCenter().then((value) => setState(() {}));
               }
             },
-            polylines:
-                _mode == 'polygon' && polygonPoints.length > 0 && center != null
-                    ? <Polyline>{
-                        Polyline(
-                            color: Colors.red,
-                            width: 1,
-                            polylineId: PolylineId('PolylineId'),
-                            points: <LatLng>[
-                              center,
-                              polygonPoints[polygonPoints.length - 1]
-                            ])
-                      }
-                    : null,
+            polylines: (_mode == 'polygon' &&
+                    polygonPoints!.length > 0 &&
+                    center != null)
+                ? <Polyline>{
+                    Polyline(
+                        color: Colors.red,
+                        width: 1,
+                        polylineId: PolylineId('PolylineId'),
+                        points: <LatLng>[
+                          center!,
+                          polygonPoints![polygonPoints!.length - 1]
+                        ])
+                  }
+                : const <Polyline>{},
             onTap: _mode == 'point' ? _selectMarker : (LatLng _) {},
             markers: _mode == 'point'
-                ? (selectedMarker != null ? <Marker>{selectedMarker} : null)
-                : (polygonPoints
+                ? (selectedMarker != null ? <Marker?>{selectedMarker} : null)
+                    as Set<Marker>
+                : (polygonPoints!
                     .map((e) => Marker(
                           markerId: MarkerId(e.toString()),
                           position: e,
                           icon: BitmapDescriptor.fromBytes(
-                              markerIcon[polygonPoints.indexOf(e)]),
+                              markerIcon[polygonPoints!.indexOf(e)]),
                         ))
                     .toSet()),
-            polygons: (_mode == 'polygon' && polygonPoints.length > 0)
+            polygons: (_mode == 'polygon' && polygonPoints!.length > 0)
                 ? <Polygon>{
                     Polygon(
                       polygonId: PolygonId('PolygonId'),
-                      points: polygonPoints,
+                      points: polygonPoints!,
                       consumeTapEvents: false,
                       strokeColor: Colors.redAccent,
                       strokeWidth: 1,
                       fillColor: Colors.redAccent.withOpacity(0.5),
                     )
                   }
-                : null,
+                : const <Polygon>{},
           ),
           CustomFloatingSearchBar(
             onSearch: _onSearch,
@@ -420,11 +422,11 @@ class PickCoordinatesState extends State<PickCoordinates>
             left: 12,
             child: InkWell(
               onTap: () async {
-                if (selectedMarker == null && polygonPoints.length == 0) {
+                if (selectedMarker == null && polygonPoints!.length == 0) {
                   showToast('Chạm để chọn vị trí hoặc diện tích', context);
                   return;
                 }
-                navigatorKey.currentState.maybePop(
+                navigatorKey.currentState!.maybePop(
                     [selectedMarker?.position, _placeName, polygonPoints]);
               },
               child: Material(
@@ -487,7 +489,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                     ),
                   ),
                 )),
-          if (_mode == 'polygon' && polygonPoints.length > 2)
+          if (_mode == 'polygon' && polygonPoints!.length > 2)
             Positioned(
                 top: 100,
                 right: 10,
@@ -516,10 +518,10 @@ class PickCoordinatesState extends State<PickCoordinates>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ...polygonPoints.map((e) {
-                                final index = polygonPoints.indexOf(e);
+                              ...polygonPoints!.map((e) {
+                                final index = polygonPoints!.indexOf(e);
                                 return Text(
-                                  'Từ ${index + 1} đến ${index == polygonPoints.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m',
+                                  'Từ ${index + 1} đến ${index == polygonPoints!.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m',
                                   style:
                                       ptBody().copyWith(color: Colors.yellow),
                                 );
@@ -562,7 +564,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                         ),
                       );
                     })),
-          if (_mode == 'polygon' && polygonPoints.length > 0) ...[
+          if (_mode == 'polygon' && polygonPoints!.length > 0) ...[
             Positioned(
                 top: 160,
                 right: 10,
@@ -590,14 +592,14 @@ class PickCoordinatesState extends State<PickCoordinates>
                     ),
                   ),
                 )),
-            if (_mode == 'polygon' && polygonPoints.length > 2)
+            if (_mode == 'polygon' && polygonPoints!.length > 2)
               Positioned(
                 right: 60,
                 bottom: 18,
                 child: Center(
                   child: Column(
                     children: [
-                      Text('Số điểm dấu: ${polygonPoints.length}',
+                      Text('Số điểm dấu: ${polygonPoints!.length}',
                           style: ptBody().copyWith(color: Colors.yellow)),
                       Container(
                         decoration: BoxDecoration(
@@ -693,9 +695,10 @@ class PickCoordinatesState extends State<PickCoordinates>
                   borderRadius: BorderRadius.circular(21),
                   elevation: 4,
                   child: GestureDetector(
-                    onTap: () async {audioCache.play('tab3.mp3');
+                    onTap: () async {
+                      audioCache.play('tab3.mp3');
                       final center = await getCenter();
-                      
+
                       _addMarkerPoligon(center);
                     },
                     child: Container(
@@ -712,7 +715,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                     ),
                   ),
                 )),
-            if (polygonPoints.length > 0 && center != null)
+            if (polygonPoints!.length > 0 && center != null)
               Center(
                 child: Container(
                   margin: const EdgeInsets.only(top: 80.0),
@@ -723,7 +726,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                   child: Text(
                     '${() {
                       final distance = getCoordinateDistanceInKm(
-                          polygonPoints[polygonPoints.length - 1], center);
+                          polygonPoints![polygonPoints!.length - 1], center!);
                       return (distance * 1000).toStringAsFixed(1);
                     }()} m',
                     style: ptBody().copyWith(color: Colors.white),

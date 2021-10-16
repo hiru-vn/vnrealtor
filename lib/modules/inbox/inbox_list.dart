@@ -1,4 +1,5 @@
 import 'package:datcao/modules/bloc/user_bloc.dart';
+import 'package:datcao/modules/chat_bot/chat_bot_screen.dart';
 import 'package:datcao/modules/inbox/import/spin_loader.dart';
 import 'package:datcao/modules/inbox/inbox_model.dart';
 import 'package:datcao/modules/model/user.dart';
@@ -7,8 +8,10 @@ import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/share/function/dialog.dart';
 import 'package:datcao/share/function/show_toast.dart';
 import 'package:datcao/share/widget/animation_search.dart';
+import 'package:datcao/utils/constants.dart';
 import 'package:datcao/utils/formart.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/navigator.dart';
@@ -25,7 +28,7 @@ import 'inbox_chat.dart';
 
 class InboxList extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(InboxList()));
+    return navigatorKey.currentState!.push(pageBuilder(InboxList()));
   }
 
   @override
@@ -34,11 +37,11 @@ class InboxList extends StatefulWidget {
 
 class _InboxListState extends State<InboxList>
     with SingleTickerProviderStateMixin {
-  InboxBloc _inboxBloc;
-  AuthBloc _authBloc;
+  InboxBloc? _inboxBloc;
+  AuthBloc? _authBloc;
   int tabIndex = 0;
   PageController _pageController = PageController();
-  List<UserModel> _friends = [];
+  List<UserModel>? _friends = [];
   TextEditingController _searchC = TextEditingController();
   bool isSearching = false;
 
@@ -54,7 +57,7 @@ class _InboxListState extends State<InboxList>
       _authBloc = Provider.of<AuthBloc>(context);
       if (mounted) init();
       UserBloc.instance
-          .getListUserIn(_authBloc.userModel.friendIds)
+          .getListUserIn(_authBloc!.userModel!.friendIds!)
           .then((res) {
         if (res.isSuccess) {
           setState(() {
@@ -68,48 +71,53 @@ class _InboxListState extends State<InboxList>
 
   init() async {
     try {
-      _inboxBloc.init();
+      _inboxBloc!.init();
     } catch (e) {}
   }
 
   reload() async {
-    final res = await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
+    final res = await _inboxBloc!.getList20InboxGroup(_authBloc!.userModel!.id);
     if (mounted)
       setState(() {
-        _inboxBloc.groupInboxList = res;
+        _inboxBloc!.groupInboxList = res;
       });
   }
 
   Widget _getChatGroupAvatar(FbInboxGroupModel group) {
     if (group.userAvatars == null) return SizedBox.shrink();
-    List listAvatar = group.userAvatars.map((e) {
-      if (e != AuthBloc.instance.userModel.avatar) return e;
-    }).toList();
-    listAvatar.remove(null);
+    final listAvatar = <String>[];
+
+    group.userAvatars.forEach((e) {
+      if (e != AuthBloc.instance.userModel!.avatar && e != null)
+        listAvatar.add(e);
+    });
     if (group.pageName != null && group.pageId != null) {
       return CircleAvatar(
         radius: 21,
         backgroundColor: Colors.white,
-        backgroundImage: group.image != null
-            ? CachedNetworkImageProvider(group.image ?? '')
-            : AssetImage('assets/image/default_avatar.png'),
+        backgroundImage: (group.image != null
+                ? CachedNetworkImageProvider(group.image ?? '')
+                : AssetImage('assets/image/default_avatar.png'))
+            as ImageProvider<Object>?,
       );
     }
     if (listAvatar.length > 1) {
       return CircleAvatar(
         radius: 21,
         backgroundColor: Colors.white,
-        backgroundImage: listAvatar[1] != null
-            ? CachedNetworkImageProvider(listAvatar[1])
-            : AssetImage('assets/image/default_avatar.png'),
+        backgroundImage: (listAvatar[1] != null
+                ? CachedNetworkImageProvider(listAvatar[1])
+                : AssetImage('assets/image/default_avatar.png'))
+            as ImageProvider<Object>?,
       );
     } else if (listAvatar.length > 0) {
       return CircleAvatar(
         radius: 21,
         backgroundColor: Colors.white,
-        backgroundImage: listAvatar[0] != null
-            ? CachedNetworkImageProvider(listAvatar[0])
-            : AssetImage('assets/image/default_avatar.png'),
+        backgroundImage: (listAvatar[0] != null
+                ? CachedNetworkImageProvider(listAvatar[0])
+                : AssetImage('assets/image/default_avatar.png'))
+            as ImageProvider<Object>?,
       );
     } else
       return CircleAvatar(
@@ -121,7 +129,7 @@ class _InboxListState extends State<InboxList>
 
   @override
   Widget build(BuildContext context) {
-    if (_inboxBloc.groupInboxList == null)
+    if (_inboxBloc!.groupInboxList == null)
       return Scaffold(
         appBar: MyAppBar(
           icon: Icon(
@@ -134,26 +142,26 @@ class _InboxListState extends State<InboxList>
         ),
         body: ListSkeleton(),
       );
-    final friends = _friends
-        .where((element) => element.name
+    final friends = _friends!
+        .where((element) => element.name!
             .toLowerCase()
             .contains(_searchC.text.trim().toLowerCase()))
         .toList();
-    final groups = _inboxBloc.groupInboxList
+    final groups = _inboxBloc!.groupInboxList!
         .where((element) =>
-            !element.waitingBy.contains(AuthBloc.instance.userModel.id))
+            !element.waitingBy!.contains(AuthBloc.instance.userModel!.id))
         .where((element) => element.users.any((element) =>
-            element.id != AuthBloc.instance.userModel.id &&
-            element.name
+            element.id != AuthBloc.instance.userModel!.id &&
+            element.name!
                 .toLowerCase()
                 .contains(_searchC.text.trim().toLowerCase())))
         .toList();
-    final waitingGroups = _inboxBloc.groupInboxList
+    final waitingGroups = _inboxBloc!.groupInboxList!
         .where((element) =>
-            element.waitingBy.contains(AuthBloc.instance.userModel.id))
+            element.waitingBy!.contains(AuthBloc.instance.userModel!.id))
         .where((element) => element.users.any((element) =>
-            element.id != AuthBloc.instance.userModel.id &&
-            element.name
+            element.id != AuthBloc.instance.userModel!.id &&
+            element.name!
                 .toLowerCase()
                 .contains(_searchC.text.trim().toLowerCase())))
         .toList();
@@ -193,6 +201,13 @@ class _InboxListState extends State<InboxList>
             controller: _searchC,
           )),
         ],
+      ),
+      floatingActionButton: SupportChatBot(
+        icon: Icon(
+          Icons.support_agent_rounded,
+          size: 30,
+          color: Colors.white,
+        ),
       ),
       body: Column(
         children: [
@@ -337,7 +352,7 @@ class _InboxListState extends State<InboxList>
   }
 
   _buildListInboxTab(List<FbInboxGroupModel> groups) {
-    if (_inboxBloc.groupInboxList == null) return ListSkeleton();
+    if (_inboxBloc!.groupInboxList == null) return ListSkeleton();
     return groups != null
         ? groups.length == 0
             ? EmptyWidget(
@@ -349,7 +364,8 @@ class _InboxListState extends State<InboxList>
             : RefreshIndicator(
                 color: ptPrimaryColor(context),
                 onRefresh: () async {
-                  await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
+                  await _inboxBloc!
+                      .getList20InboxGroup(_authBloc!.userModel!.id);
                   return;
                 },
                 child: groups.length != 0
@@ -357,9 +373,9 @@ class _InboxListState extends State<InboxList>
                         itemCount: groups.length,
                         itemBuilder: (context, index) {
                           final group = groups[index];
-                          String nameGroup = group.users
+                          String? nameGroup = group.users
                               .where((element) =>
-                                  element.id != _authBloc.userModel.id)
+                                  element.id != _authBloc!.userModel!.id)
                               .toList()
                               .map((e) => e.name)
                               .join(', ');
@@ -368,7 +384,7 @@ class _InboxListState extends State<InboxList>
                               !PagesBloc.instance.pageCreated
                                   .any((e) => e.id == group.pageId))
                             nameGroup = group.pageName;
-                          return _buildChatTile(group, nameGroup);
+                          return _buildChatTile(group, nameGroup!);
                         },
                         separatorBuilder: (context, index) => Divider(
                           height: 1,
@@ -394,10 +410,10 @@ class _InboxListState extends State<InboxList>
               showWaitingDialog(context);
               await InboxBloc.instance.navigateToChatWith(
                   user.name, user.avatar, DateTime.now(), user.avatar, [
-                AuthBloc.instance.userModel.id,
+                AuthBloc.instance.userModel!.id,
                 user.id,
               ], [
-                AuthBloc.instance.userModel.avatar,
+                AuthBloc.instance.userModel!.avatar,
                 user.avatar,
               ]);
               closeLoading();
@@ -422,7 +438,8 @@ class _InboxListState extends State<InboxList>
             : RefreshIndicator(
                 color: ptPrimaryColor(context),
                 onRefresh: () async {
-                  await _inboxBloc.getList20InboxGroup(_authBloc.userModel.id);
+                  await _inboxBloc!
+                      .getList20InboxGroup(_authBloc!.userModel!.id);
                   return;
                 },
                 child: waitingGroups.length != 0
@@ -430,16 +447,16 @@ class _InboxListState extends State<InboxList>
                         itemCount: waitingGroups.length,
                         itemBuilder: (context, index) {
                           final group = waitingGroups[index];
-                          String nameGroup = group.users
+                          String? nameGroup = group.users
                               .where((element) =>
-                                  element.id != _authBloc.userModel.id)
+                                  element.id != _authBloc!.userModel!.id)
                               .toList()
                               .map((e) => e.name)
                               .join(', ');
                           if (group.pageName != null && group.pageId != null)
                             nameGroup = group.pageName;
 
-                          return _buildChatTile(group, nameGroup);
+                          return _buildChatTile(group, nameGroup!);
                         },
                         separatorBuilder: (context, index) => Divider(
                           height: 1,
@@ -465,20 +482,22 @@ class _InboxListState extends State<InboxList>
             child: SizedBox.shrink(),
             key: _menuKey,
             itemBuilder: (_) => <PopupMenuItem<String>>[
-                  if (!group.waitingBy.contains(AuthBloc.instance.userModel.id))
+                  if (!group.waitingBy!
+                      .contains(AuthBloc.instance.userModel!.id))
                     PopupMenuItem(
                       child: Text('Đưa vào tin nhắn chờ'),
                       value: 'Đưa vào tin nhắn chờ',
                     ),
-                  if (!group.waitingBy.contains(AuthBloc.instance.userModel.id))
+                  if (!group.waitingBy!
+                      .contains(AuthBloc.instance.userModel!.id))
                     PopupMenuItem(
                       child: Text('Xoá trò chuyện'),
                       value: 'Xoá trò chuyện',
                     )
                 ],
-            onSelected: (val) {
+            onSelected: (dynamic val) {
               if (val == 'Đưa vào tin nhắn chờ') {
-                _inboxBloc.setPendingGroup(group.id);
+                _inboxBloc!.setPendingGroup(group.id);
               }
               if (val == 'Xoá trò chuyện') {
                 showToast('Chưa hỗ trợ', context);
@@ -493,7 +512,7 @@ class _InboxListState extends State<InboxList>
         dynamic state = _menuKey.currentState;
         state.showButtonMenu();
       },
-      tileColor: group.readers.contains(_authBloc.userModel.id)
+      tileColor: group.readers.contains(_authBloc!.userModel!.id)
           ? Colors.white
           : ptBackgroundColor(context),
       leading: _getChatGroupAvatar(group),
@@ -503,16 +522,16 @@ class _InboxListState extends State<InboxList>
       ),
       subtitle: Text(
         // (group.lastUser ==  _authBloc.userModel.name? 'Bạn: ':'Tin nhắn mới: ')+
-        group.lastMessage,
+        group.lastMessage!,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: ptSmall().copyWith(
-            fontWeight: group.readers.contains(_authBloc.userModel.id)
+            fontWeight: group.readers.contains(_authBloc!.userModel!.id)
                 ? FontWeight.w400
                 : FontWeight.w500,
             color: Colors.black87,
             fontSize:
-                group.readers.contains(_authBloc.userModel.id) ? 12.3 : 12.8),
+                group.readers.contains(_authBloc!.userModel!.id) ? 12.3 : 12.8),
       ),
       trailing: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -520,13 +539,13 @@ class _InboxListState extends State<InboxList>
           button,
           Spacer(),
           Text(
-            Formart.timeByDayViShort(DateTime.tryParse(group.time)),
+            Formart.timeByDayViShort(DateTime.tryParse(group.time!)!),
             style: ptSmall().copyWith(
-                fontWeight: group.readers.contains(_authBloc.userModel.id)
+                fontWeight: group.readers.contains(_authBloc!.userModel!.id)
                     ? FontWeight.w400
                     : FontWeight.w500,
                 color: Colors.black54,
-                fontSize: group.readers.contains(_authBloc.userModel.id)
+                fontSize: group.readers.contains(_authBloc!.userModel!.id)
                     ? 12.3
                     : 12.8),
           ),
@@ -534,6 +553,68 @@ class _InboxListState extends State<InboxList>
             height: 8,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SupportChatBot extends StatefulWidget {
+  const SupportChatBot({
+    Key? key,
+    this.size = 60,
+    required this.icon,
+  }) : super(key: key);
+
+  final double size;
+  final Widget icon;
+
+  @override
+  _SupportChatBotState createState() => _SupportChatBotState();
+}
+
+class _SupportChatBotState extends State<SupportChatBot>
+    with TickerProviderStateMixin {
+  late AnimationController _animationController;
+  Tween<double> _tween = Tween(begin: 0.9, end: 1);
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+        duration: const Duration(milliseconds: 700), vsync: this);
+    _animationController.repeat(reverse: true);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _tween.animate(CurvedAnimation(
+          parent: _animationController, curve: Curves.decelerate)),
+      child: GestureDetector(
+        onTap: () {
+          ChatBotPage.navigate();
+        },
+        child: Container(
+          height: widget.size,
+          width: widget.size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [Colors.blue, Colors.blue.withOpacity(0.5)],
+              stops: [.5, 1],
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(100)),
+            child: widget.icon,
+          ),
+        ),
       ),
     );
   }

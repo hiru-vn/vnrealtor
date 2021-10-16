@@ -3,7 +3,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class PrivacyPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(PrivacyPage()));
+    return navigatorKey.currentState!.push(pageBuilder(PrivacyPage()));
   }
 
   @override

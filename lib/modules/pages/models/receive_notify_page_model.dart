@@ -1,8 +1,8 @@
 class ReceiveNotifyPageModel {
-  String id;
-  String description;
-  String avartar;
-  String coverImage;
+  String? id;
+  String? description;
+  String? avartar;
+  String? coverImage;
 
   ReceiveNotifyPageModel(
       {this.id, this.description, this.avartar, this.coverImage});

@@ -23,9 +23,9 @@ class UserBloc extends ChangeNotifier {
   }
   static final UserBloc instance = UserBloc._privateConstructor();
 
-  static UserRole getRole(UserModel user) {
+  static UserRole? getRole(UserModel? user) {
     if (user == null) return null;
-    if (user.isMod) return UserRole.mod;
+    if (user.isMod!) return UserRole.mod;
     switch (user.role) {
       case 'USER':
         return UserRole.user;
@@ -57,9 +57,9 @@ class UserBloc extends ChangeNotifier {
     }
   }
 
-  static bool isVerified(UserModel user) {
+  static bool isVerified(UserModel? user) {
     if (getRole(user) == UserRole.agent) return true;
-    if (getRole(user) == UserRole.company && user.isVerify) return true;
+    if (getRole(user) == UserRole.company && user!.isVerify!) return true;
     return false;
   }
 
@@ -82,13 +82,13 @@ class UserBloc extends ChangeNotifier {
   }
 
   void getListFriendIds() {
-    List<String> users = [];
-    AuthBloc.instance.userModel.followerIds.forEach((element) {
-      if (AuthBloc.instance.userModel.followingIds.contains(element)) {
+    List<String?> users = [];
+    AuthBloc.instance.userModel!.followerIds!.forEach((element) {
+      if (AuthBloc.instance.userModel!.followingIds!.contains(element)) {
         users.add(element);
       }
     });
-    AuthBloc.instance.userModel.friendIds = users;
+    AuthBloc.instance.userModel!.friendIds = users;
   }
 
   Future<BaseResponse> getFriendRequestFromOtherUsers() async {
@@ -100,22 +100,22 @@ class UserBloc extends ChangeNotifier {
       friendRequestFromOtherUsers = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       notifyListeners();
     }
   }
 
-  Future<BaseResponse> getListUser({GraphqlFilter filter}) async {
+  Future<BaseResponse> getListUser({required GraphqlFilter filter}) async {
     try {
       final res = await UserRepo().getAllUserForClient(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => UserModel.fromJson(e)).toList();
       list.removeWhere(
-          (element) => element.id == AuthBloc.instance.userModel.id);
+          (element) => element.id == AuthBloc.instance.userModel!.id);
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -127,13 +127,13 @@ class UserBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
   }
 
-  Future<BaseResponse> getListUserIn(List<String> ids) async {
+  Future<BaseResponse> getListUserIn(List<String?> ids) async {
     try {
       if (ids.length == 0) return BaseResponse.success(<UserModel>[]);
       final res = await UserRepo().getListUserIn(ids);
@@ -141,7 +141,7 @@ class UserBloc extends ChangeNotifier {
       final list = listRaw.map((e) => UserModel.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       notifyListeners();
     }
@@ -151,7 +151,7 @@ class UserBloc extends ChangeNotifier {
     try {
       final res = await UserRepo().updateUser(
           user.id,
-          user.name,
+          user.name!,
           user.tagName,
           user.email,
           user.phone,
@@ -161,7 +161,7 @@ class UserBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       notifyListeners();
       AuthBloc.instance.notifyListeners();
@@ -170,24 +170,24 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> seenNotiMess() async {
     try {
-      final res = await UserRepo().seenNotiMess(AuthBloc.instance.userModel.id);
+      final res = await UserRepo().seenNotiMess(AuthBloc.instance.userModel!.id);
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       AuthBloc.instance.notifyListeners();
     }
   }
 
-  Future<BaseResponse> updateUserStatus({@required bool isOnline}) async {
+  Future<BaseResponse> updateUserStatus({required bool isOnline}) async {
     try {
       final res = await UserRepo()
-          .updateUserStatus(AuthBloc.instance.userModel.id, isOnline: isOnline);
+          .updateUserStatus(AuthBloc.instance.userModel!.id, isOnline: isOnline);
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {}
   }
 
@@ -198,7 +198,7 @@ class UserBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -206,14 +206,14 @@ class UserBloc extends ChangeNotifier {
 
   Future<BaseResponse> seenAllNoti() async {
     try {
-      if (AuthBloc.instance.userModel.notiCount == 0)
+      if (AuthBloc.instance.userModel!.notiCount == 0)
         return BaseResponse.success('');
-      AuthBloc.instance.userModel.notiCount = 0;
+      AuthBloc.instance.userModel!.notiCount = 0;
       final res = await UserRepo().seenAllNoti();
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -228,7 +228,7 @@ class UserBloc extends ChangeNotifier {
 
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -242,11 +242,11 @@ class UserBloc extends ChangeNotifier {
       final list =
           listRaw.map((e) => UserModel.fromJson(e['fromUser'])).toList();
       list.removeWhere(
-          (element) => element.id == AuthBloc.instance.userModel.id);
+          (element) => element.id == AuthBloc.instance.userModel!.id);
       followersIn7Days = list;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       notifyListeners();
     }
@@ -257,7 +257,7 @@ class UserBloc extends ChangeNotifier {
       final res = await UserRepo().getMyFriendShipWith(userId);
       return BaseResponse.success(FriendshipModel.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -269,32 +269,32 @@ class UserBloc extends ChangeNotifier {
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
   }
 
-  Future<BaseResponse> unfollowUser(String userId) async {
+  Future<BaseResponse> unfollowUser(String? userId) async {
     try {
       final res = await UserRepo().unfollowUser(userId);
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
   }
 
-  Future<BaseResponse> followUser(String userId) async {
+  Future<BaseResponse> followUser(String? userId) async {
     try {
       notifyListeners();
       final res = await UserRepo().followUser(userId);
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       notifyListeners();
     }
@@ -309,7 +309,7 @@ class UserBloc extends ChangeNotifier {
               .cast<UserModel>();
       return BaseResponse.success(suggestFollowUsers);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       notifyListeners();
     }
@@ -322,31 +322,31 @@ class UserBloc extends ChangeNotifier {
           .cast<UserModel>();
       return BaseResponse.success(listRaw);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       notifyListeners();
     }
   }
 
-  Future<BaseResponse> acceptFriendInvite(String friendShipId) async {
+  Future<BaseResponse> acceptFriendInvite(String? friendShipId) async {
     try {
       final res = await UserRepo().acceptFriend(friendShipId);
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
   }
 
-  Future<BaseResponse> declineFriendInvite(String friendShipId) async {
+  Future<BaseResponse> declineFriendInvite(String? friendShipId) async {
     try {
       final res = await UserRepo().declineFriend(friendShipId);
       final val = FriendshipModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
@@ -359,29 +359,29 @@ class UserBloc extends ChangeNotifier {
       final val = UserModel.fromJson(res);
       return BaseResponse.success(val);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
   }
 
-  Future<BaseResponse> blockUserByAdmin(String id) async {
+  Future<BaseResponse> blockUserByAdmin(String? id) async {
     try {
       final res = await UserRepo().blockUserByAdmin(id);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }
   }
 
-  Future<BaseResponse> checkChatAble(String id) async {
+  Future<BaseResponse> checkChatAble(String? id) async {
     try {
       final res = await UserRepo().checkChatAble(id);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       // notifyListeners();
     }

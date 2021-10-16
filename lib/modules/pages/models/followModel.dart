@@ -1,7 +1,7 @@
 class FollowPagesModel {
-  String id;
-  List<String> followerIds;
-  List<Followers> followers;
+  String? id;
+  List<String>? followerIds;
+  List<Followers>? followers;
 
   FollowPagesModel({this.id, this.followerIds, this.followers});
 
@@ -9,9 +9,9 @@ class FollowPagesModel {
     id = json['id'];
     followerIds = json['followerIds'].cast<String>();
     if (json['followers'] != null) {
-      followers = new List<Followers>();
+      followers = <Followers>[];
       json['followers'].forEach((v) {
-        followers.add(new Followers.fromJson(v));
+        followers!.add(new Followers.fromJson(v));
       });
     }
   }
@@ -21,15 +21,15 @@ class FollowPagesModel {
     data['id'] = this.id;
     data['followerIds'] = this.followerIds;
     if (this.followers != null) {
-      data['followers'] = this.followers.map((v) => v.toJson()).toList();
+      data['followers'] = this.followers!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class Followers {
-  String id;
-  String name;
+  String? id;
+  String? name;
 
   Followers({this.id, this.name});
 

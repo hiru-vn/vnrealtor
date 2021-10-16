@@ -1,20 +1,20 @@
 class MediaPost {
-  String id;
-  String userId;
-  String type;
-  int like;
-  List<String> userLikeIds;
-  List<String> commentIds;
-  String description;
-  String url;
-  double locationLat;
-  double locationLong;
-  String expirationDate;
-  bool publicity;
-  String createdAt;
-  String updatedAt;
-  String halfUrl;
-  DynamicLink dynamicLink;
+  String? id;
+  String? userId;
+  String? type;
+  int? like;
+  List<String>? userLikeIds;
+  List<String?>? commentIds;
+  String? description;
+  String? url;
+  double? locationLat;
+  double? locationLong;
+  String? expirationDate;
+  bool? publicity;
+  String? createdAt;
+  String? updatedAt;
+  String? halfUrl;
+  DynamicLink? dynamicLink;
 
   MediaPost(
       {this.id,
@@ -78,8 +78,8 @@ class MediaPost {
 }
 
 class DynamicLink {
-  String shortLink;
-  String previewLink;
+  String? shortLink;
+  String? previewLink;
 
   DynamicLink({this.shortLink, this.previewLink});
 

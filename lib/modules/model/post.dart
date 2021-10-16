@@ -7,47 +7,47 @@ import 'dart:math';
 import 'media_post.dart';
 
 class PostModel {
-  String id;
-  String content;
-  String rawContent;
-  List<String> mediaPostIds;
-  List<String> commentIds;
-  String userId;
-  int like;
-  List<String> userLikeIds;
-  int share;
-  List<String> userShareIds;
-  double locationLat;
-  double locationLong;
-  String expirationDate;
-  bool publicity;
-  UserModel user;
-  int point;
-  List<MediaPost> mediaPosts;
-  String createdAt;
-  String updatedAt;
-  bool isUserLike;
-  bool isUserShare;
-  String province;
-  String district;
-  String ward;
-  List<String> hashTag;
-  List<String> halfImages;
-  List<String> storyImages;
-  List<LatLng> polygonPoints;
-  DynamicLink dynamicLink;
-  bool isPage;
-  PagesCreate page;
-  double distance;
-  List<UserModel> tagUsers;
-  int numberOfComment;
-  GroupModel group;
-  String postShareId;
-  num price;
-  num area;
-  String action;
-  String category;
-  bool isBlock;
+  String? id;
+  String? content;
+  String? rawContent;
+  List<String>? mediaPostIds;
+  List<String?>? commentIds;
+  String? userId;
+  int? like;
+  List<String>? userLikeIds;
+  int? share;
+  List<String>? userShareIds;
+  double? locationLat;
+  double? locationLong;
+  String? expirationDate;
+  bool? publicity;
+  UserModel? user;
+  int? point;
+  List<MediaPost>? mediaPosts;
+  String? createdAt;
+  String? updatedAt;
+  bool? isUserLike;
+  bool? isUserShare;
+  String? province;
+  String? district;
+  String? ward;
+  List<String>? hashTag;
+  List<String>? halfImages;
+  List<String>? storyImages;
+  List<LatLng>? polygonPoints;
+  DynamicLink? dynamicLink;
+  bool? isPage;
+  PagesCreate? page;
+  double? distance;
+  List<UserModel>? tagUsers;
+  int? numberOfComment;
+  GroupModel? group;
+  String? postShareId;
+  num? price;
+  num? area;
+  String? action;
+  String? category;
+  bool? isBlock;
 
   PostModel(
       {this.id,
@@ -119,10 +119,10 @@ class PostModel {
     publicity = json['publicity'];
     user = json['user'] != null ? UserModel.fromJson(json['user']) : null;
     if (json['mediaPosts'] != null) {
-      mediaPosts = new List<MediaPost>();
+      mediaPosts = <MediaPost>[];
       json['mediaPosts'].forEach((v) {
         if (v == null) return;
-        mediaPosts.add(new MediaPost.fromJson(v));
+        mediaPosts!.add(new MediaPost.fromJson(v));
       });
     }
     createdAt = json['createdAt'];
@@ -139,8 +139,8 @@ class PostModel {
     page = json['page'] != null ? new PagesCreate.fromJson(json['page']) : null;
     if (json['polygon'] != null && json['polygon']["paths"] != null) {
       polygonPoints = (json['polygon']["paths"] as List)
-          .map((e) => LatLng(double.tryParse(e['lat'].toString()),
-              double.tryParse(e['lng'].toString())))
+          .map((e) => LatLng(double.tryParse(e['lat'].toString())!,
+              double.tryParse(e['lng'].toString())!))
           .toList();
     }
     dynamicLink = json['dynamicLink'] == null
@@ -179,7 +179,7 @@ class PostModel {
     data['publicity'] = this.publicity;
     data['user'] = this.user;
     if (this.mediaPosts != null) {
-      data['mediaPosts'] = this.mediaPosts.map((v) => v.toJson()).toList();
+      data['mediaPosts'] = this.mediaPosts!.map((v) => v.toJson()).toList();
     }
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
@@ -187,7 +187,7 @@ class PostModel {
     data['isUserShare'] = this.isUserShare;
     data['halfImages'] = this.halfImages;
     if (this.page != null) {
-      data['page'] = this.page.toJson();
+      data['page'] = this.page!.toJson();
     }
     data['isPage'] = this.isPage;
     return data;

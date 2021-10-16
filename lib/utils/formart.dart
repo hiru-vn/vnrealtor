@@ -27,12 +27,12 @@ class Formart {
     return newValue;
   }
 
-  static String timeAgo(DateTime time) {
+  static String? timeAgo(DateTime? time) {
     if (time == null) return null;
     return timeago.format(time, locale: 'vi');
   }
 
-  static String timeByDay(DateTime time) {
+  static String? timeByDay(DateTime? time) {
     if (time == null) return null;
     DateTime now = DateTime.now();
     if (time.day == now.day &&
@@ -149,15 +149,15 @@ class Formart {
   }
 
   static double toFixedDouble(double value, int digit) {
-    return num.parse(value.toStringAsFixed(digit));
+    return num.parse(value.toStringAsFixed(digit)) as double;
   }
 
-  static String formatToDateTime(DateTime date) {
+  static String? formatToDateTime(DateTime? date) {
     if (date == null) return null;
     return '${formatToDate(date)} ${formatToTime(date)}';
   }
 
-  static String formatToWeekTime(DateTime date) {
+  static String? formatToWeekTime(DateTime? date) {
     if (date == null) return null;
     String weekDate;
     if (date.weekday == 7)
@@ -168,12 +168,12 @@ class Formart {
     return '$weekDate, ${formatToTime(date)}';
   }
 
-  static String formatToDate(DateTime date, {String seperateChar = '/'}) {
+  static String? formatToDate(DateTime? date, {String seperateChar = '/'}) {
     if (date == null) return null;
     return '${date.day}$seperateChar${date.month}$seperateChar${date.year}';
   }
 
-  static String formatToTime(DateTime time) {
+  static String? formatToTime(DateTime? time) {
     if (time == null) return null;
     return '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
   }

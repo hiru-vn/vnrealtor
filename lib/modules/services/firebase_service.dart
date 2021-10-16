@@ -31,10 +31,10 @@ class FcmService {
   static final FcmService _instance = FcmService._();
 
   static FcmService get instance => _instance;
-  FirebaseMessaging fb;
+  FirebaseMessaging? fb;
   
 
-  static FcmType getType(String type) {
+  static FcmType? getType(String type) {
     if (type.toLowerCase() == 'Like'.toLowerCase()) return FcmType.like;
     if (type.toLowerCase() == 'MESSENGER'.toLowerCase()) return FcmType.message;
     if (type.toLowerCase() == 'Comment'.toLowerCase()) return FcmType.comment;
@@ -58,13 +58,13 @@ class FcmService {
 
       audioCache.play('facebook_message.mp3');
       toast('Tin nhắn mới', onTap: () async {
-        showWaitingDialog(navigatorKey.currentState.context);
+        showWaitingDialog(navigatorKey.currentState!.context);
         await InboxBloc.instance.navigateToChatWith(
             message.data['name'], message.data['avatar'], DateTime.now(), '', [
-          AuthBloc.instance.userModel.id,
+          AuthBloc.instance.userModel!.id,
           message.data['userId'],
         ], [
-          AuthBloc.instance.userModel.avatar,
+          AuthBloc.instance.userModel!.avatar,
           message.data['avatar'],
         ]);
         closeLoading();
@@ -76,7 +76,7 @@ class FcmService {
     }
 
     if (type == FcmType.like) {
-      showToastNoContext('${message.notification.body}');
+      showToastNoContext('${message.notification!.body}');
     }
 
     if (type == FcmType.comment) {
@@ -84,11 +84,11 @@ class FcmService {
     }
 
     if (type == FcmType.system) {
-      showToastNoContext('${message.notification.body}');
+      showToastNoContext('${message.notification!.body}');
     }
 
     if (type == FcmType.new_post) {
-      showToastNoContext('${message.notification.body}');
+      showToastNoContext('${message.notification!.body}');
     }
 
     NotificationBloc.instance
@@ -118,10 +118,10 @@ class FcmService {
     if (type == FcmType.message) {
       InboxBloc.instance.navigateToChatWith(
           message.data['name'], message.data['avatar'], DateTime.now(), '', [
-        AuthBloc.instance.userModel.id,
+        AuthBloc.instance.userModel!.id,
         message.data['userId'],
       ], [
-        AuthBloc.instance.userModel.avatar,
+        AuthBloc.instance.userModel!.avatar,
         message.data['avatar'],
       ]);
     }
@@ -150,7 +150,7 @@ class FcmService {
     });
 
     // when app terminated
-    final RemoteMessage message =
+    final RemoteMessage? message =
         await FirebaseMessaging.instance.getInitialMessage();
 
     // when app is terminated
@@ -181,7 +181,7 @@ class FcmService {
     }
   }
 
-  Future<String> getDeviceToken() {
+  Future<String?> getDeviceToken() {
     return FirebaseMessaging.instance.getToken();
   }
 }
@@ -190,8 +190,8 @@ class FbdynamicLink {
   static void initDynamicLinks() async {
     // when app in background
     FirebaseDynamicLinks.instance.onLink(
-        onSuccess: (PendingDynamicLinkData dynamicLink) async {
-      final Uri deepLink = dynamicLink?.link;
+        onSuccess: (PendingDynamicLinkData? dynamicLink) async {
+      final Uri? deepLink = dynamicLink?.link;
 
       if (deepLink != null) {
         // PostDetail.navigate(null, postId: deepLink.path);
@@ -243,9 +243,9 @@ class FbdynamicLink {
     });
 
     // when app not in background
-    final PendingDynamicLinkData data =
+    final PendingDynamicLinkData? data =
         await FirebaseDynamicLinks.instance.getInitialLink();
-    final Uri deepLink = data?.link;
+    final Uri? deepLink = data?.link;
 
     if (deepLink != null) {
       print(deepLink.path);

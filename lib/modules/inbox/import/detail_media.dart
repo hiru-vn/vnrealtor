@@ -11,55 +11,57 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'image_view.dart';
 
 class DetailMediaGroupWidget extends StatelessWidget {
-  final List<String> files;
-  final int index;
+  final List<String?>? files;
+  final int? index;
 
-  const DetailMediaGroupWidget({Key key, this.files, this.index})
+  const DetailMediaGroupWidget({Key? key, this.files, this.index})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    PageController controller = PageController(initialPage: index);
+    PageController controller = PageController(initialPage: index!);
     return PageView(
       controller: controller,
-      children: files.map((e) {
+      children: files!.map((e) {
         if (FileUtil.getFbUrlFileType(e) == FileType.video)
           return DetailVideoScreen(e);
         if (FileUtil.getFbUrlFileType(e) == FileType.image)
           return DetailImageScreen(e);
+        return SizedBox.shrink();
       }).toList(),
     );
   }
 }
 
 class DetailMediaGroupWidgetCache extends StatelessWidget {
-  final List<String> files;
-  final int index;
+  final List<String?>? files;
+  final int? index;
 
-  const DetailMediaGroupWidgetCache({Key key, this.files, this.index})
+  const DetailMediaGroupWidgetCache({Key? key, this.files, this.index})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    PageController controller = PageController(initialPage: index);
+    PageController controller = PageController(initialPage: index!);
     return PageView(
       controller: controller,
-      children: files.map((e) {
+      children: files!.map((e) {
         if (FileUtil.getFilePathType(e) == FileType.video)
           return DetailVideoScreenCache(e);
         if (FileUtil.getFilePathType(e) == FileType.image)
           return DetailImageScreenCache(e);
+        return SizedBox.shrink();
       }).toList(),
     );
   }
 }
 
 class MediaWidgetNetwork extends StatefulWidget {
-  final String file;
-  final Function callBack;
-  final double radius;
+  final String? file;
+  final Function? callBack;
+  final double? radius;
 
-  const MediaWidgetNetwork({Key key, this.file, this.callBack, this.radius})
+  const MediaWidgetNetwork({Key? key, this.file, this.callBack, this.radius})
       : super(key: key);
 
   @override
@@ -67,8 +69,8 @@ class MediaWidgetNetwork extends StatefulWidget {
 }
 
 class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
-  String thumbnailPath;
-  FileType type;
+  String? thumbnailPath;
+  FileType? type;
 
   @override
   void initState() {
@@ -79,7 +81,7 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
 
   _getThumbnail() async {
     thumbnailPath = await VideoThumbnail.thumbnailFile(
-      video: widget.file,
+      video: widget.file!,
       thumbnailPath: (await getTemporaryDirectory()).path,
       imageFormat: ImageFormat.WEBP,
       maxHeight:
@@ -92,7 +94,7 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        widget.callBack();
+        widget.callBack!();
 
         FocusScope.of(context).requestFocus(FocusNode());
       },
@@ -100,14 +102,15 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
     );
   }
 
-  Widget _getWidget(FileType type) {
+  Widget _getWidget(FileType? type) {
     if (type == FileType.image || type == FileType.gif)
       return ClipRRect(
-        borderRadius: BorderRadius.circular(widget.radius??5),
+        borderRadius: BorderRadius.circular(widget.radius ?? 5),
         child: Image(
-          image: CachedNetworkImageProvider(widget.file),
+          image: CachedNetworkImageProvider(widget.file!),
           fit: BoxFit.cover,
-          errorBuilder: imageNetworkErrorBuilder,
+          errorBuilder: imageNetworkErrorBuilder as Widget Function(
+              BuildContext, Object, StackTrace?)?,
           loadingBuilder: kLoadingBuilder,
         ),
       );
@@ -118,7 +121,8 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
               child: Image.asset(
                 'assets/image/video_holder.png',
                 fit: BoxFit.cover,
-                errorBuilder: imageNetworkErrorBuilder,
+                errorBuilder: imageNetworkErrorBuilder as Widget Function(
+                    BuildContext, Object, StackTrace?)?,
               ),
             )
           : Stack(
@@ -127,9 +131,10 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(5),
                   child: Image.file(
-                    File(thumbnailPath),
+                    File(thumbnailPath!),
                     fit: BoxFit.cover,
-                    errorBuilder: imageNetworkErrorBuilder,
+                    errorBuilder: imageNetworkErrorBuilder as Widget Function(
+                        BuildContext, Object, StackTrace?)?,
                   ),
                 ),
                 Center(
@@ -143,11 +148,11 @@ class _MediaWidgetNetworkState extends State<MediaWidgetNetwork> {
 }
 
 class MediaWidgetCache extends StatefulWidget {
-  final String path;
-  final Function callBack;
-  final double radius;
+  final String? path;
+  final Function? callBack;
+  final double? radius;
 
-  const MediaWidgetCache({Key key, this.path, this.callBack, this.radius})
+  const MediaWidgetCache({Key? key, this.path, this.callBack, this.radius})
       : super(key: key);
 
   @override
@@ -155,8 +160,8 @@ class MediaWidgetCache extends StatefulWidget {
 }
 
 class _MediaWidgetCacheState extends State<MediaWidgetCache> {
-  String thumbnailPath;
-  FileType type;
+  String? thumbnailPath;
+  FileType? type;
 
   @override
   void initState() {
@@ -167,7 +172,7 @@ class _MediaWidgetCacheState extends State<MediaWidgetCache> {
 
   _getThumbnail() async {
     thumbnailPath = await VideoThumbnail.thumbnailFile(
-      video: widget.path,
+      video: widget.path!,
       thumbnailPath: (await getTemporaryDirectory()).path,
       imageFormat: ImageFormat.WEBP,
       maxHeight:
@@ -180,21 +185,22 @@ class _MediaWidgetCacheState extends State<MediaWidgetCache> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          if (widget.callBack != null) widget.callBack();
+          if (widget.callBack != null) widget.callBack!();
 
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: _getWidget(type));
   }
 
-  Widget _getWidget(FileType type) {
+  Widget _getWidget(FileType? type) {
     if (type == FileType.image || type == FileType.gif)
       return ClipRRect(
         borderRadius: BorderRadius.circular(widget.radius ?? 5),
         child: Image.file(
-          File(widget.path),
+          File(widget.path!),
           fit: BoxFit.cover,
-          errorBuilder: imageNetworkErrorBuilder,
+          errorBuilder: imageNetworkErrorBuilder as Widget Function(
+              BuildContext, Object, StackTrace?)?,
         ),
       );
     else if (type == FileType.video)
@@ -204,7 +210,8 @@ class _MediaWidgetCacheState extends State<MediaWidgetCache> {
               child: Image.asset(
                 'assets/image/video_holder.png',
                 fit: BoxFit.cover,
-                errorBuilder: imageNetworkErrorBuilder,
+                errorBuilder: imageNetworkErrorBuilder as Widget Function(
+                    BuildContext, Object, StackTrace?)?,
               ),
             )
           : Stack(
@@ -213,9 +220,10 @@ class _MediaWidgetCacheState extends State<MediaWidgetCache> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(widget.radius ?? 5),
                   child: Image.file(
-                    File(thumbnailPath),
+                    File(thumbnailPath!),
                     fit: BoxFit.cover,
-                    errorBuilder: imageNetworkErrorBuilder,
+                    errorBuilder: imageNetworkErrorBuilder as Widget Function(
+                        BuildContext, Object, StackTrace?)?,
                   ),
                 ),
                 Center(

@@ -18,11 +18,11 @@ import 'video_view.dart';
 class ImageRowPicker extends StatefulWidget {
   final List<String> listImg;
   final bool canRemove;
-  final Function(List<String>) onUpdateListImg;
-  final Function reloadParent;
-  final Function(String) onAddImg;
-  final Function(List<String>) onAddMultiImg;
-  final Function(String) onRemoveImg;
+  final Function(List<String>)? onUpdateListImg;
+  final Function? reloadParent;
+  final Function(String)? onAddImg;
+  final Function(List<String>)? onAddMultiImg;
+  final Function(String)? onRemoveImg;
   ImageRowPicker(this.listImg,
       {this.onUpdateListImg,
       this.canRemove = true,
@@ -45,10 +45,10 @@ class _ImageRowPickerState extends State<ImageRowPicker>
     return ListView.separated(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
-      itemCount: (widget.listImg?.length ?? 0) + 1,
+      itemCount: widget.listImg.length + 1,
       separatorBuilder: (context, index) => SizedBox(width: 10),
       itemBuilder: (context, index) {
-        if (index != (widget.listImg?.length ?? 0)) {
+        if (index != widget.listImg.length) {
           return Stack(
             alignment: AlignmentDirectional.bottomStart,
             children: [
@@ -84,10 +84,10 @@ class _ImageRowPickerState extends State<ImageRowPicker>
                         setState(() {});
                         //await navigatorKey.currentState.maybePop();
                         if (widget.onRemoveImg != null)
-                          widget.onRemoveImg(widget.listImg[index]);
+                          widget.onRemoveImg!(widget.listImg[index]);
                         if (widget.onUpdateListImg != null)
-                          widget.onUpdateListImg(widget.listImg);
-                        if (widget.reloadParent != null) widget.reloadParent();
+                          widget.onUpdateListImg!(widget.listImg);
+                        if (widget.reloadParent != null) widget.reloadParent!();
                       });
                     },
                     child: Container(
@@ -114,11 +114,11 @@ class _ImageRowPickerState extends State<ImageRowPicker>
             alignment: Alignment.bottomCenter,
             child: InkWell(
               onTap: () => imagePicker(context, onCameraPick: (str) {
-                if (widget.onAddImg != null) widget.onAddImg(str);
+                if (widget.onAddImg != null) widget.onAddImg!(str);
               }, onImagePick: (str) {
-                if (widget.onAddImg != null) widget.onAddImg(str);
+                if (widget.onAddImg != null) widget.onAddImg!(str);
               }, onVideoPick: (str) {
-                if (widget.onAddImg != null) widget.onAddImg(str);
+                if (widget.onAddImg != null) widget.onAddImg!(str);
               }),
               child: Container(
                 height: 100,
@@ -140,12 +140,12 @@ class _ImageRowPickerState extends State<ImageRowPicker>
 class ImageButtonPicker extends StatefulWidget {
   final List<String> listImg;
   final bool canRemove;
-  final Function(List<String>) onUpdateListImg;
-  final Function reloadParent;
-  final Function(String) onAddImg;
-  final Function(List<String>) onAddMultiImg;
+  final Function(List<String>)? onUpdateListImg;
+  final Function? reloadParent;
+  final Function(String)? onAddImg;
+  final Function(List<String>)? onAddMultiImg;
 
-  final Function(String) onRemoveImg;
+  final Function(String)? onRemoveImg;
   ImageButtonPicker(this.listImg,
       {this.onUpdateListImg,
       this.canRemove = true,
@@ -168,16 +168,16 @@ class _ImageButtonPickerState extends State<ImageButtonPicker> {
             imagePicker(
               context,
               onCameraPick: (str) {
-                if (widget.onAddImg != null) widget.onAddImg(str);
+                if (widget.onAddImg != null) widget.onAddImg!(str);
               },
               // , onImagePick: (str) {
               //   if (widget.onAddImg != null) widget.onAddImg(str);
               // },
               onVideoPick: (str) {
-                if (widget.onAddImg != null) widget.onAddImg(str);
+                if (widget.onAddImg != null) widget.onAddImg!(str);
               },
               onMultiImagePick: (str) {
-                if (widget.onAddMultiImg != null) widget.onAddMultiImg(str);
+                if (widget.onAddMultiImg != null) widget.onAddMultiImg!(str);
               },
             );
           },
@@ -212,10 +212,10 @@ class _ImageButtonPickerState extends State<ImageButtonPicker> {
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: (widget.listImg?.length ?? 0) + 1,
+              itemCount: widget.listImg.length + 1,
               separatorBuilder: (context, index) => SizedBox(width: 6),
               itemBuilder: (context, index) {
-                if (index != (widget.listImg?.length ?? 0)) {
+                if (index != widget.listImg.length) {
                   return Stack(
                     alignment: AlignmentDirectional.bottomStart,
                     children: [
@@ -267,11 +267,11 @@ class _ImageButtonPickerState extends State<ImageButtonPicker> {
                                 // widget.listImg.removeAt(index);
                                 //await navigatorKey.currentState.maybePop();
                                 if (widget.onRemoveImg != null)
-                                  widget.onRemoveImg(widget.listImg[index]);
+                                  widget.onRemoveImg!(widget.listImg[index]);
                                 if (widget.onUpdateListImg != null)
-                                  widget.onUpdateListImg(widget.listImg);
+                                  widget.onUpdateListImg!(widget.listImg);
                                 if (widget.reloadParent != null)
-                                  widget.reloadParent();
+                                  widget.reloadParent!();
                               });
                             },
                             child: Container(
@@ -307,10 +307,10 @@ class MediaPickerWidget extends StatefulWidget {
   final Function(List<String>) onCaptureImage;
   final Function(List<String>) onGalleryPick;
   MediaPickerWidget(
-      {Key key,
-      @required this.onMediaPick,
-      @required this.onCaptureImage,
-      @required this.onGalleryPick})
+      {Key? key,
+      required this.onMediaPick,
+      required this.onCaptureImage,
+      required this.onGalleryPick})
       : super(key: key);
 
   @override
@@ -440,9 +440,9 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
 class AssetThumbnail extends StatefulWidget {
   final Function(AssetEntity) onTap;
   const AssetThumbnail({
-    Key key,
-    @required this.asset,
-    @required this.onTap,
+    Key? key,
+    required this.asset,
+    required this.onTap,
   }) : super(key: key);
 
   final AssetEntity asset;
@@ -453,7 +453,7 @@ class AssetThumbnail extends StatefulWidget {
 
 class _AssetThumbnailState extends State<AssetThumbnail> {
   bool isSelected = false;
-  Uint8List data;
+  Uint8List? data;
 
   @override
   void initState() {
@@ -480,7 +480,7 @@ class _AssetThumbnailState extends State<AssetThumbnail> {
               ? Container(
                   color: Colors.grey[100],
                 )
-              : Image.memory(data, fit: BoxFit.cover),
+              : Image.memory(data!, fit: BoxFit.cover),
           if (isSelected)
             Center(
                 child: Container(
@@ -501,8 +501,8 @@ class _AssetThumbnailState extends State<AssetThumbnail> {
 
 class MediaPagePickerWidget extends StatefulWidget {
   final Function(List<String>) onMediaPick;
-  final int maxCount;
-  MediaPagePickerWidget({Key key, @required this.onMediaPick, this.maxCount})
+  final int? maxCount;
+  MediaPagePickerWidget({Key? key, required this.onMediaPick, this.maxCount})
       : super(key: key);
 
   @override
@@ -609,10 +609,10 @@ class _MediaPagePickerWidgetState extends State<MediaPagePickerWidget> {
                           setState(() {
                             isSending = true;
                           });
-                          List<File> files = await Future.wait(
+                          List<File?> files = await Future.wait(
                               selectedAssets.map((e) => e.file).toList());
-                          navigatorKey.currentState.pop();
-                          widget.onMediaPick(files.map((e) => e.path).toList());
+                          navigatorKey.currentState!.pop();
+                          widget.onMediaPick(files.map((e) => e!.path).toList());
                         } catch (e) {} finally {
                           setState(() {
                             isSending = false;

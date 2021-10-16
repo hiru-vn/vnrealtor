@@ -11,7 +11,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 
-Future showGoogleMap(BuildContext context, {double height}) {
+Future showGoogleMap(BuildContext context, {double? height}) {
   if (height == null)
     height = MediaQuery.of(context).size.height - kToolbarHeight;
   return showModalBottomSheet(
@@ -21,7 +21,7 @@ Future showGoogleMap(BuildContext context, {double height}) {
       backgroundColor: Colors.transparent,
       builder: (context) {
         return Scaffold(
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.transparent,
             body: GoogleMapWidget());
       });
@@ -40,12 +40,12 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     target: LatLng(16.04, 108.19),
     zoom: 5,
   );
-  Marker selectedMarker;
-  LatLng selectedPoint;
-  Uint8List pngBytes;
+  Marker? selectedMarker;
+  LatLng? selectedPoint;
+  Uint8List? pngBytes;
 
-  Future<Uint8List> _getSnapShot() async {
-    final imageBytes = await (await _controller?.future).takeSnapshot();
+  Future<Uint8List?> _getSnapShot() async {
+    final imageBytes = await (await _controller.future).takeSnapshot();
     setState(() {
       pngBytes = imageBytes;
     });
@@ -53,9 +53,9 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     return pngBytes;
   }
 
-  Future _onSearch(double lat, double long, String name) async {
+  Future _onSearch(double? lat, double? long, String? name) async {
     selectedMarker = Marker(
-      markerId: MarkerId(LatLng(lat, long).toString()),
+      markerId: MarkerId(LatLng(lat!, long!).toString()),
       position: LatLng(lat, long),
       infoWindow: InfoWindow(
         title: name,
@@ -114,7 +114,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     });
   }
 
-  Future<Position> _getDevicePosition() async {
+  Future<LatLng> _getDevicePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -127,8 +127,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
 
     if (permission == LocationPermission.deniedForever) {
       showToast('Ứng dụng không thể truy cập vị trí của bạn', context);
-      return Position(
-          latitude: 10.738381363037085, longitude: 106.68763584916785);
+      return LatLng(10.738381363037085, 106.68763584916785);
     }
 
     if (permission == LocationPermission.denied) {
@@ -136,20 +135,19 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
         showToast('Ứng dụng không thể truy cập vị trí của bạn', context);
-        return Position(
-            latitude: 10.738381363037085, longitude: 106.68763584916785);
+        return LatLng(10.738381363037085, 106.68763584916785);
       }
     }
 
     final pos = await Geolocator.getCurrentPosition();
     SPref.instance.setDouble('lat', pos.latitude);
     SPref.instance.setDouble('long', pos.longitude);
-    return pos;
+    return LatLng(pos.latitude, pos.longitude);
   }
 
   _getInitPosPrefs() async {
-    final double lat = await SPref.instance.get('lat') as double;
-    final double long = await SPref.instance.get('long') as double;
+    final double? lat = await SPref.instance.get('lat') as double?;
+    final double? long = await SPref.instance.get('long') as double?;
     if (lat != null && long != null) {
       CameraPosition _lastSavedPos = CameraPosition(
           bearing: 0, target: LatLng(lat, long), tilt: 0, zoom: 15);
@@ -193,7 +191,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
             _controller.complete(controller);
           },
           onTap: _selectMarker,
-          markers: selectedMarker != null ? <Marker>{selectedMarker} : null,
+          markers: (selectedMarker != null ? <Marker?>{selectedMarker} : null) as Set<Marker>,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 25),
@@ -212,8 +210,8 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                 return;
               }
               final file =
-                  await FileUtil.writeToFile(pngBytes, 'map', 'jpeg', 360);
-              navigatorKey.currentState.maybePop([selectedPoint, file]);
+                  await FileUtil.writeToFile(pngBytes!, 'map', 'jpeg', 360);
+              navigatorKey.currentState!.maybePop([selectedPoint, file]);
             },
             child: Material(
               borderRadius: BorderRadius.circular(20),
@@ -249,7 +247,8 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
             elevation: 4,
             child: GestureDetector(
               onTap: () {
-                _selectMyLocation();audioCache.play('tab3.mp3');
+                _selectMyLocation();
+                audioCache.play('tab3.mp3');
               },
               child: Container(
                 width: 42,

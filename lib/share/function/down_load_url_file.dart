@@ -6,10 +6,11 @@ Future<File> downLoadUrlFile(String url) async {
   //comment out the next two lines to prevent the device from getting
   // the image from the web in order to prove that the picture is
   // coming from the device instead of the web.
-  var response = await get(url); // <--2
+  var response = await get(Uri(path: url)); // <--2
   var documentDirectory = await getApplicationDocumentsDirectory();
   var firstPath = documentDirectory.path + "/images";
-  var filePathAndName = documentDirectory.path + "/images/temp${getFileExtensionFromUrl(url)}";
+  var filePathAndName =
+      documentDirectory.path + "/images/temp${getFileExtensionFromUrl(url)}";
   //comment out the next three lines to prevent the image from being saved
   //to the device to show that it's coming from the internet
   await Directory(firstPath).create(recursive: true); // <-- 1
@@ -18,9 +19,8 @@ Future<File> downLoadUrlFile(String url) async {
   return file;
 }
 
-String getFileExtensionFromUrl(String url)
-{
-    url = url.split('?')[0];
-    url = url.split('/').last;
-    return url.contains('.') ? url.substring(url.lastIndexOf('.')) : "";
+String getFileExtensionFromUrl(String url) {
+  url = url.split('?')[0];
+  url = url.split('/').last;
+  return url.contains('.') ? url.substring(url.lastIndexOf('.')) : "";
 }

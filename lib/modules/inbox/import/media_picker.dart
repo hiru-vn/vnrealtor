@@ -8,7 +8,7 @@ import 'package:photo_manager/photo_manager.dart';
 
 class MediaPickerWidget extends StatefulWidget {
   final Function(List<String>) onMediaPick;
-  MediaPickerWidget({Key key, @required this.onMediaPick}) : super(key: key);
+  MediaPickerWidget({Key? key, required this.onMediaPick}) : super(key: key);
 
   @override
   _MediaPickerWidgetState createState() => _MediaPickerWidgetState();
@@ -99,9 +99,9 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
                       setState(() {
                         isSending = true;
                       });
-                      List<File> files = await Future.wait(
+                      List<File?> files = await Future.wait(
                           selectedAssets.map((e) => e.file).toList());
-                      widget.onMediaPick(files.map((e) => e.path).toList());
+                      widget.onMediaPick(files.map((e) => e!.path).toList());
                     } catch (e) {} finally {
                       setState(() {
                         isSending = false;
@@ -129,9 +129,9 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
 class AssetThumbnail extends StatefulWidget {
   final Function(AssetEntity) onTap;
   const AssetThumbnail({
-    Key key,
-    @required this.asset,
-    @required this.onTap,
+    Key? key,
+    required this.asset,
+    required this.onTap,
   }) : super(key: key);
 
   final AssetEntity asset;
@@ -142,7 +142,7 @@ class AssetThumbnail extends StatefulWidget {
 
 class _AssetThumbnailState extends State<AssetThumbnail> {
   bool isSelected = false;
-  Uint8List data;
+  Uint8List? data;
 
   @override
   void initState() {
@@ -169,7 +169,7 @@ class _AssetThumbnailState extends State<AssetThumbnail> {
               ? Container(
                   color: Colors.grey[100],
                 )
-              : Image.memory(data, fit: BoxFit.cover),
+              : Image.memory(data!, fit: BoxFit.cover),
           if (isSelected)
             Center(
                 child: Container(

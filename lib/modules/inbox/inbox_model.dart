@@ -1,10 +1,10 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class FbInboxUserModel {
-  final String id;
-  final String image;
-  final String name;
-  final String phone;
+  final String? id;
+  final String? image;
+  final String? name;
+  final String? phone;
   final List<String> groups;
 
   FbInboxUserModel(this.id, this.image, this.name, this.phone, this.groups);
@@ -17,19 +17,19 @@ class FbInboxUserModel {
 
 class FbInboxGroupModel {
   final String id;
-  final String image;
-  final String lastMessage;
-  final String lastUser;
-  final String time;
+  final String? image;
+  final String? lastMessage;
+  final String? lastUser;
+  final String? time;
   final List<String> readers;
   final List<FbInboxUserModel> users;
-  final List<String> userIds;
-  final List<String> userAvatars;
-  final List<String> blockedBy;
-  final List<String> waitingBy;
-  final String pageId;
-  final String pageName;
-  final String groupName;
+  final List<String?> userIds;
+  final List<String?> userAvatars;
+  final List<String?>? blockedBy;
+  final List<String?>? waitingBy;
+  final String? pageId;
+  final String? pageName;
+  final String? groupName;
 
   FbInboxGroupModel(this.id, this.image, this.lastMessage, this.lastUser,
       this.time, this.readers, this.users, this.userIds, this.userAvatars,
@@ -49,16 +49,16 @@ class FbInboxGroupModel {
       map['time'],
       map['readers'] == null ? [] : (map['readers'] as List).cast<String>(),
       users,
-      map['userIds'] == null ? [] : (map['userIds'] as List).cast<String>(),
+      map['userIds'] == null ? [] : (map['userIds'] as List).cast<String?>(),
       map['userAvatars'] == null
           ? []
-          : (map['userAvatars'] as List).cast<String>(),
+          : (map['userAvatars'] as List).cast<String?>(),
       blockedBy: map['blockedBy'] == null
           ? []
-          : (map['blockedBy'] as List).cast<String>(),
+          : (map['blockedBy'] as List).cast<String?>(),
       waitingBy: map['waitingBy'] == null
           ? []
-          : (map['waitingBy'] as List).cast<String>(),
+          : (map['waitingBy'] as List).cast<String?>(),
       pageId: map['pageId'],
       groupName: map['groupName'],
       pageName: map['pageName'],
@@ -68,13 +68,13 @@ class FbInboxGroupModel {
 
 class FbInboxMessageModel {
   final String id;
-  final String avatar;
-  final String date;
-  final String fullName;
-  final String text;
-  final String uid; //userId
-  final List<String> filePaths;
-  final LatLng location;
+  final String? avatar;
+  final String? date;
+  final String? fullName;
+  final String? text;
+  final String? uid; //userId
+  final List<String>? filePaths;
+  final LatLng? location;
 
   FbInboxMessageModel(this.id, this.avatar, this.date, this.fullName, this.text,
       this.uid, this.filePaths,

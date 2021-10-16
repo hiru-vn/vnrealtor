@@ -10,7 +10,7 @@ import 'filter.dart';
 
 class PostRepo {
   Future getNewFeed(
-      {GraphqlFilter filter, String timestamp, String timeSort}) async {
+      {GraphqlFilter? filter, String? timestamp, String? timeSort}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
     final data =
@@ -24,14 +24,14 @@ distance
     return res['getNewsFeed'];
   }
 
-  Future getPostByGroupId(String groupId) async {
+  Future getPostByGroupId(String? groupId) async {
     final res = await PostSrv().getList(
         limit: 20, order: '{createdAt: -1}', filter: '{groupId: "$groupId" }');
     return res;
   }
 
   Future getNewsFeedGroup(
-      {GraphqlFilter filter, String timestamp, String timeSort}) async {
+      {GraphqlFilter? filter, String? timestamp, String? timeSort}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
     final data =
@@ -45,7 +45,7 @@ distance
     return res['getNewsFeedGroup'];
   }
 
-  Future getNewFeedGuest({int page, int limit}) async {
+  Future getNewFeedGuest({int? page, int? limit}) async {
     final res = await PostSrv().query(
         'getNewsFeedByGuest', 'page: $page , limit: $limit',
         fragment: '''
@@ -66,7 +66,7 @@ ${postFragment.replaceFirst('id', '')}
     return res['getStoryFollowing'];
   }
 
-  Future getStoryForGuest({double lat, double long}) async {
+  Future getStoryForGuest({double? lat, double? long}) async {
     String params = 'lat: $lat , long: $long';
     final res = await PostSrv().query(
       'getStoryForGuest',
@@ -80,7 +80,7 @@ ${postFragment.replaceAll('\n', ' ').replaceFirst('isUserLike', '').replaceFirst
     return res['getStoryForGuest'];
   }
 
-  Future searchPostByHashTag(String hashTags) async {
+  Future searchPostByHashTag(String? hashTags) async {
     final res = await PostSrv()
         .query('searchPostByHashTag', 'hashTags: "$hashTags"', fragment: '''
     data {
@@ -122,12 +122,12 @@ ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').re
     return res['searchPostByPoint'];
   }
 
-  Future getOnePost(String id) async {
+  Future getOnePost(String? id) async {
     final res = await PostSrv().getItem(id);
     return res;
   }
 
-  Future getOnePostGuest(String id) async {
+  Future getOnePostGuest(String? id) async {
     final res =
         await PostSrv().query('getOnePostByGuest', 'id: "$id"', fragment: '''
 ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').replaceAll('\n', ' ') + ' _id'}
@@ -135,18 +135,18 @@ ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').re
     return res['getOnePostByGuest'];
   }
 
-  Future getOneMediaPost(String id) async {
+  Future getOneMediaPost(String? id) async {
     final res = await MediaPostSrv().getItem(id);
     return res;
   }
 
-  Future getPostByUserId(String userId) async {
+  Future getPostByUserId(String? userId) async {
     final res = await PostSrv().getList(
         limit: 20, order: '{createdAt: -1}', filter: '{userId: "$userId" }');
     return res;
   }
 
-  Future getPostByUserIdGuest(String userId) async {
+  Future getPostByUserIdGuest(String? userId) async {
     final res = await PostSrv().getList(
         limit: 20,
         order: '{createdAt: -1}',
@@ -158,10 +158,10 @@ ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').re
   }
 
   Future createComment(
-      {String postId,
-      String mediaPostId,
-      String content,
-      List<String> tagUserIds}) async {
+      {String? postId,
+      String? mediaPostId,
+      String? content,
+      List<String?>? tagUserIds}) async {
     String data = '''
 content: """
 $content
@@ -181,7 +181,7 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
   }
 
   Future createReply(
-      {String commentId, String content, List<String> tagUserIds}) async {
+      {String? commentId, String? content, List<String?>? tagUserIds}) async {
     String data = '''
 commentId: "$commentId"
 content: """
@@ -195,9 +195,8 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
     return res;
   }
 
-  String cr(List<LatLng> polygon) {
+  String? cr(List<LatLng> polygon) {
     String res = '';
-    if (polygon == null) return null;
     res = '''polygon: {
       paths: [
         ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
@@ -208,21 +207,21 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
 
   Future createPost(
       String content,
-      String expirationDate,
+      String? expirationDate,
       bool publicity,
-      double lat,
-      double long,
+      double? lat,
+      double? long,
       List<String> images,
       List<String> videos,
       List<LatLng> polygon,
-      List<String> tagUserIds,
-      String category,
-      String action,
-      double area,
-      double price,
+      List<String?> tagUserIds,
+      String? category,
+      String? action,
+      double? area,
+      double? price,
       bool onlyMe,
-      {String groupId,
-      String pageId}) async {
+      {String? groupId,
+      String? pageId}) async {
     String polygonStr = '''{
       paths: [
         ${polygon.map((e) => '{lat: ${e.latitude}, lng: ${e.longitude}},').toList().join()}
@@ -277,20 +276,20 @@ ${postFragment.replaceAll('\n', ' ')}
   }
 
   Future updatePost(
-      String id,
+      String? id,
       String content,
-      String expirationDate,
+      String? expirationDate,
       bool publicity,
-      double lat,
-      double long,
-      List<String> images,
-      List<String> videos,
+      double? lat,
+      double? long,
+      List<String?> images,
+      List<String?> videos,
       List<LatLng> polygon,
-      List<String> tagUserIds,
-      String category,
-      String action,
-      double area,
-      double price,
+      List<String?> tagUserIds,
+      String? category,
+      String? action,
+      double? area,
+      double? price,
       bool onlyMe) async {
     String polygonStr = '''{
       paths: [
@@ -337,11 +336,11 @@ $postFragment
     return res["updatePost"];
   }
 
-  Future sharePost(String postId,
-      {String groupId,
-      String pageId,
-      List<String> tagUserIds,
-      String content}) async {
+  Future sharePost(String? postId,
+      {String? groupId,
+      String? pageId,
+      List<String>? tagUserIds,
+      String? content}) async {
     String data = 'postId: "$postId"';
 
     if (groupId != null) {
@@ -370,23 +369,23 @@ ${postFragment.replaceAll('\n', ' ')}
     return res["sharePost"];
   }
 
-  Future deletePost(String postId) async {
+  Future deletePost(String? postId) async {
     final res = await PostSrv().delete(postId);
     return res;
   }
 
-  Future deleteComment(String commentId) async {
+  Future deleteComment(String? commentId) async {
     final res = await CommentSrv().delete(commentId);
     return res;
   }
 
-  Future deleteReply(String replyId) async {
+  Future deleteReply(String? replyId) async {
     final res = await ReplySrv().delete(replyId);
     return res;
   }
 
   Future hidePost(
-    String id,
+    String? id,
   ) async {
     String data = '''
 flag: true
@@ -398,7 +397,7 @@ id
     return res["updatePost"];
   }
 
-  Future savePost(String postId) async {
+  Future savePost(String? postId) async {
     final res =
         await PostSrv().mutate('savePost', 'postId: "$postId"', fragment: '''
         id
@@ -406,7 +405,7 @@ id
     return res['savePost'];
   }
 
-  Future unsavePost(String postId) async {
+  Future unsavePost(String? postId) async {
     final res =
         await PostSrv().mutate('unsavePost', 'postId: "$postId"', fragment: '''
         id
@@ -414,7 +413,7 @@ id
     return res['unsavePost'];
   }
 
-  Future getAllCommentByPostId({String postId, GraphqlFilter filter}) async {
+  Future getAllCommentByPostId({String? postId, GraphqlFilter? filter}) async {
     final res = await CommentSrv().getList(
         limit: filter?.limit,
         offset: filter?.offset,
@@ -426,7 +425,7 @@ id
   }
 
   Future getAllReplyByCommentId(
-      {String commentId, GraphqlFilter filter}) async {
+      {String? commentId, GraphqlFilter? filter}) async {
     final res = await ReplySrv().getList(
         limit: filter?.limit,
         offset: filter?.offset,
@@ -438,7 +437,7 @@ id
   }
 
   Future getAllCommentByPostIdGuest(
-      {String postId, GraphqlFilter filter}) async {
+      {String? postId, GraphqlFilter? filter}) async {
     final res = await CommentSrv().query(
         'getCommentByGuest', ' q : { filter: {postId: \"$postId\"} } ',
         fragment: 'data { ${CommentSrv().fragmentDefault} }');
@@ -446,7 +445,7 @@ id
   }
 
   Future getAllReplyByCommentIdGuest(
-      {String commentId, GraphqlFilter filter}) async {
+      {String? commentId, GraphqlFilter? filter}) async {
     final res = await CommentSrv().query(
         'getReplyByGuest', ' q : { filter: {commentId: \"$commentId\"} } ',
         fragment: 'data { ${ReplySrv().fragmentDefault} }');
@@ -454,7 +453,7 @@ id
   }
 
   Future getAllCommentByMediaPostIdGuest(
-      {String mediaPostId, GraphqlFilter filter}) async {
+      {String? mediaPostId, GraphqlFilter? filter}) async {
     final res = await CommentSrv().query('getCommentByGuest',
         ' q : { filter: {mediaPostId: \"$mediaPostId\"} } ',
         fragment: 'data { ${CommentSrv().fragmentDefault} }');
@@ -462,7 +461,7 @@ id
   }
 
   Future getAllCommentByMediaPostId(
-      {String postMediaId, GraphqlFilter filter}) async {
+      {String? postMediaId, GraphqlFilter? filter}) async {
     final res = await CommentSrv().getList(
         limit: filter?.limit,
         offset: filter?.offset,
@@ -473,45 +472,45 @@ id
     return res;
   }
 
-  Future increaseLikePost({String postId}) async {
+  Future increaseLikePost({String? postId}) async {
     final res = await PostSrv()
         .mutate('increaseLikePost', 'postId: "$postId"', fragment: 'id');
     return res;
   }
 
-  Future decreaseLikePost({String postId}) async {
+  Future decreaseLikePost({String? postId}) async {
     final res = await PostSrv()
         .mutate('decreaseLikePost', 'postId: "$postId"', fragment: 'id');
     return res;
   }
 
-  Future increaseLikeMediaPost({String postMediaId}) async {
+  Future increaseLikeMediaPost({String? postMediaId}) async {
     final res = await PostSrv().mutate(
         'increaseMediaLikePost', 'mediaPostId: "$postMediaId"',
         fragment: 'id');
     return res;
   }
 
-  Future decreaseLikeMediaPost({String postMediaId}) async {
+  Future decreaseLikeMediaPost({String? postMediaId}) async {
     final res = await PostSrv().mutate(
         'decreaseMediLikePost', 'mediaPostId: "$postMediaId"',
         fragment: 'id');
     return res;
   }
 
-  Future increaseLikeCmt({String cmtId}) async {
+  Future increaseLikeCmt({String? cmtId}) async {
     final res = await PostSrv()
         .mutate('increaseLikeCmt', 'cmtId: "$cmtId"', fragment: 'id');
     return res;
   }
 
-  Future decreaseLikeCmt({String cmtId}) async {
+  Future decreaseLikeCmt({String? cmtId}) async {
     final res = await PostSrv()
         .mutate('decreaseLikeCmt', 'cmtId: "$cmtId"', fragment: 'id');
     return res;
   }
 
-  Future createReport({String type, String content, String postId}) async {
+  Future createReport({String? type, String? content, String? postId}) async {
     final res = await ReportSrv().add(
         'postId: "$postId"  type: "$type"  content: "$content"',
         fragment: 'id');
@@ -530,12 +529,12 @@ id
     return res['getAddress'];
   }
 
-  Stream<FetchResult> subscriptionCommentByPostId(String postId) {
-    List<String> ids = [postId];
-    final res = CommentSrv().subscription('newComment',
-        'postIds: ${GraphqlHelper.listStringToGraphqlString(ids)}');
-    return res;
-  }
+  // Stream<FetchResult> subscriptionCommentByPostId(String postId) {
+  //   List<String> ids = [postId];
+  //   final res = CommentSrv().subscription('newComment',
+  //       'postIds: ${GraphqlHelper.listStringToGraphqlString(ids)}');
+  //   return res;
+  // }
 
   String postFragment = '''
 id

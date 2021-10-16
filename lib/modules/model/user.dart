@@ -2,33 +2,33 @@ import 'package:datcao/modules/model/setting.dart';
 import './media_post.dart';
 
 class UserModel {
-  String id;
-  String uid;
-  String name;
-  String tagName;
-  String email;
-  String phone;
-  String role;
-  int reputationScore;
-  List<String> friendIds;
-  String createdAt;
-  String updatedAt;
-  String avatar;
-  List<String> followerIds;
-  List<String> followingIds;
-  List<String> fastFollowIds;
-  List<String> savedPostIds;
-  List<String> groupIds;
-  int totalPost;
-  int notiCount;
-  String description;
-  String facebookUrl;
-  SettingModel setting;
-  bool isVerify;
-  bool isPendingVerify;
-  int messNotiCount;
-  bool isMod;
-  DynamicLink dynamicLink;
+  String? id;
+  String? uid;
+  String? name;
+  String? tagName;
+  String? email;
+  String? phone;
+  String? role;
+  int? reputationScore;
+  List<String?>? friendIds;
+  String? createdAt;
+  String? updatedAt;
+  String? avatar;
+  List<String?>? followerIds;
+  List<String?>? followingIds;
+  List<String>? fastFollowIds;
+  List<String?>? savedPostIds;
+  List<String?>? groupIds;
+  int? totalPost;
+  int? notiCount;
+  String? description;
+  String? facebookUrl;
+  SettingModel? setting;
+  bool? isVerify;
+  bool? isPendingVerify;
+  int? messNotiCount;
+  bool? isMod;
+  DynamicLink? dynamicLink;
 
   UserModel(
       {this.id,
@@ -94,7 +94,7 @@ class UserModel {
       fastFollowIds = (json['followerIds'].cast<String>() as List)
           .where((element) =>
               !(json['followingIds'].cast<String>() as List).contains(element))
-          .toList();
+          .toList() as List<String>?;
     dynamicLink = json['dynamicLink'] == null
         ? null
         : DynamicLink.fromJson(json['dynamicLink']);

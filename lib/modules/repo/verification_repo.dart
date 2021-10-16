@@ -2,15 +2,15 @@ import 'package:datcao/modules/services/verificatetion_srv.dart';
 
 class VerificationRepo {
   Future createVerification(
-      String name,
-      String dateOfBirth,
-      String idCard,
-      String imageFront,
-      String imageBehind,
-      String currentAddress,
-      String phone,
-      String website,
-      String socialNetwork) async {
+      String? name,
+      String? dateOfBirth,
+      String? idCard,
+      String? imageFront,
+      String? imageBehind,
+      String? currentAddress,
+      String? phone,
+      String? website,
+      String? socialNetwork) async {
     String data = '''
       name: "${name ?? ''}"
     	dateOfBirth: "${dateOfBirth ?? ''}"
@@ -27,12 +27,12 @@ class VerificationRepo {
   }
 
   Future createCompanyVerification(
-    String name,
-    String taxCode,
-    String address,
-    String email,
-    String comPhone,
-    String website,
+    String? name,
+    String? taxCode,
+    String? address,
+    String? email,
+    String? comPhone,
+    String? website,
   ) async {
     String data = '''
     data : {

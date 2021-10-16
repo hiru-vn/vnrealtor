@@ -12,9 +12,9 @@ class PagesBloc extends ChangeNotifier {
   PagesBloc._privateConstructor();
   static final PagesBloc instance = PagesBloc._privateConstructor();
 
-  DateTime _lastFetchPostPage;
+  DateTime? _lastFetchPostPage;
 
-  DateTime _lastFetchPageFollow;
+  DateTime? _lastFetchPageFollow;
 
   int _postPage = 1;
 
@@ -30,7 +30,7 @@ class PagesBloc extends ChangeNotifier {
 
   bool _isFollowed = false;
 
-  bool _isReceiveNotified = false;
+  bool? _isReceiveNotified = false;
 
   bool _isSuggestFollowPage = false;
 
@@ -40,19 +40,19 @@ class PagesBloc extends ChangeNotifier {
 
   List<PagesCreate> _pageCreated = [];
 
-  List<String> _followingPageIds = [];
+  List<String?> _followingPageIds = [];
 
   List<PagesCreate> get pageCreated => _pageCreated;
 
   List<PostModel> _listPagePost = [];
 
-  List<PagesCreate> _listPageFollow = [];
+  List<PagesCreate?> _listPageFollow = [];
 
-  List<dynamic> hasTags = [];
+  List<dynamic>? hasTags = [];
 
   List<PostModel> get listPagePost => _listPagePost;
 
-  List<PagesCreate> get listPageFollow => _listPageFollow;
+  List<PagesCreate?> get listPageFollow => _listPageFollow;
 
   List<PagesCreate> _suggestFollowPage = [];
 
@@ -70,9 +70,9 @@ class PagesBloc extends ChangeNotifier {
 
   bool get isUpdateLoading => _isUpdateLoading;
 
-  List<String> get followingPageIds => _followingPageIds;
+  List<String?> get followingPageIds => _followingPageIds;
 
-  ScrollController pagePostsScrollController;
+  ScrollController? pagePostsScrollController;
 
   bool _isLoadingSubmitCreatePage = false;
 
@@ -86,29 +86,29 @@ class PagesBloc extends ChangeNotifier {
 
   bool _isSuggestFollowPageLoading = false;
 
-  List<String> _listCategories = [];
+  List<String?> _listCategories = [];
 
   List<PagesCategoriesModel> _listModelCategories = [];
 
-  List<String> _listCategoriesSelected = [];
+  List<String?> _listCategoriesSelected = [];
 
-  List<String> _listCategoriesId = [];
+  List<String?> _listCategoriesId = [];
 
-  String _phone;
+  String? _phone;
 
-  String _urlCover;
+  String? _urlCover;
 
-  String _urlAvatar;
+  String? _urlAvatar;
 
-  String _currentAddress;
+  String? _currentAddress;
 
-  String _website;
+  String? _website;
 
-  String get phone => _phone;
+  String? get phone => _phone;
 
-  String get currentAddress => _currentAddress;
+  String? get currentAddress => _currentAddress;
 
-  String get website => _website;
+  String? get website => _website;
 
   bool get isLoading => _isLoading;
 
@@ -120,23 +120,23 @@ class PagesBloc extends ChangeNotifier {
 
   bool get isReciveNotiPageLoading => _isReciveNotiPageLoading;
 
-  bool get isReceiveNotified => _isReceiveNotified;
+  bool? get isReceiveNotified => _isReceiveNotified;
 
   bool get isSuggestFollowPageLoading => _isSuggestFollowPageLoading;
 
-  List<String> get listCategoriesId => _listCategoriesId;
+  List<String?> get listCategoriesId => _listCategoriesId;
 
-  List<String> get listCategoriesSelected => _listCategoriesSelected;
+  List<String?> get listCategoriesSelected => _listCategoriesSelected;
 
   List<PagesCreate> get suggestFollowPage => _suggestFollowPage;
 
-  String get urlCover => _urlCover;
+  String? get urlCover => _urlCover;
 
-  String get urlAvatar => _urlAvatar;
+  String? get urlAvatar => _urlAvatar;
 
-  PagesCreate _pageDetail;
+  PagesCreate? _pageDetail;
 
-  PagesCreate get pageDetail => _pageDetail;
+  PagesCreate? get pageDetail => _pageDetail;
 
   ScrollController feedScrollController = ScrollController();
 
@@ -159,7 +159,7 @@ class PagesBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  set isReceiveNotified(bool isReceiveNotified) {
+  set isReceiveNotified(bool? isReceiveNotified) {
     _isReceiveNotified = isReceiveNotified;
     notifyListeners();
   }
@@ -179,34 +179,34 @@ class PagesBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  set pageDetail(PagesCreate pageDetail) {
+  set pageDetail(PagesCreate? pageDetail) {
     try {
       _pageDetail = pageDetail;
       if (pageDetail != null) notifyListeners();
     } catch (e) {}
   }
 
-  set listCategoriesSelected(List<String> listCategoriesSelected) {
+  set listCategoriesSelected(List<String?> listCategoriesSelected) {
     _listCategoriesSelected = listCategoriesSelected;
     notifyListeners();
   }
 
-  set phone(String phone) {
+  set phone(String? phone) {
     _phone = phone;
     notifyListeners();
   }
 
-  set website(String website) {
+  set website(String? website) {
     _website = website;
     notifyListeners();
   }
 
-  set currentAddress(String currentAddress) {
+  set currentAddress(String? currentAddress) {
     _currentAddress = currentAddress;
     notifyListeners();
   }
 
-  set listCategoriesId(List<String> listCategoriesId) {
+  set listCategoriesId(List<String?> listCategoriesId) {
     _listCategoriesId = _listCategoriesId;
     notifyListeners();
   }
@@ -216,12 +216,12 @@ class PagesBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  set urlAvatar(String urlAvatar) {
+  set urlAvatar(String? urlAvatar) {
     _urlAvatar = urlAvatar;
     notifyListeners();
   }
 
-  set urlCover(String urlCover) {
+  set urlCover(String? urlCover) {
     _urlCover = urlCover;
     notifyListeners();
   }
@@ -251,8 +251,8 @@ class PagesBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updatePageFollowed(String userId) {
-    if (_pageDetail.followerIds.contains(userId)) {
+  void updatePageFollowed(String? userId) {
+    if (_pageDetail!.followerIds!.contains(userId)) {
       _isFollowed = true;
     } else {
       _isFollowed = false;
@@ -260,29 +260,29 @@ class PagesBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addToListFollowPageIds(String pageId) {
+  void addToListFollowPageIds(String? pageId) {
     _followingPageIds.add(pageId);
     notifyListeners();
   }
 
-  void addItemToListFollowPage(PagesCreate page) {
+  void addItemToListFollowPage(PagesCreate? page) {
     _listPageFollow.add(page);
     notifyListeners();
   }
 
-  void removeItemOutOfListFollowPage(PagesCreate page) {
+  void removeItemOutOfListFollowPage(PagesCreate? page) {
     _listPageFollow.remove(page);
     notifyListeners();
   }
 
-  Future<BaseResponse> getListPage({GraphqlFilter filter}) async {
+  Future<BaseResponse> getListPage({GraphqlFilter? filter}) async {
     try {
       final res = await PagesRepo().getListPage(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PagesCreate.fromJson(e)).toList();
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic).message ?? e.toString());
     } finally {
       notifyListeners();
     }
@@ -293,7 +293,7 @@ class PagesBloc extends ChangeNotifier {
       _pageCreated = [];
       final res = await PagesRepo().getPageCreate(
           filter: GraphqlFilter(
-        filter: 'filter:{ ownerId: "${AuthBloc.instance.userModel.id}"}',
+        filter: 'filter:{ ownerId: "${AuthBloc.instance.userModel!.id}"}',
         order: "{updatedAt: -1}",
       ));
       final List listRaw = res['data'];
@@ -303,32 +303,32 @@ class PagesBloc extends ChangeNotifier {
       return BaseResponse.success(list);
     } catch (e) {
       notifyListeners();
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic).message ?? e.toString());
     } finally {
       notifyListeners();
     }
   }
 
   Future<BaseResponse> getPagesFollow(
-      {GraphqlFilter filter, String userId}) async {
+      {GraphqlFilter? filter, String? userId}) async {
     try {
       _listPageFollow = [];
       final res =
           await PagesRepo().getPostFollower(filter: filter, userId: userId);
       final List listRaw = res['data'];
-      final list = listRaw.map((e) => PagesCreate.fromJson(e)).toList();
+      final List<PagesCreate?> list = listRaw.map((e) => PagesCreate.fromJson(e)).toList();
       // if (list.length < filter.limit) _isEndPostPage = true;
       _listPageFollow = list;
       _lastFetchPageFollow = DateTime.now();
       _pageFollow = 1;
       return BaseResponse.success(list);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic).message ?? e.toString());
     } finally {}
   }
 
   Future<BaseResponse> createPagePost(
-      String pageId,
+      String? pageId,
       String content,
       String expirationDate,
       bool publicity,
@@ -337,11 +337,11 @@ class PagesBloc extends ChangeNotifier {
       List<String> images,
       List<String> videos,
       List<LatLng> polygon,
-      List<String> tagUserIds,
-      String category,
-      String action,
-      double area,
-      double price,
+      List<String?> tagUserIds,
+      String? category,
+      String? action,
+      double? area,
+      double? price,
       bool onlyMe) async {
     try {
       final res = await PostRepo().createPost(
@@ -363,7 +363,7 @@ class PagesBloc extends ChangeNotifier {
       _listPagePost.insert(0, PostModel.fromJson(res));
       return BaseResponse.success(PostModel.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       // wait to reload post
       Future.delayed(Duration(seconds: 1), () => notifyListeners());
@@ -373,16 +373,16 @@ class PagesBloc extends ChangeNotifier {
   Future<BaseResponse> getAllHashTagTP() async {
     try {
       final res = await PostRepo().getAllHashTagTP();
-      hasTags = res as List<dynamic>;
+      hasTags = res as List<dynamic>?;
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic).message ?? e.toString());
     } finally {
       // notifyListeners();
     }
   }
 
-  Future<BaseResponse> getPostsOfPage({GraphqlFilter filter}) async {
+  Future<BaseResponse> getPostsOfPage({GraphqlFilter? filter}) async {
     try {
       _isGetPostPageLoading = true;
       final res = await PagesRepo().getPostOfPage(filter: filter);
@@ -397,14 +397,14 @@ class PagesBloc extends ChangeNotifier {
     } catch (e) {
       _isGetPostPageLoading = false;
       notifyListeners();
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic).message ?? e.toString());
     } finally {
       _isGetPostPageLoading = false;
       notifyListeners();
     }
   }
 
-  Future<BaseResponse> getPostsOfPageByGuess({GraphqlFilter filter}) async {
+  Future<BaseResponse> getPostsOfPageByGuess({GraphqlFilter? filter}) async {
     try {
       _isGetPostPageLoading = true;
       final res = await PagesRepo().getPostOfPageByGuest(filter: filter);
@@ -419,47 +419,47 @@ class PagesBloc extends ChangeNotifier {
     } catch (e) {
       _isGetPostPageLoading = false;
       notifyListeners();
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic).message ?? e.toString());
     } finally {
       _isGetPostPageLoading = false;
       notifyListeners();
     }
   }
 
-  Future<BaseResponse> followPage(String pageId) async {
+  Future<BaseResponse> followPage(String? pageId) async {
     try {
       addToListFollowPageIds(pageId);
       final res = await PagesRepo().followPage(pageId);
       notifyListeners();
       return BaseResponse.success(FollowPagesModel.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       _isFollowed = true;
       Future.delayed(Duration(seconds: 1), () => notifyListeners());
     }
   }
 
-  Future<BaseResponse> unFollowPage(String pageId) async {
+  Future<BaseResponse> unFollowPage(String? pageId) async {
     try {
       final res = await PagesRepo().unFollowPage(pageId);
       notifyListeners();
       return BaseResponse.success(FollowPagesModel.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       _isFollowed = false;
       Future.delayed(Duration(seconds: 1), () => notifyListeners());
     }
   }
 
-  Future<BaseResponse> receiveNotifyPage(String pageId) async {
+  Future<BaseResponse> receiveNotifyPage(String? pageId) async {
     try {
       final res = await PagesRepo().receiveNotifyPage(pageId);
       notifyListeners();
       return BaseResponse.success(ReceiveNotifyPageModel.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       _isReceiveNotified = true;
       _isReciveNotiPageLoading = false;
@@ -467,13 +467,13 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> unReceiveNotifyPage(String pageId) async {
+  Future<BaseResponse> unReceiveNotifyPage(String? pageId) async {
     try {
       final res = await PagesRepo().unReceiveNotifyPage(pageId);
       notifyListeners();
       return BaseResponse.success(ReceiveNotifyPageModel.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       _isReceiveNotified = false;
       _isReciveNotiPageLoading = false;
@@ -495,19 +495,19 @@ class PagesBloc extends ChangeNotifier {
       );
 
   void _handleAddCategoriesGroup({
-    String val,
-    List<String> listFull,
-    List<String> listSelected,
-    List<PagesCategoriesModel> listModel,
-    List<String> listId,
+    required String val,
+    List<String?>? listFull,
+    List<String?>? listSelected,
+    List<PagesCategoriesModel>? listModel,
+    List<String?>? listId,
   }) {
     if (val.trim().isNotEmpty) {
-      var res = listFull.indexWhere((element) => element == val);
+      var res = listFull!.indexWhere((element) => element == val);
       if (res != -1) {
-        if (!listSelected.contains(val)) {
+        if (!listSelected!.contains(val)) {
           listSelected.add(val);
           var index = listFull.indexWhere((element) => element == val);
-          listId.add(listModel[index].id);
+          listId!.add(listModel![index].id);
           notifyListeners();
         }
       } else
@@ -516,8 +516,8 @@ class PagesBloc extends ChangeNotifier {
     }
   }
 
-  Future<List<String>> getCategoriesByKeyword({GraphqlFilter filter}) async {
-    List<String> _listTmp = [];
+  Future<List<String?>> getCategoriesByKeyword({GraphqlFilter? filter}) async {
+    List<String?> _listTmp = [];
     final res = await PagesRepo().getCategories(filter: filter);
     final List listRaw = res['data'];
     List<PagesCategoriesModel> listModel =
@@ -528,7 +528,7 @@ class PagesBloc extends ChangeNotifier {
 
   Future<void> getAllCategories() async {
     _isLoading = true;
-    List<String> _listTmpName = [];
+    List<String?> _listTmpName = [];
     _listCategories = [];
     _listModelCategories = [];
     _listCategoriesSelected = [];
@@ -550,12 +550,12 @@ class PagesBloc extends ChangeNotifier {
   Future<BaseResponse> createPage(
       String name,
       String description,
-      String avatar,
-      String coverImage,
-      List<String> categoryIds,
-      String address,
-      String website,
-      String phone) async {
+      String? avatar,
+      String? coverImage,
+      List<String?> categoryIds,
+      String? address,
+      String? website,
+      String? phone) async {
     try {
       final res = await PagesRepo().createPage(name, description, avatar,
           coverImage, categoryIds, address, website, phone);
@@ -563,50 +563,50 @@ class PagesBloc extends ChangeNotifier {
       notifyListeners();
       return BaseResponse.success(PagesCreate.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       // wait to reload post
       Future.delayed(Duration(seconds: 1), () => notifyListeners());
     }
   }
 
-  Future<BaseResponse> getOnePage(String pageId) async {
+  Future<BaseResponse> getOnePage(String? pageId) async {
     try {
       final res = await PagesRepo().getOnePage(pageId);
       if (res == null)
         return BaseResponse.fail('Trang không tồn tại hoặc đã bị xóa');
       return BaseResponse.success(PagesCreate.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic).message ?? e.toString());
     } finally {
       notifyListeners();
     }
   }
 
-  Future<BaseResponse> getOnePageGuess(String pageId) async {
+  Future<BaseResponse> getOnePageGuess(String? pageId) async {
     try {
       final res = await PagesRepo().getOnePageGuess(pageId);
       if (res == null)
         return BaseResponse.fail('Trang không tồn tại hoặc đã bị xóa');
       return BaseResponse.success(PagesCreate.fromJson(res));
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic).message ?? e.toString());
     } finally {
       notifyListeners();
     }
   }
 
   Future<BaseResponse> updatePage(
-      {String id,
-      String avatar,
-      String cover,
-      String name,
-      String description,
-      List<String> categoryIds,
-      String address,
-      String phone,
-      String email,
-      String website}) async {
+      {String? id,
+      String? avatar,
+      String? cover,
+      String? name,
+      String? description,
+      List<String>? categoryIds,
+      String? address,
+      String? phone,
+      String? email,
+      String? website}) async {
     try {
       _isUpdateLoading = true;
       final res = await PagesRepo().updatePage(id, avatar, cover, name,
@@ -615,7 +615,7 @@ class PagesBloc extends ChangeNotifier {
       return BaseResponse.success(res);
     } catch (e) {
       _isUpdateLoading = false;
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic).message ?? e.toString());
     } finally {
       _isUpdateLoading = false;
       notifyListeners();
@@ -635,7 +635,7 @@ class PagesBloc extends ChangeNotifier {
       notifyListeners();
       return BaseResponse.success(_suggestFollowPage);
     } catch (e) {
-      return BaseResponse.fail(e.message ?? e.toString());
+      return BaseResponse.fail((e as dynamic).message ?? e.toString());
     } finally {
       notifyListeners();
     }

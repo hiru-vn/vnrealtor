@@ -8,7 +8,7 @@ import 'package:datcao/modules/services/post_srv.dart';
 import 'package:datcao/share/import.dart';
 
 class PagesRepo {
-  Future getListPage({GraphqlFilter filter}) async {
+  Future getListPage({GraphqlFilter? filter}) async {
     final res = await PagesSrv().getList(
         limit: filter?.limit,
         offset: filter?.offset,
@@ -18,7 +18,7 @@ class PagesRepo {
     return res;
   }
 
-  Future getPageCreate({GraphqlFilter filter}) async {
+  Future getPageCreate({GraphqlFilter? filter}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
     final data = 'q:{ ${filter?.filter} }';
@@ -31,7 +31,7 @@ $pagesFragment
   }
 
   Future getPostOfPage(
-      {GraphqlFilter filter, String timestamp, String timeSort}) async {
+      {GraphqlFilter? filter, String? timestamp, String? timeSort}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
     final data = 'q:{filter: ${filter?.filter}}';
@@ -44,7 +44,7 @@ $pagesPostFragment
   }
 
   Future getPostOfPageByGuest(
-      {GraphqlFilter filter, String timestamp, String timeSort}) async {
+      {GraphqlFilter? filter, String? timestamp, String? timeSort}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
     final data = 'q:{filter: ${filter?.filter}}';
@@ -56,7 +56,7 @@ $pagesPostFragment
     return res['getAllPost'];
   }
 
-  Future followPage(String pageId) async {
+  Future followPage(String? pageId) async {
     String data = '''
     pageId: "$pageId"
     ''';
@@ -68,7 +68,7 @@ $followPageFragment
     return res["followPage"];
   }
 
-  Future unFollowPage(String pageId) async {
+  Future unFollowPage(String? pageId) async {
     String data = '''
     pageId: "$pageId"
     ''';
@@ -80,7 +80,7 @@ $followPageFragment
     return res["unfollowPage"];
   }
 
-  Future receiveNotifyPage(String pageId) async {
+  Future receiveNotifyPage(String? pageId) async {
     String data = '''
     pageId: "$pageId"
     ''';
@@ -92,7 +92,7 @@ $receiveNotifyPageFragment
     return res["reciveNotiPage"];
   }
 
-  Future unReceiveNotifyPage(String pageId) async {
+  Future unReceiveNotifyPage(String? pageId) async {
     String data = '''
     pageId: "$pageId"
     ''';
@@ -105,7 +105,7 @@ $receiveNotifyPageFragment
   }
 
   Future getCategories(
-      {GraphqlFilter filter, String timestamp, String timeSort}) async {
+      {GraphqlFilter? filter, String? timestamp, String? timeSort}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
     final data = 'q:{search: "${filter?.search}"}';
@@ -121,12 +121,12 @@ $categoriesPageFragment
   Future createPage(
       String name,
       String description,
-      String avatar,
-      String coverImage,
-      List<String> categoryIds,
-      String address,
-      String website,
-      String phone) async {
+      String? avatar,
+      String? coverImage,
+      List<String?> categoryIds,
+      String? address,
+      String? website,
+      String? phone) async {
     String data = '''
 name: "$name"
 description: "$description"
@@ -145,7 +145,7 @@ $pageFragment
     return res["createPage"];
   }
 
-  Future getOnePage(String pageId) async {
+  Future getOnePage(String? pageId) async {
     final data = 'id: "$pageId"';
     final res = await PagesSrv().query('getOnePage', data, fragment: '''
     $pagesFragment
@@ -153,7 +153,7 @@ $pageFragment
     return res['getOnePage'];
   }
 
-  Future getOnePageGuess(String pageId) async {
+  Future getOnePageGuess(String? pageId) async {
     final data = 'id: "$pageId"';
     final res = await PagesSrv().query('getOnePage', data, fragment: '''
     ${pagesFragment.replaceFirst('isOwner', '').replaceFirst('isNoty', '')}
@@ -161,7 +161,7 @@ $pageFragment
     return res['getOnePage'];
   }
 
-  Future getPostFollower({GraphqlFilter filter, String userId}) async {
+  Future getPostFollower({GraphqlFilter? filter, String? userId}) async {
     if (filter?.filter == null) filter?.filter = "{}";
     if (filter?.search == null) filter?.search = "";
     final data =
@@ -181,16 +181,16 @@ $pagesFragment
   }
 
   Future updatePage(
-      String id,
-      String avartar,
-      String coverImage,
-      String name,
-      String description,
-      List<String> categoryIds,
-      String address,
-      String phone,
-      String email,
-      String website) async {
+      String? id,
+      String? avartar,
+      String? coverImage,
+      String? name,
+      String? description,
+      List<String>? categoryIds,
+      String? address,
+      String? phone,
+      String? email,
+      String? website) async {
     final res = await UpdatePageSrv().update(
         id: id,
         data: '''

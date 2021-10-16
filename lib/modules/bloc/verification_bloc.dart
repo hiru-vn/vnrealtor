@@ -6,18 +6,18 @@ class VerificationBloc extends ChangeNotifier {
   static final VerificationBloc instance =
       VerificationBloc._privateConstructor();
 
-  String name;
-  String dateOfBirth;
-  String idCard;
-  String imageFront;
-  String imageBehind;
-  String currentAddress;
-  String phone;
-  String website;
-  String socialNetwork;
-  String taxCode;
-  String phoneCom;
-  String email;
+  String? name;
+  String? dateOfBirth;
+  String? idCard;
+  String? imageFront;
+  String? imageBehind;
+  String? currentAddress;
+  String? phone;
+  String? website;
+  String? socialNetwork;
+  String? taxCode;
+  String? phoneCom;
+  String? email;
 
   Future<BaseResponse> createVerification() async {
     try {
@@ -33,7 +33,7 @@ class VerificationBloc extends ChangeNotifier {
           socialNetwork);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }
@@ -45,7 +45,7 @@ class VerificationBloc extends ChangeNotifier {
           name, taxCode, currentAddress, email, phoneCom, website);
       return BaseResponse.success(res);
     } catch (e) {
-      return BaseResponse.fail(e?.toString());
+      return BaseResponse.fail(e.toString());
     } finally {
       notifyListeners();
     }

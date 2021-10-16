@@ -4,10 +4,10 @@ import 'package:datcao/share/widget/spacing_box.dart';
 import 'package:datcao/themes/color.dart';
 
 class DialScreen extends StatelessWidget {
-  final List<String> names;
-  final Function disposeCallBack;
+  final List<String>? names;
+  final Function? disposeCallBack;
 
-  const DialScreen({Key key, this.names, this.disposeCallBack})
+  const DialScreen({Key? key, this.names, this.disposeCallBack})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class DialScreen extends StatelessWidget {
                 names?.join(", ") ?? 'Calling...',
                 style: Theme.of(context)
                     .textTheme
-                    .headline4
+                    .headline4!
                     .copyWith(color: Colors.white),
               ),
               SpacingBox(h: 0.3),
@@ -76,8 +76,8 @@ class DialScreen extends StatelessWidget {
               RoundedButton(
                 iconSrc: Icons.call_end,
                 press: () {
-                  disposeCallBack();
-                  navigatorKey.currentState.maybePop();
+                  disposeCallBack!();
+                  navigatorKey.currentState!.maybePop();
                 },
                 color: Colors.red[700],
                 iconColor: Colors.white,
@@ -93,10 +93,10 @@ class DialScreen extends StatelessWidget {
 
 class DialButton extends StatelessWidget {
   const DialButton({
-    Key key,
-    @required this.icon,
-    @required this.text,
-    @required this.press,
+    Key? key,
+    required this.icon,
+    required this.text,
+    required this.press,
   }) : super(key: key);
 
   final String text;
@@ -133,17 +133,17 @@ class DialButton extends StatelessWidget {
 
 class RoundedButton extends StatelessWidget {
   const RoundedButton({
-    Key key,
+    Key? key,
     this.size = 64,
-    @required this.iconSrc,
+    required this.iconSrc,
     this.color = Colors.white,
     this.iconColor = Colors.black,
-    @required this.press,
+    required this.press,
   }) : super(key: key);
 
   final double size;
   final IconData iconSrc;
-  final Color color, iconColor;
+  final Color? color, iconColor;
   final VoidCallback press;
 
   @override
@@ -175,9 +175,9 @@ class RoundedButton extends StatelessWidget {
 
 class DialUserPic extends StatefulWidget {
   const DialUserPic({
-    Key key,
+    Key? key,
     this.size = 192,
-    @required this.image,
+    required this.image,
   }) : super(key: key);
 
   final double size;
@@ -189,7 +189,7 @@ class DialUserPic extends StatefulWidget {
 
 class _DialUserPicState extends State<DialUserPic>
     with TickerProviderStateMixin {
-  AnimationController _animationController;
+  late AnimationController _animationController;
   Tween<double> _tween = Tween(begin: 0.75, end: 1);
 
   @override

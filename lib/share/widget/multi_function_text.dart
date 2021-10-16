@@ -12,7 +12,7 @@ enum TrimMode {
 class MultiFunctionText extends StatefulWidget {
   const MultiFunctionText(
     this.data, {
-    Key key,
+    Key? key,
     this.trimExpandedText = 'show less',
     this.trimCollapsedText = 'read more',
     this.colorClickableText,
@@ -36,19 +36,19 @@ class MultiFunctionText extends StatefulWidget {
   final String data;
   final String trimExpandedText;
   final String trimCollapsedText;
-  final Color colorClickableText;
+  final Color? colorClickableText;
   final int trimLength;
   final int trimLines;
   final TrimMode trimMode;
-  final TextStyle style;
-  final TextAlign textAlign;
-  final TextDirection textDirection;
-  final Locale locale;
-  final double textScaleFactor;
-  final String semanticsLabel;
-  final TextStyle moreStyle;
-  final TextStyle lessStyle;
-  final TextStyle delimiterStyle;
+  final TextStyle? style;
+  final TextAlign? textAlign;
+  final TextDirection? textDirection;
+  final Locale? locale;
+  final double? textScaleFactor;
+  final String? semanticsLabel;
+  final TextStyle? moreStyle;
+  final TextStyle? lessStyle;
+  final TextStyle? delimiterStyle;
 
   @override
   MultiFunctionTextState createState() => MultiFunctionTextState();
@@ -68,8 +68,8 @@ class MultiFunctionTextState extends State<MultiFunctionText> {
   @override
   Widget build(BuildContext context) {
     final DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
-    TextStyle effectiveTextStyle = widget.style;
-    if (widget.style == null || widget.style.inherit) {
+    TextStyle? effectiveTextStyle = widget.style;
+    if (widget.style == null || widget.style!.inherit) {
       effectiveTextStyle = defaultTextStyle.style.merge(widget.style);
     }
 
@@ -84,9 +84,9 @@ class MultiFunctionTextState extends State<MultiFunctionText> {
     final colorClickableText =
         widget.colorClickableText ?? Theme.of(context).accentColor;
     final _defaultLessStyle = widget.lessStyle ??
-        effectiveTextStyle.copyWith(color: colorClickableText);
+        effectiveTextStyle!.copyWith(color: colorClickableText);
     final _defaultMoreStyle = widget.moreStyle ??
-        effectiveTextStyle.copyWith(color: colorClickableText);
+        effectiveTextStyle!.copyWith(color: colorClickableText);
     final _defaultDelimiterStyle = widget.delimiterStyle ?? effectiveTextStyle;
 
     TextSpan link = TextSpan(
@@ -138,7 +138,7 @@ class MultiFunctionTextState extends State<MultiFunctionText> {
 
         // Get the endIndex of data
         bool linkLongerThanLine = false;
-        int endIndex;
+        int? endIndex;
 
         if (linkSize.width < maxWidth) {
           final pos = textPainter.getPositionForOffset(Offset(

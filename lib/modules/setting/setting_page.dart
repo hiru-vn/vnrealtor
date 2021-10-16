@@ -18,7 +18,7 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  AuthBloc _authBloc;
+  AuthBloc? _authBloc;
 
   @override
   void didChangeDependencies() {
@@ -40,7 +40,7 @@ class _SettingPageState extends State<SettingPage> {
       // },
       {
         "name":
-            "Điểm tương tác: ${_authBloc.userModel.reputationScore.toString()}",
+            "Điểm tương tác: ${_authBloc!.userModel!.reputationScore.toString()}",
         "img": "assets/image/star_point.png",
         "action": () {
           showAlertDialog(context, 'Đang cập nhật', navigatorKey: navigatorKey);
@@ -157,10 +157,10 @@ class _SettingPageState extends State<SettingPage> {
                         radius: 25,
                         backgroundColor: Colors.white,
                         backgroundImage:
-                            AuthBloc.instance.userModel.avatar != null
+                            (AuthBloc.instance.userModel!.avatar != null
                                 ? CachedNetworkImageProvider(
-                                    AuthBloc.instance.userModel.avatar)
-                                : AssetImage('assets/image/default_avatar.png'),
+                                    AuthBloc.instance.userModel!.avatar!)
+                                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
                       ),
                     ),
                     SizedBox(width: 16),
@@ -171,12 +171,12 @@ class _SettingPageState extends State<SettingPage> {
                         Row(
                           children: [
                             Text(
-                              _authBloc.userModel?.name ?? '',
+                              _authBloc!.userModel?.name ?? '',
                               style: ptTitle()
                                   .copyWith(fontWeight: FontWeight.w900),
                             ),
                             SizedBox(width: 8),
-                            if (UserBloc.isVerified(_authBloc.userModel))
+                            if (UserBloc.isVerified(_authBloc!.userModel))
                               CustomTooltip(
                                 margin: EdgeInsets.only(top: 0),
                                 message: 'Tài khoản xác thực',
@@ -203,7 +203,7 @@ class _SettingPageState extends State<SettingPage> {
                                 .then((value) => setState(() {}));
                           },
                           child: Text(
-                            AuthBloc.instance.userModel.role == 'AGENT'
+                            AuthBloc.instance.userModel!.role == 'AGENT'
                                 ? 'Cập nhật thông tin'
                                 : 'Cập nhật thông tin',
                             style: ptSmall()
@@ -215,16 +215,16 @@ class _SettingPageState extends State<SettingPage> {
                   ],
                 ),
               ),
-              if ((AuthBloc.instance.userModel.role != 'COMPANY' ||
-                      !AuthBloc.instance.userModel.isVerify) &&
+              if ((AuthBloc.instance.userModel!.role != 'COMPANY' ||
+                      !AuthBloc.instance.userModel!.isVerify!) &&
                   ['AGENT', 'COMPANY', 'EDITOR']
-                      .contains(AuthBloc.instance.userModel.role))
+                      .contains(AuthBloc.instance.userModel!.role))
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
                     onTap: () {
                       audioCache.play('tab3.mp3');
-                      if (_authBloc.userModel.role == 'COMPANY') {
+                      if (_authBloc!.userModel!.role == 'COMPANY') {
                         VerifyCompany.navigate();
                         return;
                       }
@@ -248,7 +248,7 @@ class _SettingPageState extends State<SettingPage> {
                                 width: 45,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: _authBloc.userModel.role != 'AGENT'
+                                    color: _authBloc!.userModel!.role != 'AGENT'
                                         ? Colors.transparent
                                         : ptSecondaryColor(context)),
                                 child: Center(
@@ -259,7 +259,7 @@ class _SettingPageState extends State<SettingPage> {
                                       shape: BoxShape.circle,
                                       color: ptDarkColor(context),
                                     ),
-                                    child: _authBloc.userModel.role == 'AGENT'
+                                    child: _authBloc!.userModel!.role == 'AGENT'
                                         ? Center(
                                             child: Container(
                                               height: 38,
@@ -292,12 +292,12 @@ class _SettingPageState extends State<SettingPage> {
                                         .copyWith(bottom: 5, left: 3),
                                     child: Text(
                                       (() {
-                                        if (_authBloc.userModel.role == 'AGENT')
+                                        if (_authBloc!.userModel!.role == 'AGENT')
                                           return 'Bạn đã là nhà môi giới';
-                                        else if (_authBloc.userModel.role ==
+                                        else if (_authBloc!.userModel!.role ==
                                             'EDITOR')
                                           return 'Xác thực nhà môi giới';
-                                        else if (_authBloc.userModel.role ==
+                                        else if (_authBloc!.userModel!.role ==
                                             'COMPANY')
                                           return 'Xác thực tài khoản doanh nghiệp';
                                         return '';
@@ -312,7 +312,7 @@ class _SettingPageState extends State<SettingPage> {
                                     padding: const EdgeInsets.all(10)
                                         .copyWith(top: 0, left: 3),
                                     child: Text(
-                                      _authBloc.userModel.role != 'AGENT'
+                                      _authBloc!.userModel!.role != 'AGENT'
                                           ? 'Để đăng bài bds, bạn sẽ cần cung cấp thêm 1 số thông tin.'
                                           : 'Cập nhật lại thông tin nhà môi giới của bạn tại đây',
                                       maxLines: 2,
@@ -335,9 +335,9 @@ class _SettingPageState extends State<SettingPage> {
                 staggeredTiles: list.map((_) => StaggeredTile.fit(1)).toList(),
                 children: List.generate(list.length, (index) {
                   return ProfileItemCard(
-                    title: list[index]['name'],
-                    image: list[index]['img'],
-                    onTap: list[index]['action'],
+                    title: list[index]['name'] as String?,
+                    image: list[index]['img'] as String?,
+                    onTap: list[index]['action'] as Function?,
                   );
                 }),
               ),
@@ -361,7 +361,7 @@ class _SettingPageState extends State<SettingPage> {
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) return SizedBox.shrink();
                     return Text(
-                      'v${snapshot.data.version}',
+                      'v${snapshot.data!.version}',
                       style: ptSmall().copyWith(color: Colors.black54),
                     );
                   }),
@@ -375,11 +375,11 @@ class _SettingPageState extends State<SettingPage> {
 }
 
 class ProfileItemCard extends StatelessWidget {
-  final String image;
-  final String title;
-  final Function onTap;
+  final String? image;
+  final String? title;
+  final Function? onTap;
 
-  const ProfileItemCard({Key key, this.image, this.title, this.onTap})
+  const ProfileItemCard({Key? key, this.image, this.title, this.onTap})
       : super(key: key);
 
   @override
@@ -388,7 +388,7 @@ class ProfileItemCard extends StatelessWidget {
       padding: const EdgeInsets.all(6),
       child: GestureDetector(
         onTap: () {
-          onTap();
+          onTap!();
           audioCache.play('tab3.mp3');
         },
         child: Card(
@@ -412,7 +412,7 @@ class ProfileItemCard extends StatelessWidget {
                       child: SizedBox(
                         width: deviceWidth(context) / 7,
                         child: Image.asset(
-                          image,
+                          image!,
                           fit: BoxFit.fitWidth,
                         ),
                       ),
@@ -424,7 +424,7 @@ class ProfileItemCard extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 child: Center(
                   child: Text(
-                    title,
+                    title!,
                     maxLines: null,
                     style: ptBody().copyWith(
                       fontWeight: FontWeight.w800,

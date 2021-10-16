@@ -12,13 +12,13 @@ class _InfoPostPageState extends State<InfoPostPage> {
   final divider = Divider(height: 1, color: Colors.black12.withOpacity(0.3));
   final TextEditingController _priceC = TextEditingController();
   final TextEditingController _areaC = TextEditingController();
-  String selectedType;
-  String selectedNeed;
+  String? selectedType;
+  String? selectedNeed;
 
   _onDone() {
-    if (!_formKey.currentState.validate()) return;
-    _formKey.currentState.save();
-    navigatorKey.currentState.pop([
+    if (!_formKey.currentState!.validate()) return;
+    _formKey.currentState!.save();
+    navigatorKey.currentState!.pop([
       selectedType,
       selectedNeed,
       double.parse(_areaC.text.replaceAll(',', '')),
@@ -195,7 +195,7 @@ class _InfoPostPageState extends State<InfoPostPage> {
     });
   }
 
-  _buildItem(String value, String selectedValue, Function(String) onTap) {
+  _buildItem(String value, String? selectedValue, Function(String) onTap) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {

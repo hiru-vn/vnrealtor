@@ -77,11 +77,11 @@ class WithKeepKeyboardPopupMenu extends StatefulWidget {
 
   /// Build the custom widget inside the popup menu. If passed value to
   /// [menuBuilder], [menuItemBuilder] must be null.
-  final MenuBuilder menuBuilder;
+  final MenuBuilder? menuBuilder;
 
   /// Build the item list inside the popup menu.If passed value to
   /// [menuItemBuilder], [menuBuilder] must be null.
-  final MenuItemBuilder menuItemBuilder;
+  final MenuItemBuilder? menuItemBuilder;
 
   /// Calculate the position of the popup, defaults to
   /// [_defaultCalculatePopupPosition]
@@ -92,12 +92,12 @@ class WithKeepKeyboardPopupMenu extends StatefulWidget {
   final PopupMenuBackgroundBuilder backgroundBuilder;
 
   WithKeepKeyboardPopupMenu({
-    this.childBuilder,
+    required this.childBuilder,
     this.menuBuilder,
     this.menuItemBuilder,
     this.calculatePopupPosition = _defaultCalculatePopupPosition,
     this.backgroundBuilder = _defaultBackgroundBuilder,
-    Key key,
+    Key? key,
   })  : assert((menuBuilder == null) != (menuItemBuilder == null),
             'You can only pass one of [menuBuilder] and [menuItemBuilder].'),
         assert(childBuilder != null),
@@ -111,7 +111,7 @@ class WithKeepKeyboardPopupMenu extends StatefulWidget {
 class WithKeepKeyboardPopupMenuState extends State<WithKeepKeyboardPopupMenu> {
   final GlobalKey _childKey = GlobalKey();
   GlobalKey<AnimatedPopupMenuState> _menuKey = GlobalKey();
-  OverlayEntry _entry;
+  late OverlayEntry _entry;
   PopupMenuState popupState = PopupMenuState.CLOSED;
 
   @override
@@ -144,7 +144,7 @@ class WithKeepKeyboardPopupMenuState extends State<WithKeepKeyboardPopupMenu> {
     }
   }
 
-  Rect _getChildRect() {
+  Rect? _getChildRect() {
     final context = _childKey.currentContext;
     if (context == null) return null;
     final childRenderBox = context.findRenderObject() as RenderBox;
@@ -174,13 +174,13 @@ class WithKeepKeyboardPopupMenuState extends State<WithKeepKeyboardPopupMenu> {
 
   Widget _buildPopupBody() {
     if (widget.menuBuilder != null) {
-      return widget.menuBuilder(context, closePopupMenu);
+      return widget.menuBuilder!(context, closePopupMenu);
     } else {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: _kMenuVerticalPadding),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: widget.menuItemBuilder(context, closePopupMenu),
+          children: widget.menuItemBuilder!(context, closePopupMenu),
         ),
       );
     }
@@ -234,7 +234,7 @@ class WithKeepKeyboardPopupMenuState extends State<WithKeepKeyboardPopupMenu> {
         );
       });
 
-      final overlay = Overlay.of(context);
+      final overlay = Overlay.of(context)!;
       overlay.insert(_entry);
 
       await openMenuCompleter.future;

@@ -4,7 +4,7 @@ import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
 
 class InfoSocialPageCreatePage extends StatefulWidget {
-  final PageController pageController;
+  final PageController? pageController;
 
   const InfoSocialPageCreatePage({
     this.pageController,
@@ -18,9 +18,9 @@ class InfoSocialPageCreatePage extends StatefulWidget {
 class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
   final _formKey = GlobalKey<FormState>();
 
-  PageController get _pageController => widget.pageController;
+  PageController? get _pageController => widget.pageController;
 
-  PagesBloc _pagesBloc;
+  PagesBloc? _pagesBloc;
 
   @override
   void didChangeDependencies() {
@@ -31,9 +31,9 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
   }
 
   void _nextPage() {
-    if (!_formKey.currentState.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
     FocusScope.of(context).requestFocus(FocusNode());
-    _pageController.nextPage(
+    _pageController!.nextPage(
         duration: Duration(milliseconds: 300), curve: Curves.easeIn);
   }
 
@@ -55,16 +55,16 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
                     children: [
                       _buildTextField(
                           'Địa chỉ hiện tại',
-                          _pagesBloc.currentAddress,
-                          (val) => _pagesBloc.currentAddress = val,
+                          _pagesBloc!.currentAddress,
+                          (val) => _pagesBloc!.currentAddress = val,
                           validator: TextFieldValidator.notEmptyValidator),
                       heightSpace(20),
-                      _buildTextField('Website', _pagesBloc.website,
-                          (val) => _pagesBloc.website = val,
+                      _buildTextField('Website', _pagesBloc!.website,
+                          (val) => _pagesBloc!.website = val,
                           validator: TextFieldValidator.notEmptyValidator),
                       heightSpace(20),
-                      _buildTextField('Số điện thoại', _pagesBloc.phone,
-                          (val) => _pagesBloc.phone = val,
+                      _buildTextField('Số điện thoại', _pagesBloc!.phone,
+                          (val) => _pagesBloc!.phone = val,
                           type: TextInputType.phone,
                           validator: TextFieldValidator.phoneValidator),
                       heightSpace(20),
@@ -90,7 +90,7 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
         ),
       );
 
-  Widget _itemTextField({TextEditingController controller, String hintText}) =>
+  Widget _itemTextField({TextEditingController? controller, String? hintText}) =>
       Material(
         elevation: 0,
         color: ptSecondaryColor(context),
@@ -121,9 +121,9 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
         ),
       );
 
-  _buildTextField(String hint, String initialValue, Function(String) onChange,
+  _buildTextField(String hint, String? initialValue, Function(String) onChange,
           {TextInputType type = TextInputType.text,
-          Function(String) validator}) =>
+          Function(String)? validator}) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -136,7 +136,7 @@ class _InfoSocialPageCreatePageState extends State<InfoSocialPageCreatePage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
               child: TextFormField(
-                validator: validator,
+                validator: validator as String? Function(String?)?,
                 keyboardType: type,
                 initialValue: initialValue,
                 onChanged: onChange,

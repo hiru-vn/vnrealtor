@@ -13,7 +13,7 @@ import 'package:flutter/services.dart';
 class ProfilePage extends StatefulWidget {
   const ProfilePage();
   static Future navigate(UserModel user) {
-    return navigatorKey.currentState.push(pageBuilder(ProfilePage()));
+    return navigatorKey.currentState!.push(pageBuilder(ProfilePage()));
   }
 
   @override
@@ -22,10 +22,10 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
-  AuthBloc _authBloc;
-  UserBloc _userBloc;
-  PostBloc _postBloc;
+  TabController? _tabController;
+  AuthBloc? _authBloc;
+  late UserBloc _userBloc;
+  late PostBloc _postBloc;
   bool canPop = true;
 
   @override
@@ -41,14 +41,14 @@ class _ProfilePageState extends State<ProfilePage>
       _userBloc = Provider.of<UserBloc>(context);
       _postBloc = Provider.of<PostBloc>(context);
       _postBloc.getMyPost();
-      canPop = navigatorKey.currentState.canPop();
+      canPop = navigatorKey.currentState!.canPop();
     }
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController!.dispose();
     super.dispose();
   }
 
@@ -63,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage>
           return [
             SliverToBoxAdapter(
               child: ProfileCard(
-                user: _authBloc.userModel,
+                user: _authBloc!.userModel,
                 tabC: _tabController,
               ),
             ),
@@ -76,7 +76,7 @@ class _ProfilePageState extends State<ProfilePage>
             children: [
               _postBloc.myPosts == null
                   ? kLoadingSpinner
-                  : (_postBloc.myPosts.length != 0
+                  : (_postBloc.myPosts!.length != 0
                       ? RefreshIndicator(
                           color: ptPrimaryColor(context),
                           onRefresh: () async {
@@ -87,9 +87,9 @@ class _ProfilePageState extends State<ProfilePage>
                           },
                           child: ListView.separated(
                             // controller: _userBloc.profileScrollController,
-                            itemCount: _postBloc.myPosts.length,
+                            itemCount: _postBloc.myPosts!.length,
                             itemBuilder: (context, index) {
-                              final post = _postBloc.myPosts[index];
+                              final post = _postBloc.myPosts![index];
                               return PostWidget(post);
                             },
                             separatorBuilder: (context, index) =>
@@ -167,27 +167,27 @@ class ProfilePageAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class ProfileCard extends StatefulWidget {
-  final UserModel user;
-  final TabController tabC;
+  final UserModel? user;
+  final TabController? tabC;
 
-  const ProfileCard({Key key, this.user, this.tabC}) : super(key: key);
+  const ProfileCard({Key? key, this.user, this.tabC}) : super(key: key);
 
   @override
   _ProfileCardState createState() => _ProfileCardState();
 }
 
 class _ProfileCardState extends State<ProfileCard> {
-  UserBloc _userBloc;
-  AuthBloc _authBloc;
+  UserBloc? _userBloc;
+  late AuthBloc _authBloc;
   bool initFetchStatus = false;
-  Uri _emailLaunchUri;
+  Uri? _emailLaunchUri;
 
   @override
   void initState() {
     super.initState();
     _emailLaunchUri = Uri(
       scheme: 'mailto',
-      path: widget.user.email,
+      path: widget.user!.email,
     );
   }
 
@@ -195,7 +195,7 @@ class _ProfileCardState extends State<ProfileCard> {
   void didChangeDependencies() {
     if (_userBloc == null) {
       _userBloc = Provider.of<UserBloc>(context);
-      _authBloc = Provider.of(context);
+      _authBloc = Provider.of<AuthBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -227,9 +227,13 @@ class _ProfileCardState extends State<ProfileCard> {
                         child: CircleAvatar(
                           radius: 37.5,
                           backgroundColor: Colors.white,
-                          backgroundImage: widget.user?.avatar != null
-                              ? CachedNetworkImageProvider(widget.user.avatar)
-                              : AssetImage('assets/image/default_avatar.png'),
+                          backgroundImage:
+                              (widget.user?.avatar != null
+                                      ? CachedNetworkImageProvider(
+                                          widget.user!.avatar!)
+                                      : AssetImage(
+                                          'assets/image/default_avatar.png'))
+                                  as ImageProvider<Object>?,
                           child: VerifiedIcon(widget.user?.role, 14),
                         ),
                       ),
@@ -255,7 +259,7 @@ class _ProfileCardState extends State<ProfileCard> {
                               ),
                               ...[
                                 Text(
-                                  widget.user.name ?? '',
+                                  widget.user!.name ?? '',
                                   style: ptBigTitle(),
                                 ),
                                 SizedBox(width: 8),
@@ -289,7 +293,7 @@ class _ProfileCardState extends State<ProfileCard> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      AuthBloc.instance.userModel.totalPost
+                                      AuthBloc.instance.userModel!.totalPost
                                           .toString(),
                                       style: ptBigTitle(),
                                     ),
@@ -315,8 +319,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        AuthBloc.instance.userModel.followerIds
-                                            .length
+                                        AuthBloc.instance.userModel!
+                                            .followerIds!.length
                                             .toString(),
                                         style: ptBigTitle(),
                                       ),
@@ -345,8 +349,8 @@ class _ProfileCardState extends State<ProfileCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        AuthBloc.instance.userModel.followingIds
-                                            .length
+                                        AuthBloc.instance.userModel!
+                                            .followingIds!.length
                                             .toString(),
                                         style: ptBigTitle(),
                                       ),
@@ -369,19 +373,19 @@ class _ProfileCardState extends State<ProfileCard> {
                     ),
                   ],
                 ),
-                (_authBloc.userModel.description == null ||
-                        _authBloc.userModel.description.trim().isEmpty)
+                (_authBloc.userModel!.description == null ||
+                        _authBloc.userModel!.description!.trim().isEmpty)
                     ? SizedBox(height: 3)
                     : SizedBox(height: 12),
 
-                if (_authBloc.userModel.description != null &&
-                    _authBloc.userModel.description.trim().isNotEmpty)
-                  Text(_authBloc.userModel.description),
+                if (_authBloc.userModel!.description != null &&
+                    _authBloc.userModel!.description!.trim().isNotEmpty)
+                  Text(_authBloc.userModel!.description!),
                 SizedBox(height: 5),
                 Row(
                   children: [
                     Text(
-                      'Điểm tương tác: ${widget.user.reputationScore.toString()}',
+                      'Điểm tương tác: ${widget.user!.reputationScore.toString()}',
                       style: ptBody().copyWith(color: Colors.black54),
                     ),
                     SizedBox(width: 5),
@@ -390,9 +394,9 @@ class _ProfileCardState extends State<ProfileCard> {
                         width: 13,
                         child: Image.asset('assets/image/ip.png')),
                     Spacer(),
-                    if (widget.user.facebookUrl != null)
+                    if (widget.user!.facebookUrl != null)
                       FutureBuilder(
-                          future: canLaunch(widget.user.facebookUrl),
+                          future: canLaunch(widget.user!.facebookUrl!),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) return SizedBox.shrink();
                             if (snapshot.data == false)
@@ -401,7 +405,7 @@ class _ProfileCardState extends State<ProfileCard> {
                               return GestureDetector(
                                 onTap: () {
                                   audioCache.play('tab3.mp3');
-                                  launch(widget.user.facebookUrl);
+                                  launch(widget.user!.facebookUrl!);
                                 },
                                 child: SizedBox(
                                     width: 23,
@@ -412,7 +416,7 @@ class _ProfileCardState extends State<ProfileCard> {
                             return SizedBox.shrink();
                           }),
                     SizedBox(width: 12),
-                    if (widget.user.email != null)
+                    if (widget.user!.email != null)
                       GestureDetector(
                         onTap: () {
                           audioCache.play('tab3.mp3');
@@ -424,14 +428,14 @@ class _ProfileCardState extends State<ProfileCard> {
                             child: Image.asset('assets/image/gmail_icon.png')),
                       ),
                     SizedBox(width: 12),
-                    if (widget.user.dynamicLink != null)
+                    if (widget.user!.dynamicLink != null)
                       GestureDetector(
                         onTap: () {
                           audioCache.play('tab3.mp3');
                           showToast('Đã copy đường dẫn tài khoản', context,
                               isSuccess: true);
                           Clipboard.setData(ClipboardData(
-                              text: widget.user.dynamicLink.shortLink));
+                              text: widget.user!.dynamicLink!.shortLink));
                         },
                         child: SizedBox(
                             width: 23,

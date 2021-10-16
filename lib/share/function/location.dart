@@ -98,8 +98,8 @@ Future<Uint8List> getBytesFromCanvas(
   painter.layout();
   painter.paint(canvas, Offset(18.0 - ((number.length - 1) * 7), 13));
   final img = await pictureRecorder.endRecording().toImage(width, height);
-  final data = await img.toByteData(format: ImageByteFormat.png);
-  return data.buffer.asUint8List();
+  final data = await (img.toByteData(format: ImageByteFormat.png));
+  return data!.buffer.asUint8List();
 }
 
 void initMarkerIcon() {

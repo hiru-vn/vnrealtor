@@ -82,35 +82,35 @@ class Validator {
 }
 
 class TextFieldValidator {
-  static String notEmptyValidator(String string) {
-    if (string?.trim()?.isEmpty ?? false) return 'Vui lòng điền thông tin';
+  static String? notEmptyValidator(String? string) {
+    if (string?.trim().isEmpty ?? false) return 'Vui lòng điền thông tin';
     return null;
   }
 
-  static String numberValidator(String string) {
-    if (double.tryParse(string.replaceAll(',', '')) == null)
+  static String? numberValidator(String? string) {
+    if (double.tryParse(string!.replaceAll(',', '')) == null)
       return 'Số không hợp lệ';
     return null;
   }
 
-  static String emailValidator(String string) {
+  static String? emailValidator(String string) {
     if (!Validator.isEmail(string)) return 'Email không hợp lệ';
     return null;
   }
 
-  static String formalValidator(String string) {
+  static String? formalValidator(String string) {
     if (string.trim() == '') return null;
     if (!RegExp(formalPattern).hasMatch(string)) return """dấu _ , a-z , 0-9""";
     return null;
   }
 
-  static String phoneValidator(String string) {
+  static String? phoneValidator(String string) {
     if (!Validator.isPhone(string)) return 'Số điện thoại không hợp lệ';
     return null;
   }
 
-  static String passValidator(String string) {
-    if (string.length < 6) return 'Cần bằng hoặc nhiều hơn 6 kí tự';
+  static String? passValidator(String? string) {
+    if (string!.length < 6) return 'Cần bằng hoặc nhiều hơn 6 kí tự';
     return null;
   }
 }

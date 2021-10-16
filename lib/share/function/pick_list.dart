@@ -11,10 +11,10 @@ class PickListItem {
 }
 
 void pickList(BuildContext context,
-    {String closeText,
-    String title,
-    @required List<PickListItem> options,
-    @required Function(dynamic) onPicked}) {
+    {String? closeText,
+    String? title,
+    required List<PickListItem> options,
+    required Function(dynamic) onPicked}) {
   if (options == null) return;
   showModalBottomSheet(
       useRootNavigator: true,
@@ -43,10 +43,10 @@ void pickList(BuildContext context,
                           padding: EdgeInsets.all(20).copyWith(bottom: 10),
                           child: Text(title ?? 'Chọn', style: ptTitle()),
                         ),
-                        ...options?.map(
+                        ...options.map(
                           (e) => InkWell(
                             onTap: () {
-                              navigatorKey.currentState.maybePop(e.value);
+                              navigatorKey.currentState!.maybePop(e.value);
                               onPicked(e.value);
                             },
                             child: OptionItem(
@@ -73,7 +73,7 @@ void pickList(BuildContext context,
                 text: 'Hủy',
                 height: 50,
                 borderRadius: 4,
-                onPress: () => navigatorKey.currentState.maybePop(),
+                onPress: () => navigatorKey.currentState!.maybePop(),
               ),
             ),
             SpacingBox(h: 4),
@@ -83,10 +83,10 @@ void pickList(BuildContext context,
 }
 
 class OptionItem extends StatelessWidget {
-  final Color color;
+  final Color? color;
   final String text;
 
-  const OptionItem({Key key, this.color, @required this.text})
+  const OptionItem({Key? key, this.color, required this.text})
       : super(key: key);
 
   @override

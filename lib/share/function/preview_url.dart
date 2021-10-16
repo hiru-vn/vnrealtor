@@ -1,19 +1,20 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:html/dom.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:html/parser.dart';
 
 class UrlPreviewData {
-  String title;
-  String description;
-  String siteName;
-  String image;
-  String url;
+  String? title;
+  String? description;
+  String? siteName;
+  String? image;
+  String? url;
 
   UrlPreviewData(
       {this.title, this.description, this.siteName, this.image, this.url});
 }
 
-Future<UrlPreviewData> getUrlData(String url) async {
+Future<UrlPreviewData?> getUrlData(String url) async {
   try {
     final store = DefaultCacheManager();
     var response = await store.getSingleFile(url).catchError((error) {
@@ -34,10 +35,9 @@ Future<UrlPreviewData> getUrlData(String url) async {
   }
 }
 
-String _extractOGData(Document document, String parameter) {
-  var titleMetaTag = document.getElementsByTagName("meta")?.firstWhere(
-      (meta) => meta.attributes['property'] == parameter,
-      orElse: () => null);
+String? _extractOGData(Document document, String parameter) {
+  var titleMetaTag = document.getElementsByTagName("meta").firstWhereOrNull(
+      (meta) => meta.attributes['property'] == parameter);
   if (titleMetaTag != null) {
     return titleMetaTag.attributes['content'];
   }

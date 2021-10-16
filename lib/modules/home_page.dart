@@ -16,7 +16,7 @@ import 'bottom_navigator.dart';
 
 class HomePage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState
+    return navigatorKey.currentState!
         .pushAndRemoveUntil(pageBuilder(HomePage()), (route) => false);
   }
 
@@ -27,7 +27,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
-  AuthBloc _authBloc;
+  AuthBloc? _authBloc;
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage>
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
-      _authBloc = Provider.of(context);
+      _authBloc = Provider.of<AuthBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -46,9 +46,9 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final bool flag = await showConfirmDialog(context, 'Thoát ứng dụng?',
-            confirmTap: () {}, navigatorKey: navigatorKey);
-        return flag;
+        final bool? flag = await (showConfirmDialog(context, 'Thoát ứng dụng?',
+            confirmTap: () {}, navigatorKey: navigatorKey));
+        return flag ?? false;
       },
       child: Scaffold(
         body: IndexedStack(
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage>
           selectedIndex: _selectedIndex,
           list: [
             BottomTabModel(0, 'Trang chủ', MdiIcons.homeOutline, MdiIcons.home),
-            BottomTabModel(_authBloc.userModel?.notiCount ?? 0, 'Thông báo',
+            BottomTabModel(_authBloc!.userModel?.notiCount ?? 0, 'Thông báo',
                 MdiIcons.bellOutline, MdiIcons.bell),
             BottomTabModel(
                 0, 'Nhóm', MdiIcons.accountGroupOutline, MdiIcons.accountGroup),

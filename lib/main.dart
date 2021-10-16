@@ -22,9 +22,9 @@ import 'package:flutter/services.dart';
 import 'share/widget/empty_widget.dart';
 import 'package:bot_toast/bot_toast.dart';
 
-final _sentry = SentryClient(
+final _sentry = SentryClient(SentryOptions(
     dsn:
-        "https://ab7fbe46a1634b98b918535d535962ea@o396604.ingest.sentry.io/5596357");
+        "https://ab7fbe46a1634b98b918535d535962ea@o396604.ingest.sentry.io/5596357"));
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -40,7 +40,7 @@ void main() async {
     }),
     (error, stackTrace) async {
       await _sentry.captureException(
-        exception: error,
+        error,
         stackTrace: stackTrace,
       );
     },
@@ -58,7 +58,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  StreamSubscription _connectionChangeStream;
+  StreamSubscription? _connectionChangeStream;
 
   bool isOffline = false;
 

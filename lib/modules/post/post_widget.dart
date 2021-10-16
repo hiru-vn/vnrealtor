@@ -23,9 +23,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'comment_page.dart';
 
 class PostWidget extends StatefulWidget {
-  final Function commentCallBack;
+  final Function? commentCallBack;
   final bool isSharedPost;
-  final PostModel post;
+  final PostModel? post;
   final bool isInDetailPage;
   PostWidget(this.post,
       {this.commentCallBack,
@@ -38,8 +38,8 @@ class PostWidget extends StatefulWidget {
 class _PostWidgetState extends State<PostWidget> {
   final GlobalKey<State<StatefulWidget>> moreBtnKey =
       GlobalKey<State<StatefulWidget>>();
-  PostBloc _postBloc;
-  PostModel _sharePost;
+  PostBloc? _postBloc;
+  PostModel? _sharePost;
 
   @override
   void initState() {
@@ -50,8 +50,8 @@ class _PostWidgetState extends State<PostWidget> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
-      if (widget.post.postShareId != null) {
-        _postBloc.getOnePost(widget.post.postShareId).then((res) {
+      if (widget.post!.postShareId != null) {
+        _postBloc!.getOnePost(widget.post!.postShareId).then((res) {
           if (res.isSuccess)
             setState(() {
               _sharePost = res.data;
@@ -64,8 +64,8 @@ class _PostWidgetState extends State<PostWidget> {
 
   @override
   void didUpdateWidget(covariant PostWidget oldWidget) {
-    if (widget.post.postShareId != null && _sharePost == null) {
-      _postBloc.getOnePost(widget.post.postShareId).then((res) {
+    if (widget.post!.postShareId != null && _sharePost == null) {
+      _postBloc!.getOnePost(widget.post!.postShareId).then((res) {
         if (res.isSuccess)
           setState(() {
             _sharePost = res.data;
@@ -93,12 +93,12 @@ class _PostWidgetState extends State<PostWidget> {
           children: [
             Padding(
                 padding: EdgeInsets.all(12).copyWith(
-                    bottom: widget.post.postShareId != null ? 0 : 8,
+                    bottom: widget.post!.postShareId != null ? 0 : 8,
                     top: widget.isSharedPost ? 0 : 12),
-                child: widget.post.group == null
+                child: widget.post!.group == null
                     ? _buildUserOrPageTile()
                     : _buildGroupTile()),
-            if (widget.post.isBlock)
+            if (widget.post!.isBlock!)
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 20),
                 width: deviceWidth(context),
@@ -115,7 +115,7 @@ class _PostWidgetState extends State<PostWidget> {
             else ...[
               Padding(
                 padding: const EdgeInsets.all(15).copyWith(
-                    top: 0, bottom: widget.post.postShareId != null ? 0 : 5),
+                    top: 0, bottom: widget.post!.postShareId != null ? 0 : 5),
                 child: GestureDetector(
                   onTap: () {
                     audioCache.play('tab3.mp3');
@@ -148,8 +148,8 @@ class _PostWidgetState extends State<PostWidget> {
                   ),
                 ),
               ),
-              if (widget.post.tagUsers != null &&
-                  widget.post.tagUsers.length > 0)
+              if (widget.post!.tagUsers != null &&
+                  widget.post!.tagUsers!.length > 0)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15)
                       .copyWith(bottom: 7),
@@ -157,7 +157,7 @@ class _PostWidgetState extends State<PostWidget> {
                     TextSpan(
                         text: 'Cùng với: ',
                         style: ptSmall().copyWith(color: Colors.black)),
-                    ...widget.post.tagUsers.map(
+                    ...widget.post!.tagUsers!.map(
                       (e) => TextSpan(
                           text: '${e.name}, ',
                           recognizer: new TapGestureRecognizer()
@@ -171,7 +171,7 @@ class _PostWidgetState extends State<PostWidget> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Wrap(
-                    children: widget.post.hashTag
+                    children: widget.post!.hashTag!
                         .map((e) => GestureDetector(
                               onTap: () {
                                 audioCache.play('tab3.mp3');
@@ -186,12 +186,12 @@ class _PostWidgetState extends State<PostWidget> {
                         .toList(),
                   ),
                 ),
-              if (widget.post.postShareId != null && _sharePost == null)
+              if (widget.post!.postShareId != null && _sharePost == null)
                 SizedBox(
                     width: deviceWidth(context),
                     height: 170,
                     child: kLoadingSpinner)
-              else if (widget.post.postShareId != null && _sharePost != null)
+              else if (widget.post!.postShareId != null && _sharePost != null)
                 Container(
                     margin: EdgeInsets.symmetric(horizontal: 7),
                     decoration: BoxDecoration(
@@ -207,8 +207,8 @@ class _PostWidgetState extends State<PostWidget> {
                       posts: widget.post?.mediaPosts,
                       autoPlayVideo: true,
                     ),
-                    if (widget.post.locationLat != null &&
-                        widget.post.locationLong != null)
+                    if (widget.post!.locationLat != null &&
+                        widget.post!.locationLong != null)
                       Positioned(
                         bottom: 10,
                         right: 10,
@@ -224,9 +224,9 @@ class _PostWidgetState extends State<PostWidget> {
                               audioCache.play('tab3.mp3');
                               await showGoogleMapPoint(
                                   context,
-                                  widget.post.locationLat,
-                                  widget.post.locationLong,
-                                  widget.post.polygonPoints);
+                                  widget.post!.locationLat,
+                                  widget.post!.locationLong,
+                                  widget.post!.polygonPoints);
                               FocusScope.of(context).requestFocus(FocusNode());
                             },
                             child: Text(
@@ -256,12 +256,12 @@ class _PostWidgetState extends State<PostWidget> {
                           LoginPage.navigatePush();
                           return;
                         }
-                        widget.post.isUserLike = !widget.post.isUserLike;
+                        widget.post!.isUserLike = !widget.post!.isUserLike!;
 
-                        if (widget.post.isUserLike) {
-                          _postBloc.likePost(widget.post);
+                        if (widget.post!.isUserLike!) {
+                          _postBloc!.likePost(widget.post!);
                         } else {
-                          _postBloc.unlikePost(widget.post);
+                          _postBloc!.unlikePost(widget.post!);
                         }
                         setState(() {});
                       },
@@ -269,7 +269,7 @@ class _PostWidgetState extends State<PostWidget> {
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            !widget.post.isUserLike
+                            !widget.post!.isUserLike!
                                 ? Icon(
                                     MdiIcons.heartOutline,
                                     size: 22,
@@ -283,7 +283,7 @@ class _PostWidgetState extends State<PostWidget> {
                             SizedBox(
                               height: 3,
                             ),
-                            Text('${widget.post.like} lượt thích',
+                            Text('${widget.post!.like} lượt thích',
                                 style: ptTiny()
                                     .copyWith(color: ptPrimaryColor(context))),
                           ]),
@@ -299,7 +299,7 @@ class _PostWidgetState extends State<PostWidget> {
                         //   return;
                         // }
                         if (widget.commentCallBack != null)
-                          widget.commentCallBack();
+                          widget.commentCallBack!();
                         else
                           showComment(widget.post);
                       },
@@ -315,7 +315,7 @@ class _PostWidgetState extends State<PostWidget> {
                             SizedBox(
                               height: 3,
                             ),
-                            Text('${widget.post.numberOfComment} bình luận',
+                            Text('${widget.post!.numberOfComment} bình luận',
                                 style: ptTiny()
                                     .copyWith(color: ptPrimaryColor(context))),
                           ]),
@@ -345,7 +345,7 @@ class _PostWidgetState extends State<PostWidget> {
                             SizedBox(
                               height: 3,
                             ),
-                            Text('${widget.post.share} chia sẻ',
+                            Text('${widget.post!.share} chia sẻ',
                                 style: ptTiny()
                                     .copyWith(color: ptPrimaryColor(context))),
                           ]),
@@ -356,18 +356,18 @@ class _PostWidgetState extends State<PostWidget> {
                         onTap: () async {
                           audioCache.play('tab3.mp3');
                           if (AuthBloc.instance.userModel?.savedPostIds
-                                  ?.contains(widget.post.id) ??
+                                  ?.contains(widget.post!.id) ??
                               false) {
                             showToast('Bài viết đã được lưu', context,
                                 isSuccess: true);
                             return;
                           }
 
-                          final res = await _postBloc.savePost(widget.post);
+                          final res = await _postBloc!.savePost(widget.post!);
                           if (res.isSuccess) {
                           } else {
                             setState(() {
-                              _postBloc.myPosts.remove(widget.post);
+                              _postBloc!.myPosts!.remove(widget.post);
                             });
                             showToast(res.errMessage, context);
                           }
@@ -377,7 +377,7 @@ class _PostWidgetState extends State<PostWidget> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               !(AuthBloc.instance.userModel?.savedPostIds
-                                          ?.contains(widget.post.id) ??
+                                          ?.contains(widget.post!.id) ??
                                       false)
                                   ? Icon(
                                       MdiIcons.bookmarkOutline,
@@ -419,24 +419,26 @@ class _PostWidgetState extends State<PostWidget> {
         GestureDetector(
           onTap: () {
             audioCache.play('tab3.mp3');
-            widget.post.isPage
+            widget.post!.isPage!
                 ? PageDetail.navigate(widget.post?.page)
                 : ProfileOtherPage.navigate(widget.post?.user);
           },
           child: CircleAvatar(
             radius: 23,
             backgroundColor: Colors.white,
-            backgroundImage:
-                widget.post?.user?.id == AuthBloc.instance?.userModel?.id
-                    ? ((AuthBloc.instance.userModel.avatar != null &&
-                            AuthBloc.instance.userModel.avatar != 'null')
+            backgroundImage: widget.post?.user?.id ==
+                    AuthBloc.instance.userModel?.id
+                ? ((AuthBloc.instance.userModel!.avatar != null &&
+                            AuthBloc.instance.userModel!.avatar != 'null')
                         ? CachedNetworkImageProvider(
-                            AuthBloc.instance.userModel.avatar)
+                            AuthBloc.instance.userModel!.avatar!)
                         : AssetImage('assets/image/default_avatar.png'))
-                    : ((widget.post?.user?.avatar != null &&
+                    as ImageProvider<Object>?
+                : ((widget.post?.user?.avatar != null &&
                             widget.post?.user?.avatar != 'null')
-                        ? CachedNetworkImageProvider(widget.post?.user?.avatar)
-                        : AssetImage('assets/image/default_avatar.png')),
+                        ? CachedNetworkImageProvider(widget.post!.user!.avatar!)
+                        : AssetImage('assets/image/default_avatar.png'))
+                    as ImageProvider<Object>?,
             child: VerifiedIcon(
               widget.post?.user?.role,
               10,
@@ -472,19 +474,19 @@ class _PostWidgetState extends State<PostWidget> {
               Row(
                 children: [
                   Text(
-                    DateTime.tryParse(widget.post?.createdAt)
+                    DateTime.tryParse(widget.post!.createdAt!)!
                                 .add(Duration(days: 1))
                                 .compareTo(DateTime.now()) <
                             0
                         ? (Formart.formatToDateTime(
-                                DateTime.tryParse(widget.post?.createdAt)) ??
+                                DateTime.tryParse(widget.post!.createdAt!)) ??
                             '')
                         : Formart.timeByDayVi(
-                            DateTime.tryParse(widget.post?.createdAt)),
+                            DateTime.tryParse(widget.post!.createdAt!)!),
                     style: ptTiny().copyWith(color: Colors.black54),
                   ),
                   SizedBox(width: 5),
-                  if (widget.post.distance != null) ...[
+                  if (widget.post!.distance != null) ...[
                     Container(
                         height: 4,
                         width: 4,
@@ -492,22 +494,22 @@ class _PostWidgetState extends State<PostWidget> {
                             shape: BoxShape.circle, color: Colors.black26)),
                     SizedBox(width: 5),
                     Text(
-                      widget.post.distance.toStringAsFixed(1) + ' km',
+                      widget.post!.distance!.toStringAsFixed(1) + ' km',
                       style: ptTiny().copyWith(color: Colors.black54),
                     ),
                   ]
                 ],
               ),
               if ([
-                widget.post.area,
-                widget.post.action,
-                widget.post.price,
-                widget.post.category
+                widget.post!.area,
+                widget.post!.action,
+                widget.post!.price,
+                widget.post!.category
               ].any((item) => item != null)) ...[
                 Padding(
                   padding: const EdgeInsets.only(top: 3),
                   child: Row(children: [
-                    if (widget.post.area != null)
+                    if (widget.post!.area != null)
                       Container(
                         margin: EdgeInsets.only(right: 5),
                         decoration: BoxDecoration(
@@ -516,11 +518,11 @@ class _PostWidgetState extends State<PostWidget> {
                         ),
                         padding:
                             EdgeInsets.symmetric(horizontal: 5, vertical: 0.5),
-                        child: Text('${widget.post.area} m2',
+                        child: Text('${widget.post!.area} m2',
                             style: ptTiny()
                                 .copyWith(color: Colors.white, fontSize: 10.5)),
                       ),
-                    if (widget.post.action != null)
+                    if (widget.post!.action != null)
                       Container(
                           margin: EdgeInsets.only(right: 5),
                           decoration: BoxDecoration(
@@ -529,10 +531,10 @@ class _PostWidgetState extends State<PostWidget> {
                           ),
                           padding: EdgeInsets.symmetric(
                               horizontal: 5, vertical: 0.5),
-                          child: Text(widget.post.action,
+                          child: Text(widget.post!.action!,
                               style: ptTiny().copyWith(
                                   color: Colors.white, fontSize: 10.5))),
-                    if (widget.post.category != null)
+                    if (widget.post!.category != null)
                       Container(
                           margin: EdgeInsets.only(right: 5),
                           decoration: BoxDecoration(
@@ -541,10 +543,10 @@ class _PostWidgetState extends State<PostWidget> {
                           ),
                           padding: EdgeInsets.symmetric(
                               horizontal: 5, vertical: 0.5),
-                          child: Text(widget.post.category,
+                          child: Text(widget.post!.category!,
                               style: ptTiny().copyWith(
                                   color: Colors.white, fontSize: 10.5))),
-                    if (widget.post.price != null)
+                    if (widget.post!.price != null)
                       Container(
                           margin: EdgeInsets.only(right: 5),
                           decoration: BoxDecoration(
@@ -554,7 +556,8 @@ class _PostWidgetState extends State<PostWidget> {
                           padding: EdgeInsets.symmetric(
                               horizontal: 5, vertical: 0.5),
                           child: Text(
-                              Formart.toVNDPrice(widget.post.price.toDouble()),
+                              Formart.toVNDPrice(
+                                  widget.post!.price!.toDouble()),
                               style: ptTiny().copyWith(
                                   color: Colors.white, fontSize: 10.5)))
                   ]),
@@ -569,7 +572,7 @@ class _PostWidgetState extends State<PostWidget> {
                 padding: EdgeInsets.zero,
                 child: SizedBox(width: 30, child: Icon(Icons.more_vert)),
                 itemBuilder: (_) => <PopupMenuItem<String>>[
-                      if (widget.post.userId !=
+                      if (widget.post!.userId !=
                           AuthBloc.instance.userModel?.id) ...[
                         PopupMenuItem(
                           child: Text('Liên hệ'),
@@ -594,34 +597,34 @@ class _PostWidgetState extends State<PostWidget> {
                           child: Text('Xóa bài'),
                           value: 'Xóa bài',
                         ),
-                        if (widget.post.postShareId == null)
+                        if (widget.post!.postShareId == null)
                           PopupMenuItem(
                               child: Text('Sửa bài'), value: 'Sửa bài'),
                       ],
                       PopupMenuItem(
                           child: Text('Copy link'), value: 'Copy link'),
                     ],
-                onSelected: (val) async {
+                onSelected: (dynamic val) async {
                   if (val == 'Copy link') {
                     showToast('Đã copy link bài viết', context,
                         isSuccess: true);
                     Clipboard.setData(
                       new ClipboardData(
-                          text: widget.post.dynamicLink.shortLink),
+                          text: widget.post!.dynamicLink!.shortLink),
                     );
                   }
                   if (val == 'Liên hệ') {
                     showWaitingDialog(context);
                     await InboxBloc.instance.navigateToChatWith(
-                        widget.post.user.name,
-                        widget.post.user.avatar,
+                        widget.post!.user!.name,
+                        widget.post!.user!.avatar,
                         DateTime.now(),
-                        widget.post.user.avatar, [
-                      AuthBloc.instance.userModel.id,
-                      widget.post.user.id,
+                        widget.post!.user!.avatar, [
+                      AuthBloc.instance.userModel!.id,
+                      widget.post!.user!.id,
                     ], [
-                      AuthBloc.instance.userModel.avatar,
-                      widget.post.user.avatar,
+                      AuthBloc.instance.userModel!.avatar,
+                      widget.post!.user!.avatar,
                     ]);
                     closeLoading();
                   }
@@ -629,18 +632,19 @@ class _PostWidgetState extends State<PostWidget> {
                     showReport(widget.post, context);
                   }
                   if (val == 'Xóa bài') {
-                    final confirm = await showConfirmDialog(
+                    final confirm = await (showConfirmDialog(
                         context, 'Vui lòng xác nhận xóa bài viết này.',
-                        confirmTap: () {}, navigatorKey: navigatorKey);
-                    if (!confirm) return;
-                    final res = await _postBloc.deletePost(widget.post.id);
+                        confirmTap: () {},
+                        navigatorKey: navigatorKey));
+                    if ((confirm??null) == false) return;
+                    final res = await _postBloc!.deletePost(widget.post!.id);
                     if (res.isSuccess) {
                     } else {
                       showToast(res.errMessage, context);
                     }
                   }
                   if (val == 'Ẩn bài') {
-                    final res = await _postBloc.hidePost(widget.post.id);
+                    final res = await _postBloc!.hidePost(widget.post!.id);
                     if (res.isSuccess) {
                       showToast(
                           'Đã ẩn, bài viết này sẽ không hiện trên feed của tất cả user khác',
@@ -653,7 +657,7 @@ class _PostWidgetState extends State<PostWidget> {
                   if (val == 'Sửa bài') {
                     final res = await UpdatePostPage.navigate(widget.post);
                     if (res == true) {
-                      await _postBloc.getNewFeed(
+                      await _postBloc!.getNewFeed(
                           filter: GraphqlFilter(
                               limit: 10, order: "{updatedAt: -1}"));
                       return;
@@ -671,31 +675,36 @@ class _PostWidgetState extends State<PostWidget> {
         GestureDetector(
           onTap: () {
             audioCache.play('tab3.mp3');
-            widget.post.isPage
+            widget.post!.isPage!
                 ? PageDetail.navigate(widget.post?.page)
                 : ProfileOtherPage.navigate(widget.post?.user);
           },
           child: CircleAvatar(
             radius: 23,
             backgroundColor: Colors.white,
-            backgroundImage: widget.post.isPage
-                ? widget.post.page.avartar != null
-                    ? CachedNetworkImageProvider(widget.post.page.avartar)
-                    : AssetImage('assets/image/default_avatar.png')
-                : widget.post?.user?.id == AuthBloc.instance?.userModel?.id
-                    ? ((AuthBloc.instance.userModel.avatar != null &&
-                            AuthBloc.instance.userModel.avatar != 'null')
-                        ? CachedNetworkImageProvider(
-                            AuthBloc.instance.userModel.avatar)
-                        : AssetImage('assets/image/default_avatar.png'))
+            backgroundImage: widget.post!.isPage!
+                ? (widget.post!.page!.avartar != null
+                    ? CachedNetworkImageProvider(widget.post!.page!.avartar!)
+                    : AssetImage(
+                        'assets/image/default_avatar.png')) as ImageProvider<
+                    Object>?
+                : widget.post?.user?.id == AuthBloc.instance.userModel?.id
+                    ? ((AuthBloc.instance.userModel!.avatar != null &&
+                                AuthBloc.instance.userModel!.avatar != 'null')
+                            ? CachedNetworkImageProvider(
+                                AuthBloc.instance.userModel!.avatar!)
+                            : AssetImage('assets/image/default_avatar.png'))
+                        as ImageProvider<Object>?
                     : ((widget.post?.user?.avatar != null &&
                             widget.post?.user?.avatar != 'null')
-                        ? CachedNetworkImageProvider(widget.post?.user?.avatar)
-                        : AssetImage('assets/image/default_avatar.png')),
+                        ? CachedNetworkImageProvider(widget.post!.user!.avatar!)
+                        : AssetImage(
+                            'assets/image/default_avatar.png')) as ImageProvider<
+                        Object>?,
             child: VerifiedIcon(
               widget.post?.user?.role,
               10,
-              isPage: widget.post.isPage,
+              isPage: widget.post!.isPage,
             ),
           ),
         ),
@@ -710,22 +719,22 @@ class _PostWidgetState extends State<PostWidget> {
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
                     audioCache.play('tab3.mp3');
-                    widget.post.isPage
+                    widget.post!.isPage!
                         ? PageDetail.navigate(widget.post?.page)
                         : ProfileOtherPage.navigate(widget.post?.user);
                   },
                   child: Text(
-                    widget.post.isPage
-                        ? widget.post.page.name
+                    widget.post!.isPage!
+                        ? widget.post!.page!.name!
                         : widget.post?.user?.name ?? '',
                     style: ptTitle(),
                   ),
                 ),
-                if (!widget.post.isPage)
+                if (!widget.post!.isPage!)
                   SizedBox(
                     width: 5,
                   ),
-                if (!widget.post.isPage)
+                if (!widget.post!.isPage!)
                   if ([UserRole.agent, UserRole.company]
                       .contains(UserBloc.getRole(widget.post?.user)))
                     CustomTooltip(
@@ -745,16 +754,16 @@ class _PostWidgetState extends State<PostWidget> {
                       ),
                     ),
                 SizedBox(width: 5),
-                if (!widget.post.isPage)
+                if (!widget.post!.isPage!)
                   CustomTooltip(
                     message: 'Điểm tương tác',
                     child: Text(
-                      widget.post?.user?.reputationScore.toString(),
+                      widget.post!.user!.reputationScore.toString(),
                       style: ptSmall(),
                     ),
                   ),
                 SizedBox(width: 1),
-                if (!widget.post.isPage)
+                if (!widget.post!.isPage!)
                   CustomTooltip(
                     message: 'Điểm tương tác',
                     child: SizedBox(
@@ -763,10 +772,10 @@ class _PostWidgetState extends State<PostWidget> {
                       child: Image.asset('assets/image/ip.png'),
                     ),
                   ),
-                if (widget.post.isPage)
+                if (widget.post!.isPage!)
                   Container(
                     child: Text(
-                      "bởi ${widget.post.user.name}",
+                      "bởi ${widget.post!.user!.name}",
                       style: ptTiny(),
                     ),
                   )
@@ -775,19 +784,19 @@ class _PostWidgetState extends State<PostWidget> {
             Row(
               children: [
                 Text(
-                  DateTime.tryParse(widget.post?.createdAt)
+                  DateTime.tryParse(widget.post!.createdAt!)!
                               .add(Duration(days: 1))
                               .compareTo(DateTime.now()) <
                           0
                       ? (Formart.formatToDateTime(
-                              DateTime.tryParse(widget.post?.createdAt)) ??
+                              DateTime.tryParse(widget.post!.createdAt!)) ??
                           '')
                       : Formart.timeByDayVi(
-                          DateTime.tryParse(widget.post?.createdAt)),
+                          DateTime.tryParse(widget.post!.createdAt!)!),
                   style: ptTiny().copyWith(color: Colors.black54),
                 ),
                 SizedBox(width: 5),
-                if (widget.post.distance != null) ...[
+                if (widget.post!.distance != null) ...[
                   Container(
                       height: 4,
                       width: 4,
@@ -795,22 +804,22 @@ class _PostWidgetState extends State<PostWidget> {
                           shape: BoxShape.circle, color: Colors.black26)),
                   SizedBox(width: 5),
                   Text(
-                    widget.post.distance.toStringAsFixed(1) + ' km',
+                    widget.post!.distance!.toStringAsFixed(1) + ' km',
                     style: ptTiny().copyWith(color: Colors.black54),
                   ),
                 ],
               ],
             ),
             if ([
-              widget.post.area,
-              widget.post.action,
-              widget.post.price,
-              widget.post.category
+              widget.post!.area,
+              widget.post!.action,
+              widget.post!.price,
+              widget.post!.category
             ].any((item) => item != null)) ...[
               Padding(
                 padding: const EdgeInsets.only(top: 3),
                 child: Row(children: [
-                  if (widget.post.category != null)
+                  if (widget.post!.category != null)
                     Container(
                         margin: EdgeInsets.only(right: 5),
                         decoration: BoxDecoration(
@@ -819,10 +828,10 @@ class _PostWidgetState extends State<PostWidget> {
                         ),
                         padding:
                             EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
-                        child: Text(widget.post.category,
+                        child: Text(widget.post!.category!,
                             style: ptTiny().copyWith(
                                 color: Colors.white, fontSize: 10.5))),
-                  if (widget.post.action != null)
+                  if (widget.post!.action != null)
                     Container(
                         margin: EdgeInsets.only(right: 5),
                         decoration: BoxDecoration(
@@ -831,10 +840,10 @@ class _PostWidgetState extends State<PostWidget> {
                         ),
                         padding:
                             EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
-                        child: Text(widget.post.action,
+                        child: Text(widget.post!.action!,
                             style: ptTiny().copyWith(
                                 color: Colors.white, fontSize: 10.5))),
-                  if (widget.post.area != null)
+                  if (widget.post!.area != null)
                     Container(
                       margin: EdgeInsets.only(right: 5),
                       decoration: BoxDecoration(
@@ -843,11 +852,11 @@ class _PostWidgetState extends State<PostWidget> {
                       ),
                       padding:
                           EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
-                      child: Text('${widget.post.area.floor()} m2',
+                      child: Text('${widget.post!.area!.floor()} m2',
                           style: ptTiny()
                               .copyWith(color: Colors.white, fontSize: 10.5)),
                     ),
-                  if (widget.post.price != null)
+                  if (widget.post!.price != null)
                     Container(
                         margin: EdgeInsets.only(right: 5),
                         decoration: BoxDecoration(
@@ -857,7 +866,7 @@ class _PostWidgetState extends State<PostWidget> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                         child: Text(
-                            Formart.toVNDPrice(widget.post.price.toDouble()),
+                            Formart.toVNDPrice(widget.post!.price!.toDouble()),
                             style: ptTiny()
                                 .copyWith(color: Colors.white, fontSize: 10.5)))
                 ]),
@@ -884,7 +893,7 @@ class _PostWidgetState extends State<PostWidget> {
                 padding: EdgeInsets.zero,
                 child: SizedBox(width: 30, child: Icon(Icons.more_vert)),
                 itemBuilder: (_) => <PopupMenuItem<String>>[
-                      if (widget.post.userId !=
+                      if (widget.post!.userId !=
                           AuthBloc.instance.userModel?.id) ...[
                         PopupMenuItem(
                           child: Text('Liên hệ'),
@@ -909,34 +918,34 @@ class _PostWidgetState extends State<PostWidget> {
                           child: Text('Xóa bài'),
                           value: 'Xóa bài',
                         ),
-                        if (widget.post.postShareId == null)
+                        if (widget.post!.postShareId == null)
                           PopupMenuItem(
                               child: Text('Sửa bài'), value: 'Sửa bài'),
                       ],
                       PopupMenuItem(
                           child: Text('Copy link'), value: 'Copy link'),
                     ],
-                onSelected: (val) async {
+                onSelected: (dynamic val) async {
                   if (val == 'Copy link') {
                     showToast('Đã copy link bài viết', context,
                         isSuccess: true);
                     Clipboard.setData(
                       new ClipboardData(
-                          text: widget.post.dynamicLink.shortLink),
+                          text: widget.post!.dynamicLink!.shortLink),
                     );
                   }
                   if (val == 'Liên hệ') {
                     showWaitingDialog(context);
                     await InboxBloc.instance.navigateToChatWith(
-                        widget.post.user.name,
-                        widget.post.user.avatar,
+                        widget.post!.user!.name,
+                        widget.post!.user!.avatar,
                         DateTime.now(),
-                        widget.post.user.avatar, [
-                      AuthBloc.instance.userModel.id,
-                      widget.post.user.id,
+                        widget.post!.user!.avatar, [
+                      AuthBloc.instance.userModel!.id,
+                      widget.post!.user!.id,
                     ], [
-                      AuthBloc.instance.userModel.avatar,
-                      widget.post.user.avatar,
+                      AuthBloc.instance.userModel!.avatar,
+                      widget.post!.user!.avatar,
                     ]);
                     closeLoading();
                   }
@@ -944,18 +953,19 @@ class _PostWidgetState extends State<PostWidget> {
                     showReport(widget.post, context);
                   }
                   if (val == 'Xóa bài') {
-                    final confirm = await showConfirmDialog(
-                        context, 'Vui lòng xác nhận xóa bài viết này.',
-                        confirmTap: () {}, navigatorKey: navigatorKey);
+                    final confirm = await (showConfirmDialog(
+                            context, 'Vui lòng xác nhận xóa bài viết này.',
+                            confirmTap: () {}, navigatorKey: navigatorKey)) ??
+                        false;
                     if (!confirm) return;
-                    final res = await _postBloc.deletePost(widget.post.id);
+                    final res = await _postBloc!.deletePost(widget.post!.id);
                     if (res.isSuccess) {
                     } else {
                       showToast(res.errMessage, context);
                     }
                   }
                   if (val == 'Ẩn bài') {
-                    final res = await _postBloc.hidePost(widget.post.id);
+                    final res = await _postBloc!.hidePost(widget.post!.id);
                     if (res.isSuccess) {
                       showToast(
                           'Đã ẩn, bài viết này sẽ không hiện trên feed của tất cả user khác',
@@ -968,7 +978,7 @@ class _PostWidgetState extends State<PostWidget> {
                   if (val == 'Sửa bài') {
                     final res = await UpdatePostPage.navigate(widget.post);
                     if (res == true) {
-                      await _postBloc.getNewFeed(
+                      await _postBloc!.getNewFeed(
                           filter: GraphqlFilter(
                               limit: 10, order: "{updatedAt: -1}"));
                       return;
@@ -980,7 +990,7 @@ class _PostWidgetState extends State<PostWidget> {
     );
   }
 
-  showComment(PostModel postModel) {
+  showComment(PostModel? postModel) {
     showModalBottomSheet(
         useRootNavigator: true,
         context: context,
@@ -997,7 +1007,7 @@ class _PostWidgetState extends State<PostWidget> {
 }
 
 class PostSmallWidget extends StatefulWidget {
-  final Function commentCallBack;
+  final Function? commentCallBack;
   final PostModel post;
   PostSmallWidget(this.post, {this.commentCallBack});
   @override
@@ -1007,7 +1017,7 @@ class PostSmallWidget extends StatefulWidget {
 class _PostSmallWidgetState extends State<PostSmallWidget> {
   final GlobalKey<State<StatefulWidget>> moreBtnKey =
       GlobalKey<State<StatefulWidget>>();
-  PostBloc _postBloc;
+  PostBloc? _postBloc;
 
   @override
   void initState() {
@@ -1030,10 +1040,10 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
   @override
   Widget build(BuildContext context) {
     Widget thumbNail;
-    if (widget.post.mediaPosts.any((element) => element.type == 'PICTURE')) {
-      final String url = widget.post.mediaPosts
+    if (widget.post.mediaPosts!.any((element) => element.type == 'PICTURE')) {
+      final String url = widget.post.mediaPosts!
           .firstWhere((element) => element.type == 'PICTURE')
-          .url;
+          .url!;
       thumbNail = Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
@@ -1097,9 +1107,9 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.post.content.trim().length > 0
-                                ? widget.post.content.trim()[0].toUpperCase() +
-                                    widget.post.content
+                            widget.post.content!.trim().length > 0
+                                ? widget.post.content!.trim()[0].toUpperCase() +
+                                    widget.post.content!
                                         .trim()
                                         .substring(1)
                                         .replaceAll('\n', ' ')
@@ -1111,7 +1121,7 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                           ),
                           SizedBox(height: 3),
                           Text(
-                            '${widget.post.like} thích • ${widget.post.commentIds.length} bình luận',
+                            '${widget.post.like} thích • ${widget.post.commentIds!.length} bình luận',
                             style: ptBody().copyWith(color: Colors.grey[600]),
                           ),
                           SizedBox(height: 3),
@@ -1119,13 +1129,13 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                             TextSpan(children: [
                               // TextSpan(text: 'Đăng bởi '),
                               TextSpan(
-                                  text: '${widget.post.user.name}',
+                                  text: '${widget.post.user!.name}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black54)),
                               TextSpan(
                                   text:
-                                      ' • ${Formart.timeByDayVi(DateTime.tryParse(widget.post.updatedAt)).replaceAll(' trước', '')}'),
+                                      ' • ${Formart.timeByDayVi(DateTime.tryParse(widget.post.updatedAt!)!).replaceAll(' trước', '')}'),
                             ]),
                             style: ptTiny().copyWith(color: Colors.grey[600]),
                           ),
@@ -1141,14 +1151,14 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                               value: 'Bỏ lưu',
                             ),
                           ],
-                      onSelected: (val) async {
+                      onSelected: (dynamic val) async {
                         if (val == 'Bỏ lưu') {
-                          final res = await _postBloc.unsavePost(widget.post);
+                          final res = await _postBloc!.unsavePost(widget.post);
                           if (res.isSuccess) {
                           } else {
                             showToast(res.errMessage, context);
                           }
-                          navigatorKey.currentState.maybePop();
+                          navigatorKey.currentState!.maybePop();
                         }
                       },
                       child: SizedBox(width: 30, child: Icon(Icons.more_vert))),

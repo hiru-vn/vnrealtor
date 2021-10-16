@@ -2,7 +2,7 @@ import 'package:datcao/share/import.dart';
 
 class PostHistoryPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(PostHistoryPage()));
+    return navigatorKey.currentState!.push(pageBuilder(PostHistoryPage()));
   }
 
   @override

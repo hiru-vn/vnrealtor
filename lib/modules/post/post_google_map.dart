@@ -4,9 +4,9 @@ import 'dart:async';
 import 'package:datcao/share/import.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future showGoogleMapPoint(
-    BuildContext context, double lat, double long, List<LatLng> polygonPoints,
-    {double height}) {
+Future showGoogleMapPoint(BuildContext context, double? lat, double? long,
+    List<LatLng>? polygonPoints,
+    {double? height}) {
   if (height == null)
     height = MediaQuery.of(context).size.height - kToolbarHeight;
   return showDialog(
@@ -25,10 +25,10 @@ Future showGoogleMapPoint(
 }
 
 class GoogleMapWidget extends StatefulWidget {
-  final double lat, long;
-  final List<LatLng> polygonPoints;
+  final double? lat, long;
+  final List<LatLng>? polygonPoints;
 
-  const GoogleMapWidget({Key key, this.lat, this.long, this.polygonPoints})
+  const GoogleMapWidget({Key? key, this.lat, this.long, this.polygonPoints})
       : super(key: key);
   @override
   _GoogleMapWidgetState createState() => _GoogleMapWidgetState();
@@ -36,22 +36,22 @@ class GoogleMapWidget extends StatefulWidget {
 
 class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   Completer<GoogleMapController> _controller = Completer();
-  CameraPosition _initPos;
-  Marker selectedMarker;
-  LatLng selectedPoint;
+  late CameraPosition _initPos;
+  Marker? selectedMarker;
+  LatLng? selectedPoint;
 
   @override
   void initState() {
     _initPos = CameraPosition(
-      target: LatLng(widget.lat, widget.long),
+      target: LatLng(widget.lat!, widget.long!),
       zoom: 18,
     );
-    selectedPoint = LatLng(widget.lat, widget.long);
+    selectedPoint = LatLng(widget.lat!, widget.long!);
     super.initState();
 
     selectedMarker = Marker(
-      markerId: MarkerId(LatLng(widget.lat, widget.long).toString()),
-      position: LatLng(widget.lat, widget.long),
+      markerId: MarkerId(LatLng(widget.lat!, widget.long!).toString()),
+      position: LatLng(widget.lat!, widget.long!),
       infoWindow: InfoWindow(
         title: 'Ví trí đang chọn',
       ),
@@ -62,12 +62,15 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
 
   _cameraMove() async {
     CameraPosition _curPos = CameraPosition(
-        bearing: 0, target: LatLng(widget.lat, widget.long), tilt: 0, zoom: 18);
+        bearing: 0,
+        target: LatLng(widget.lat!, widget.long!),
+        tilt: 0,
+        zoom: 18);
     final GoogleMapController controller = await _controller.future;
     controller.moveCamera(CameraUpdate.newCameraPosition(_curPos));
   }
 
-  _launchMap(LatLng pos) async {
+  _launchMap(LatLng? pos) async {
     if (pos == null) {
       showToast('Chưa chọn toạ độ', context);
       return;
@@ -99,15 +102,15 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   @override
   Widget build(BuildContext context) {
     final List<double> edges = [];
-    for (int i = 0; i < widget.polygonPoints.length; i++) {
-      var coor1 = widget.polygonPoints[i];
-      var coor2 = (i == widget.polygonPoints.length - 1)
-          ? widget.polygonPoints[0]
-          : widget.polygonPoints[i + 1];
+    for (int i = 0; i < widget.polygonPoints!.length; i++) {
+      var coor1 = widget.polygonPoints![i];
+      var coor2 = (i == widget.polygonPoints!.length - 1)
+          ? widget.polygonPoints![0]
+          : widget.polygonPoints![i + 1];
       edges.add(getCoordinateDistanceInKm(coor1, coor2) * 1000);
     }
     final double perimeter = edges.fold(0, (e1, e2) => e1 + e2);
-    final double area = getAreaInMeter(widget.polygonPoints);
+    final double area = getAreaInMeter(widget.polygonPoints!);
 
     return Material(
       child: Stack(
@@ -122,31 +125,32 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
               _controller.complete(controller);
             },
             markers: (widget.polygonPoints != null &&
-                    (widget.polygonPoints.length > 0)
-                ? widget.polygonPoints
+                    (widget.polygonPoints!.length > 0)
+                ? widget.polygonPoints!
                     .map((e) => Marker(
                           markerId: MarkerId(e.toString()),
                           position: e,
                           icon: BitmapDescriptor.fromBytes(
-                              markerIcon[widget.polygonPoints.indexOf(e)]),
+                              markerIcon[widget.polygonPoints!.indexOf(e)]),
                         ))
                     .toSet()
-                : (selectedMarker != null ? <Marker>{selectedMarker} : null)),
+                : (selectedMarker != null ? <Marker?>{selectedMarker} : null)
+                    as Set<Marker>),
             polygons: (widget.polygonPoints != null &&
-                    (widget.polygonPoints.length > 0)
+                    (widget.polygonPoints!.length > 0)
                 ? <Polygon>{
                     Polygon(
                       polygonId: PolygonId('PolygonId'),
-                      points: widget.polygonPoints,
+                      points: widget.polygonPoints!,
                       consumeTapEvents: true,
                       strokeColor: Colors.redAccent,
                       strokeWidth: 1,
                       fillColor: Colors.redAccent.withOpacity(0.5),
                     ),
                   }
-                : null),
+                : <Polygon>{}),
           ),
-          if (widget.polygonPoints != null && widget.polygonPoints.length > 2)
+          if (widget.polygonPoints != null && widget.polygonPoints!.length > 2)
             Positioned(
                 top: 80,
                 right: 10,
@@ -166,7 +170,8 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                     },
                     menuBuilder: (context, closePopup) {
                       return GestureDetector(
-                        onTap: () {audioCache.play('tab3.mp3');
+                        onTap: () {
+                          audioCache.play('tab3.mp3');
                           closePopup();
                         },
                         child: Padding(
@@ -174,10 +179,10 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ...widget.polygonPoints.map((e) {
-                                final index = widget.polygonPoints.indexOf(e);
+                              ...widget.polygonPoints!.map((e) {
+                                final index = widget.polygonPoints!.indexOf(e);
                                 return Text(
-                                  'Từ ${index + 1} đến ${index == widget.polygonPoints.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m',
+                                  'Từ ${index + 1} đến ${index == widget.polygonPoints!.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m',
                                   style:
                                       ptBody().copyWith(color: Colors.yellow),
                                 );
@@ -197,7 +202,8 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                           borderRadius: BorderRadius.circular(21),
                           elevation: 0,
                           child: GestureDetector(
-                            onTap: () {audioCache.play('tab3.mp3');
+                            onTap: () {
+                              audioCache.play('tab3.mp3');
                               openPopup();
                             },
                             child: Container(
@@ -239,14 +245,14 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
           // CustomFloatingSearchBar(
           //   onSearch: _onSearch,
           // ),
-          if (widget.polygonPoints.length > 2)
+          if (widget.polygonPoints!.length > 2)
             Positioned(
               right: 60,
               bottom: 18,
               child: Center(
                 child: Column(
                   children: [
-                    Text('Số điểm dấu: ${widget.polygonPoints.length}',
+                    Text('Số điểm dấu: ${widget.polygonPoints!.length}',
                         style: ptBody().copyWith(color: Colors.yellow)),
                     Container(
                       decoration: BoxDecoration(

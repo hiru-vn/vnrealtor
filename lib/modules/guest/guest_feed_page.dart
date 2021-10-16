@@ -14,7 +14,7 @@ import 'package:datcao/share/import.dart';
 
 class GuestFeedPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState
+    return navigatorKey.currentState!
         .pushReplacement(pageBuilder(GuestFeedPage()));
   }
 
@@ -24,12 +24,12 @@ class GuestFeedPage extends StatefulWidget {
 
 class _GuestFeedPageState extends State<GuestFeedPage> {
   bool showAppBar = true;
-  PostBloc _postBloc;
-  UserBloc _userBloc;
+  PostBloc? _postBloc;
+  late UserBloc _userBloc;
   ScrollController _controller = ScrollController();
-  List<PostModel> posts;
-  List<PostModel> stories;
-  List<UserModel> suggestFollowUsers;
+  List<PostModel>? posts;
+  List<PostModel>? stories;
+  List<UserModel>? suggestFollowUsers;
   bool isReloadPost = true;
   bool isReloadStory = true;
   int page = 1;
@@ -45,7 +45,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
       _userBloc = Provider.of<UserBloc>(context);
-      _postBloc.getNewFeedGuest(1).then((res) => setState(() {
+      _postBloc!.getNewFeedGuest(1).then((res) => setState(() {
             if (res.isSuccess) {
               posts = res.data;
               isReloadPost = false;
@@ -55,7 +55,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
               isReloadPost = false;
             }
           }));
-      _postBloc.getStoryForGuest().then((res) => setState(() {
+      _postBloc!.getStoryForGuest().then((res) => setState(() {
             if (res.isSuccess) {
               stories = res.data;
               isReloadStory = false;
@@ -106,11 +106,11 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
       body: LoadMoreScrollView(
         scrollController: _controller,
         onLoadMore: () async {
-          final res = await _postBloc.getNewFeedGuest(page + 1);
+          final res = await _postBloc!.getNewFeedGuest(page + 1);
           if (res.isSuccess) {
             setState(() {
               page++;
-              posts.addAll(res.data);
+              posts!.addAll(res.data);
             });
           } else {
             showToast(res.errMessage, context);
@@ -120,7 +120,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
         list: RefreshIndicator(
           color: ptPrimaryColor(context),
           onRefresh: () async {audioCache.play('tab3.mp3');
-            final res = await _postBloc.getNewFeedGuest(1);
+            final res = await _postBloc!.getNewFeedGuest(1);
             if (res.isSuccess) {
               setState(() {
                 page = 1;
@@ -142,10 +142,10 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                 ),
                 CreatePostCardGuest(
                   postBloc: _postBloc,
-                  pageController: _postBloc.pageController,
+                  pageController: _postBloc!.pageController,
                   stories: stories,
                 ),
-                if (_postBloc.hasTags != null && _postBloc.hasTags.length > 0)
+                if (_postBloc!.hasTags != null && _postBloc!.hasTags!.length > 0)
                   Container(
                     width: deviceWidth(context),
                     height: 30,
@@ -164,7 +164,7 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                           borderRadius: BorderRadius.circular(15),
                           onTap: () {
                             SearchPostPage.navigate(
-                                hashTag: _postBloc.hasTags[index]['value']);
+                                hashTag: _postBloc!.hasTags![index]['value']);
                           },
                           child: Container(
                             height: 30,
@@ -174,13 +174,13 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                                 borderRadius: BorderRadius.circular(15)),
                             child: Center(
                               child: Text(
-                                _postBloc.hasTags[index]['value'].toString(),
+                                _postBloc!.hasTags![index]['value'].toString(),
                               ),
                             ),
                           ),
                         );
                       },
-                      itemCount: _postBloc.hasTags.length,
+                      itemCount: _postBloc!.hasTags!.length,
                       scrollDirection: Axis.horizontal,
                     ),
                   ),
@@ -191,16 +191,16 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
                     padding: EdgeInsets.all(0),
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: posts.length,
+                    itemCount: posts!.length,
                     itemBuilder: (context, index) {
-                      final item = posts[index];
+                      final item = posts![index];
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           PostWidget(item),
                           if (index == 1 &&
                               suggestFollowUsers != null &&
-                              suggestFollowUsers.length > 0)
+                              suggestFollowUsers!.length > 0)
                             SuggestListUser(
                               users: suggestFollowUsers,
                             ),
@@ -221,12 +221,12 @@ class _GuestFeedPageState extends State<GuestFeedPage> {
 }
 
 class CreatePostCardGuest extends StatelessWidget {
-  final PostBloc postBloc;
-  final PageController pageController;
-  final List<PostModel> stories;
+  final PostBloc? postBloc;
+  final PageController? pageController;
+  final List<PostModel>? stories;
 
   const CreatePostCardGuest(
-      {Key key, this.postBloc, this.pageController, this.stories})
+      {Key? key, this.postBloc, this.pageController, this.stories})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -249,7 +249,7 @@ class CreatePostCardGuest extends StatelessWidget {
                     LoginPage.navigatePush();
                     return;
                   }
-                  pageController.animateToPage(1,
+                  pageController!.animateToPage(1,
                       duration: Duration(milliseconds: 300),
                       curve: Curves.decelerate);
                 },
@@ -273,7 +273,7 @@ class CreatePostCardGuest extends StatelessWidget {
                               LoginPage.navigatePush();
                               return;
                             }
-                            pageController.animateToPage(1,
+                            pageController!.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
                           },
@@ -295,7 +295,7 @@ class CreatePostCardGuest extends StatelessWidget {
                               LoginPage.navigatePush();
                               return;
                             }
-                            pageController.animateToPage(1,
+                            pageController!.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
                           },
@@ -349,18 +349,18 @@ class CreatePostCardGuest extends StatelessWidget {
             // ),
             stories == null
                 ? StorySkeleton()
-                : stories.length == 0
+                : stories!.length == 0
                     ? SizedBox.shrink()
                     : SizedBox(
                         height: 150,
                         child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(horizontal: 15),
-                            itemCount: stories.length,
+                            itemCount: stories!.length,
                             separatorBuilder: (context, index) =>
                                 SizedBox(width: 8),
                             itemBuilder: (context, index) {
-                              return buildStoryWidget(stories[index]);
+                              return buildStoryWidget(stories![index]);
                             }),
                       ),
           ],

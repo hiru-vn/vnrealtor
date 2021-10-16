@@ -23,7 +23,7 @@ import 'package:share/share.dart';
 // }
 
 void shareTo(BuildContext context,
-    {String content = '', List<String> image, List<String> video}) async {
+    {String content = '', List<String?>? image, List<String?>? video}) async {
   try {
     if (image == null) image = [];
     if (video == null) video = [];

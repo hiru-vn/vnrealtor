@@ -6,7 +6,7 @@ import 'info_page_create_page.dart';
 
 class CreatePagePage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(CreatePagePage()));
+    return navigatorKey.currentState!.push(pageBuilder(CreatePagePage()));
   }
 
   @override
@@ -26,7 +26,7 @@ class _CreatePagePageState extends State<CreatePagePage> {
       initialPage: pageInit,
     );
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar1(
         bgColor: ptSecondaryColor(context),
         title: 'Tạo Trang',

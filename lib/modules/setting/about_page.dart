@@ -3,7 +3,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class AboutPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(AboutPage()));
+    return navigatorKey.currentState!.push(pageBuilder(AboutPage()));
   }
 
   @override

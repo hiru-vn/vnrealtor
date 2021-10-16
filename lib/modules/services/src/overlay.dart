@@ -51,9 +51,9 @@ typedef Widget AnimatedOverlayWidgetBuilder(
 ///
 OverlaySupportEntry showOverlay(
   AnimatedOverlayWidgetBuilder builder, {
-  Curve curve,
-  Duration duration,
-  Key key,
+  Curve? curve,
+  Duration? duration,
+  Key? key,
 }) {
   assert(key is! GlobalKey);
   assert(_debugInitialized,
@@ -61,7 +61,7 @@ OverlaySupportEntry showOverlay(
 
   duration ??= Duration(seconds: 3);
 
-  final OverlayState overlay = _overlayState;
+  final OverlayState? overlay = _overlayState;
   if (overlay == null) {
     assert(() {
       debugPrint('overlay not avaliable, dispose this call : $key');
@@ -98,7 +98,7 @@ OverlaySupportEntry showOverlay(
     );
   }), overlayKey, stateKey);
 
-  overlay.insert(entry._entry);
+  overlay.insert(entry._entry!);
 
   return entry;
 }
@@ -106,16 +106,16 @@ OverlaySupportEntry showOverlay(
 final GlobalKey<_OverlayFinderState> _keyFinder =
     GlobalKey(debugLabel: 'overlay_support');
 
-OverlayState get _overlayState {
+OverlayState? get _overlayState {
   final context = _keyFinder.currentContext;
   if (context == null) return null;
 
-  NavigatorState navigator;
+  NavigatorState? navigator;
   void visitor(Element element) {
     if (navigator != null) return;
 
     if (element.widget is Navigator) {
-      navigator = (element as StatefulElement).state;
+      navigator = (element as StatefulElement).state as NavigatorState?;
     } else {
       element.visitChildElements(visitor);
     }
@@ -136,7 +136,7 @@ OverlayState get _overlayState {
          )
       
       ''');
-  return navigator.overlay;
+  return navigator!.overlay;
 }
 
 bool _debugInitialized = false;
@@ -144,9 +144,9 @@ bool _debugInitialized = false;
 class OverlaySupport extends StatelessWidget {
   final Widget child;
 
-  final ToastThemeData toastTheme;
+  final ToastThemeData? toastTheme;
 
-  const OverlaySupport({Key key, @required this.child, this.toastTheme})
+  const OverlaySupport({Key? key, required this.child, this.toastTheme})
       : super(key: key);
 
   @override
@@ -158,7 +158,7 @@ class OverlaySupport extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     assert(() {
-      if (context.ancestorWidgetOfExactType(OverlaySupport) != null) {
+      if (context.findAncestorWidgetOfExactType<OverlaySupport>() != null) {
         throw FlutterError(
             'There is already an OverlaySupport in the Widget tree.');
       }
@@ -173,9 +173,9 @@ class OverlaySupport extends StatelessWidget {
 
 /// Used to find the [Overlay] in decedents tree.
 class _OverlayFinder extends StatefulWidget {
-  final Widget child;
+  final Widget? child;
 
-  const _OverlayFinder({Key key, this.child}) : super(key: key);
+  const _OverlayFinder({Key? key, this.child}) : super(key: key);
 
   @override
   _OverlayFinderState createState() => _OverlayFinderState();
@@ -184,6 +184,6 @@ class _OverlayFinder extends StatefulWidget {
 class _OverlayFinderState extends State<_OverlayFinder> {
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return widget.child!;
   }
 }

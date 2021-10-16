@@ -5,23 +5,23 @@ import 'package:datcao/share/import.dart';
 
 class MyGroupPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(MyGroupPage()));
+    return navigatorKey.currentState!.push(pageBuilder(MyGroupPage()));
   }
 
-  MyGroupPage({Key key}) : super(key: key);
+  MyGroupPage({Key? key}) : super(key: key);
 
   @override
   _MyGroupPageState createState() => _MyGroupPageState();
 }
 
 class _MyGroupPageState extends State<MyGroupPage> {
-  GroupBloc _groupBloc;
+  GroupBloc? _groupBloc;
 
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
-      _groupBloc.init();
+      _groupBloc = Provider.of<GroupBloc>(context);
+      _groupBloc!.init();
     }
     super.didChangeDependencies();
   }
@@ -64,15 +64,15 @@ class _MyGroupPageState extends State<MyGroupPage> {
                   ],
                 ),
                 SizedBox(height: 15),
-                (_groupBloc.myGroups == null)
+                (_groupBloc!.myGroups == null)
                     ? ListSkeleton()
                     : ListView.separated(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return _buildGroupItem(_groupBloc.myGroups[index]);
+                          return _buildGroupItem(_groupBloc!.myGroups![index]);
                         },
-                        itemCount: _groupBloc.myGroups.length,
+                        itemCount: _groupBloc!.myGroups!.length,
                         separatorBuilder: (context, index) =>
                             SizedBox(height: 14),
                       ),
@@ -96,18 +96,18 @@ class _MyGroupPageState extends State<MyGroupPage> {
                   ],
                 ),
                 SizedBox(height: 15),
-                (_groupBloc.followingGroups == null)
+                (_groupBloc!.followingGroups == null)
                     ? ListSkeleton()
-                    : (_groupBloc.followingGroups.length == 0
+                    : (_groupBloc!.followingGroups!.length == 0
                         ? Text('Bạn chưa tham gia nhóm nào')
                         : ListView.separated(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               return _buildGroupItem(
-                                  _groupBloc.followingGroups[index]);
+                                  _groupBloc!.followingGroups![index]);
                             },
-                            itemCount: _groupBloc.followingGroups.length,
+                            itemCount: _groupBloc!.followingGroups!.length,
                             separatorBuilder: (context, index) =>
                                 SizedBox(height: 14),
                           ))
@@ -121,7 +121,7 @@ class _MyGroupPageState extends State<MyGroupPage> {
     return GestureDetector(
       onTap: () {audioCache.play('tab3.mp3');
         DetailGroupPage.navigate(groupModel).then((value) {
-          _groupBloc.getMyGroup();
+          _groupBloc!.getMyGroup();
         });
       },
       child: Container(
@@ -136,7 +136,7 @@ class _MyGroupPageState extends State<MyGroupPage> {
                 height: 40,
                 color: ptSecondaryColor(context),
                 child: CachedNetworkImage(
-                  imageUrl: groupModel.coverImage,
+                  imageUrl: groupModel.coverImage!,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -145,9 +145,9 @@ class _MyGroupPageState extends State<MyGroupPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(groupModel.name, style: ptTitle()),
+                Text(groupModel.name!, style: ptTitle()),
                 Text(
-                  'Nội dung mới: ${Formart.timeByDayVi(DateTime.tryParse(groupModel.updatedAt))}',
+                  'Nội dung mới: ${Formart.timeByDayVi(DateTime.tryParse(groupModel.updatedAt!)!)}',
                   style: ptTiny(),
                 )
               ],

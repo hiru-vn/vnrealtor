@@ -7,41 +7,41 @@ import 'package:image_picker/image_picker.dart';
 
 class CreateGroupPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(CreateGroupPage()));
+    return navigatorKey.currentState!.push(pageBuilder(CreateGroupPage()));
   }
 
-  CreateGroupPage({Key key}) : super(key: key);
+  CreateGroupPage({Key? key}) : super(key: key);
 
   @override
   _CreateGroupPageState createState() => _CreateGroupPageState();
 }
 
 class _CreateGroupPageState extends State<CreateGroupPage> {
-  GroupBloc _groupBloc;
+  GroupBloc? _groupBloc;
   TextEditingController _nameC = TextEditingController();
   bool _isPrivate = false;
   TextEditingController _descriptionC = TextEditingController();
-  String _cover;
+  String? _cover;
   TextEditingController _addressC = TextEditingController();
-  LatLng _position;
+  LatLng? _position;
   bool _isUpload = false;
   final _formKey = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
     if (_groupBloc == null) {
-      _groupBloc = Provider.of(context);
+      _groupBloc = Provider.of<GroupBloc>(context);
     }
     super.didChangeDependencies();
   }
 
   _createGroup() async {
-    if (!_formKey.currentState.validate()) return;
-    _formKey.currentState.save();
+    if (!_formKey.currentState!.validate()) return;
+    _formKey.currentState!.save();
 
     showWaitingDialog(context);
 
-    final res = await _groupBloc.createGroup(
+    final res = await _groupBloc!.createGroup(
         _nameC.text,
         _isPrivate,
         _descriptionC.text,
@@ -53,7 +53,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     closeLoading();
     if (res.isSuccess) {
       showToast('Tạo nhóm thành công', context, isSuccess: true);
-      navigatorKey.currentState.maybePop();
+      navigatorKey.currentState!.maybePop();
     } else {
       showToast(res.errMessage, context);
     }
@@ -63,7 +63,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     onCustomPersionRequest(
         permission: Permission.photos,
         onGranted: () {
-          ImagePicker.pickImage(source: ImageSource.gallery)
+          ImagePicker()
+              .pickImage(source: ImageSource.gallery)
               .then((value) async {
             if (value == null) return;
             setState(() {
@@ -137,7 +138,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       DropdownMenuItem(
                           child: Text('Nhóm kín'), value: 'private')
                     ],
-                    onChanged: (val) {
+                    onChanged: (dynamic val) {
                       if (val == 'public') {
                         _isPrivate = false;
                       } else {
@@ -179,7 +180,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 GestureDetector(
                   onTap: () {
                     _pickImageCover();
-                  audioCache.play('tab3.mp3');
+                    audioCache.play('tab3.mp3');
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -203,7 +204,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                                 ),
                               )
                             : CachedNetworkImage(
-                                imageUrl: _cover, fit: BoxFit.cover)),
+                                imageUrl: _cover!, fit: BoxFit.cover)),
                   ),
                 ),
                 SizedBox(height: 15),

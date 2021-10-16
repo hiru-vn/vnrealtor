@@ -35,7 +35,7 @@ class PageCreatePostAppBar extends StatelessWidget
             Spacer(),
             FlatButton(
                 color: ptPrimaryColor(context),
-                onPressed: enableBtn ? createPost : null,
+                onPressed: enableBtn ? createPost as void Function()? : null,
                 child: Text(
                   'Đăng',
                   style: ptTitle().copyWith(color: Colors.white),

@@ -1,19 +1,19 @@
 import 'package:datcao/modules/model/user.dart';
 
 class CommentModel {
-  String id;
-  String content;
-  String userId;
-  String mediaPostId;
-  String postId;
-  int like;
-  UserModel user;
-  String createdAt;
-  String updatedAt;
+  String? id;
+  String? content;
+  String? userId;
+  String? mediaPostId;
+  String? postId;
+  int? like;
+  UserModel? user;
+  String? createdAt;
+  String? updatedAt;
   bool isLike = false;
-  List<String> userLikeIds = [];
-  List<String> replyIds = [];
-  Map userTags;
+  List<String?>? userLikeIds = [];
+  List<String?>? replyIds = [];
+  Map? userTags;
 
   CommentModel(
       {this.id,
@@ -56,7 +56,7 @@ class CommentModel {
     data['mediaPostId'] = this.mediaPostId;
     data['like'] = this.like;
     if (this.user != null) {
-      data['user'] = this.user.toJson();
+      data['user'] = this.user!.toJson();
     }
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;

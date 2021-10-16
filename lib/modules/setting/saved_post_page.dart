@@ -5,7 +5,7 @@ import 'package:datcao/share/widget/empty_widget.dart';
 
 class SavedPostPage extends StatefulWidget {
   static Future navigate() {
-    return navigatorKey.currentState.push(pageBuilder(SavedPostPage()));
+    return navigatorKey.currentState!.push(pageBuilder(SavedPostPage()));
   }
 
   @override
@@ -13,12 +13,12 @@ class SavedPostPage extends StatefulWidget {
 }
 
 class _SavedPostPageState extends State<SavedPostPage> {
-  PostBloc _postBloc;
+  PostBloc? _postBloc;
 
   @override
   void didChangeDependencies() {
     if (_postBloc == null) {
-      _postBloc = Provider.of(context);
+      _postBloc = Provider.of<PostBloc>(context);
     }
     super.didChangeDependencies();
   }
@@ -31,14 +31,14 @@ class _SavedPostPageState extends State<SavedPostPage> {
         title: 'Kho lưu trữ',
         automaticallyImplyLeading: true,
       ),
-      body: _postBloc.savePosts == null
+      body: _postBloc!.savePosts == null
           ? kLoadingSpinner
-          : (_postBloc.savePosts.length != 0
+          : (_postBloc!.savePosts.length != 0
               ? ListView.separated(
                   padding: EdgeInsets.only(bottom: 20),
-                  itemCount: _postBloc.savePosts.length,
+                  itemCount: _postBloc!.savePosts.length,
                   itemBuilder: (context, index) {
-                    final post = _postBloc.savePosts[index];
+                    final post = _postBloc!.savePosts[index];
                     return PostSmallWidget(post);
                   },
                   separatorBuilder: (context, index) => SizedBox(height: 0),

@@ -12,11 +12,11 @@ import 'package:datcao/share/import.dart';
 import 'package:hashtagable/hashtagable.dart';
 
 class SearchPostPage extends StatefulWidget {
-  final String hashTag;
+  final String? hashTag;
 
-  const SearchPostPage({Key key, this.hashTag}) : super(key: key);
-  static Future navigate({String hashTag}) {
-    return navigatorKey.currentState
+  const SearchPostPage({Key? key, this.hashTag}) : super(key: key);
+  static Future navigate({String? hashTag}) {
+    return navigatorKey.currentState!
         .push(pageBuilder(SearchPostPage(hashTag: hashTag)));
   }
 
@@ -26,14 +26,14 @@ class SearchPostPage extends StatefulWidget {
 
 class _SearchPostPageState extends State<SearchPostPage>
     with SingleTickerProviderStateMixin {
-  UserBloc _userBloc;
-  PostBloc _postBloc;
-  PagesBloc _pagesBloc;
-  TabController _tabController;
+  UserBloc? _userBloc;
+  late PostBloc _postBloc;
+  PagesBloc? _pagesBloc;
+  TabController? _tabController;
   TextEditingController _searchC = TextEditingController();
-  List<UserModel> users = [];
-  List<PostModel> posts = [];
-  List<PagesCreate> pages = [];
+  List<UserModel>? users = [];
+  List<PostModel>? posts = [];
+  List<PagesCreate>? pages = [];
   bool isLoading = false;
 
   @override
@@ -52,7 +52,7 @@ class _SearchPostPageState extends State<SearchPostPage>
       _pagesBloc = Provider.of<PagesBloc>(context);
       if (widget.hashTag != null) {
         isLoading = true;
-        _searchC.text = widget.hashTag;
+        _searchC.text = widget.hashTag!;
         _searchPostByHashTag(widget.hashTag).then((value) => setState(() {
               isLoading = false;
             }));
@@ -66,7 +66,7 @@ class _SearchPostPageState extends State<SearchPostPage>
       isLoading = true;
     });
     if (text.contains('#')) {
-      List<String> hashTags = [];
+      List<String?> hashTags = [];
       RegExp exp = new RegExp(r"\B#\w\w+");
       exp.allMatches(text).forEach((match) {
         hashTags.add(match.group(0));
@@ -83,7 +83,7 @@ class _SearchPostPageState extends State<SearchPostPage>
 
   Future _searchUser(String text) async {
     final res =
-        await _userBloc.getListUser(filter: GraphqlFilter(search: text));
+        await _userBloc!.getListUser(filter: GraphqlFilter(search: text));
     if (res.isSuccess) {
       setState(() {
         users = res.data;
@@ -99,7 +99,7 @@ class _SearchPostPageState extends State<SearchPostPage>
 
   Future _searchPage(String text) async {
     final res =
-        await _pagesBloc.getListPage(filter: GraphqlFilter(search: text));
+        await _pagesBloc!.getListPage(filter: GraphqlFilter(search: text));
     if (res.isSuccess) {
       setState(() {
         pages = res.data;
@@ -129,7 +129,7 @@ class _SearchPostPageState extends State<SearchPostPage>
     }
   }
 
-  Future _searchPostByHashTag(String hashTag) async {
+  Future _searchPostByHashTag(String? hashTag) async {
     final res = await _postBloc.searchPostByHashTag(hashTag);
     if (res.isSuccess) {
       setState(() {
@@ -149,7 +149,7 @@ class _SearchPostPageState extends State<SearchPostPage>
     return Stack(
       children: [
         Scaffold(
-          resizeToAvoidBottomPadding: false,
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             elevation: 0,
             backgroundColor: ptPrimaryColorLight(context),
@@ -185,7 +185,7 @@ class _SearchPostPageState extends State<SearchPostPage>
               IconButton(
                   icon: Icon(Icons.filter_list),
                   onPressed: () {
-                    if (_tabController.index == 1 || _tabController.index == 3)
+                    if (_tabController!.index == 1 || _tabController!.index == 3)
                       return;
                     pickList(context,
                         title: 'Sắp xếp kết quả theo',
@@ -241,7 +241,7 @@ class _SearchPostPageState extends State<SearchPostPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (posts.length == 0 && _searchC.text.trim() != '')
+          if (posts!.length == 0 && _searchC.text.trim() != '')
             Padding(
                 padding: const EdgeInsets.only(left: 15, top: 10),
                 child: Text(
@@ -250,7 +250,7 @@ class _SearchPostPageState extends State<SearchPostPage>
                     color: Colors.black54,
                   ),
                 )),
-          if (posts.length > 0 && _searchC.text.trim() != '')
+          if (posts!.length > 0 && _searchC.text.trim() != '')
             Padding(
                 padding: const EdgeInsets.only(left: 15, top: 10),
                 child: Text(
@@ -263,9 +263,9 @@ class _SearchPostPageState extends State<SearchPostPage>
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               padding: EdgeInsets.zero,
-              itemCount: posts.length,
+              itemCount: posts!.length,
               itemBuilder: (context, index) {
-                return PostWidget(posts[index]);
+                return PostWidget(posts![index]);
               }),
         ],
       ),
@@ -277,7 +277,7 @@ class _SearchPostPageState extends State<SearchPostPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (users.length == 0 && _searchC.text.trim() == '')
+          if (users!.length == 0 && _searchC.text.trim() == '')
             Padding(
                 padding: const EdgeInsets.only(left: 12, top: 12),
                 child: Text(
@@ -286,7 +286,7 @@ class _SearchPostPageState extends State<SearchPostPage>
                     color: Colors.black54,
                   ),
                 )),
-          if (users.length > 0 && _searchC.text.trim() != '')
+          if (users!.length > 0 && _searchC.text.trim() != '')
             Padding(
                 padding: const EdgeInsets.only(left: 15, top: 10),
                 child: Text(
@@ -295,7 +295,7 @@ class _SearchPostPageState extends State<SearchPostPage>
                     color: Colors.black54,
                   ),
                 )),
-          if (users.length == 0 && _searchC.text.trim() != '')
+          if (users!.length == 0 && _searchC.text.trim() != '')
             Padding(
                 padding: const EdgeInsets.only(left: 15, top: 10),
                 child: Text(
@@ -304,19 +304,19 @@ class _SearchPostPageState extends State<SearchPostPage>
                     color: Colors.black54,
                   ),
                 )),
-          (users.length == 0 && _searchC.text.trim() == '')
+          (users!.length == 0 && _searchC.text.trim() == '')
               ? ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: _userBloc.suggestFollowUsers.length,
+                  itemCount: _userBloc!.suggestFollowUsers.length,
                   itemBuilder: (context, index) =>
-                      PeopleWidget(_userBloc.suggestFollowUsers[index]),
+                      PeopleWidget(_userBloc!.suggestFollowUsers[index]),
                 )
               : ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: users.length,
-                  itemBuilder: (context, index) => PeopleWidget(users[index]),
+                  itemCount: users!.length,
+                  itemBuilder: (context, index) => PeopleWidget(users![index]),
                 ),
         ],
       ),
@@ -328,7 +328,7 @@ class _SearchPostPageState extends State<SearchPostPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (pages.length == 0 && _searchC.text.trim() == '')
+          if (pages!.length == 0 && _searchC.text.trim() == '')
             Padding(
                 padding: const EdgeInsets.only(left: 12, top: 12),
                 child: Text(
@@ -337,7 +337,7 @@ class _SearchPostPageState extends State<SearchPostPage>
                     color: Colors.black54,
                   ),
                 )),
-          if (pages.length > 0 && _searchC.text.trim() != '')
+          if (pages!.length > 0 && _searchC.text.trim() != '')
             Padding(
                 padding: const EdgeInsets.only(left: 15, top: 10),
                 child: Text(
@@ -346,7 +346,7 @@ class _SearchPostPageState extends State<SearchPostPage>
                     color: Colors.black54,
                   ),
                 )),
-          if (pages.length == 0 && _searchC.text.trim() != '')
+          if (pages!.length == 0 && _searchC.text.trim() != '')
             Padding(
                 padding: const EdgeInsets.only(left: 15, top: 10),
                 child: Text(
@@ -355,20 +355,20 @@ class _SearchPostPageState extends State<SearchPostPage>
                     color: Colors.black54,
                   ),
                 )),
-          (pages.length == 0 && _searchC.text.trim() == '')
+          (pages!.length == 0 && _searchC.text.trim() == '')
               ? ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: _pagesBloc.suggestFollowPage.length,
+                  itemCount: _pagesBloc!.suggestFollowPage.length,
                   itemBuilder: (context, index) => PageWidget(
-                      _pagesBloc.suggestFollowPage[index], _pagesBloc),
+                      _pagesBloc!.suggestFollowPage[index], _pagesBloc),
                 )
               : ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: pages.length,
+                  itemCount: pages!.length,
                   itemBuilder: (context, index) =>
-                      PageWidget(pages[index], _pagesBloc),
+                      PageWidget(pages![index], _pagesBloc),
                 ),
         ],
       ),

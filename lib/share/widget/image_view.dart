@@ -7,11 +7,11 @@ import '../import.dart';
 
 class ImageViewNetwork extends StatelessWidget {
   final String url;
-  final String tag;
-  final int w, h;
+  final String? tag;
+  final int? w, h;
   final double borderRadius;
   ImageViewNetwork(
-      {@required this.url, this.tag, this.w, this.h, this.borderRadius = 0});
+      {required this.url, this.tag, this.w, this.h, this.borderRadius = 0});
   @override
   Widget build(BuildContext context) {
     String genTag = tag ?? url + Random().nextInt(10000000).toString();
@@ -32,8 +32,8 @@ class ImageViewNetwork extends StatelessWidget {
         child: Image(
           image: CachedNetworkImageProvider(url),
           fit: BoxFit.cover,
-          errorBuilder: imageNetworkErrorBuilder,
-          loadingBuilder: kLoadingBuilder,
+          errorBuilder: imageNetworkErrorBuilder as Widget Function(BuildContext, Object, StackTrace?)?,
+          loadingBuilder: kLoadingBuilder as Widget Function(BuildContext, Widget, ImageChunkEvent?)?,
         ),
       ),
     );
@@ -42,8 +42,8 @@ class ImageViewNetwork extends StatelessWidget {
 
 class DetailImageScreen extends StatelessWidget {
   final String url;
-  final String tag;
-  final int scaleW, scaleH;
+  final String? tag;
+  final int? scaleW, scaleH;
   DetailImageScreen(this.url, {this.tag, this.scaleW, this.scaleH});
 
   @override
