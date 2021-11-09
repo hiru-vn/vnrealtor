@@ -24,7 +24,7 @@ class ScrollToBottom extends StatelessWidget {
         shape: CircleBorder(),
         child: Icon(
           scrollToBottomStyle!.icon ?? Icons.keyboard_arrow_down,
-          color: scrollToBottomStyle!.textColor ?? ptPrimaryColor(context),
+          color: scrollToBottomStyle!.textColor ?? Colors.blue,
         ),
         onPressed: () {
           if (onScrollToBottomPress != null) {

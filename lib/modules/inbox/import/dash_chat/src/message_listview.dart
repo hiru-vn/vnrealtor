@@ -125,7 +125,7 @@ class _MessageListViewState extends State<MessageListView> {
             maxHeight: MediaQuery.of(context).size.height,
             maxWidth: MediaQuery.of(context).size.width);
 
-    return Flexible(
+    return Expanded(
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());

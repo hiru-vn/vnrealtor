@@ -93,19 +93,20 @@ class TextFieldValidator {
     return null;
   }
 
-  static String? emailValidator(String string) {
-    if (!Validator.isEmail(string)) return 'Email không hợp lệ';
+  static String? emailValidator(String? string) {
+    if (!Validator.isEmail(string ?? '')) return 'Email không hợp lệ';
     return null;
   }
 
-  static String? formalValidator(String string) {
-    if (string.trim() == '') return null;
-    if (!RegExp(formalPattern).hasMatch(string)) return """dấu _ , a-z , 0-9""";
+  static String? formalValidator(String? string) {
+    if (string?.trim() == '') return null;
+    if (!RegExp(formalPattern).hasMatch(string ?? ''))
+      return """dấu _ , a-z , 0-9""";
     return null;
   }
 
-  static String? phoneValidator(String string) {
-    if (!Validator.isPhone(string)) return 'Số điện thoại không hợp lệ';
+  static String? phoneValidator(String? string) {
+    if (!Validator.isPhone(string ?? '')) return 'Số điện thoại không hợp lệ';
     return null;
   }
 

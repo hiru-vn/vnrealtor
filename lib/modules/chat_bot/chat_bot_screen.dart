@@ -1,4 +1,5 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
+import 'package:datcao/modules/bloc/chat_bot_bloc.dart';
 import 'package:datcao/modules/inbox/import/app_bar.dart';
 import 'package:datcao/modules/inbox/import/dash_chat/dash_chat.dart';
 import 'package:datcao/share/import.dart';
@@ -22,38 +23,24 @@ class _ChatBotPageState extends State<ChatBotPage> {
   final userColor = HexColor('#4D94FF');
   double? keyboardHeight;
   FocusNode _focusNode = FocusNode();
-  final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
   final ScrollController scrollController = ScrollController();
   final TextEditingController _chatC = TextEditingController();
   AuthBloc? _authBloc;
-  List<ChatMessage> messages = <ChatMessage>[];
-  PageController _footerC = PageController();
+  ChatBotBloc? _chatBotBloc;
 
-  final ChatUser _me = ChatUser(
-      uid: AuthBloc.instance.userModel!.id,
-      name: AuthBloc.instance.userModel!.name,
-      containerColor: HexColor('#4D94FF'),
-      avatar: AuthBloc.instance.userModel!.avatar);
-  final ChatUser _bot = ChatUser(
-      uid: 'bot',
-      name: 'Bot',
-      containerColor: Colors.blue[50],
-      avatar:
-          'https://www.softronic.se/wp-content/uploads/2020/03/avatar_chatbot.png');
+  PageController _footerC = PageController();
 
   @override
   void initState() {
     super.initState();
-    messages.add(ChatMessage(
-        text:
-            'Chào ${_me.name}, tôi có thể giúp bạn tiếp cận với các bài viết phù hợp, hãy thử nhắn tin với nhau nhé!',
-        user: _bot));
   }
 
   @override
   void didChangeDependencies() {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
+      _chatBotBloc = Provider.of<ChatBotBloc>(context);
+      _chatBotBloc!.init();
     }
     super.didChangeDependencies();
   }
@@ -66,8 +53,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
 
   void onSend(ChatMessage? message) {
     if (message == null) return;
-    messages.add(message);
-    Future.delayed(Duration(seconds: 2));
+    _chatBotBloc!.sendMessCB(message);
   }
 
   @override
@@ -81,10 +67,22 @@ class _ChatBotPageState extends State<ChatBotPage> {
         automaticallyImplyLeading: true,
         bgColor: Colors.white,
         icon: CircleAvatar(
-          backgroundImage: NetworkImage(
-              'https://www.softronic.se/wp-content/uploads/2020/03/avatar_chatbot.png'),
+          backgroundImage: AssetImage(_chatBotBloc!.bot.avatar!),
         ),
         elevation: 2,
+        actions: [
+          GestureDetector(
+            onTap: _chatBotBloc!.clear,
+            child: SizedBox(
+              width: 50,
+              child: Icon(
+                Icons.restart_alt,
+                color: Colors.blue,
+                size: 27,
+              ),
+            ),
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -109,12 +107,12 @@ class _ChatBotPageState extends State<ChatBotPage> {
                 },
                 scrollController: scrollController,
                 textController: _chatC,
-                key: _chatViewKey,
+                key: _chatBotBloc!.chatViewKey,
                 inverted: false,
                 onSend: onSend,
                 sendOnEnter: true,
                 textInputAction: TextInputAction.send,
-                user: _me,
+                user: _chatBotBloc!.me,
                 textCapitalization: TextCapitalization.sentences,
                 messageTextBuilder: (text, [messages]) {
                   if (text!.trim() == '') {
@@ -170,19 +168,24 @@ class _ChatBotPageState extends State<ChatBotPage> {
                 focusNode: _focusNode,
                 dateFormat: DateFormat('d-M-yyyy'),
                 timeFormat: DateFormat('HH:mm'),
-                messages: messages,
+                messages: _chatBotBloc!.messages,
                 showUserAvatar: false,
                 avatarBuilder: (user) {
                   return SizedBox(
                     height: 35,
                     width: 35,
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(user!.avatar ?? ''),
-                    ),
+                    child: user?.uid == 'bot'
+                        ? CircleAvatar(
+                            backgroundImage: AssetImage(user!.avatar ?? ''),
+                          )
+                        : CircleAvatar(
+                            backgroundImage: NetworkImage(user!.avatar ?? ''),
+                          ),
                   );
                 },
                 showAvatarForEveryMessage: false,
-                scrollToBottom: true,
+                scrollToBottom:
+                    _chatBotBloc!.messages.length > 6 ? true : false,
                 onPressAvatar: (ChatUser? user) {},
                 onLongPressAvatar: (ChatUser? user) {
                   print("OnLongPressAvatar: ${user!.name}");
@@ -200,30 +203,35 @@ class _ChatBotPageState extends State<ChatBotPage> {
                       bottomLeft = 20,
                       topRight = 20,
                       bottomRight = 20;
-                  final index = messages.indexOf(message!);
-                  if (messages.length >= 2) {
+                  final index = _chatBotBloc!.messages.indexOf(message!);
+                  if (_chatBotBloc!.messages.length >= 2) {
                     if (isUser ?? false) {
                       if (index == 0) {
-                        if (messages[1].user!.uid ==
+                        if (_chatBotBloc!.messages[1].user!.uid ==
                             AuthBloc.instance.userModel!.id) {
                           bottomRight = 4;
                         }
-                      } else if (index == messages.length - 1) {
-                        if (messages[messages.length - 2].user!.uid ==
+                      } else if (index == _chatBotBloc!.messages.length - 1) {
+                        if (_chatBotBloc!
+                                .messages[_chatBotBloc!.messages.length - 2]
+                                .user!
+                                .uid ==
                             AuthBloc.instance.userModel!.id) {
                           topRight = 4;
                         }
                       } else {
-                        if (messages[index - 1].user!.uid ==
+                        if (_chatBotBloc!.messages[index - 1].user!.uid ==
                                 AuthBloc.instance.userModel!.id &&
-                            messages[index + 1].user!.uid ==
+                            _chatBotBloc!.messages[index + 1].user!.uid ==
                                 AuthBloc.instance.userModel!.id) {
                           topRight = 4;
                           bottomRight = 4;
-                        } else if (messages[index - 1].user!.uid ==
+                        } else if (_chatBotBloc!
+                                .messages[index - 1].user!.uid ==
                             AuthBloc.instance.userModel!.id) {
                           topRight = 4;
-                        } else if (messages[index + 1].user!.uid ==
+                        } else if (_chatBotBloc!
+                                .messages[index + 1].user!.uid ==
                             AuthBloc.instance.userModel!.id) {
                           bottomRight = 4;
                         }
@@ -231,21 +239,31 @@ class _ChatBotPageState extends State<ChatBotPage> {
                     } else {
                       String? userId = message.user!.uid;
                       if (index == 0) {
-                        if (messages[1].user!.uid == userId) {
+                        if (_chatBotBloc!.messages[1].user!.uid == userId) {
                           bottomLeft = 4;
                         }
-                      } else if (index == messages.length - 1) {
-                        if (messages[messages.length - 2].user!.uid == userId) {
+                      } else if (index == _chatBotBloc!.messages.length - 1) {
+                        if (_chatBotBloc!
+                                .messages[_chatBotBloc!.messages.length - 2]
+                                .user!
+                                .uid ==
+                            userId) {
                           topLeft = 4;
                         }
                       } else {
-                        if (messages[index - 1].user!.uid == userId &&
-                            messages[index + 1].user!.uid == userId) {
+                        if (_chatBotBloc!.messages[index - 1].user!.uid ==
+                                userId &&
+                            _chatBotBloc!.messages[index + 1].user!.uid ==
+                                userId) {
                           topLeft = 4;
                           bottomLeft = 4;
-                        } else if (messages[index - 1].user!.uid == userId) {
+                        } else if (_chatBotBloc!
+                                .messages[index - 1].user!.uid ==
+                            userId) {
                           topLeft = 4;
-                        } else if (messages[index + 1].user!.uid == userId) {
+                        } else if (_chatBotBloc!
+                                .messages[index + 1].user!.uid ==
+                            userId) {
                           bottomLeft = 4;
                         }
                       }

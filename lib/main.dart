@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:datcao/modules/bloc/chat_bot_bloc.dart';
 import 'package:datcao/modules/bloc/group_bloc.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/services/firebase_service.dart';
@@ -128,6 +129,9 @@ class _MyAppState extends State<MyApp> {
                   ),
                   ChangeNotifierProvider(
                     create: (context) => GroupBloc.instance,
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => ChatBotBloc.instance,
                   ),
                 ],
                 child: isOffline

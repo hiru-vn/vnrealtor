@@ -48,15 +48,14 @@ class PostBloc extends ChangeNotifier {
   Future<BaseResponse> getNewFeed({required GraphqlFilter filter}) async {
     try {
       // update user position
-      UserBloc.instance.setUserlocation();
-
       isEndFeed = false;
       isReloadFeed = true;
       notifyListeners();
       final res = await PostRepo().getNewFeed(filter: filter);
       final List listRaw = res['data'];
-      final List<PostModel?> list = listRaw.map((e) => PostModel.fromJson(e)).toList();
-      if (list.length < (filter.limit??20)) isEndFeed = true;
+      final List<PostModel?> list =
+          listRaw.map((e) => PostModel.fromJson(e)).toList();
+      if (list.length < (filter.limit ?? 20)) isEndFeed = true;
       feed = list;
       lastFetchFeedPage1 = DateTime.now();
       feedPage = 1;
@@ -65,6 +64,7 @@ class PostBloc extends ChangeNotifier {
       return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
     } finally {
       isReloadFeed = false;
+      UserBloc.instance.setUserlocation();
       notifyListeners();
     }
   }
@@ -570,8 +570,8 @@ class PostBloc extends ChangeNotifier {
 
   void setLikePostLocal(String? postId, int likeCounter, bool isUserLike) {
     PostModel? post;
-    post =
-        feed!.firstWhere((element) => element!.id == postId, orElse: () => null);
+    post = feed!
+        .firstWhere((element) => element!.id == postId, orElse: () => null);
     if (post != null)
       post
         ..like = likeCounter

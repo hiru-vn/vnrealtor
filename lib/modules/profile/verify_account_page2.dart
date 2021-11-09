@@ -108,7 +108,8 @@ class _VertifyAccountPage2State extends State<VertifyAccountPage2> {
     );
   }
 
-  _buildTextField(String hint, String? initialValue, Function(String) onChange,
+  _buildTextField(
+          String hint, String? initialValue, String? Function(String?) onChange,
           {TextInputType type = TextInputType.text,
           Function(String)? validator}) =>
       Padding(
@@ -120,7 +121,9 @@ class _VertifyAccountPage2State extends State<VertifyAccountPage2> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
               child: TextFormField(
-                validator: validator as String? Function(String?)?,
+                validator: validator != null
+                    ? validator as String? Function(String?)
+                    : null,
                 keyboardType: type,
                 initialValue: initialValue,
                 onChanged: onChange,

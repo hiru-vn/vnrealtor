@@ -634,9 +634,8 @@ class _PostWidgetState extends State<PostWidget> {
                   if (val == 'Xóa bài') {
                     final confirm = await (showConfirmDialog(
                         context, 'Vui lòng xác nhận xóa bài viết này.',
-                        confirmTap: () {},
-                        navigatorKey: navigatorKey));
-                    if ((confirm??null) == false) return;
+                        confirmTap: () {}, navigatorKey: navigatorKey));
+                    if ((confirm ?? null) == false) return;
                     final res = await _postBloc!.deletePost(widget.post!.id);
                     if (res.isSuccess) {
                     } else {
@@ -1009,7 +1008,12 @@ class _PostWidgetState extends State<PostWidget> {
 class PostSmallWidget extends StatefulWidget {
   final Function? commentCallBack;
   final PostModel post;
-  PostSmallWidget(this.post, {this.commentCallBack});
+  final bool? useAction;
+  final bool? removePadding;
+  PostSmallWidget(this.post,
+      {this.commentCallBack,
+      this.useAction = true,
+      this.removePadding = false});
   @override
   _PostSmallWidgetState createState() => _PostSmallWidgetState();
 }
@@ -1052,7 +1056,7 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
           borderRadius: BorderRadius.circular(8),
           child: SizedBox(
             width: deviceWidth(context) / 3.5,
-            height: deviceWidth(context) / 4.8,
+            height: 83,
             child: Image(
               image: CachedNetworkImageProvider(url),
               fit: BoxFit.cover,
@@ -1081,8 +1085,9 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
     return Container(
       color: Colors.white,
       child: Padding(
-        padding:
-            const EdgeInsets.only(top: 10, left: 20, right: 15, bottom: 10),
+        padding: (widget.removePadding == true)
+            ? const EdgeInsets.only(top: 10, right: 15, bottom: 10)
+            : const EdgeInsets.only(top: 10, left: 20, right: 15, bottom: 10),
         child: Container(
             width: deviceWidth(context),
             color: Colors.white,
@@ -1115,14 +1120,14 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                                         .replaceAll('\n', ' ')
                                         .replaceAll('  ', '')
                                 : '',
-                            style: ptTitle(),
-                            maxLines: 2,
+                            style: ptBody(),
+                            maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(height: 3),
                           Text(
                             '${widget.post.like} thích • ${widget.post.commentIds!.length} bình luận',
-                            style: ptBody().copyWith(color: Colors.grey[600]),
+                            style: ptSmall().copyWith(color: Colors.grey[600]),
                           ),
                           SizedBox(height: 3),
                           Text.rich(
@@ -1142,27 +1147,30 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                         ],
                       )),
                 ),
-                Center(
-                  child: PopupMenuButton(
-                      key: moreBtnKey,
-                      itemBuilder: (_) => <PopupMenuItem<String>>[
-                            PopupMenuItem(
-                              child: Text('Bỏ lưu'),
-                              value: 'Bỏ lưu',
-                            ),
-                          ],
-                      onSelected: (dynamic val) async {
-                        if (val == 'Bỏ lưu') {
-                          final res = await _postBloc!.unsavePost(widget.post);
-                          if (res.isSuccess) {
-                          } else {
-                            showToast(res.errMessage, context);
+                if (widget.useAction!)
+                  Center(
+                    child: PopupMenuButton(
+                        key: moreBtnKey,
+                        itemBuilder: (_) => <PopupMenuItem<String>>[
+                              PopupMenuItem(
+                                child: Text('Bỏ lưu'),
+                                value: 'Bỏ lưu',
+                              ),
+                            ],
+                        onSelected: (dynamic val) async {
+                          if (val == 'Bỏ lưu') {
+                            final res =
+                                await _postBloc!.unsavePost(widget.post);
+                            if (res.isSuccess) {
+                            } else {
+                              showToast(res.errMessage, context);
+                            }
+                            navigatorKey.currentState!.maybePop();
                           }
-                          navigatorKey.currentState!.maybePop();
-                        }
-                      },
-                      child: SizedBox(width: 30, child: Icon(Icons.more_vert))),
-                )
+                        },
+                        child:
+                            SizedBox(width: 30, child: Icon(Icons.more_vert))),
+                  )
               ],
             )),
       ),

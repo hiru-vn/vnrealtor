@@ -41,18 +41,22 @@ class ChatMessage {
   /// actions in message container.
   List<Widget>? buttons;
 
-  ChatMessage({
-    String? id,
-    required this.text,
-    required this.user,
-    this.image,
-    this.video,
-    this.quickReplies,
-    String Function()? messageIdGenerator,
-    DateTime? createdAt,
-    this.customProperties,
-    this.buttons
-  }) {
+  PostModel? post;
+
+  String? postId;
+
+  ChatMessage(
+      {String? id,
+      required this.text,
+      required this.user,
+      this.image,
+      this.video,
+      this.quickReplies,
+      String Function()? messageIdGenerator,
+      DateTime? createdAt,
+      this.customProperties,
+      this.buttons,
+      this.post}) {
     this.createdAt = createdAt != null ? createdAt : DateTime.now();
     this.id = id != null
         ? id

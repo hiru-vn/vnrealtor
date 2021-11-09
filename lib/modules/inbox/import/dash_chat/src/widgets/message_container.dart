@@ -92,93 +92,101 @@ class MessageContainer extends StatelessWidget {
         BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height,
             maxWidth: MediaQuery.of(context).size.width);
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: constraints.maxWidth *
-            (messageContainerWidthRadio != null
-                ? messageContainerWidthRadio!(message)
-                : 0.6),
-      ),
-      child: Container(
-        decoration: messageDecorationBuilder != null
-            ? messageDecorationBuilder!(message, isUser)
-            : messageContainerDecoration != null
-                ? messageContainerDecoration!.copyWith(
-                    color: message.user!.containerColor != null
-                        ? message.user!.containerColor
-                        : messageContainerDecoration!.color,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: constraints.maxWidth *
+                (messageContainerWidthRadio != null
+                    ? messageContainerWidthRadio!(message)
+                    : 0.6),
+          ),
+          child: Container(
+            decoration: messageDecorationBuilder != null
+                ? messageDecorationBuilder!(message, isUser)
+                : messageContainerDecoration != null
+                    ? messageContainerDecoration!.copyWith(
+                        color: message.user!.containerColor != null
+                            ? message.user!.containerColor
+                            : messageContainerDecoration!.color,
+                      )
+                    : BoxDecoration(
+                        color: message.user!.containerColor != null
+                            ? message.user!.containerColor
+                            : isUser!
+                                ? Theme.of(context).accentColor
+                                : Color.fromRGBO(225, 225, 225, 1),
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+            margin: EdgeInsets.only(
+              bottom: 2.5,
+            ),
+            padding: messagePaddingBuilder != null
+                ? messagePaddingBuilder!(message)
+                : EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment:
+                  isUser! ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: <Widget>[
+                if (this.textBeforeImage)
+                  _buildMessageText()
+                else
+                  _buildMessageImage(),
+                if (this.textBeforeImage)
+                  _buildMessageImage()
+                else
+                  _buildMessageText(),
+                _buildMessageUrlLink(),
+                if (buttons != null)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: isUser!
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: buttons!,
                   )
-                : BoxDecoration(
-                    color: message.user!.containerColor != null
-                        ? message.user!.containerColor
-                        : isUser!
-                            ? Theme.of(context).accentColor
-                            : Color.fromRGBO(225, 225, 225, 1),
-                    borderRadius: BorderRadius.circular(5.0),
+                else if (messageButtonsBuilder != null)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: isUser!
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                    children: messageButtonsBuilder!(message),
+                    mainAxisSize: MainAxisSize.min,
                   ),
-        margin: EdgeInsets.only(
-          bottom: 2.5,
+                if (messageTimeBuilder != null)
+                  messageTimeBuilder!(
+                    timeFormat != null
+                        ? timeFormat!.format(message.createdAt!)
+                        : DateFormat('HH:mm:ss').format(message.createdAt!),
+                    message,
+                  )
+                else
+                  Padding(
+                    padding: EdgeInsets.only(top: 5.0),
+                    child: Text(
+                      timeFormat != null
+                          ? timeFormat!.format(message.createdAt!)
+                          : DateFormat('HH:mm:ss').format(message.createdAt!),
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        color: message.user!.color != null
+                            ? message.user!.color
+                            : isUser!
+                                ? Colors.white70
+                                : Colors.black87,
+                      ),
+                    ),
+                  )
+              ],
+            ),
+          ),
         ),
-        padding: messagePaddingBuilder != null
-            ? messagePaddingBuilder!(message)
-            : EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment:
-              isUser! ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: <Widget>[
-            if (this.textBeforeImage)
-              _buildMessageText()
-            else
-              _buildMessageImage(),
-            if (this.textBeforeImage)
-              _buildMessageImage()
-            else
-              _buildMessageText(),
-            _buildMessageUrlLink(),
-            if (buttons != null)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment:
-                    isUser! ? MainAxisAlignment.end : MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: buttons!,
-              )
-            else if (messageButtonsBuilder != null)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment:
-                    isUser! ? MainAxisAlignment.end : MainAxisAlignment.start,
-                children: messageButtonsBuilder!(message),
-                mainAxisSize: MainAxisSize.min,
-              ),
-            if (messageTimeBuilder != null)
-              messageTimeBuilder!(
-                timeFormat != null
-                    ? timeFormat!.format(message.createdAt!)
-                    : DateFormat('HH:mm:ss').format(message.createdAt!),
-                message,
-              )
-            else
-              Padding(
-                padding: EdgeInsets.only(top: 5.0),
-                child: Text(
-                  timeFormat != null
-                      ? timeFormat!.format(message.createdAt!)
-                      : DateFormat('HH:mm:ss').format(message.createdAt!),
-                  style: TextStyle(
-                    fontSize: 10.0,
-                    color: message.user!.color != null
-                        ? message.user!.color
-                        : isUser!
-                            ? Colors.white70
-                            : Colors.black87,
-                  ),
-                ),
-              )
-          ],
-        ),
-      ),
+        _buildMessagePost(),
+      ],
     );
   }
 
@@ -207,6 +215,20 @@ class MessageContainer extends StatelessWidget {
       return UrlPreviewContainer(
         message: message,
       );
+    return SizedBox.shrink();
+  }
+
+  Widget _buildMessagePost() {
+    if (message.postId != null) {
+      if (message.post == null) {
+        return kLoadingSpinner;
+      }
+      return PostSmallWidget(
+        message.post!,
+        useAction: false,
+        removePadding: true,
+      );
+    }
     return SizedBox.shrink();
   }
 
