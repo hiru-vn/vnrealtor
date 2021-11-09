@@ -11,7 +11,7 @@ name: "Build & Release"
 jobs:
   build:
     name: Build & Release
-    runs-on: macos-lastest
+    runs-on: ubuntu-lastest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
@@ -29,6 +29,20 @@ jobs:
           artifacts: "build/app/outputs/flutter-apk/app-release.apk"
           tag: v1.0.${{ github.run_number }}
           token: ${{ secrets.BUILD_TOKEN }}
+
+  slack_upload_job:
+    runs-on: ubuntu-latest
+    name: Upload test file
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - run: echo "Test file " > test.txt
+      - name: Upload to slack step
+        uses: adrey/slack-file-upload-action@master
+        with:
+          token: ${{ secrets.SLACK_TOKEN }}
+          path: test.txt
+          channel: random
 
 
 # push to dev
