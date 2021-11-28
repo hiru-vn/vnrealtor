@@ -185,8 +185,8 @@ class _SearchPostPageState extends State<SearchPostPage>
               IconButton(
                   icon: Icon(Icons.filter_list),
                   onPressed: () {
-                    if (_tabController!.index == 1 || _tabController!.index == 3)
-                      return;
+                    if (_tabController!.index == 1 ||
+                        _tabController!.index == 3) return;
                     pickList(context,
                         title: 'Sắp xếp kết quả theo',
                         onPicked: (value) {},
