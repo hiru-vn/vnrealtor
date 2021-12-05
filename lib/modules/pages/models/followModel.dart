@@ -11,7 +11,9 @@ class FollowPagesModel {
     if (json['followers'] != null) {
       followers = <Followers>[];
       json['followers'].forEach((v) {
-        followers!.add(new Followers.fromJson(v));
+        if (v != null) {
+          followers!.add(new Followers.fromJson(v));
+        }
       });
     }
   }

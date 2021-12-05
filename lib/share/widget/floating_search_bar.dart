@@ -9,10 +9,15 @@ class CustomFloatingSearchBar extends StatefulWidget {
   final Function(double? lat, double? long, String? name)? onSearch;
   final bool automaticallyImplyBackButton;
   final List<Widget>? actions;
+  final List<Widget>? leadingActions;
 
-  const CustomFloatingSearchBar(
-      {Key? key, this.onSearch, this.automaticallyImplyBackButton = false, this.actions})
-      : super(key: key);
+  const CustomFloatingSearchBar({
+    Key? key,
+    this.onSearch,
+    this.automaticallyImplyBackButton = false,
+    this.actions,
+    this.leadingActions,
+  }) : super(key: key);
 
   @override
   _CustomFloatingSearchBarState createState() =>
@@ -32,6 +37,7 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
           _isFocus = isFocus;
         });
       },
+      leadingActions: widget.leadingActions,
       automaticallyImplyBackButton: widget.automaticallyImplyBackButton,
       scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
       transitionDuration: const Duration(milliseconds: 800),
@@ -40,8 +46,6 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
       axisAlignment: 0.0,
       openAxisAlignment: 0.0,
       debounceDelay: const Duration(milliseconds: 500),
-      
-
       onQueryChanged: (query) async {
         if (query.trim() == '') {
           setState(() {
@@ -79,7 +83,7 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
         FloatingSearchBarAction.searchToClear(
           showIfClosed: false,
         ),
-        if (widget.actions!=null) ...widget.actions!
+        if (widget.actions != null) ...widget.actions!
       ],
       builder: (context, transition) {
         return _autoCompletePlaces.length == 0 || !_isFocus
@@ -112,8 +116,10 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
                                 if (response.statusCode == 200) {
                                   final data = response.data["result"];
                                   final place = Place.fromJson(data);
-                                  widget.onSearch!(place.geometry!.location!.lat,
-                                      place.geometry!.location!.lng, place.name);
+                                  widget.onSearch!(
+                                      place.geometry!.location!.lat,
+                                      place.geometry!.location!.lng,
+                                      place.name);
                                   FloatingSearchBar.of(context)!.close();
                                 }
                               },

@@ -5,6 +5,7 @@ import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/map_drawer.dart';
 
 class PostMap extends StatefulWidget {
   @override
@@ -24,6 +25,7 @@ class PostMapState extends State<PostMap> {
   List<PostModel>? posts = [];
   Set<Marker> selectedMarkers = <Marker>{};
   InfoWidgetRoute? _infoWidgetRoute;
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
 
   @override
   void initState() {
@@ -228,49 +230,53 @@ class PostMapState extends State<PostMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        GoogleMap(
-          mapType: MapType.normal,
-          initialCameraPosition: _initPos,
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-          },
-          onCameraMove: _onCameraMove,
-          markers: selectedMarkers,
-        ),
-        CustomFloatingSearchBar(
-          onSearch: _onSearch,
-        ),
-        Positioned(
-            bottom: 120,
-            right: 10,
-            child: Material(
-              borderRadius: BorderRadius.circular(21),
-              elevation: 4,
-              child: GestureDetector(
-                onTap: () {
-                  _selectMyLocation();
-                  audioCache.play('tab3.mp3');
-                },
-                child: Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.my_location,
-                      color: ptPrimaryColor(context),
+    return Scaffold(
+      key: _key,
+      drawer: MapDrawer(),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: _initPos,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+            onCameraMove: _onCameraMove,
+            markers: selectedMarkers,
+          ),
+          CustomFloatingSearchBar(
+            onSearch: _onSearch,
+          ),
+          Positioned(
+              bottom: 120,
+              right: 10,
+              child: Material(
+                borderRadius: BorderRadius.circular(21),
+                elevation: 4,
+                child: GestureDetector(
+                  onTap: () {
+                    _selectMyLocation();
+                    audioCache.play('tab3.mp3');
+                  },
+                  child: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.my_location,
+                        color: ptPrimaryColor(context),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ))
-      ],
+              ))
+        ],
+      ),
     );
   }
 }

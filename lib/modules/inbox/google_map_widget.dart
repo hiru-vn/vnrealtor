@@ -191,7 +191,8 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
             _controller.complete(controller);
           },
           onTap: _selectMarker,
-          markers: (selectedMarker != null ? <Marker?>{selectedMarker} : null) as Set<Marker>,
+          markers: (selectedMarker != null ? <Marker?>{selectedMarker} : null)
+              as Set<Marker>,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 25),
