@@ -102,7 +102,8 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   @override
   Widget build(BuildContext context) {
     final List<double> edges = [];
-    for (int i = 0; i < widget.polygonPoints!.length; i++) {
+
+    for (int i = 0; i < (widget.polygonPoints?.length ?? 0); i++) {
       var coor1 = widget.polygonPoints![i];
       var coor2 = (i == widget.polygonPoints!.length - 1)
           ? widget.polygonPoints![0]
@@ -110,7 +111,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       edges.add(getCoordinateDistanceInKm(coor1, coor2) * 1000);
     }
     final double perimeter = edges.fold(0, (e1, e2) => e1 + e2);
-    final double area = getAreaInMeter(widget.polygonPoints!);
+    final double area = getAreaInMeter(widget.polygonPoints ?? <LatLng>[]);
 
     return Material(
       child: Stack(
@@ -134,8 +135,9 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                               markerIcon[widget.polygonPoints!.indexOf(e)]),
                         ))
                     .toSet()
-                : (selectedMarker != null ? <Marker?>{selectedMarker} : null)
-                    as Set<Marker>),
+                : (selectedMarker != null
+                    ? <Marker>{selectedMarker!}
+                    : <Marker>{})),
             polygons: (widget.polygonPoints != null &&
                     (widget.polygonPoints!.length > 0)
                 ? <Polygon>{
@@ -245,7 +247,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
           // CustomFloatingSearchBar(
           //   onSearch: _onSearch,
           // ),
-          if (widget.polygonPoints!.length > 2)
+          if ((widget.polygonPoints?.length ?? 0) > 2)
             Positioned(
               right: 60,
               bottom: 18,

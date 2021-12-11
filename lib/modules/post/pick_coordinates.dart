@@ -272,8 +272,9 @@ class PickCoordinatesState extends State<PickCoordinates>
                 : const <Polyline>{},
             onTap: _mode == 'point' ? _selectMarker : (LatLng _) {},
             markers: _mode == 'point'
-                ? (selectedMarker != null ? <Marker?>{selectedMarker} : null)
-                    as Set<Marker>
+                ? (selectedMarker != null
+                    ? <Marker?>{selectedMarker}
+                    : <Marker>{}) as Set<Marker>
                 : (polygonPoints!
                     .map((e) => Marker(
                           markerId: MarkerId(e.toString()),
