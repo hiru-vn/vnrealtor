@@ -10,7 +10,7 @@ import 'package:datcao/modules/post/media_post_widget.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/post/post_google_map.dart';
 import 'package:datcao/modules/post/report_post_page.dart';
-import 'package:datcao/modules/post/search_post_page.dart';
+import 'package:datcao/modules/post/search/search_post_page.dart';
 import 'package:datcao/modules/post/share_post.dart';
 import 'package:datcao/modules/post/update_post_page.dart';
 import 'package:datcao/modules/profile/profile_other_page.dart';

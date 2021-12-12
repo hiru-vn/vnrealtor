@@ -273,8 +273,8 @@ class PickCoordinatesState extends State<PickCoordinates>
             onTap: _mode == 'point' ? _selectMarker : (LatLng _) {},
             markers: _mode == 'point'
                 ? (selectedMarker != null
-                    ? <Marker?>{selectedMarker}
-                    : <Marker>{}) as Set<Marker>
+                    ? <Marker>{selectedMarker!}
+                    : <Marker>{})
                 : (polygonPoints!
                     .map((e) => Marker(
                           markerId: MarkerId(e.toString()),

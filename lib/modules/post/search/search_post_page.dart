@@ -5,10 +5,11 @@ import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
 import 'package:datcao/modules/pages/widget/suggestListPages.dart';
-import 'package:datcao/modules/post/post_map.dart';
+import 'package:datcao/modules/post/search/post_map.dart';
 import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/share/import.dart';
+import 'package:datcao/share/widget/map_drawer.dart';
 import 'package:hashtagable/hashtagable.dart';
 
 class SearchPostPage extends StatefulWidget {
@@ -35,6 +36,7 @@ class _SearchPostPageState extends State<SearchPostPage>
   List<PostModel>? posts = [];
   List<PagesCreate>? pages = [];
   bool isLoading = false;
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
 
   @override
   void initState() {
@@ -149,7 +151,13 @@ class _SearchPostPageState extends State<SearchPostPage>
     return Stack(
       children: [
         Scaffold(
+          key: _key,
           resizeToAvoidBottomInset: false,
+          drawer: () {
+            final index = _tabController!.index;
+            if (index == 3) return MapDrawer();
+            return null;
+          }(),
           appBar: AppBar(
             elevation: 0,
             backgroundColor: ptPrimaryColorLight(context),

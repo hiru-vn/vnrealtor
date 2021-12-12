@@ -25,7 +25,6 @@ class PostMapState extends State<PostMap> {
   List<PostModel>? posts = [];
   Set<Marker> selectedMarkers = <Marker>{};
   InfoWidgetRoute? _infoWidgetRoute;
-  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
 
   @override
   void initState() {
@@ -230,9 +229,7 @@ class PostMapState extends State<PostMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _key,
-      drawer: MapDrawer(),
+    return Scaffold(      
       body: Stack(
         fit: StackFit.expand,
         children: [

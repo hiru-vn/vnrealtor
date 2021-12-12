@@ -10,7 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/post/create_post_page.dart';
-import 'package:datcao/modules/post/search_post_page.dart';
+import 'package:datcao/modules/post/search/search_post_page.dart';
 import 'package:datcao/share/import.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'post_widget.dart';

@@ -4,7 +4,7 @@ import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/post/post_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
-import 'package:datcao/modules/post/search_post_page.dart';
+import 'package:datcao/modules/post/search/search_post_page.dart';
 import 'package:datcao/modules/post/suggest_list.dart';
 import 'package:datcao/share/widget/load_more.dart';
 import 'package:flutter/rendering.dart';
