@@ -10,7 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
-import 'package:datcao/modules/post/pick_coordinates.dart';
+import 'package:datcao/modules/post/create/pick_coordinates.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/utils/file_util.dart';

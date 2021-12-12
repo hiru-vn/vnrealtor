@@ -14,7 +14,7 @@ import 'package:path/path.dart' as Path;
 import 'package:datcao/modules/inbox/import/detail_media.dart';
 import 'package:flutter/material.dart';
 import 'package:datcao/modules/authentication/auth_bloc.dart';
-import 'package:datcao/modules/post/pick_coordinates.dart';
+import 'package:datcao/modules/post/create/pick_coordinates.dart';
 import 'package:datcao/share/import.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/utils/file_util.dart';

@@ -78,6 +78,7 @@ dependencies:
   simple_url_preview: ^3.0.1
   flutter_cache_manager: ^3.1.2
   html: ^0.15.0
+  keep_keyboard_popup_menu: ^2.0.5
   # call
   
   # flutter_callkeep: ^0.1.8

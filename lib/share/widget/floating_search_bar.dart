@@ -10,6 +10,7 @@ class CustomFloatingSearchBar extends StatefulWidget {
   final bool automaticallyImplyBackButton;
   final List<Widget>? actions;
   final List<Widget>? leadingActions;
+  final Function()? onPlaceIconTap;
 
   const CustomFloatingSearchBar({
     Key? key,
@@ -17,6 +18,7 @@ class CustomFloatingSearchBar extends StatefulWidget {
     this.automaticallyImplyBackButton = false,
     this.actions,
     this.leadingActions,
+    this.onPlaceIconTap,
   }) : super(key: key);
 
   @override
@@ -77,7 +79,7 @@ class _CustomFloatingSearchBarState extends State<CustomFloatingSearchBar> {
           showIfOpened: false,
           child: CircularButton(
             icon: const Icon(Icons.place),
-            onPressed: () {},
+            onPressed: widget.onPlaceIconTap ?? () {},
           ),
         ),
         FloatingSearchBarAction.searchToClear(

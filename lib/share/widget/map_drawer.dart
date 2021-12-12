@@ -37,92 +37,115 @@ class _MapDrawerState extends State<MapDrawer> {
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: deviceWidth(context),
-                padding: const EdgeInsets.all(14),
-                child: Text(
-                  'Diện tích',
-                  style: ptTitle().copyWith(letterSpacing: 0.2),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: deviceWidth(context),
+                  padding: const EdgeInsets.all(14),
+                  child: Text(
+                    'Diện tích',
+                    style: ptTitle().copyWith(letterSpacing: 0.2),
+                  ),
                 ),
-              ),
-              Row(
-                children: [
-                  SizedBox(width: 30),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _areaMinC,
-                      onChanged: (val) => setState(() {}),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [ThousandsSeparatorInputFormatter()],
-                      validator: TextFieldValidator.numberValidator,
-                      decoration: InputDecoration(
-                          hintText: 'Từ',
-                          suffixText: 'M2',
-                          suffixStyle: ptBody().copyWith(color: Colors.black87),
-                          border: InputBorder.none,
-                          hintStyle: ptBody().copyWith(color: Colors.black38)),
+                Row(
+                  children: [
+                    SizedBox(width: 30),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _areaMinC,
+                        onChanged: (val) => setState(() {}),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [ThousandsSeparatorInputFormatter()],
+                        validator: TextFieldValidator.numberValidator,
+                        decoration: InputDecoration(
+                            hintText: 'Từ',
+                            suffixText: 'M2',
+                            suffixStyle:
+                                ptBody().copyWith(color: Colors.black87),
+                            border: InputBorder.none,
+                            hintStyle:
+                                ptBody().copyWith(color: Colors.black38)),
+                      ),
+                    ),
+                    SizedBox(width: 30),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _areaMaxC,
+                        onChanged: (val) => setState(() {}),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [ThousandsSeparatorInputFormatter()],
+                        validator: TextFieldValidator.numberValidator,
+                        decoration: InputDecoration(
+                            hintText: 'Đến',
+                            suffixText: 'M2',
+                            suffixStyle:
+                                ptBody().copyWith(color: Colors.black87),
+                            border: InputBorder.none,
+                            hintStyle:
+                                ptBody().copyWith(color: Colors.black38)),
+                      ),
+                    ),
+                    SizedBox(width: 20)
+                  ],
+                ),
+                Container(
+                  width: deviceWidth(context),
+                  padding: const EdgeInsets.all(14),
+                  child: Text(
+                    'Loại bất động sản',
+                    style: ptTitle().copyWith(letterSpacing: 0.2),
+                  ),
+                ),
+                Wrap(
+                  children: [
+                    _buildItem('Nhà ở', selectedTypes, _onTapType),
+                    _buildItem('Căn hộ/chung cư', selectedTypes, _onTapType),
+                    _buildItem('Đất đai', selectedTypes, _onTapType),
+                    _buildItem('Văn phòng', selectedTypes, _onTapType),
+                    _buildItem('Mặt bằng KD', selectedTypes, _onTapType),
+                    _buildItem('Phòng trọ', selectedTypes, _onTapType)
+                  ],
+                ),
+                Container(
+                  width: deviceWidth(context),
+                  padding: const EdgeInsets.all(14),
+                  child: Text(
+                    'Nhu cầu',
+                    style: ptTitle().copyWith(letterSpacing: 0.2),
+                  ),
+                ),
+                Wrap(
+                  children: [
+                    _buildItem('Cần bán', selectedNeeds, _onTapNeed),
+                    _buildItem('Cần mua', selectedNeeds, _onTapNeed),
+                    _buildItem('Cho thuê', selectedNeeds, _onTapNeed),
+                    _buildItem('Cần Thuê', selectedNeeds, _onTapNeed),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Center(
+                    child: RoundedBtn(
+                      text: 'Áp dụng',
+                      onPressed: () {
+                        navigatorKey.currentState!.maybePop();
+                      },
+                      width: 120,
+                      color: ptPrimaryColor(context),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 8,
+                      ),
                     ),
                   ),
-                  SizedBox(width: 30),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _areaMaxC,
-                      onChanged: (val) => setState(() {}),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [ThousandsSeparatorInputFormatter()],
-                      validator: TextFieldValidator.numberValidator,
-                      decoration: InputDecoration(
-                          hintText: 'Đến',
-                          suffixText: 'M2',
-                          suffixStyle: ptBody().copyWith(color: Colors.black87),
-                          border: InputBorder.none,
-                          hintStyle: ptBody().copyWith(color: Colors.black38)),
-                    ),
-                  ),
-                  SizedBox(width: 20)
-                ],
-              ),
-              Container(
-                width: deviceWidth(context),
-                padding: const EdgeInsets.all(14),
-                child: Text(
-                  'Loại bất động sản',
-                  style: ptTitle().copyWith(letterSpacing: 0.2),
                 ),
-              ),
-              Wrap(
-                children: [
-                  _buildItem('Nhà ở', selectedTypes, _onTapType),
-                  _buildItem('Căn hộ/chung cư', selectedTypes, _onTapType),
-                  _buildItem('Đất đai', selectedTypes, _onTapType),
-                  _buildItem('Văn phòng', selectedTypes, _onTapType),
-                  _buildItem('Mặt bằng KD', selectedTypes, _onTapType),
-                  _buildItem('Phòng trọ', selectedTypes, _onTapType)
-                ],
-              ),
-              Container(
-                width: deviceWidth(context),
-                padding: const EdgeInsets.all(14),
-                child: Text(
-                  'Nhu cầu',
-                  style: ptTitle().copyWith(letterSpacing: 0.2),
+                SizedBox(
+                  height: MediaQuery.of(context).viewInsets.bottom,
                 ),
-              ),
-              Wrap(
-                children: [
-                  _buildItem('Cần bán', selectedNeeds, _onTapNeed),
-                  _buildItem('Cần mua', selectedNeeds, _onTapNeed),
-                  _buildItem('Cho thuê', selectedNeeds, _onTapNeed),
-                  _buildItem('Cần Thuê', selectedNeeds, _onTapNeed),
-                ],
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).viewInsets.bottom,
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),

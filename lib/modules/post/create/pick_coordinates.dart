@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/post/create/coordinates_input.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/share/import.dart';
 import 'dart:io' show Platform;
-import '../../share/widget/keep_keyboard_popup_menu/keep_keyboard_popup_menu.dart';
+
+import 'package:keep_keyboard_popup_menu/keep_keyboard_popup_menu.dart';
+// import '../../../share/widget/keep_keyboard_popup_menu/keep_keyboard_popup_menu.dart';
 
 class PickCoordinates extends StatefulWidget {
   final bool hasPolygon;
@@ -76,6 +79,28 @@ class PickCoordinatesState extends State<PickCoordinates>
     super.initState();
   }
 
+  void _onEnterCoordinates() {
+    audioCache.play('tab3.mp3');
+    setState(() {
+      _mode = 'input';
+    });
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return CoordinatesInput(
+          coordinates: polygonPoints ?? <LatLng>[],
+        );
+      },
+      backgroundColor: Colors.transparent,
+    ).then((value) {
+      if (value != null && value is List<LatLng>) {
+        polygonPoints = value;
+        setState(() {});
+      }
+    });
+  }
+
   void _selectMarker(LatLng point) {
     setState(() {
       selectedMarker = Marker(
@@ -120,9 +145,10 @@ class PickCoordinatesState extends State<PickCoordinates>
       polygonPoints!.add(point);
     });
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (polygonPoints.length > 2 && _openPopup != null) _openPopup();
-    // });
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if ((polygonPoints?.length ?? 0) > 2 && _openPopup != null)
+        _openPopup?.call();
+    });
 
     final center = getCenterCoordinate(polygonPoints!);
     PostBloc.instance.getAddress(center.longitude, center.latitude).then((res) {
@@ -241,6 +267,7 @@ class PickCoordinatesState extends State<PickCoordinates>
         polygonPoints!.length == 0 &&
         !readedInstructionPolygon;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           GoogleMap(
@@ -256,7 +283,7 @@ class PickCoordinatesState extends State<PickCoordinates>
                 getCenter().then((value) => setState(() {}));
               }
             },
-            polylines: (_mode == 'polygon' &&
+            polylines: ((_mode == 'polygon') &&
                     polygonPoints!.length > 0 &&
                     center != null)
                 ? <Polyline>{
@@ -283,7 +310,8 @@ class PickCoordinatesState extends State<PickCoordinates>
                               markerIcon[polygonPoints!.indexOf(e)]),
                         ))
                     .toSet()),
-            polygons: (_mode == 'polygon' && polygonPoints!.length > 0)
+            polygons: ((_mode == 'polygon' || _mode == 'input') &&
+                    polygonPoints!.length > 0)
                 ? <Polygon>{
                     Polygon(
                       polygonId: PolygonId('PolygonId'),
@@ -299,52 +327,37 @@ class PickCoordinatesState extends State<PickCoordinates>
           CustomFloatingSearchBar(
             onSearch: _onSearch,
             automaticallyImplyBackButton: true,
-            //   actions: [
-            //     if (widget.hasPolygon ?? false)
-            //       FloatingSearchBarAction(
-            //         showIfOpened: false,
-            //         child: PopupMenuButton(
-            //           padding: EdgeInsets.zero,
-            //           itemBuilder: (_) => <PopupMenuItem<String>>[
-            //             PopupMenuItem(
-            //               height: 36,
-            //               child: Row(
-            //                 mainAxisSize: MainAxisSize.min,
-            //                 children: [
-            //                   Text('Đánh vị trí'),
-            //                   if (_mode == 'point') Icon(Icons.check),
-            //                 ],
-            //               ),
-            //               value: 'point',
+            onPlaceIconTap: () {},
+            // actions: [
+            //   if widget.hasPolygon
+            //     FloatingSearchBarAction(
+            //       showIfOpened: false,
+            //       child: PopupMenuButton(
+            //         padding: EdgeInsets.zero,
+            //         itemBuilder: (_) => <PopupMenuItem<String>>[
+            //           PopupMenuItem(
+            //             height: 36,
+            //             child: Row(
+            //               mainAxisSize: MainAxisSize.min,
+            //               children: [
+            //                 Text('Đánh vị trí'),
+            //                 if (_mode == 'point') Icon(Icons.check),
+            //               ],
             //             ),
-            //             PopupMenuItem(
-            //               height: 36,
-            //               child: Row(
-            //                 mainAxisSize: MainAxisSize.min,
-            //                 children: [
-            //                   Text('Mô phỏng diện tích'),
-            //                   if (_mode == 'polygon') Icon(Icons.check),
-            //                 ],
-            //               ),
-            //               value: 'polygon',
-            //             )
-            //           ],
-            //           onSelected: (val) {
-            //             if (_mode != val)
-            //               setState(() {
-            //                 _mode = val;
-            //               });
-            //           },
-            //           child: SizedBox(
-            //             child: Align(
-            //                 alignment: Alignment.centerRight,
-            //                 child: Icon(Icons.more_vert)),
-            //             height: 45,
-            //             width: 30,
+            //             value: 'point',
             //           ),
+            //         ],
+            //         onSelected: (val) {},
+            //         child: SizedBox(
+            //           child: Align(
+            //               alignment: Alignment.centerRight,
+            //               child: Icon(Icons.more_vert)),
+            //           height: 45,
+            //           width: 30,
             //         ),
             //       ),
-            //   ],
+            //     ),
+            // ],
           ),
           Positioned(
               bottom: 180,
@@ -409,6 +422,32 @@ class PickCoordinatesState extends State<PickCoordinates>
                           child: Center(
                             child: Icon(MdiIcons.vectorPolygon,
                                 color: _mode == 'polygon'
+                                    ? Colors.white
+                                    : ptPrimaryColor(context)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Material(
+                      borderRadius: BorderRadius.circular(21),
+                      elevation: 0,
+                      child: GestureDetector(
+                        onTap: _onEnterCoordinates,
+                        child: Container(
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _mode == 'input'
+                                ? ptPrimaryColor(context)
+                                : Colors.white,
+                          ),
+                          child: Center(
+                            child: Icon(MdiIcons.penPlus,
+                                color: _mode == 'input'
                                     ? Colors.white
                                     : ptPrimaryColor(context)),
                           ),
@@ -495,76 +534,74 @@ class PickCoordinatesState extends State<PickCoordinates>
                 top: 100,
                 right: 10,
                 child: WithKeepKeyboardPopupMenu(
-                    backgroundBuilder: (context, widget) => Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.yellow, width: 0.75),
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.black45,
-                        ),
-                        child:
-                            Material(color: Colors.transparent, child: widget)),
-                    calculatePopupPosition:
+                    backgroundBuilder: (context, widget) {
+                  return Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.yellow, width: 0.75),
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.black45,
+                      ),
+                      child:
+                          Material(color: Colors.transparent, child: widget));
+                }, calculatePopupPosition:
                         (Size menuSize, Rect overlayRect, Rect buttonRect) {
-                      return Offset(buttonRect.left - menuSize.width - 7,
-                          menuSize.height);
+                  return Offset(
+                      buttonRect.left - menuSize.width - 7, menuSize.height);
+                }, menuBuilder: (context, closePopup) {
+                  return GestureDetector(
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
+                      closePopup();
                     },
-                    menuBuilder: (context, closePopup) {
-                      return GestureDetector(
-                        onTap: () {
-                          audioCache.play('tab3.mp3');
-                          closePopup();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ...polygonPoints!.map((e) {
-                                final index = polygonPoints!.indexOf(e);
-                                return Text(
-                                  'Từ ${index + 1} đến ${index == polygonPoints!.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m',
-                                  style:
-                                      ptBody().copyWith(color: Colors.yellow),
-                                );
-                              }),
-                              // Divider(
-                              //   height: 8,
-                              // ),
-                              // Text('Chu vi: ${perimeter.round()} m'),
-                              // Text('Diện tích: ${area.round()} m2'),
-                            ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ...polygonPoints!.map((e) {
+                            final index = polygonPoints!.indexOf(e);
+                            return Text(
+                              'Từ ${index + 1} đến ${index == polygonPoints!.length - 1 ? '1' : index + 2}: ${edges[index].toStringAsFixed(1)} m',
+                              style: ptBody().copyWith(color: Colors.yellow),
+                            );
+                          }),
+                          // Divider(
+                          //   height: 8,
+                          // ),
+                          // Text('Chu vi: ${perimeter.round()} m'),
+                          // Text('Diện tích: ${area.round()} m2'),
+                        ],
+                      ),
+                    ),
+                  );
+                }, childBuilder: (context, openPopup) {
+                  _openPopup = openPopup;
+                  return Material(
+                    borderRadius: BorderRadius.circular(21),
+                    elevation: 4,
+                    child: GestureDetector(
+                      onTap: () {
+                        audioCache.play('tab3.mp3');
+                        openPopup();
+                      },
+                      child: Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.info_outline,
+                            color: ptPrimaryColor(context),
+                            size: 25,
                           ),
                         ),
-                      );
-                    },
-                    childBuilder: (context, openPopup, closePopup) {
-                      _openPopup = openPopup;
-                      return Material(
-                        borderRadius: BorderRadius.circular(21),
-                        elevation: 4,
-                        child: GestureDetector(
-                          onTap: () {
-                            audioCache.play('tab3.mp3');
-                            openPopup();
-                          },
-                          child: Container(
-                            width: 42,
-                            height: 42,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.info_outline,
-                                color: ptPrimaryColor(context),
-                                size: 25,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    })),
+                      ),
+                    ),
+                  );
+                })),
           if (_mode == 'polygon' && polygonPoints!.length > 0) ...[
             Positioned(
                 top: 160,

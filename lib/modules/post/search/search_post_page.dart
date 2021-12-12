@@ -153,7 +153,7 @@ class _SearchPostPageState extends State<SearchPostPage>
         Scaffold(
           key: _key,
           resizeToAvoidBottomInset: false,
-          drawer: () {
+          endDrawer: () {
             final index = _tabController!.index;
             if (index == 3) return MapDrawer();
             return null;
@@ -162,6 +162,7 @@ class _SearchPostPageState extends State<SearchPostPage>
             elevation: 0,
             backgroundColor: ptPrimaryColorLight(context),
             titleSpacing: 3,
+            leading: BackButton(),
             title: Container(
               height: 44,
               decoration: BoxDecoration(
@@ -193,8 +194,11 @@ class _SearchPostPageState extends State<SearchPostPage>
               IconButton(
                   icon: Icon(Icons.filter_list),
                   onPressed: () {
-                    if (_tabController!.index == 1 ||
-                        _tabController!.index == 3) return;
+                    if (_tabController!.index == 1) return;
+                    if (_tabController!.index == 3) {
+                      _key.currentState!.openEndDrawer();
+                      return;
+                    }
                     pickList(context,
                         title: 'Sắp xếp kết quả theo',
                         onPicked: (value) {},

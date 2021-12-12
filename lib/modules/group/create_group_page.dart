@@ -1,5 +1,5 @@
 import 'package:datcao/modules/bloc/group_bloc.dart';
-import 'package:datcao/modules/post/pick_coordinates.dart';
+import 'package:datcao/modules/post/create/pick_coordinates.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/utils/file_util.dart';
 import 'package:permission_handler/permission_handler.dart';
