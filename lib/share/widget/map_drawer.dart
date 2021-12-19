@@ -1,7 +1,11 @@
+import 'package:datcao/modules/model/post_filter.dart';
 import 'package:datcao/share/import.dart';
 
 class MapDrawer extends StatefulWidget {
-  const MapDrawer({Key? key}) : super(key: key);
+  final Function(PostFilter) onFilter;
+  final PostFilter? filter;
+  const MapDrawer({Key? key, required this.onFilter, this.filter})
+      : super(key: key);
 
   @override
   State<MapDrawer> createState() => _MapDrawerState();
@@ -16,17 +20,22 @@ class _MapDrawerState extends State<MapDrawer> {
   final TextEditingController _areaMaxC = TextEditingController();
   List<String> selectedTypes = [];
   List<String> selectedNeeds = [];
+  PostFilter _postFilter = PostFilter();
 
-  _onDone() {
-    if (!_formKey.currentState!.validate()) return;
-    _formKey.currentState!.save();
-    navigatorKey.currentState!.pop([
-      selectedTypes,
-      selectedNeeds,
-      double.parse(_areaMinC.text.replaceAll(',', '')),
-      double.parse(_areaMaxC.text.replaceAll(',', '')),
-    ]);
+  @override
+  void initState() {
+    super.initState();
+    if (widget.filter != null) {
+      _priceMinC.text = widget.filter?.minPrice.toString() ?? '';
+      _priceMaxC.text = widget.filter?.maxPrice.toString() ?? '';
+      _areaMinC.text = widget.filter?.minArea.toString() ?? '';
+      _areaMaxC.text = widget.filter?.maxArea.toString() ?? '';
+      selectedTypes = widget.filter?.categoryList ?? [];
+      selectedNeeds = widget.filter?.action ?? [];
+    }
   }
+
+  _onDone() {}
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +50,38 @@ class _MapDrawerState extends State<MapDrawer> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  width: deviceWidth(context),
+                  padding: const EdgeInsets.all(14),
+                  child: Text(
+                    'Khoảng cách đến vị trí hiện tại',
+                    style: ptTitle().copyWith(
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    SizedBox(width: 30),
+                    Expanded(
+                      child: TextFormField(
+                        onChanged: (val) => setState(() {}),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [ThousandsSeparatorInputFormatter()],
+                        validator: TextFieldValidator.numberValidator,
+                        decoration: InputDecoration(
+                            hintText: 'Tối đa',
+                            suffixText: 'Km',
+                            suffixStyle:
+                                ptBody().copyWith(color: Colors.black87),
+                            border: InputBorder.none,
+                            hintStyle:
+                                ptBody().copyWith(color: Colors.black38)),
+                      ),
+                    ),
+                    SizedBox(width: 30),
+                  ],
+                ),
                 Container(
                   width: deviceWidth(context),
                   padding: const EdgeInsets.all(14),
@@ -130,7 +171,15 @@ class _MapDrawerState extends State<MapDrawer> {
                     child: RoundedBtn(
                       text: 'Áp dụng',
                       onPressed: () {
-                        navigatorKey.currentState!.maybePop();
+                        _postFilter = PostFilter(
+                            minPrice: double.parse(_priceMinC.text),
+                            maxPrice: double.parse(_priceMaxC.text),
+                            minArea: double.parse(_areaMinC.text),
+                            maxArea: double.parse(_areaMaxC.text),
+                            categoryList: selectedTypes,
+                            action: selectedNeeds);
+                        widget.onFilter(_postFilter);
+                        Navigator.pop(context);
                       },
                       width: 120,
                       color: ptPrimaryColor(context),

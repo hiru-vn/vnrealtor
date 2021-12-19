@@ -1,6 +1,7 @@
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/model/post_filter.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/models/pages_create_model.dart';
@@ -8,6 +9,7 @@ import 'package:datcao/modules/pages/widget/suggestListPages.dart';
 import 'package:datcao/modules/post/search/post_map.dart';
 import 'package:datcao/modules/post/people_widget.dart';
 import 'package:datcao/modules/post/post_widget.dart';
+import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/map_drawer.dart';
 import 'package:hashtagable/hashtagable.dart';
@@ -37,6 +39,7 @@ class _SearchPostPageState extends State<SearchPostPage>
   List<PagesCreate>? pages = [];
   bool isLoading = false;
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
+  PostFilter filter = PostFilter();
 
   @override
   void initState() {
@@ -117,7 +120,13 @@ class _SearchPostPageState extends State<SearchPostPage>
 
   Future _searchPost(String text) async {
     final res = await _postBloc.searchPostWithFilter(
-        filter: GraphqlFilter(search: text, order: '{createdAt: -1}'));
+        filter:
+            GraphqlFilter(search: text, order: '{createdAt: -1}', filter: '''
+        price: {__gte: ${filter.minPrice}, __lte: ${filter.maxPrice}} 
+        area: {__gte: ${filter.minArea}, __lte: ${filter.maxArea}}
+        ${filter.categoryList!.length > 0 ? 'category: {__or: ${GraphqlHelper.listStringToGraphqlString(filter.categoryList)}}' : ''}
+        ${filter.action!.length > 0 ? 'action: {__or: ${GraphqlHelper.listStringToGraphqlString(filter.action)}}' : ''}
+        '''));
     if (res.isSuccess) {
       setState(() {
         posts = res.data;
@@ -155,7 +164,10 @@ class _SearchPostPageState extends State<SearchPostPage>
           resizeToAvoidBottomInset: false,
           endDrawer: () {
             final index = _tabController!.index;
-            if (index == 3) return MapDrawer();
+            if (index == 3 || index == 0)
+              return MapDrawer(
+                onFilter: (filter) {},
+              );
             return null;
           }(),
           appBar: AppBar(
@@ -195,7 +207,8 @@ class _SearchPostPageState extends State<SearchPostPage>
                   icon: Icon(Icons.filter_list),
                   onPressed: () {
                     if (_tabController!.index == 1) return;
-                    if (_tabController!.index == 3) {
+                    if (_tabController!.index == 3 ||
+                        _tabController!.index == 0) {
                       _key.currentState!.openEndDrawer();
                       return;
                     }

@@ -21,7 +21,7 @@ class PostMapState extends State<PostMap> {
   PostBloc? _postBloc;
   LatLng? _lastMapPosition;
   LatLng? _currentMapPosition; // center of map
-  double distance = 30; //km
+  double distance = 50; //km
   List<PostModel>? posts = [];
   Set<Marker> selectedMarkers = <Marker>{};
   InfoWidgetRoute? _infoWidgetRoute;
@@ -46,7 +46,7 @@ class PostMapState extends State<PostMap> {
 
   double calculateDistance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
-    var c = cos as double Function(num?);
+    var c = cos;
     var a = 0.5 -
         c((lat2 - lat1) * p) / 2 +
         c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
@@ -56,12 +56,13 @@ class PostMapState extends State<PostMap> {
 
   void _onCameraMove(CameraPosition position) {
     _currentMapPosition = position.target;
-    if (calculateDistance(
-            _currentMapPosition!.latitude,
-            _currentMapPosition!.longitude,
-            _lastMapPosition!.latitude,
-            _lastMapPosition!.longitude) >
-        (distance * 0.5)) {
+    final d = calculateDistance(
+        _currentMapPosition!.latitude,
+        _currentMapPosition!.longitude,
+        _lastMapPosition!.latitude,
+        _lastMapPosition!.longitude);
+    print(d);
+    if (d > (distance * 0.5)) {
       _lastMapPosition = _currentMapPosition;
       _getPostLocal();
     }
@@ -229,7 +230,7 @@ class PostMapState extends State<PostMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(      
+    return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [

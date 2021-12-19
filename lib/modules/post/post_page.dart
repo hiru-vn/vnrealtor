@@ -1,11 +1,14 @@
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/inbox/inbox_list.dart';
+import 'package:datcao/modules/model/post_filter.dart';
 import 'package:datcao/modules/post/post_detail.dart';
 import 'package:datcao/modules/post/suggest_list.dart';
 import 'package:datcao/modules/profile/recomend_dialog.dart';
+import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/share/widget/empty_widget.dart';
 import 'package:datcao/share/widget/load_more.dart';
+import 'package:datcao/share/widget/map_drawer.dart';
 import 'package:flutter/rendering.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/post.dart';
@@ -26,6 +29,9 @@ class _PostPageState extends State<PostPage> {
   late AuthBloc _authBloc;
   bool isFilterDistance = false;
   int distance = 20;
+  TabController? _tabController;
+  PostFilter filter = PostFilter();
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
   // ScrollController _postBloc.feedScrollController = ScrollController();
   // PageController _postBloc.pageController = PageController();
 
@@ -84,6 +90,20 @@ class _PostPageState extends State<PostPage> {
         physics: NeverScrollableScrollPhysics(),
         children: [
           Scaffold(
+            key: _key,
+            endDrawer: MapDrawer(
+              filter: this.filter,
+              onFilter: (filter) {
+                this.filter = filter;
+                _postBloc!.getNewFeed(filter: GraphqlFilter(filter: '''{
+        price: {__gte: ${filter.minPrice}, __lte: ${filter.maxPrice}} 
+        area: {__gte: ${filter.minArea}, __lte: ${filter.maxArea}}
+        ${filter.categoryList!.length > 0 ? 'category: {__or: ${GraphqlHelper.listStringToGraphqlString(filter.categoryList)}}' : ''}
+        ${filter.action!.length > 0 ? 'action: {__or: ${GraphqlHelper.listStringToGraphqlString(filter.action)}}' : ''}
+        }
+        '''));
+              },
+            ),
             backgroundColor: ptBackgroundColor(context),
             appBar: showAppBar
                 ? PostPageAppBar(_authBloc.userModel!.messNotiCount ?? 0)
@@ -95,7 +115,8 @@ class _PostPageState extends State<PostPage> {
               },
               list: RefreshIndicator(
                 color: ptPrimaryColor(context),
-                onRefresh: () async {audioCache.play('tab3.mp3');
+                onRefresh: () async {
+                  audioCache.play('tab3.mp3');
                   setState(() {
                     isFilterDistance = false;
                   });
@@ -150,62 +171,68 @@ class _PostPageState extends State<PostPage> {
                                 },
                                 itemBuilder: (context, index) {
                                   if (index == 0) {
-                                    return PopupMenuButton(
-                                      itemBuilder: (_) => <PopupMenuItem<int>>[
-                                        PopupMenuItem(
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text('Bán kính 10 km'),
-                                              if (distance == 10)
-                                                Icon(Icons.check, size: 18)
-                                            ],
-                                          ),
-                                          value: 10,
-                                        ),
-                                        PopupMenuItem(
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text('Bán kính 20 km'),
-                                                if (distance == 20)
-                                                  Icon(Icons.check, size: 18)
-                                              ],
-                                            ),
-                                            value: 20),
-                                        PopupMenuItem(
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text('Bán kính 50 km'),
-                                                if (distance == 50)
-                                                  Icon(Icons.check, size: 18)
-                                              ],
-                                            ),
-                                            value: 50),
-                                      ],
-                                      onSelected: (dynamic val) async {
-                                        setState(() {
-                                          isFilterDistance = true;
-                                          distance = val;
-                                        });
-                                        _getPostLocal();
+                                    // return PopupMenuButton(
+                                    //   itemBuilder: (_) => <PopupMenuItem<int>>[
+                                    //     PopupMenuItem(
+                                    //       child: Row(
+                                    //         mainAxisSize: MainAxisSize.min,
+                                    //         children: [
+                                    //           Text('Bán kính 10 km'),
+                                    //           if (distance == 10)
+                                    //             Icon(Icons.check, size: 18)
+                                    //         ],
+                                    //       ),
+                                    //       value: 10,
+                                    //     ),
+                                    //     PopupMenuItem(
+                                    //         child: Row(
+                                    //           mainAxisSize: MainAxisSize.min,
+                                    //           children: [
+                                    //             Text('Bán kính 20 km'),
+                                    //             if (distance == 20)
+                                    //               Icon(Icons.check, size: 18)
+                                    //           ],
+                                    //         ),
+                                    //         value: 20),
+                                    //     PopupMenuItem(
+                                    //         child: Row(
+                                    //           mainAxisSize: MainAxisSize.min,
+                                    //           children: [
+                                    //             Text('Bán kính 50 km'),
+                                    //             if (distance == 50)
+                                    //               Icon(Icons.check, size: 18)
+                                    //           ],
+                                    //         ),
+                                    //         value: 50),
+                                    //   ],
+                                    //   onSelected: (dynamic val) async {
+                                    //     setState(() {
+                                    //       isFilterDistance = true;
+                                    //       distance = val;
+                                    //     });
+                                    //     _getPostLocal();
+                                    //   },
+                                    //   padding: EdgeInsets.zero,
+                                    //   child: Center(
+                                    //     child: Icon(Icons.my_location,
+                                    //         color: !isFilterDistance
+                                    //             ? Colors.black54
+                                    //             : ptPrimaryColor(context)),
+                                    //   ),
+                                    // );
+                                    return GestureDetector(
+                                      onTap: () {
+                                        _key.currentState!.openEndDrawer();
                                       },
-                                      padding: EdgeInsets.zero,
-                                      child: Center(
-                                        child: Icon(Icons.my_location,
-                                            color: !isFilterDistance
-                                                ? Colors.black54
-                                                : ptPrimaryColor(context)),
-                                      ),
+                                      child: Icon(Icons.menu),
                                     );
                                   }
                                   return InkWell(
                                     borderRadius: BorderRadius.circular(15),
                                     onTap: () {
                                       SearchPostPage.navigate(
-                                          hashTag: _postBloc!.hasTags![index - 1]
-                                              ['value']);
+                                          hashTag: _postBloc!
+                                              .hasTags![index - 1]['value']);
                                     },
                                     child: Container(
                                       height: 30,
@@ -217,7 +244,8 @@ class _PostPageState extends State<PostPage> {
                                               BorderRadius.circular(15)),
                                       child: Center(
                                         child: Text(
-                                          _postBloc!.hasTags![index - 1]['value']
+                                          _postBloc!.hasTags![index - 1]
+                                                  ['value']
                                               .toString(),
                                         ),
                                       ),
@@ -259,7 +287,8 @@ class _PostPageState extends State<PostPage> {
                                     );
                                   },
                                 ),
-                          if (_postBloc!.isLoadMoreFeed && !_postBloc!.isEndFeed)
+                          if (_postBloc!.isLoadMoreFeed &&
+                              !_postBloc!.isEndFeed)
                             PostSkeleton(
                               count: 1,
                             ),
@@ -342,7 +371,8 @@ class CreatePostCard extends StatelessWidget {
                         ),
                         Spacer(),
                         GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
                             pageController!.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
@@ -360,7 +390,8 @@ class CreatePostCard extends StatelessWidget {
                           width: 5,
                         ),
                         GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
                             pageController!.animateToPage(1,
                                 duration: Duration(milliseconds: 300),
                                 curve: Curves.decelerate);
@@ -410,7 +441,8 @@ class CreatePostCard extends StatelessWidget {
 buildStoryWidget(PostModel postModel) {
   return Center(
     child: GestureDetector(
-      onTap: () {audioCache.play('tab3.mp3');
+      onTap: () {
+        audioCache.play('tab3.mp3');
         PostDetail.navigate(postModel);
       },
       child: Material(
@@ -443,15 +475,19 @@ buildStoryWidget(PostModel postModel) {
                         backgroundColor: Colors.white,
                         backgroundImage: postModel.isPage!
                             ? (postModel.page!.avartar != null &&
-                                    postModel.page!.avartar != 'null'
-                                ? CachedNetworkImageProvider(
-                                    postModel.page!.avartar!)
-                                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?
+                                        postModel.page!.avartar != 'null'
+                                    ? CachedNetworkImageProvider(
+                                        postModel.page!.avartar!)
+                                    : AssetImage(
+                                        'assets/image/default_avatar.png'))
+                                as ImageProvider<Object>?
                             : (postModel.user!.avatar != null &&
-                                    postModel.user!.avatar != 'null'
-                                ? CachedNetworkImageProvider(
-                                    postModel.user!.avatar!)
-                                : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
+                                        postModel.user!.avatar != 'null'
+                                    ? CachedNetworkImageProvider(
+                                        postModel.user!.avatar!)
+                                    : AssetImage(
+                                        'assets/image/default_avatar.png'))
+                                as ImageProvider<Object>?,
                       ),
                     ),
                   ),
@@ -528,7 +564,8 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
           Padding(
             padding: const EdgeInsets.only(top: 12, bottom: 10),
             child: GestureDetector(
-              onTap: () {audioCache.play('tab3.mp3');
+              onTap: () {
+                audioCache.play('tab3.mp3');
                 SearchPostPage.navigate().then((value) =>
                     FocusScope.of(context).requestFocus(FocusNode()));
               },
@@ -543,7 +580,8 @@ class PostPageAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           GestureDetector(
-            onTap: () {audioCache.play('tab3.mp3');
+            onTap: () {
+              audioCache.play('tab3.mp3');
               AuthBloc.instance.userModel!.messNotiCount = 0;
               UserBloc.instance.seenNotiMess();
               InboxList.navigate();

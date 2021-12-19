@@ -2,6 +2,7 @@ import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/services/comment_srv.dart';
 import 'package:datcao/modules/services/graphql_helper.dart';
 import 'package:datcao/modules/services/reply_srv.dart';
+import 'package:datcao/modules/services/valuation.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
 import 'package:datcao/modules/services/post_srv.dart';
@@ -19,6 +20,7 @@ class PostRepo {
     data {
 $postFragment
 distance
+valuationHcmStreetId
 }
     ''');
     return res['getNewsFeed'];
@@ -80,6 +82,28 @@ ${postFragment.replaceAll('\n', ' ').replaceFirst('isUserLike', '').replaceFirst
     return res['getStoryForGuest'];
   }
 
+  Future getValuation({String? id, String? search}) async {
+    final res = await ValuationHcmStreetSrv().query(
+      'getAVGPriceStreet',
+      ' valuationHcmId: "$id"',
+      fragment: '''
+${ValuationHcmStreetSrv().fragmentDefault}
+    ''',
+    );
+    return res['getAVGPriceStreet'];
+  }
+
+  Future getOneValuationHcmStreet(String? id) async {
+    final res = await ValuationHcmStreetSrv().query(
+      'getOneValuationHcmStreet',
+      ' id: "$id"',
+      fragment: '''
+${ValuationHcmStreetSrv().fragmentDefault}
+    ''',
+    );
+    return res['getOneValuationHcmStreet'];
+  }
+
   Future searchPostByHashTag(String? hashTags) async {
     final res = await PostSrv()
         .query('searchPostByHashTag', 'hashTags: "$hashTags"', fragment: '''
@@ -115,7 +139,7 @@ $postFragment
         lat: $lat
         limit: 100
         page: 1
-      }
+      } filter: { price: {__gte: 0.0, __lte: 1000000000000.0} }
       ''', fragment: '''data { 
 ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').replaceFirst('id', '_id')}
           }''');

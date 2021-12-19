@@ -12,7 +12,11 @@ class Formart {
   static toVNDPrice(double value, {hasUnit = true}) {
     if (value == null) return '0 VND';
     if (value >= 1000000000)
-      return (value / 1000000000).toStringAsFixed(1) + ' tỷ';
+      return (value / 1000000000)
+              .round()
+              .toStringAsFixed(2)
+              .replaceAll('.', ',') +
+          ' tỷ';
     if (value >= 10000000)
       return (value / 1000000).floor().toString() + ' triệu';
     if (value >= 1000000)

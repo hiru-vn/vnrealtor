@@ -6,6 +6,7 @@ import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/media_post.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/reply.dart';
+import 'package:datcao/modules/model/valuation.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
@@ -761,4 +762,16 @@ class PostBloc extends ChangeNotifier {
   //     return null;
   //   } finally {}
   // }
+
+  Future<BaseResponse> getValuation({String? id, String? search}) async {
+    try {
+      final res = await PostRepo().getOneValuationHcmStreet(id);
+      final e = ValuationHcmStreet.fromJson(res);
+      return BaseResponse.success(e);
+    } catch (e) {
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
 }

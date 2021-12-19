@@ -1,14 +1,17 @@
+import 'dart:math';
+
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/model/address.dart';
 import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
+import 'package:datcao/modules/model/valuation.dart';
 import 'package:datcao/modules/post/comment_page.dart';
 import 'package:datcao/modules/post/post_widget.dart';
 import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/share/import.dart';
-import 'package:graphql/client.dart';
 import 'dart:async';
 import 'package:datcao/share/widget/tag_user_field.dart';
 
@@ -28,20 +31,25 @@ class PostDetail extends StatefulWidget {
   _PostDetailState createState() => _PostDetailState();
 }
 
-class _PostDetailState extends State<PostDetail> {
+class _PostDetailState extends State<PostDetail>
+    with SingleTickerProviderStateMixin {
   List<CommentModel>? comments;
   TextEditingController _commentC = TextEditingController();
   PostBloc? _postBloc;
   PostModel? _post;
+  Address? _address;
   // StreamSubscription<FetchResult> _streamSubcription;
   bool isReply = false;
   FocusNode _focusNodeComment = FocusNode();
   CommentModel? replyComment;
   List<ReplyModel?> localReplies = [];
   List<UserModel> tagUsers = [];
+  TabController? _tabController;
+  List<ValuationHcmStreet> values = [];
 
   @override
   void initState() {
+    _tabController = TabController(length: 2, vsync: this);
     _focusNodeComment.addListener(() {
       if (!_focusNodeComment.hasFocus) {
         // setState(() {
@@ -58,11 +66,16 @@ class _PostDetailState extends State<PostDetail> {
   void didChangeDependencies() {
     if (_postBloc == null) {
       _postBloc = Provider.of<PostBloc>(context);
+
       if (widget.postModel != null) {
         _post = widget.postModel;
         _getComments(_post!.id, filter: GraphqlFilter(limit: 20));
+        _getAddress();
       } else {
-        _getPost();
+        _getPost().then((value) {
+          _getValuation();
+          _getAddress();
+        });
         _getComments(widget.postId, filter: GraphqlFilter(limit: 20));
       }
 
@@ -82,6 +95,22 @@ class _PostDetailState extends State<PostDetail> {
       // });
     }
     super.didChangeDependencies();
+  }
+
+  _getAddress() async {
+    final address =
+        await _postBloc!.getAddress(_post!.locationLong!, _post!.locationLat!);
+    setState(() {
+      _address = address.data as Address;
+    });
+    _getValuation();
+  }
+
+  _getValuation() async {
+    final res = await _postBloc!.getValuation(id: _post!.valuationHcmId);
+    setState(() {
+      values = [res.data];
+    });
   }
 
   _deleteComment(String? id) async {
@@ -204,6 +233,12 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   Widget build(BuildContext context) {
+    double? ratio;
+    int index = 0;
+    if (values.length > 0) {
+      ratio = (_post?.price ?? 1) /
+          ((values[index].avgPrice?.toDouble() ?? 1) * (_post?.area ?? 0));
+    }
     return Scaffold(
       appBar: AppBar1(
         centerTitle: true,
@@ -220,49 +255,193 @@ class _PostDetailState extends State<PostDetail> {
             height: deviceHeight(context),
             width: deviceWidth(context),
           ),
-          SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(
-                  bottom: AuthBloc.instance.userModel == null ? 20 : 100),
-              child: Column(
-                children: [
-                  _post == null
+          NestedScrollView(
+            headerSliverBuilder: (context, value) {
+              return [
+                SliverToBoxAdapter(
+                  child: _post == null
                       ? PostSkeleton(
                           count: 1,
                         )
                       : PostWidget(_post,
                           commentCallBack: () {}, isInDetailPage: true),
-                  comments != null
-                      ? ListView.separated(
-                          padding: EdgeInsets.zero,
-                          itemCount: comments!.length,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final comment = comments![index];
-                            return CommentWidget(
-                                comment: comment,
-                                userReplyCache: localReplies,
-                                shouldExpand:
-                                    comments![index].id == replyComment?.id,
-                                deleteCallBack: comments![index].userId ==
-                                        AuthBloc.instance.userModel?.id
-                                    ? () => _deleteComment(comments![index].id)
-                                    : () {},
-                                tapCallBack: () {
-                                  setState(() {
-                                    isReply = true;
-                                    replyComment = comments![index];
-                                  });
-                                  _focusNodeComment.requestFocus();
-                                });
-                          },
-                          separatorBuilder: (context, index) =>
-                              SizedBox.shrink(),
-                        )
-                      : ListSkeleton(),
-                ],
-              ),
+                ),
+              ];
+            },
+            body: Column(
+              children: [
+                Center(
+                  child: TabBar(
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicatorWeight: 1,
+                      indicatorColor: ptPrimaryColor(context),
+                      controller: _tabController,
+                      isScrollable: true,
+                      labelColor: Colors.black87,
+                      unselectedLabelStyle: ptTitle(),
+                      labelStyle: ptTitle(),
+                      tabs: [
+                        SizedBox(
+                          height: 35,
+                          width: deviceWidth(context) / 2 - 60,
+                          child: Tab(
+                            child: Text('Bình luận'),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 35,
+                          width: deviceWidth(context) / 2 - 60,
+                          child: Tab(
+                            child: Text('Thông tin'),
+                          ),
+                        ),
+                      ]),
+                ),
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      comments != null
+                          ? ListView.separated(
+                              padding: EdgeInsets.only(
+                                  bottom: AuthBloc.instance.userModel == null
+                                      ? 20
+                                      : 0),
+                              itemCount: comments!.length,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final comment = comments![index];
+                                return CommentWidget(
+                                    comment: comment,
+                                    userReplyCache: localReplies,
+                                    shouldExpand:
+                                        comments![index].id == replyComment?.id,
+                                    deleteCallBack: comments![index].userId ==
+                                            AuthBloc.instance.userModel?.id
+                                        ? () =>
+                                            _deleteComment(comments![index].id)
+                                        : () {},
+                                    tapCallBack: () {
+                                      setState(() {
+                                        isReply = true;
+                                        replyComment = comments![index];
+                                      });
+                                      _focusNodeComment.requestFocus();
+                                    });
+                              },
+                              separatorBuilder: (context, index) =>
+                                  SizedBox.shrink(),
+                            )
+                          : ListSkeleton(),
+                      SingleChildScrollView(
+                        child: Container(
+                          color: Colors.grey.shade200,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 10),
+                              Container(
+                                color: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 20),
+                                child: Column(
+                                  children: [
+                                    _buildTextInfo('Diện tích: ',
+                                        '${_post?.area?.round().toString()} m2'),
+                                    SpacingBox(h: 2.5),
+                                    _buildTextInfo(
+                                        'Phân loại: ', '${_post?.category}'),
+                                    SpacingBox(h: 2.5),
+                                    _buildTextInfo(
+                                        'Nhu cầu: ', '${_post?.action}'),
+                                    SpacingBox(h: 2.5),
+                                    _buildTextInfo('Giá người đăng đưa ra: ',
+                                        '${Formart.toVNDPrice(_post?.price?.toDouble() ?? 0)}'),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                color: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 20),
+                                child: Column(
+                                  children: [
+                                    _buildTextInfo('Địa chỉ trên toạ độ: ',
+                                        '${_address?.address}'),
+                                    if (values.length > 0) ...[
+                                      SpacingBox(h: 2.5),
+                                      _buildTextInfo(
+                                          'Giá thẩm định T${DateTime.now().month}: ',
+                                          '${Formart.toVNDPrice(values[index].avgPrice?.toDouble() ?? 0)}/ m2 (${values[index].priceChangedPercentage}%)'),
+                                      SpacingBox(h: 2.5),
+                                      _buildTextInfo(
+                                          'Giá thẩm định T${DateTime.now().subtract(Duration(days: 31)).month}: ',
+                                          '${Formart.toVNDPrice(values[index].prevAvgPrice?.toDouble() ?? 0)}/ m2'),
+                                      SpacingBox(h: 2.5),
+                                      if (ratio == null)
+                                        Container()
+                                      else if (ratio < 0.6)
+                                        Text(
+                                          "Người bán đưa ra giá tương đương ${(ratio * 100).toStringAsFixed(2)}% so với trung bình. Số liệu này có vẻ không chính xác với thực tế",
+                                          style: ptBody()
+                                              .copyWith(color: Colors.black),
+                                        )
+                                      else if (0.6 <= ratio && ratio < 0.95)
+                                        Text(
+                                          "Người bán đưa ra giá tương đương ${(ratio * 100).round()}% so với trung bình. Đây có vẻ là 1 sự đầu tư đúng đắn.",
+                                          style: ptBody()
+                                              .copyWith(color: Colors.black),
+                                        )
+                                      else if (0.95 <= ratio && ratio < 1.1)
+                                        Text(
+                                          "Người bán đưa ra giá tương đương ${(ratio * 100).round()}% so với trung bình.",
+                                          style: ptBody()
+                                              .copyWith(color: Colors.black),
+                                        ),
+                                      SpacingBox(h: 2.5),
+                                      Text(
+                                        'Giá thẩm định là giá được chúng tôi khảo sát được trên trang website mogi.vn, giá chỉ mang tính chất tham khảo cung cấp thông tin cho người mua.',
+                                        style: ptTiny().copyWith(
+                                          color: Colors.red,
+                                        ),
+                                      )
+                                    ]
+                                  ],
+                                ),
+                              ),
+                              SpacingBox(h: 2.5),
+                              Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Text(
+                                  'Bài đăng gần đó',
+                                  style: ptTitle(),
+                                ),
+                              ),
+                              ListView.separated(
+                                // controller: _userBloc.profileScrollController,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.only(bottom: 20),
+                                itemCount: _postBloc!.savePosts.length,
+                                itemBuilder: (context, index) {
+                                  final post = _postBloc!.savePosts[index];
+                                  return PostSmallWidget(post);
+                                },
+                                separatorBuilder: (context, index) =>
+                                    SizedBox(height: 0),
+                              ),
+                              SpacingBox(h: 12.5),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
           if (AuthBloc.instance.userModel != null)
@@ -271,17 +450,18 @@ class _PostDetailState extends State<PostDetail> {
               child: Container(
                 width: deviceWidth(context),
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                color: Colors.white70,
+                color: Colors.white,
                 child: Row(
                   children: [
                     CircleAvatar(
                       radius: 21,
                       backgroundColor: Colors.white,
-                      backgroundImage:
-                          (AuthBloc.instance.userModel?.avatar != null
+                      backgroundImage: (AuthBloc.instance.userModel?.avatar !=
+                                  null
                               ? CachedNetworkImageProvider(
                                   AuthBloc.instance.userModel!.avatar!)
-                              : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
+                              : AssetImage('assets/image/default_avatar.png'))
+                          as ImageProvider<Object>?,
                     ),
                     SizedBox(
                       width: 7,
@@ -306,7 +486,8 @@ class _PostDetailState extends State<PostDetail> {
                         decoration: InputDecoration(
                           suffixIcon: GestureDetector(
                               behavior: HitTestBehavior.translucent,
-                              onTap: () {audioCache.play('tab3.mp3');
+                              onTap: () {
+                                audioCache.play('tab3.mp3');
                                 (isReply)
                                     ? _reply(_commentC.text)
                                     : _comment(_commentC.text);
@@ -350,6 +531,21 @@ class _PostDetailState extends State<PostDetail> {
             ),
         ],
       ),
+    );
+  }
+
+  _buildTextInfo(String title, String content) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+          ),
+        ),
+        Expanded(
+          child: Text(content),
+        )
+      ],
     );
   }
 }

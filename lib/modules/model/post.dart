@@ -48,6 +48,7 @@ class PostModel {
   String? action;
   String? category;
   bool? isBlock;
+  String? valuationHcmId = "61b60c274abcfe3ea0f610ba";
 
   PostModel(
       {this.id,
@@ -90,7 +91,8 @@ class PostModel {
       this.area,
       this.category,
       this.price,
-      this.isBlock});
+      this.isBlock,
+      this.valuationHcmId});
 
   PostModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? json['_id'];
@@ -159,6 +161,7 @@ class PostModel {
     price = json['price'];
     area = json['area'];
     isBlock = json['isBlock'] ?? false;
+    valuationHcmId = json['valuationHcmStreetId'] ?? '61b60c274abcfe3ea0f610ba';
   }
 
   Map<String, dynamic> toJson() {

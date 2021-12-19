@@ -180,12 +180,13 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   CircleAvatar(
                     radius: 20,
                     backgroundColor: Colors.white,
-                    backgroundImage:
-                        ((AuthBloc.instance.userModel!.avatar != null &&
+                    backgroundImage: ((AuthBloc.instance.userModel!.avatar !=
+                                    null &&
                                 AuthBloc.instance.userModel!.avatar != 'null')
                             ? CachedNetworkImageProvider(
                                 AuthBloc.instance.userModel!.avatar!)
-                            : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
+                            : AssetImage('assets/image/default_avatar.png'))
+                        as ImageProvider<Object>?,
                     child: VerifiedIcon(AuthBloc.instance.userModel?.role, 10),
                   ),
                   SizedBox(width: 10),
@@ -199,7 +200,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                       Row(
                         children: [
                           Text(
-                            Formart.formatToWeekTime(DateTime.now())??'',
+                            Formart.formatToWeekTime(DateTime.now()) ?? '',
                             style: ptTiny().copyWith(color: Colors.black54),
                           ),
                           SizedBox(width: 12),
@@ -439,7 +440,8 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                         height: 30,
                         left: 0,
                         child: GestureDetector(
-                          onTap: () {audioCache.play('tab3.mp3');
+                          onTap: () {
+                            audioCache.play('tab3.mp3');
                             FocusScope.of(context).requestFocus(FocusNode());
                             showModalBottomSheet(
                               isScrollControlled: true,
@@ -549,7 +551,8 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                 children: [
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
@@ -584,11 +587,13 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            ImagePicker().pickImage(source: ImageSource.camera)
+                            ImagePicker()
+                                .pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {
@@ -615,11 +620,14 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       PickCoordinates.navigate(
-                              polygon: widget.post!.polygonPoints!,
-                              position: LatLng(widget.post!.locationLat!,
-                                  widget.post!.locationLong!))
+                              polygon: widget.post?.polygonPoints,
+                              position: widget.post?.locationLat != null
+                                  ? LatLng(widget.post!.locationLat!,
+                                      widget.post!.locationLong!)
+                                  : null)
                           .then((value) {
                         if (value == null) return;
                         setState(() {
@@ -640,7 +648,8 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                   ),
                   SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () {audioCache.play('tab3.mp3');
+                    onTap: () {
+                      audioCache.play('tab3.mp3');
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
