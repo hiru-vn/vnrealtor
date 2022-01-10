@@ -1,3 +1,4 @@
+import 'package:datcao/modules/model/option_model.dart';
 import 'package:datcao/modules/pages/blocs/pages_bloc.dart';
 import 'package:datcao/modules/pages/widget/listItemTags.dart';
 import 'package:datcao/resources/styles/colors.dart';
@@ -5,6 +6,7 @@ import 'package:datcao/share/function/function.dart';
 import 'package:datcao/share/import.dart';
 import 'package:datcao/share/widget/activity_indicator.dart';
 import 'package:datcao/share/widget/base_widgets.dart';
+import 'package:datcao/share/widget/dropdown_text_input_multi.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class InfoPageCreatePage extends StatefulWidget {
@@ -33,6 +35,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
   TextEditingController? get _categoriesC => widget.categoriesController;
 
   PagesBloc? _pagesBloc;
+  late List<MultiOptionModel> _categoryDropdown;
 
   @override
   void didChangeDependencies() {
@@ -43,10 +46,12 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
     super.didChangeDependencies();
   }
 
-  _onAddCategory(String val) => _pagesBloc!.addSelectedCategories(val);
+  _onAddCategory(List<String?> val) => _pagesBloc!.setCategoryID(val);
 
   _initData() async {
     await _pagesBloc!.getAllCategories();
+    _categoryDropdown = Formart.convertStringToMultiModel(
+        _pagesBloc!.listCategoriesSelected, []);
   }
 
   void _nextPage() {
@@ -173,20 +178,27 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (_pagesBloc!.listCategoriesSelected.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: ListItemTags(
-                  title: "",
-                  list: _pagesBloc!.listCategoriesSelected,
-                  isEnableRemove: true,
-                  onClickAt: _pagesBloc!.removeCategory,
-                  alignment: WrapAlignment.end,
-                ),
+              MultiDropdownTextInput(
+                name: 'name',
+                items: _categoryDropdown,
+                onChanged: (value) {
+                  _onAddCategory(value?.map((e) => e.code).toList() ?? []);
+                },
               ),
-            _itemAutoFillText(
-                controller: _categoriesC,
-                hintText: 'Tìm kiếm hạng mục',
-                onSubmit: (val) => _onAddCategory(val))
+            // Padding(
+            //   padding: const EdgeInsets.only(bottom: 10),
+            //   child: ListItemTags(
+            //     title: "",
+            //     list: _pagesBloc!.listCategoriesSelected,
+            //     isEnableRemove: true,
+            //     onClickAt: _pagesBloc!.removeCategory,
+            //     alignment: WrapAlignment.end,
+            //   ),
+            // ),
+            // _itemAutoFillText(
+            //     controller: _categoriesC,
+            //     hintText: 'Tìm kiếm hạng mục',
+            //     onSubmit: (val) => _onAddCategory(val))
           ],
         ),
       );

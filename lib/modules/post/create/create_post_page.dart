@@ -42,6 +42,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
   List<UserModel>? _tagUsers = [];
   double? _price;
   double? _area;
+  String? _estateLand;
+  String? _mapPaper;
+  String? _landLot;
   String? _type;
   String? _need;
   List<UrlPreviewData> links = [];
@@ -88,11 +91,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   (path) => FileUtil.getFbUrlFileType(path) == FileType.video)
               .toList(),
           _polygonPoints!,
-          _tagUsers?.map((e) => e.id).toList()??[],
+          _tagUsers?.map((e) => e.id).toList() ?? [],
           _type,
           _need,
           _area,
           _price,
+          _estateLand,
+          _mapPaper,
+          _landLot,
           _shareWith == 'onlyme');
 
       closeLoading();
@@ -138,12 +144,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   CircleAvatar(
                     radius: 20,
                     backgroundColor: Colors.white,
-                    backgroundImage:
-                        ((AuthBloc.instance.userModel!.avatar != null &&
+                    backgroundImage: ((AuthBloc.instance.userModel!.avatar !=
+                                    null &&
                                 AuthBloc.instance.userModel!.avatar != 'null')
                             ? CachedNetworkImageProvider(
                                 AuthBloc.instance.userModel!.avatar!)
-                            : AssetImage('assets/image/default_avatar.png')) as ImageProvider<Object>?,
+                            : AssetImage('assets/image/default_avatar.png'))
+                        as ImageProvider<Object>?,
                     child: VerifiedIcon(AuthBloc.instance.userModel?.role, 10),
                   ),
                   SizedBox(width: 10),
@@ -405,12 +412,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               },
                               backgroundColor: Colors.transparent,
                             ).then((value) {
-                              if (value != null && value.length == 4) {
+                              if (value != null) {
                                 setState(() {
                                   _type = value[0];
                                   _need = value[1];
                                   _area = value[2];
                                   _price = value[3];
+                                  _estateLand = value[4];
+                                  _mapPaper = value[5];
+                                  _landLot = value[6];
                                 });
                               }
                             });
@@ -544,7 +554,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       onCustomPersionRequest(
                           permission: Permission.camera,
                           onGranted: () {
-                            ImagePicker().pickImage(source: ImageSource.camera)
+                            ImagePicker()
+                                .pickImage(source: ImageSource.camera)
                                 .then((value) async {
                               if (value == null) return;
                               setState(() {
@@ -644,7 +655,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   TextSpan(
                       text: 'Gắn thẻ: ',
                       style: ptSmall().copyWith(color: Colors.black)),
-                  ...(_tagUsers??[]).map(
+                  ...(_tagUsers ?? []).map(
                     (e) => TextSpan(
                         text: '${e.name}, ',
                         recognizer: new TapGestureRecognizer()

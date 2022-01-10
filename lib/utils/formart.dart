@@ -1,3 +1,4 @@
+import 'package:datcao/modules/model/option_model.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -216,6 +217,21 @@ class Formart {
         return err;
     }
     return message;
+  }
+
+  static List<MultiOptionModel> convertStringToMultiModel(
+    List<String?> listMaster,
+    List<String>? value,
+  ) {
+    return listMaster
+        .map(
+          (e) => MultiOptionModel(
+              code: e ?? '',
+              name: e ?? '',
+              type: '',
+              checked: value?.any((element) => element == e) ?? false),
+        )
+        .toList();
   }
 }
 

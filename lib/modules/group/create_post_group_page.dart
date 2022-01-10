@@ -59,6 +59,9 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
   double? _price;
   double? _area;
   String? _type;
+  String? _estateLand;
+  String? _mapPaper;
+  String? _landLot;
   String? _need;
   List<UrlPreviewData> links = [];
 
@@ -114,6 +117,9 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
         _area,
         _shareWith == 'onlyme',
         _price,
+        _estateLand,
+        _mapPaper,
+        _landLot,
       );
       closeLoading();
       if (res.isSuccess) {
@@ -404,12 +410,15 @@ class _CreateGroupCreatePostPageState extends State<GroupCreatePostPage> {
                               },
                               backgroundColor: Colors.transparent,
                             ).then((value) {
-                              if (value != null && value.length == 4) {
+                              if (value != null) {
                                 setState(() {
                                   _type = value[0];
                                   _need = value[1];
                                   _area = value[2];
                                   _price = value[3];
+                                  _estateLand = value[4];
+                                  _mapPaper = value[5];
+                                  _landLot = value[6];
                                 });
                               }
                             });

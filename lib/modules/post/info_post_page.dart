@@ -12,6 +12,9 @@ class _InfoPostPageState extends State<InfoPostPage> {
   final divider = Divider(height: 1, color: Colors.black12.withOpacity(0.3));
   final TextEditingController _priceC = TextEditingController();
   final TextEditingController _areaC = TextEditingController();
+  final TextEditingController _estateLandC = TextEditingController();
+  final TextEditingController _mapPaperC = TextEditingController();
+  final TextEditingController _landLotC = TextEditingController();
   String? selectedType;
   String? selectedNeed;
 
@@ -23,6 +26,9 @@ class _InfoPostPageState extends State<InfoPostPage> {
       selectedNeed,
       double.parse(_areaC.text.replaceAll(',', '')),
       double.parse(_priceC.text.replaceAll(',', '')),
+      _estateLandC.text.replaceAll(',', ''),
+      _mapPaperC.text.replaceAll(',', ''),
+      _landLotC.text.replaceAll(',', ''),
     ]);
   }
 
@@ -175,6 +181,119 @@ class _InfoPostPageState extends State<InfoPostPage> {
                     SizedBox(width: 15)
                   ],
                 ),
+                if (selectedType == "Đất đai" && selectedNeed == "Cần bán")
+                  Column(
+                    children: [
+                      Container(
+                        width: deviceWidth(context),
+                        color: ptSecondaryColor(context),
+                        padding: const EdgeInsets.all(14),
+                        child: Text(
+                          'Số thửa',
+                          style: ptTitle().copyWith(letterSpacing: 0.2),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                              width: 50,
+                              child: Icon(MdiIcons.officeBuildingOutline,
+                                  color: Colors.black45)),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _estateLandC,
+                              onChanged: (val) => setState(() {}),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                ThousandsSeparatorInputFormatter()
+                              ],
+                              validator: TextFieldValidator.numberValidator,
+                              decoration: InputDecoration(
+                                  hintText: 'Số thửa (nếu có)',
+                                  suffixStyle:
+                                      ptBody().copyWith(color: Colors.black87),
+                                  border: InputBorder.none,
+                                  hintStyle:
+                                      ptBody().copyWith(color: Colors.black38)),
+                            ),
+                          ),
+                          SizedBox(width: 20)
+                        ],
+                      ),
+                      Container(
+                        width: deviceWidth(context),
+                        color: ptSecondaryColor(context),
+                        padding: const EdgeInsets.all(14),
+                        child: Text(
+                          'Số tờ',
+                          style: ptTitle().copyWith(letterSpacing: 0.2),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                              width: 50,
+                              child: Icon(MdiIcons.officeBuildingOutline,
+                                  color: Colors.black45)),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _mapPaperC,
+                              onChanged: (val) => setState(() {}),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                ThousandsSeparatorInputFormatter()
+                              ],
+                              validator: TextFieldValidator.numberValidator,
+                              decoration: InputDecoration(
+                                  hintText: 'Số tờ (nếu có)',
+                                  suffixStyle:
+                                      ptBody().copyWith(color: Colors.black87),
+                                  border: InputBorder.none,
+                                  hintStyle:
+                                      ptBody().copyWith(color: Colors.black38)),
+                            ),
+                          ),
+                          SizedBox(width: 20)
+                        ],
+                      ),
+                      Container(
+                        width: deviceWidth(context),
+                        color: ptSecondaryColor(context),
+                        padding: const EdgeInsets.all(14),
+                        child: Text(
+                          'Số lô',
+                          style: ptTitle().copyWith(letterSpacing: 0.2),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                              width: 50,
+                              child: Icon(MdiIcons.officeBuildingOutline,
+                                  color: Colors.black45)),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _landLotC,
+                              onChanged: (val) => setState(() {}),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                ThousandsSeparatorInputFormatter()
+                              ],
+                              validator: TextFieldValidator.numberValidator,
+                              decoration: InputDecoration(
+                                  hintText: 'Số lô (nếu có)',
+                                  suffixStyle:
+                                      ptBody().copyWith(color: Colors.black87),
+                                  border: InputBorder.none,
+                                  hintStyle:
+                                      ptBody().copyWith(color: Colors.black38)),
+                            ),
+                          ),
+                          SizedBox(width: 20)
+                        ],
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),
@@ -200,7 +319,7 @@ class _InfoPostPageState extends State<InfoPostPage> {
       behavior: HitTestBehavior.translucent,
       onTap: () {
         onTap(value);
-      audioCache.play('tab3.mp3');
+        audioCache.play('tab3.mp3');
       },
       child: Container(
         height: 44,

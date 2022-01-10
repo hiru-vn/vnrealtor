@@ -357,6 +357,9 @@ class PostBloc extends ChangeNotifier {
       String? need,
       double? area,
       double? price,
+      String? estateLand,
+      String? mapPaper,
+      String? landLot,
       bool onlyMe) async {
     try {
       final res = await PostRepo().createPost(
@@ -373,6 +376,9 @@ class PostBloc extends ChangeNotifier {
           need,
           area,
           price,
+          estateLand,
+          mapPaper,
+          landLot,
           onlyMe);
       feed!.insert(0, PostModel.fromJson(res));
       myPosts!.insert(0, PostModel.fromJson(res));
@@ -790,8 +796,7 @@ class PostBloc extends ChangeNotifier {
     }
   }
 
-  Future<BaseResponse> getPlanningData(
-      String code) async {
+  Future<BaseResponse> getPlanningData(String code) async {
     try {
       final res = await PostRepo().getPlanningData(code);
       final e = PlanningData.fromJson(res);

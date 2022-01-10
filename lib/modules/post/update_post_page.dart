@@ -451,7 +451,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
                               },
                               backgroundColor: Colors.transparent,
                             ).then((value) {
-                              if (value != null && value.length == 4) {
+                              if (value != null) {
                                 setState(() {
                                   _type = value[0];
                                   _need = value[1];

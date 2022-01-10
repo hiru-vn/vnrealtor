@@ -263,21 +263,25 @@ class GroupBloc extends ChangeNotifier {
   }
 
   Future<BaseResponse> createPost(
-      String? groupId,
-      String content,
-      String? expirationDate,
-      bool publicity,
-      double? lat,
-      double? long,
-      List<String> images,
-      List<String> videos,
-      List<LatLng> polygon,
-      List<String?> tagUserIds,
-      String? type,
-      String? need,
-      double? area,
-      bool onlyMe,
-      double? price) async {
+    String? groupId,
+    String content,
+    String? expirationDate,
+    bool publicity,
+    double? lat,
+    double? long,
+    List<String> images,
+    List<String> videos,
+    List<LatLng> polygon,
+    List<String?> tagUserIds,
+    String? type,
+    String? need,
+    double? area,
+    bool onlyMe,
+    double? price,
+    String? estateLand,
+    String? mapPaper,
+    String? landLot,
+  ) async {
     try {
       final res = await PostRepo().createPost(
           content,
@@ -293,6 +297,9 @@ class GroupBloc extends ChangeNotifier {
           need,
           area,
           price,
+          estateLand,
+          mapPaper,
+          landLot,
           onlyMe,
           groupId: groupId);
       feed.insert(0, PostModel.fromJson(res));

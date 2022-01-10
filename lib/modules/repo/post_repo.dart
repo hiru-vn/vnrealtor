@@ -243,6 +243,9 @@ tagUserIds: ${GraphqlHelper.listStringToGraphqlString(tagUserIds)}
       String? action,
       double? area,
       double? price,
+      String? estateLand,
+      String? mapPaper,
+      String? landLot,
       bool onlyMe,
       {String? groupId,
       String? pageId}) async {
@@ -288,6 +291,15 @@ onlyMe: $onlyMe
     }
     if (area != null) {
       data += '\n area: $area';
+    }
+    if (estateLand != null) {
+      data += '\n estateLand: "$estateLand"';
+    }
+    if (mapPaper != null) {
+      data += '\n mapPaper: "$mapPaper"';
+    }
+    if (landLot != null) {
+      data += '\n landLot: "$landLot"';
     }
 
     final res =
@@ -562,8 +574,7 @@ id
   }
 
   Future getPlanningData(String code) async {
-    final res = await PostSrv().query('getPlanningData',
-        'code: "$code"');
+    final res = await PostSrv().query('getPlanningData', 'code: "$code"');
     return res['getPlanningData'];
   }
 

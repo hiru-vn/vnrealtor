@@ -316,7 +316,8 @@ class PagesBloc extends ChangeNotifier {
       final res =
           await PagesRepo().getPostFollower(filter: filter, userId: userId);
       final List listRaw = res['data'];
-      final List<PagesCreate?> list = listRaw.map((e) => PagesCreate.fromJson(e)).toList();
+      final List<PagesCreate?> list =
+          listRaw.map((e) => PagesCreate.fromJson(e)).toList();
       // if (list.length < filter.limit) _isEndPostPage = true;
       _listPageFollow = list;
       _lastFetchPageFollow = DateTime.now();
@@ -342,6 +343,9 @@ class PagesBloc extends ChangeNotifier {
       String? action,
       double? area,
       double? price,
+      String? estateLand,
+      String? mapPaper,
+      String? landLot,
       bool onlyMe) async {
     try {
       final res = await PostRepo().createPost(
@@ -358,6 +362,9 @@ class PagesBloc extends ChangeNotifier {
           action,
           area,
           price,
+          estateLand,
+          mapPaper,
+          landLot,
           onlyMe,
           pageId: pageId);
       _listPagePost.insert(0, PostModel.fromJson(res));
@@ -484,6 +491,10 @@ class PagesBloc extends ChangeNotifier {
   removeCategory(int index) {
     _listCategoriesId.removeAt(index);
     notifyListeners();
+  }
+
+  void setCategoryID(List<String?> categoryID) {
+    _listCategoriesId = categoryID;
   }
 
   void addSelectedCategories(String val) => _handleAddCategoriesGroup(
