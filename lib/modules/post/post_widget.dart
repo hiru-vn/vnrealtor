@@ -1044,7 +1044,8 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
   @override
   Widget build(BuildContext context) {
     Widget thumbNail;
-    if (widget.post.mediaPosts!.any((element) => element.type == 'PICTURE')) {
+    if (widget.post.mediaPosts?.any((element) => element.type == 'PICTURE') ??
+        false) {
       final String url = widget.post.mediaPosts!
           .firstWhere((element) => element.type == 'PICTURE')
           .url!;
@@ -1112,7 +1113,7 @@ class _PostSmallWidgetState extends State<PostSmallWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.post.content!.trim().length > 0
+                            (widget.post.content?.trim().length ?? 0) > 0
                                 ? widget.post.content!.trim()[0].toUpperCase() +
                                     widget.post.content!
                                         .trim()

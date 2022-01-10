@@ -41,9 +41,9 @@ class ChatMessage {
   /// actions in message container.
   List<Widget>? buttons;
 
-  PostModel? post;
+  List<PostModel>? posts;
 
-  String? postId;
+  List<String>? postIds;
 
   ChatMessage(
       {String? id,
@@ -56,7 +56,7 @@ class ChatMessage {
       DateTime? createdAt,
       this.customProperties,
       this.buttons,
-      this.post}) {
+      this.posts}) {
     this.createdAt = createdAt != null ? createdAt : DateTime.now();
     this.id = id != null
         ? id

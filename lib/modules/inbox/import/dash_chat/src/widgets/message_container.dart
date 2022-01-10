@@ -219,15 +219,20 @@ class MessageContainer extends StatelessWidget {
   }
 
   Widget _buildMessagePost() {
-    if (message.postId != null) {
-      if (message.post == null) {
+    if (message.postIds != null) {
+      if (message.posts == null) {
         return kLoadingSpinner;
       }
-      return PostSmallWidget(
-        message.post!,
-        useAction: false,
-        removePadding: true,
-      );
+      return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: message.posts!
+              .map((e) => PostSmallWidget(
+                    e,
+                    useAction: false,
+                    removePadding: true,
+                  ))
+              .toList());
     }
     return SizedBox.shrink();
   }

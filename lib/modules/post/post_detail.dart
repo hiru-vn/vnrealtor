@@ -1,10 +1,10 @@
-import 'dart:math';
-
 import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/authentication/login.dart';
 import 'package:datcao/modules/bloc/post_bloc.dart';
 import 'package:datcao/modules/model/address.dart';
 import 'package:datcao/modules/model/comment.dart';
+import 'package:datcao/modules/model/district.dart';
+import 'package:datcao/modules/model/planning_data.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/user.dart';
 import 'package:datcao/modules/model/valuation.dart';
@@ -46,6 +46,13 @@ class _PostDetailState extends State<PostDetail>
   List<UserModel> tagUsers = [];
   TabController? _tabController;
   List<ValuationHcmStreet> values = [];
+  District? _selectedDistrict;
+  Ward? _selectedWard;
+  TextEditingController _estateLandC = TextEditingController();
+  TextEditingController _mapPaperC = TextEditingController();
+  TextEditingController _landLotC = TextEditingController();
+  PlanningData? _planningData;
+  bool? _isPlanning;
 
   @override
   void initState() {
@@ -157,6 +164,42 @@ class _PostDetailState extends State<PostDetail>
           isReply = false;
           replyComment = null;
         });
+    }
+  }
+
+  getPlanningData() async {
+    final paper = int.tryParse(_mapPaperC.text);
+    final estateLand = int.tryParse(_estateLandC.text);
+    final landlot = int.tryParse(_landLotC.text);
+    if (paper != null && estateLand != null && _selectedWard != null) {
+      final code = int.parse(_selectedWard!.maphuongxa!) * 10000000 +
+          paper * 10000 +
+          estateLand;
+      final res = await _postBloc!.getPlanningData(code.toString());
+      if (res.isSuccess) {
+        setState(() {
+          _planningData = res.data;
+          _isPlanning = true;
+        });
+      } else {
+        setState(() {
+          _isPlanning = false;
+        });
+      }
+    } else if (landlot != null && _selectedDistrict != null) {
+      final code =
+          _selectedDistrict!.maquanhuyen.toString() + '_' + landlot.toString();
+      final res = await _postBloc!.getPlanningData(code.toString());
+      if (res.isSuccess) {
+        setState(() {
+          _planningData = res.data;
+          _isPlanning = true;
+        });
+      } else {
+        setState(() {
+          _isPlanning = false;
+        });
+      }
     }
   }
 
@@ -272,6 +315,9 @@ class _PostDetailState extends State<PostDetail>
               children: [
                 Center(
                   child: TabBar(
+                      onTap: (index) {
+                        setState(() {});
+                      },
                       indicatorSize: TabBarIndicatorSize.label,
                       indicatorWeight: 1,
                       indicatorColor: ptPrimaryColor(context),
@@ -370,7 +416,7 @@ class _PostDetailState extends State<PostDetail>
                                 child: Column(
                                   children: [
                                     _buildTextInfo('Địa chỉ trên toạ độ: ',
-                                        '${_address?.address}'),
+                                        '${_address?.address ?? 'Không cung cấp'}'),
                                     if (values.length > 0) ...[
                                       SpacingBox(h: 2.5),
                                       _buildTextInfo(
@@ -413,6 +459,196 @@ class _PostDetailState extends State<PostDetail>
                                 ),
                               ),
                               SpacingBox(h: 2.5),
+                              Container(
+                                color: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 20),
+                                child: Column(
+                                  children: [
+                                    _buildTextInfo('Thông tin quy hoạch: ',
+                                        '${'Không được cung cấp bởi người đăng'}'),
+                                    SpacingBox(h: 1),
+                                    Text(
+                                      'Nếu nội dung bài đăng có kèm thông tin số thửa, tờ bản đồ. Bạn có thể tra cứu thông tin quy hoạch của mảnh đất bên dưới',
+                                      style: ptTiny().copyWith(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    SpacingBox(h: 2),
+                                    DropdownButtonFormField(
+                                      isDense: true,
+                                      value: 0,
+                                      items: [
+                                        DropdownMenuItem(
+                                            child: Text('Hồ Chí Minh'),
+                                            value: 0),
+                                      ],
+                                      onChanged: (dynamic val) {},
+                                      decoration: InputDecoration(
+                                        isCollapsed: true,
+                                        contentPadding: EdgeInsets.all(8),
+                                        border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        isDense: true,
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                      ),
+                                    ),
+                                    SpacingBox(h: 1),
+                                    DropdownButtonFormField(
+                                      isDense: true,
+                                      items: listDistrict
+                                          .map((e) => DropdownMenuItem(
+                                                value: e,
+                                                child: Text(
+                                                    e.tenquanhuyen.toString()),
+                                              ))
+                                          .toList(),
+                                      onChanged: (dynamic val) {
+                                        setState(() {
+                                          _selectedDistrict = val;
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                        isCollapsed: true,
+                                        hintText: 'Quận huyện',
+                                        contentPadding: EdgeInsets.all(8),
+                                        border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        isDense: true,
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                      ),
+                                    ),
+                                    SpacingBox(h: 1),
+                                    if (_selectedDistrict?.wards != null)
+                                      DropdownButtonFormField(
+                                        isDense: true,
+                                        items: _selectedDistrict!.wards!
+                                            .map((e) => DropdownMenuItem(
+                                                  value: e!,
+                                                  child: Text(
+                                                      e.tenphuongxa.toString()),
+                                                ))
+                                            .toList(),
+                                        onChanged: (dynamic val) {
+                                          setState(() {
+                                            _selectedWard = val;
+                                          });
+                                        },
+                                        decoration: InputDecoration(
+                                          isCollapsed: true,
+                                          hintText: 'Phường xã',
+                                          enabled: _selectedDistrict != null,
+                                          contentPadding: EdgeInsets.all(8),
+                                          border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10))),
+                                          isDense: true,
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                        ),
+                                      ),
+                                    if (_selectedDistrict?.wards != null)
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Thửa đất số:',
+                                            style: ptBigBody().copyWith(
+                                                color: Colors.black38),
+                                          ),
+                                          SpacingBox(w: 3),
+                                          Expanded(
+                                            child: TextField(
+                                              onChanged: (val) =>
+                                                  setState(() {}),
+                                              controller: _estateLandC,
+                                              decoration: InputDecoration(
+                                                  border: InputBorder.none,
+                                                  hintStyle: ptBigBody()
+                                                      .copyWith(
+                                                          color:
+                                                              Colors.black38)),
+                                            ),
+                                          ),
+                                          Text(
+                                            'Tờ bản đồ số:',
+                                            style: ptBigBody().copyWith(
+                                                color: Colors.black38),
+                                          ),
+                                          SpacingBox(w: 3),
+                                          Expanded(
+                                            child: TextField(
+                                              onChanged: (val) =>
+                                                  setState(() {}),
+                                              controller: _mapPaperC,
+                                              decoration: InputDecoration(
+                                                  border: InputBorder.none,
+                                                  hintStyle: ptBigBody()
+                                                      .copyWith(
+                                                          color:
+                                                              Colors.black38)),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    else
+                                      TextField(
+                                        textAlign: TextAlign.center,
+                                        onChanged: (val) => setState(() {}),
+                                        controller: _landLotC,
+                                        decoration: InputDecoration(
+                                            hintText: 'Nhập số lô',
+                                            border: InputBorder.none,
+                                            hintStyle: ptBigBody().copyWith(
+                                                color: Colors.black38)),
+                                      ),
+                                    SpacingBox(h: 2),
+                                    RoundedBtn(
+                                        text: 'Tra cứu quy hoạch',
+                                        height: 40,
+                                        width: 170,
+                                        onPressed: getPlanningData,
+                                        hasBorder: true,
+                                        borderColor: ptPrimaryColor(context),
+                                        textColor: ptPrimaryColor(context)),
+                                    SpacingBox(h: 2),
+                                    if (_isPlanning == false)
+                                      Text(
+                                        'Thừa đất này không dính quy hoạch',
+                                        style: ptTiny().copyWith(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    if (_planningData != null &&
+                                        _isPlanning == true) ...[
+                                      Text(
+                                        'Thừa đất này có nội dung quy hoạch như sau',
+                                        style: ptTiny().copyWith(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                      SpacingBox(h: 2),
+                                      Text(
+                                        '''
+Đồ án: ${(_planningData!.thongTinChung?.dsdoan?.length ?? 0) > 0 ? (_planningData!.thongTinChung?.dsdoan?[0]) : ""}
+
+Số quyết định: ${(_planningData!.thongTinChung?.dsttdoan?.length ?? 0) > 0 ? (_planningData!.thongTinChung?.dsttdoan?[0].soqd) : ""}
+
+CQ phê duyệt: ${(_planningData!.thongTinChung?.dsttdoan?.length ?? 0) > 0 ? (_planningData!.thongTinChung?.dsttdoan?[0].coquanpd) : ""}
+
+Ngày duyệt: ${(_planningData!.thongTinChung?.dsttdoan?.length ?? 0) > 0 ? (_planningData!.thongTinChung?.dsttdoan?[0].ngayduyet) : ""} 
+                                      ''',
+                                        style: ptBigBody()
+                                            .copyWith(color: Colors.black54),
+                                      ),
+                                    ]
+                                  ],
+                                ),
+                              ),
+                              SpacingBox(h: 2.5),
                               Padding(
                                 padding: const EdgeInsets.all(15),
                                 child: Text(
@@ -444,7 +680,7 @@ class _PostDetailState extends State<PostDetail>
               ],
             ),
           ),
-          if (AuthBloc.instance.userModel != null)
+          if (AuthBloc.instance.userModel != null && _tabController!.index == 0)
             Positioned(
               bottom: 0,
               child: Container(
@@ -536,6 +772,7 @@ class _PostDetailState extends State<PostDetail>
 
   _buildTextInfo(String title, String content) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Text(

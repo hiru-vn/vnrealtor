@@ -4,9 +4,11 @@ import 'package:datcao/modules/bloc/user_bloc.dart';
 import 'package:datcao/modules/model/address.dart';
 import 'package:datcao/modules/model/comment.dart';
 import 'package:datcao/modules/model/media_post.dart';
+import 'package:datcao/modules/model/planning_data.dart';
 import 'package:datcao/modules/model/post.dart';
 import 'package:datcao/modules/model/reply.dart';
 import 'package:datcao/modules/model/valuation.dart';
+import 'package:datcao/modules/post/create/coordinates_input.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/share/import.dart';
 import 'package:graphql/client.dart';
@@ -767,6 +769,32 @@ class PostBloc extends ChangeNotifier {
     try {
       final res = await PostRepo().getOneValuationHcmStreet(id);
       final e = ValuationHcmStreet.fromJson(res);
+      return BaseResponse.success(e);
+    } catch (e) {
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> vn2000ToWgs84(
+      String cadastralId, double x, double y, int prjzone) async {
+    try {
+      final res = await PostRepo().vn2000ToWgs84(cadastralId, x, y, prjzone);
+      final e = LatLng(res['lat'], res['lng']);
+      return BaseResponse.success(e);
+    } catch (e) {
+      return BaseResponse.fail((e as dynamic)?.message ?? e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<BaseResponse> getPlanningData(
+      String code) async {
+    try {
+      final res = await PostRepo().getPlanningData(code);
+      final e = PlanningData.fromJson(res);
       return BaseResponse.success(e);
     } catch (e) {
       return BaseResponse.fail((e as dynamic)?.message ?? e.toString());

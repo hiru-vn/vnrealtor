@@ -68,8 +68,8 @@ class ChatBotBloc extends ChangeNotifier {
       final botMessage = ChatBotMessage.fromJson(res);
       final botChat = ChatMessage(
           text: botMessage.text ?? '', user: bot, image: botMessage.image);
-      if (botMessage.postId != null) {
-        botChat.postId = botMessage.postId;
+      if (botMessage.postIds != null) {
+        botChat.postIds = botMessage.postIds;
         updateBotChatPost(botChat);
       }
       messages.add(botChat);
@@ -86,14 +86,15 @@ class ChatBotBloc extends ChangeNotifier {
 
   Future<BaseResponse> updateBotChatPost(ChatMessage botChat) async {
     try {
-      final res = await PostRepo().getOnePost('60b46a98d9e9ba51f6494bda');
-      final post = PostModel.fromJson(res);
+      final res = await PostRepo().getPostList(botChat.postIds!);
+      final List listRaw = res['data'];
+      final posts = listRaw.map((e) => PostModel.fromJson(e)).toList();
       final botChatItem = messages.firstWhere((element) => element == botChat);
-      botChatItem.post = post;
+      botChatItem.posts = posts;
       return BaseResponse.success(botChat);
     } catch (e) {
       final botChatItem = messages.firstWhere((element) => element == botChat);
-      botChatItem.postId = null;
+      botChatItem.postIds = [];
       return BaseResponse.fail(e.toString());
     } finally {
       sending = false;

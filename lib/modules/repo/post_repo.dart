@@ -553,6 +553,20 @@ id
     return res['getAddress'];
   }
 
+  Future vn2000ToWgs84(
+      String cadastralId, double x, double y, int prjzone) async {
+    final res = await PostSrv().mutate('vn2000ToWgs84',
+        'cadastralId: "$cadastralId" , x: $x, y: $y, prjzone: $prjzone',
+        fragment: 'lat lng');
+    return res['vn2000ToWgs84'];
+  }
+
+  Future getPlanningData(String code) async {
+    final res = await PostSrv().query('getPlanningData',
+        'code: "$code"');
+    return res['getPlanningData'];
+  }
+
   // Stream<FetchResult> subscriptionCommentByPostId(String postId) {
   //   List<String> ids = [postId];
   //   final res = CommentSrv().subscription('newComment',
@@ -582,6 +596,10 @@ locationLong
 expirationDate
 publicity
 rawContent
+suggestAdress {
+      maphuongxa
+      maquanhuyen
+    }
 dynamicLink {
   shortLink
   previewLink

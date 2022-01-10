@@ -113,7 +113,7 @@ class GroupBloc extends ChangeNotifier {
       final res = await PostRepo().getNewsFeedGroup(filter: filter);
       final List listRaw = res['data'];
       final list = listRaw.map((e) => PostModel.fromJson(e)).toList();
-      if (list.length < (filter.limit??20)) isEndFeed = true;
+      if (list.length < (filter.limit ?? 20)) isEndFeed = true;
       feed = list;
       lastFetchFeedPage1 = DateTime.now();
       feedPage = 1;

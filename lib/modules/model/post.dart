@@ -48,7 +48,8 @@ class PostModel {
   String? action;
   String? category;
   bool? isBlock;
-  String? valuationHcmId = "61b60c274abcfe3ea0f610ba";
+  String? valuationHcmId;
+  SuggestAdress? suggestAdress;
 
   PostModel(
       {this.id,
@@ -162,6 +163,9 @@ class PostModel {
     area = json['area'];
     isBlock = json['isBlock'] ?? false;
     valuationHcmId = json['valuationHcmStreetId'] ?? '61b60c274abcfe3ea0f610ba';
+    suggestAdress = json['suggestAdress'] != null
+        ? new SuggestAdress.fromJson(json['suggestAdress'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -193,6 +197,25 @@ class PostModel {
       data['page'] = this.page!.toJson();
     }
     data['isPage'] = this.isPage;
+    return data;
+  }
+}
+
+class SuggestAdress {
+  String? maphuongxa;
+  int? maquanhuyen;
+
+  SuggestAdress({this.maphuongxa, this.maquanhuyen});
+
+  SuggestAdress.fromJson(Map<String, dynamic> json) {
+    maphuongxa = json['maphuongxa'];
+    maquanhuyen = json['maquanhuyen'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['maphuongxa'] = this.maphuongxa;
+    data['maquanhuyen'] = this.maquanhuyen;
     return data;
   }
 }

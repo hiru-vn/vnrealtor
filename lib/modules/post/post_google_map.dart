@@ -1,5 +1,4 @@
 import 'package:datcao/share/widget/keep_keyboard_popup_menu/keep_keyboard_popup_menu.dart';
-import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:datcao/share/import.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -44,7 +43,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   void initState() {
     _initPos = CameraPosition(
       target: LatLng(widget.lat!, widget.long!),
-      zoom: 18,
+      zoom: 20,
     );
     selectedPoint = LatLng(widget.lat!, widget.long!);
     super.initState();
@@ -65,7 +64,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
         bearing: 0,
         target: LatLng(widget.lat!, widget.long!),
         tilt: 0,
-        zoom: 18);
+        zoom: 20);
     final GoogleMapController controller = await _controller.future;
     controller.moveCamera(CameraUpdate.newCameraPosition(_curPos));
   }

@@ -8,6 +8,8 @@ class RoundedBtn extends StatelessWidget {
   final double? height;
   final EdgeInsets? padding;
   final double? width;
+  final Color? borderColor;
+  final Color? textColor;
 
   const RoundedBtn(
       {Key? key,
@@ -17,6 +19,8 @@ class RoundedBtn extends StatelessWidget {
       this.height,
       this.text,
       this.onPressed,
+      this.borderColor,
+      this.textColor,
       this.hasBorder = false})
       : super(key: key);
 
@@ -27,7 +31,9 @@ class RoundedBtn extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
-        border: hasBorder ? Border.all(color: Colors.white, width: 1.5) : null,
+        border: hasBorder
+            ? Border.all(color: borderColor ?? Colors.white, width: 1.5)
+            : null,
       ),
       child: Material(
         // elevation: 4,
@@ -43,7 +49,7 @@ class RoundedBtn extends StatelessWidget {
             child: Center(
               child: Text(
                 text!,
-                style: ptButton(),
+                style: ptButton().copyWith(color: textColor),
               ),
             ),
           ),

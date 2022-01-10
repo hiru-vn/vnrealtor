@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:datcao/modules/bloc/post_bloc.dart';
+import 'package:datcao/modules/inbox/import/launch_url.dart';
 import 'package:datcao/modules/post/create/coordinates_input.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:datcao/share/import.dart';
@@ -79,6 +80,16 @@ class PickCoordinatesState extends State<PickCoordinates>
     super.initState();
   }
 
+  goToPosition(LatLng value) async {
+    CameraPosition _curPos = CameraPosition(
+        bearing: 0,
+        target: LatLng(value.latitude, value.longitude),
+        tilt: 0,
+        zoom: 19);
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(_curPos));
+  }
+
   void _onEnterCoordinates() {
     audioCache.play('tab3.mp3');
     setState(() {
@@ -97,6 +108,7 @@ class PickCoordinatesState extends State<PickCoordinates>
       if (value != null && value is List<LatLng>) {
         polygonPoints = value;
         setState(() {});
+        goToPosition(polygonPoints![0]);
       }
     });
   }
@@ -273,7 +285,7 @@ class PickCoordinatesState extends State<PickCoordinates>
           GoogleMap(
             buildingsEnabled: false,
             tiltGesturesEnabled: false,
-            mapType: MapType.hybrid,
+            // mapType: MapType.hybrid,
             initialCameraPosition: _initPos,
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
@@ -529,7 +541,8 @@ class PickCoordinatesState extends State<PickCoordinates>
                     ),
                   ),
                 )),
-          if (_mode == 'polygon' && polygonPoints!.length > 2)
+          if ((_mode == 'polygon' || _mode == 'input') &&
+              polygonPoints!.length > 2)
             Positioned(
                 top: 100,
                 right: 10,
@@ -630,70 +643,6 @@ class PickCoordinatesState extends State<PickCoordinates>
                     ),
                   ),
                 )),
-            if (_mode == 'polygon' && polygonPoints!.length > 2)
-              Positioned(
-                right: 60,
-                bottom: 18,
-                child: Center(
-                  child: Column(
-                    children: [
-                      Text('Số điểm dấu: ${polygonPoints!.length}',
-                          style: ptBody().copyWith(color: Colors.yellow)),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.yellow, width: 0.75),
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.black45,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'Chu vi',
-                                        style: ptBody()
-                                            .copyWith(color: Colors.yellow),
-                                      ),
-                                      Text('${perimeter.round()} m',
-                                          style: ptTitle()
-                                              .copyWith(color: Colors.yellow)),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  height: 45,
-                                  width: 0.75,
-                                  color: Colors.yellow,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'Diện tích',
-                                        style: ptBody()
-                                            .copyWith(color: Colors.yellow),
-                                      ),
-                                      Text('${area.round()} m2',
-                                          style: ptTitle()
-                                              .copyWith(color: Colors.yellow)),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
             Positioned(
                 top: 220,
                 right: 10,
@@ -722,6 +671,71 @@ class PickCoordinatesState extends State<PickCoordinates>
                   ),
                 )),
           ],
+          if ((_mode == 'polygon' || _mode == 'input') &&
+              polygonPoints!.length > 2)
+            Positioned(
+              right: 60,
+              bottom: 18,
+              child: Center(
+                child: Column(
+                  children: [
+                    Text('Số điểm dấu: ${polygonPoints!.length}',
+                        style: ptBody().copyWith(color: Colors.yellow)),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.yellow, width: 0.75),
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.black45,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Chu vi',
+                                      style: ptBody()
+                                          .copyWith(color: Colors.yellow),
+                                    ),
+                                    Text('${perimeter.round()} m',
+                                        style: ptTitle()
+                                            .copyWith(color: Colors.yellow)),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: 45,
+                                width: 0.75,
+                                color: Colors.yellow,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Diện tích',
+                                      style: ptBody()
+                                          .copyWith(color: Colors.yellow),
+                                    ),
+                                    Text('${area.round()} m2',
+                                        style: ptTitle()
+                                            .copyWith(color: Colors.yellow)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           if (_mode == 'polygon') ...[
             Center(
               child: Icon(MdiIcons.target, size: 50, color: Colors.white),
