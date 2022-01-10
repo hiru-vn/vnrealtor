@@ -203,8 +203,10 @@ class InboxBloc extends ChangeNotifier {
     try {
       final List<DocumentSnapshot> snapShots = await Future.wait(
           users.map((e) => firestore.collection(userCollection).doc(e).get()));
-      final listUser =
-          snapShots.map((e) => FbInboxUserModel.fromJson(e.data() as Map<String, dynamic>)).toList();
+      final listUser = snapShots.map((e) {
+        final data = e.data() as Map<String, dynamic>;
+        return FbInboxUserModel.fromJson(data);
+      }).toList();
       return listUser;
     } catch (e) {
       return null;
@@ -226,9 +228,11 @@ class InboxBloc extends ChangeNotifier {
       'long': location?.longitude,
     });
 
-    final userIds = ((await getGroup(groupId).get()).data() as Map)['userIds'] as List;
-    final waitings =
-        groupInboxList!.firstWhere((element) => element.id == groupId).waitingBy;
+    final userIds =
+        ((await getGroup(groupId).get()).data() as Map)['userIds'] as List;
+    final waitings = groupInboxList!
+        .firstWhere((element) => element.id == groupId)
+        .waitingBy;
     NotificationBloc.instance.sendNotiMessage(
         userIds
             .cast<String>()

@@ -51,8 +51,8 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
 
   void _nextPage() {
     if (!_formKey.currentState!.validate()) return;
-    _pageController!.nextPage(
-        duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+    _pageController!
+        .nextPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
   }
 
   @override
@@ -104,7 +104,9 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
   }
 
   Widget _itemInfoField(
-          {required String title, TextEditingController? controller, String? hintText}) =>
+          {required String title,
+          TextEditingController? controller,
+          String? hintText}) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -121,7 +123,8 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
         ),
       );
 
-  Widget _itemTextField({TextEditingController? controller, String? hintText}) =>
+  Widget _itemTextField(
+          {TextEditingController? controller, String? hintText}) =>
       Material(
         elevation: 0,
         color: ptSecondaryColor(context),
@@ -141,6 +144,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
 
   Widget _buildSelectCategory() => Container(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _itemTileTextField('Chọn hạng mục'),
@@ -165,6 +169,7 @@ class _InfoPageCreatePageState extends State<InfoPageCreatePage> {
           ],
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (_pagesBloc!.listCategoriesSelected.isNotEmpty)

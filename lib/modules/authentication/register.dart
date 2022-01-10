@@ -80,7 +80,9 @@ class _RegisterPageState extends State<RegisterPage> {
     if (res.isSuccess) {
       _authBloc!.requestOtpRegister(_phoneC.text);
     } else {
-      showToast(res.errMessage, context);
+      showToast(
+          'Tài khoản này đã tồn tại, vui lòng đến trang quên mật khẩu ở phần đăng nhập',
+          context);
     }
 
     // HomePage.navigate();
