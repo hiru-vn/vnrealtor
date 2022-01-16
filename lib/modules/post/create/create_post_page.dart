@@ -103,8 +103,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
       closeLoading();
       if (res.isSuccess) {
-        await widget.pageController.animateToPage(0,
-            duration: Duration(milliseconds: 200), curve: Curves.decelerate);
+        if (widget.pageController.hasClients) {
+          await widget.pageController.animateToPage(0,
+              duration: Duration(milliseconds: 200), curve: Curves.decelerate);
+        } else {
+          navigatorKey.currentState!.popUntil((route) => route.isFirst);
+        }
         FocusScope.of(context).requestFocus(FocusNode());
         //remove link image because backend auto formart it's size to fullhd and 360, so we will not need user image anymore
         // _images.map((e) => FileUtil.deleteFileFireStorage(e));
@@ -700,9 +704,13 @@ class CreatePostPageAppBar extends StatelessWidget
             BackButton(
               color: Colors.black,
               onPressed: () {
-                controller.animateToPage(0,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.decelerate);
+                if (controller.hasClients) {
+                  controller.animateToPage(0,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.decelerate);
+                } else {
+                  navigatorKey.currentState!.maybePop();
+                }
                 FocusScope.of(context).requestFocus(FocusNode());
               },
             ),

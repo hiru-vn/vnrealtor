@@ -120,13 +120,15 @@ class _SearchPostPageState extends State<SearchPostPage>
 
   Future _searchPost(String text) async {
     final res = await _postBloc.searchPostWithFilter(
-        filter:
-            GraphqlFilter(search: text, order: '{createdAt: -1}', filter: '''
-        price: {__gte: ${filter.minPrice}, __lte: ${filter.maxPrice}} 
-        area: {__gte: ${filter.minArea}, __lte: ${filter.maxArea}}
-        ${filter.categoryList!.length > 0 ? 'category: {__or: ${GraphqlHelper.listStringToGraphqlString(filter.categoryList)}}' : ''}
-        ${filter.action!.length > 0 ? 'action: {__or: ${GraphqlHelper.listStringToGraphqlString(filter.action)}}' : ''}
-        '''));
+        filter: GraphqlFilter(
+      search: text, order: '{createdAt: -1}',
+      //     filter: '''
+      // price: {__gte: ${filter.minPrice}, __lte: ${filter.maxPrice}}
+      // area: {__gte: ${filter.minArea}, __lte: ${filter.maxArea}}
+      // ${filter.categoryList!.length > 0 ? 'category: {__or: ${GraphqlHelper.listStringToGraphqlString(filter.categoryList)}}' : ''}
+      // ${filter.action!.length > 0 ? 'action: {__or: ${GraphqlHelper.listStringToGraphqlString(filter.action)}}' : ''}
+      // '''
+    ));
     if (res.isSuccess) {
       setState(() {
         posts = res.data;

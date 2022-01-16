@@ -776,6 +776,9 @@ class _CommentWidgetState extends State<CommentWidget> {
               ),
             ),
           ),
+        SpacingBox(
+          h: 1.5,
+        ),
       ],
     );
   }

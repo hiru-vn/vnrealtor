@@ -3,6 +3,7 @@ class ChatBotMessage {
   String? image;
   String? linkTo;
   List<String>? postIds;
+  String? type;
 
   ChatBotMessage({this.text, this.image, this.linkTo, this.postIds});
 
@@ -13,6 +14,7 @@ class ChatBotMessage {
     if (json['postId'] != null) {
       postIds = (json['postId'] as List).map((e) => e.toString()).toList();
     }
+    type = json['action'];
   }
 
   Map<String, dynamic> toJson() {

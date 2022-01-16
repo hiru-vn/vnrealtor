@@ -4,6 +4,7 @@ import 'package:datcao/modules/authentication/auth_bloc.dart';
 import 'package:datcao/modules/inbox/import/dash_chat/dash_chat.dart';
 import 'package:datcao/modules/model/bot_message.dart';
 import 'package:datcao/modules/model/post.dart';
+import 'package:datcao/modules/post/create/create_post_page.dart';
 import 'package:datcao/modules/repo/chat_bot_repo.dart';
 import 'package:datcao/modules/repo/post_repo.dart';
 import 'package:datcao/share/import.dart';
@@ -63,13 +64,18 @@ class ChatBotBloc extends ChangeNotifier {
       messages.add(sendingMessage!);
       notifyListeners();
       Future.delayed(Duration(milliseconds: 300), () => scrollToEnd());
-      await Future.delayed(Duration(seconds: Random().nextInt(1) + 1));
+      // await Future.delayed(Duration(seconds: Random().nextInt(1) + 1));
       final res = await ChatBotRepo().sendMessCB(message.text);
       final botMessage = ChatBotMessage.fromJson(res);
+      if (botMessage.type == 'CREATE_POST') {
+        navigatorKey.currentState!
+            .push(pageBuilder(CreatePostPage(PageController())));
+      }
       final botChat = ChatMessage(
           text: botMessage.text ?? '', user: bot, image: botMessage.image);
       if (botMessage.postIds != null) {
-        botChat.postIds = botMessage.postIds;
+        botChat.postIds =
+            botMessage.postIds!.sublist(0, min(botMessage.postIds!.length, 4));
         updateBotChatPost(botChat);
       }
       messages.add(botChat);
@@ -89,7 +95,7 @@ class ChatBotBloc extends ChangeNotifier {
       final res = await PostRepo().getPostList(botChat.postIds!);
       final List listRaw = res['data'];
       final posts = listRaw.map((e) => PostModel.fromJson(e)).toList();
-      final botChatItem = messages.firstWhere((element) => element == botChat);
+      final botChatItem = messages[messages.length - 1];
       botChatItem.posts = posts;
       return BaseResponse.success(botChat);
     } catch (e) {

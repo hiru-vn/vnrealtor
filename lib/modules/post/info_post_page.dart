@@ -203,7 +203,6 @@ class _InfoPostPageState extends State<InfoPostPage> {
                             child: TextFormField(
                               controller: _estateLandC,
                               onChanged: (val) => setState(() {}),
-                              validator: TextFieldValidator.numberValidator,
                               decoration: InputDecoration(
                                   hintText: 'Số thửa (nếu có)',
                                   suffixStyle:
@@ -235,7 +234,6 @@ class _InfoPostPageState extends State<InfoPostPage> {
                             child: TextFormField(
                               controller: _mapPaperC,
                               onChanged: (val) => setState(() {}),
-                              validator: TextFieldValidator.numberValidator,
                               decoration: InputDecoration(
                                   hintText: 'Số tờ (nếu có)',
                                   suffixStyle:
@@ -267,7 +265,6 @@ class _InfoPostPageState extends State<InfoPostPage> {
                             child: TextFormField(
                               controller: _landLotC,
                               onChanged: (val) => setState(() {}),
-                              validator: TextFieldValidator.numberValidator,
                               decoration: InputDecoration(
                                   hintText: 'Số lô (nếu có)',
                                   suffixStyle:

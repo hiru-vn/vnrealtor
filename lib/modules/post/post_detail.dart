@@ -78,10 +78,12 @@ class _PostDetailState extends State<PostDetail>
         _post = widget.postModel;
         _getComments(_post!.id, filter: GraphqlFilter(limit: 20));
         _getAddress();
+        _getRecommended();
       } else {
         _getPost().then((value) {
           _getValuation();
           _getAddress();
+          _getRecommended();
         });
         _getComments(widget.postId, filter: GraphqlFilter(limit: 20));
       }
@@ -118,6 +120,27 @@ class _PostDetailState extends State<PostDetail>
     setState(() {
       values = [res.data];
     });
+  }
+
+  _getRecommended() {
+    if (_post?.suggestAdress?.maquanhuyen != null) {
+      _selectedDistrict = listDistrict.firstWhere(
+          (e) => e.maquanhuyen == _post?.suggestAdress?.maquanhuyen);
+    }
+    if (_post?.suggestAdress?.maphuongxa != null) {
+      _selectedWard = _selectedDistrict?.wards?.firstWhere(
+          (e) => e?.maphuongxa == _post?.suggestAdress?.maphuongxa);
+    }
+    if (_post?.landLot != null) {
+      _landLotC.text = _post!.landLot!;
+    }
+    if (int.tryParse(_post?.mapPaper ?? '') != null) {
+      _mapPaperC.text = _post!.mapPaper!;
+    }
+    if (int.tryParse(_post?.estateLand ?? '') != null) {
+      _estateLandC.text = _post!.estateLand!;
+    }
+    setState(() {});
   }
 
   _deleteComment(String? id) async {
@@ -349,36 +372,39 @@ class _PostDetailState extends State<PostDetail>
                     physics: NeverScrollableScrollPhysics(),
                     children: [
                       comments != null
-                          ? ListView.separated(
-                              padding: EdgeInsets.only(
-                                  bottom: AuthBloc.instance.userModel == null
-                                      ? 20
-                                      : 0),
-                              itemCount: comments!.length,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                final comment = comments![index];
-                                return CommentWidget(
-                                    comment: comment,
-                                    userReplyCache: localReplies,
-                                    shouldExpand:
-                                        comments![index].id == replyComment?.id,
-                                    deleteCallBack: comments![index].userId ==
-                                            AuthBloc.instance.userModel?.id
-                                        ? () =>
-                                            _deleteComment(comments![index].id)
-                                        : () {},
-                                    tapCallBack: () {
-                                      setState(() {
-                                        isReply = true;
-                                        replyComment = comments![index];
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 25),
+                              child: ListView.separated(
+                                padding: EdgeInsets.only(
+                                    bottom: AuthBloc.instance.userModel == null
+                                        ? 20
+                                        : 0),
+                                itemCount: comments!.length,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  final comment = comments![index];
+                                  return CommentWidget(
+                                      comment: comment,
+                                      userReplyCache: localReplies,
+                                      shouldExpand: comments![index].id ==
+                                          replyComment?.id,
+                                      deleteCallBack: comments![index].userId ==
+                                              AuthBloc.instance.userModel?.id
+                                          ? () => _deleteComment(
+                                              comments![index].id)
+                                          : () {},
+                                      tapCallBack: () {
+                                        setState(() {
+                                          isReply = true;
+                                          replyComment = comments![index];
+                                        });
+                                        _focusNodeComment.requestFocus();
                                       });
-                                      _focusNodeComment.requestFocus();
-                                    });
-                              },
-                              separatorBuilder: (context, index) =>
-                                  SizedBox.shrink(),
+                                },
+                                separatorBuilder: (context, index) =>
+                                    SizedBox.shrink(),
+                              ),
                             )
                           : ListSkeleton(),
                       SingleChildScrollView(
@@ -498,6 +524,7 @@ class _PostDetailState extends State<PostDetail>
                                     SpacingBox(h: 1),
                                     DropdownButtonFormField(
                                       isDense: true,
+                                      value: _selectedDistrict,
                                       items: listDistrict
                                           .map((e) => DropdownMenuItem(
                                                 value: e,
@@ -508,6 +535,7 @@ class _PostDetailState extends State<PostDetail>
                                       onChanged: (dynamic val) {
                                         setState(() {
                                           _selectedDistrict = val;
+                                          _selectedWard = null;
                                         });
                                       },
                                       decoration: InputDecoration(
@@ -526,6 +554,7 @@ class _PostDetailState extends State<PostDetail>
                                     if (_selectedDistrict?.wards != null)
                                       DropdownButtonFormField(
                                         isDense: true,
+                                        value: _selectedWard,
                                         items: _selectedDistrict!.wards!
                                             .map((e) => DropdownMenuItem(
                                                   value: e!,

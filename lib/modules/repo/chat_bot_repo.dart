@@ -5,8 +5,8 @@ class ChatBotRepo {
     String data = '''
       message: "$message"
     ''';
-    final res = await VerificateSrv()
-        .mutate('sendMessCB', data, fragment: ' text image linkTo postId ');
+    final res = await VerificateSrv().mutate('sendMessCB', data,
+        fragment: ' text image linkTo postId action');
     return res['sendMessCB'];
   }
 }

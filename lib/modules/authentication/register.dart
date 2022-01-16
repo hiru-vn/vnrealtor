@@ -264,7 +264,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   _buildFormField(
           BuildContext context, String text, TextEditingController controller,
-          {Function(String)? validator,
+          {String? Function(String?)? validator,
           bool obscureText = false,
           IconData? icon}) =>
       Padding(
@@ -291,10 +291,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: TextFormField(
                     obscureText: obscureText,
                     controller: controller,
-                    validator: validator as String? Function(String?)? ??
+                    validator: validator ??
                         (str) {
                           return null;
-                        } as String? Function(String?)?,
+                        },
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: text,

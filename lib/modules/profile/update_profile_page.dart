@@ -35,12 +35,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     if (_authBloc == null) {
       _authBloc = Provider.of<AuthBloc>(context);
       _userBloc = Provider.of<UserBloc>(context);
-      _nameC.text = _authBloc!.userModel!.name!;
-      _tagNameC.text = _authBloc!.userModel!.tagName!;
-      _emailC.text = _authBloc!.userModel!.email!;
-      _phoneC.text = _authBloc!.userModel!.phone!;
-      _facebookC.text = _authBloc!.userModel!.facebookUrl!;
-      _descriptionC.text = _authBloc!.userModel!.description!;
+      _nameC.text = _authBloc!.userModel!.name ?? '';
+      _tagNameC.text = _authBloc!.userModel!.tagName ?? '';
+      _emailC.text = _authBloc!.userModel!.email ?? '';
+      _phoneC.text = _authBloc!.userModel!.phone ?? '';
+      _facebookC.text = _authBloc!.userModel!.facebookUrl ?? '';
+      _descriptionC.text = _authBloc!.userModel!.description ?? '';
     }
     super.didChangeDependencies();
   }

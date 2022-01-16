@@ -116,7 +116,7 @@ $postFragment
 
   Future getPostList(List<String> ids) async {
     final res = await PostSrv().getList(
-        // limit: 20,
+        limit: 5,
         order: '{createdAt: 1}',
         filter:
             '{_id: {__in:${GraphqlHelper.listStringToGraphqlString(ids)}}}');
@@ -139,7 +139,7 @@ $postFragment
         lat: $lat
         limit: 100
         page: 1
-      } filter: { price: {__gte: 0.0, __lte: 1000000000000.0} }
+      }
       ''', fragment: '''data { 
 ${postFragment.replaceFirst('isUserLike', '').replaceFirst('isUserShare', '').replaceFirst('id', '_id')}
           }''');
@@ -591,6 +591,9 @@ price
 isBlock
 area
 action
+estateLand
+mapPaper
+landLot
 category
 content
 mediaPostIds

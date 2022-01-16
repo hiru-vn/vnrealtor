@@ -50,6 +50,9 @@ class PostModel {
   bool? isBlock;
   String? valuationHcmId;
   SuggestAdress? suggestAdress;
+  String? estateLand;
+  String? mapPaper;
+  String? landLot;
 
   PostModel(
       {this.id,
@@ -166,6 +169,9 @@ class PostModel {
     suggestAdress = json['suggestAdress'] != null
         ? new SuggestAdress.fromJson(json['suggestAdress'])
         : null;
+    estateLand = json['estateLand'];
+    mapPaper = json['mapPaper'];
+    landLot = json['landLot'];
   }
 
   Map<String, dynamic> toJson() {
