@@ -36,8 +36,9 @@ Future<UrlPreviewData?> getUrlData(String url) async {
 }
 
 String? _extractOGData(Document document, String parameter) {
-  var titleMetaTag = document.getElementsByTagName("meta").firstWhereOrNull(
-      (meta) => meta.attributes['property'] == parameter);
+  var titleMetaTag = document
+      .getElementsByTagName("meta")
+      .firstWhereOrNull((meta) => meta.attributes['property'] == parameter);
   if (titleMetaTag != null) {
     return titleMetaTag.attributes['content'];
   }

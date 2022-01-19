@@ -327,7 +327,7 @@ class _CreatePageCreatePostPageState extends State<PageCreatePostPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 12)
                                 .copyWith(bottom: 32),
                             child: HashTagTextField(
-                              maxLength: 500,
+                              maxLength: 1000,
                               maxLines: 15,
                               minLines: 8,
                               controller: _contentC,
