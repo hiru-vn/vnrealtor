@@ -32,10 +32,10 @@ class _CoordinatesInputState extends State<CoordinatesInput> {
   int mapZ = 3;
 
   final List<Vn2000LatLng> temp = [
-    Vn2000LatLng(1200867.806, 598025.511),
-    Vn2000LatLng(1200853.990, 598033.580),
-    Vn2000LatLng(1200852.024, 598030.097),
-    Vn2000LatLng(1200865.841, 598022.029),
+    Vn2000LatLng(1213596.87, 581950.12),
+    Vn2000LatLng(1213587.06, 581932.69),
+    Vn2000LatLng(1213578.38, 581937.67),
+    Vn2000LatLng(1213588.20, 581955.09),
   ];
 
   @override
